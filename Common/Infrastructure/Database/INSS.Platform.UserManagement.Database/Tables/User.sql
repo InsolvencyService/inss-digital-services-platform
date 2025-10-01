@@ -1,0 +1,29 @@
+﻿CREATE TABLE [dbo].[User]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[UserIdentityId] UNIQUEIDENTIFIER NOT NULL,
+	[Created] DATETIME2 NOT NULL,
+	[CreatedBy] NVARCHAR(255) NOT NULL,
+	[Modified] DATETIME2 NULL,
+	[ModifiedBy] NVARCHAR(255) NULL,
+	CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED 
+	(
+		[Id]
+	) 
+)
+GO
+
+ALTER TABLE [dbo].[User]
+ADD CONSTRAINT [DF_User_Id] DEFAULT (NEWSEQUENTIALID()) FOR [Id];
+GO
+
+ALTER TABLE [dbo].[User]
+ADD CONSTRAINT [DF_User_Created] DEFAULT (GETUTCDATE()) FOR [Created];
+GO
+
+ALTER TABLE [dbo].[User] ADD CONSTRAINT [FK_User_UserIdentity] FOREIGN KEY([UserIdentityId])
+REFERENCES [dbo].[UserIdentity] ([Id])
+GO
+
+ALTER TABLE [dbo].[User] CHECK CONSTRAINT [FK_User_UserIdentity]
+GO
