@@ -17,9 +17,5 @@
 GO
 
 ALTER TABLE [dbo].[IdentityProvider]
-ADD CONSTRAINT [DF_IdentityProvider_Id] DEFAULT (NEWSEQUENTIALID()) FOR [Id];
-GO
-
-ALTER TABLE [dbo].[IdentityProvider]
 ADD CONSTRAINT [DF_IdentityProvider_Created] DEFAULT (GETUTCDATE()) FOR [Created];
 GO

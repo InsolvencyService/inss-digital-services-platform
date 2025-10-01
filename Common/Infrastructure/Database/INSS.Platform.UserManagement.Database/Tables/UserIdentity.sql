@@ -15,10 +15,6 @@
 GO
 
 ALTER TABLE [dbo].[UserIdentity]
-ADD CONSTRAINT [DF_UserIdentity] DEFAULT (NEWSEQUENTIALID()) FOR [Id];
-GO
-
-ALTER TABLE [dbo].[UserIdentity]
 ADD CONSTRAINT [DF_UserIdentity_Created] DEFAULT (GETUTCDATE()) FOR [Created];
 GO
 

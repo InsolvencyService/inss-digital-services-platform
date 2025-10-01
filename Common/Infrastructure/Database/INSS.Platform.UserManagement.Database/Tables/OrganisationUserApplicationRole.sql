@@ -15,10 +15,6 @@
 GO
 
 ALTER TABLE [dbo].[OrganisationUserApplicationRole]
-ADD CONSTRAINT [DF_OrganisationUserApplicationRole_Id] DEFAULT (NEWSEQUENTIALID()) FOR [Id];
-GO
-
-ALTER TABLE [dbo].[OrganisationUserApplicationRole]
 ADD CONSTRAINT [DF_OrganisationUserApplicationRole_Created] DEFAULT (GETUTCDATE()) FOR [Created];
 GO
 

@@ -14,9 +14,5 @@
 GO
 
 ALTER TABLE [dbo].[Organisation]
-ADD CONSTRAINT [DF_Organisation_Id] DEFAULT (NEWSEQUENTIALID()) FOR [Id];
-GO
-
-ALTER TABLE [dbo].[Organisation]
 ADD CONSTRAINT [DF_Organisation_Created] DEFAULT (GETUTCDATE()) FOR [Created];
 GO
