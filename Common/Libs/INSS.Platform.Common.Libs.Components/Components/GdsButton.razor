@@ -1,7 +1,7 @@
 ﻿<button type="submit" class="govuk-button" data-module="govuk-button">
-    Continue
+    @ButtonText
 </button>
 
 @code {
-
+    [Parameter] public string ButtonText { get; set; } = "Submit";
 }

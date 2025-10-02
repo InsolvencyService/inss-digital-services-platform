@@ -4,7 +4,7 @@
             @Text
         </label>
     </h1>
-    <input class="govuk-input" id="event-name" name="eventName" placeholder="Your full name" type="text">
+    <input class="govuk-input" id="@Id" name="eventName" placeholder="@Placeholder" type="text">
 </div>
 
 @code {
@@ -19,5 +19,4 @@
 
     [Parameter]
     public string? Placeholder { get; set; } = string.Empty;
-
 }

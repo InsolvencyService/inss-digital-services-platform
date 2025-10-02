@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.Common.Libs.Components", "INSS.Platform.Common.Libs.Components.csproj", "{DECB8C66-2BA3-49BD-9801-8D59624C7EE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.Common.Libs.Components.Tests", "..\INSS.Platform.Common.Libs.Components.Tests\INSS.Platform.Common.Libs.Components.Tests.csproj", "{F651D93D-BAB7-4198-A722-DE4631E9766D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{DECB8C66-2BA3-49BD-9801-8D59624C7EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DECB8C66-2BA3-49BD-9801-8D59624C7EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DECB8C66-2BA3-49BD-9801-8D59624C7EE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F651D93D-BAB7-4198-A722-DE4631E9766D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F651D93D-BAB7-4198-A722-DE4631E9766D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F651D93D-BAB7-4198-A722-DE4631E9766D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F651D93D-BAB7-4198-A722-DE4631E9766D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
