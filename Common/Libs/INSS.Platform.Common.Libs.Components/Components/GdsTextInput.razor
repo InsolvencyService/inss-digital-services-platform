@@ -1,6 +1,6 @@
 ﻿<div class="govuk-form-group">
     <h1 class="govuk-label-wrapper">
-        <label class="govuk-label govuk-label--l" for="event-name">
+        <label class="govuk-label govuk-label--l" for="@Id">
             @Text
         </label>
     </h1>
@@ -8,11 +8,8 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    private EditContext? EditContext { get; set; }
-
     [Parameter]
-    public string? Id { get; set; } = null;
+    public string? Id { get; set; } = string.Empty;
 
     [Parameter]
     public string Text { get; set; } = string.Empty;

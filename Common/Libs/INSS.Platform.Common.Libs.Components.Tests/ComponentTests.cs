@@ -39,7 +39,7 @@ public class ComponentTests : Bunit.TestContext
         cut.MarkupMatches(@$"
             <div class=""govuk-form-group"">
                 <h1 class=""govuk-label-wrapper"">
-                    <label class=""govuk-label govuk-label--l"" for=""event-name"">
+                    <label class=""govuk-label govuk-label--l"" for=""{id}"">
                         {text}
                     </label>
                 </h1>
