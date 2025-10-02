@@ -9,8 +9,7 @@
     <ProjectGuid>{9dd319e6-fda1-4120-aece-7903ff8ae2af}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>INSS.Platform.Authorisation.Database</RootNamespace>
     <AssemblyName>INSS.Platform.Authorisation.Database</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
@@ -48,7 +47,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -64,7 +62,9 @@
     <PostDeploy Include="Scripts\PostDeployment\Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Scripts\PostDeployment\TeardownTestData.sql" />
+    <None Include="Scripts\PostDeployment\TeardownTestData.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Build Include="Tables\IdentityProvider.sql" />
     <Build Include="Tables\UserIdentity.sql" />
     <Build Include="Tables\User.sql" />
@@ -76,7 +76,9 @@
     <Build Include="Tables\OrganisationUserApplicationRole.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Scripts\PostDeployment\TestData.sql" />
+    <None Include="Scripts\PostDeployment\TestData.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="INSS.Platform.UserManagement.Database.publish.xml" />
