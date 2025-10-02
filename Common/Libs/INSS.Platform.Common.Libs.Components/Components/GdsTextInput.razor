@@ -1,0 +1,19 @@
+﻿<div class="govuk-form-group">
+    <h1 class="govuk-label-wrapper">
+        <label class="govuk-label govuk-label--l" for="@Id">
+            @Text
+        </label>
+    </h1>
+    <input class="govuk-input" id="@Id" name="eventName" placeholder="@Placeholder" type="text">
+</div>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Placeholder { get; set; } = string.Empty;
+}
