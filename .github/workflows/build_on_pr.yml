@@ -1,0 +1,86 @@
+name: Build and Test on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build and Test Solution
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore INSS.Platform.sln
+
+    - name: Build solution
+      run: dotnet build INSS.Platform.sln --no-restore --configuration Release
+
+    - name: List projects in solution
+      run: |
+        Write-Host "=== Projects in INSS.Platform.sln ==="
+        dotnet sln INSS.Platform.sln list
+        Write-Host "`n=== Looking for test projects in file system ==="
+        $testProjects = @()
+        Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object {
+          $content = Get-Content $_.FullName -Raw
+          if ($content -like "*Microsoft.NET.Test.Sdk*" -or $content -like "*MSTest*" -or $content -like "*xunit*" -or $content -like "*NUnit*" -or $content -like "*bunit*") {
+            Write-Host "TEST PROJECT FOUND: $($_.FullName)"
+            $testProjects += $_.FullName
+          }
+        }
+        if ($testProjects.Count -gt 0) {
+          Write-Host "`n=== Checking if test projects are in solution ==="
+          $solutionProjects = dotnet sln INSS.Platform.sln list
+          foreach ($testProject in $testProjects) {
+            $relativePath = $testProject.Replace((Get-Location).Path + "\", "").Replace("\", "/")
+            if ($solutionProjects -like "*$relativePath*") {
+              Write-Host "✓ $relativePath is in solution"
+            } else {
+              Write-Host "✗ $relativePath is NOT in solution - needs to be added"
+            }
+          }
+        }
+
+    - name: Run tests with coverage (verbose)
+      run: |
+        Write-Host "Running tests with detailed output..."
+        dotnet test INSS.Platform.sln --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults --verbosity normal
+        Write-Host "Test execution completed"
+
+    - name: Check for coverage files
+      id: coverage-check
+      run: |
+        $coverageFiles = Get-ChildItem -Recurse -Filter "*.cobertura.xml" -ErrorAction SilentlyContinue
+        if ($coverageFiles.Count -gt 0) {
+          Write-Host "Coverage files found:"
+          $coverageFiles | ForEach-Object { Write-Host "  $($_.FullName)" }
+          echo "has-coverage=true" >> $env:GITHUB_OUTPUT
+        } else {
+          Write-Host "No coverage files found. Skipping coverage report generation."
+          echo "has-coverage=false" >> $env:GITHUB_OUTPUT
+        }
+
+    - name: Report code coverage
+      if: steps.coverage-check.outputs.has-coverage == 'true'
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
+      with:
+        reports: '**/coverage.cobertura.xml;**/*.cobertura.xml;**/TestResults/**/*.xml'
+        targetdir: 'coverage-report'
+        reporttypes: 'HtmlInline_AzurePipelines'
+
+    - name: Upload coverage report as artifact
+      if: steps.coverage-check.outputs.has-coverage == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage-report

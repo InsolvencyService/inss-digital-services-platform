@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "INSS.Platform.UserManagement.Database", "Database\INSS.Platform.UserManagement.Database\INSS.Platform.UserManagement.Database.sqlproj", "{9DD319E6-FDA1-4120-AECE-7903FF8AE2AF}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "INSS.Platform.UserManagement.Database", "Apps\UserManagement\Database\INSS.Platform.UserManagement.Database\INSS.Platform.UserManagement.Database.sqlproj", "{9DD319E6-FDA1-4120-AECE-7903FF8AE2AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +22,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {19306387-989B-40A1-BAA9-1412266CEDAA}
+		SolutionGuid = {7AF619AB-B896-4333-A28A-DCD97399F900}
 	EndGlobalSection
 EndGlobal
