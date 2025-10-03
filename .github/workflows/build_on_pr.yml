@@ -20,13 +20,13 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore INSS.Platform.sln
 
     - name: Build solution
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build INSS.Platform.sln --no-restore --configuration Release
 
     - name: Run tests with coverage
-      run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage"
+      run: dotnet test INSS.Platform.sln --no-build --configuration Release --collect:"XPlat Code Coverage"
 
     - name: Report code coverage
       uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
