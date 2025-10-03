@@ -25,21 +25,39 @@ jobs:
     - name: Build solution
       run: dotnet build INSS.Platform.sln --no-restore --configuration Release
 
-    - name: Run tests with coverage
-      run: dotnet test INSS.Platform.sln --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults
-
-    - name: List coverage files (debug)
+    - name: List projects in solution
       run: |
-        Write-Host "Current directory contents:"
-        Get-ChildItem -Recurse | Where-Object { $_.Name -like "*coverage*" -or $_.Name -like "*.xml" } | ForEach-Object { Write-Host $_.FullName }
-        Write-Host "All files in TestResults (if exists):"
-        if (Test-Path ./TestResults) {
-          Get-ChildItem -Path ./TestResults -Recurse | ForEach-Object { Write-Host $_.FullName }
+        Write-Host "=== Projects in INSS.Platform.sln ==="
+        dotnet sln INSS.Platform.sln list
+        Write-Host "`n=== Looking for test projects ==="
+        Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object {
+          $content = Get-Content $_.FullName -Raw
+          if ($content -like "*Microsoft.NET.Test.Sdk*" -or $content -like "*MSTest*" -or $content -like "*xunit*" -or $content -like "*NUnit*") {
+            Write-Host "TEST PROJECT: $($_.FullName)"
+          }
+        }
+
+    - name: Run tests with coverage (verbose)
+      run: |
+        Write-Host "Running tests with detailed output..."
+        dotnet test INSS.Platform.sln --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults --verbosity normal
+        Write-Host "Test execution completed"
+
+    - name: Check for coverage files
+      id: coverage-check
+      run: |
+        $coverageFiles = Get-ChildItem -Recurse -Filter "*.cobertura.xml" -ErrorAction SilentlyContinue
+        if ($coverageFiles.Count -gt 0) {
+          Write-Host "Coverage files found:"
+          $coverageFiles | ForEach-Object { Write-Host "  $($_.FullName)" }
+          echo "has-coverage=true" >> $env:GITHUB_OUTPUT
         } else {
-          Write-Host "TestResults directory not found"
+          Write-Host "No coverage files found. Skipping coverage report generation."
+          echo "has-coverage=false" >> $env:GITHUB_OUTPUT
         }
 
     - name: Report code coverage
+      if: steps.coverage-check.outputs.has-coverage == 'true'
       uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
       with:
         reports: '**/coverage.cobertura.xml;**/*.cobertura.xml;**/TestResults/**/*.xml'
@@ -47,6 +65,7 @@ jobs:
         reporttypes: 'HtmlInline_AzurePipelines'
 
     - name: Upload coverage report as artifact
+      if: steps.coverage-check.outputs.has-coverage == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
