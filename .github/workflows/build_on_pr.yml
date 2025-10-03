@@ -26,12 +26,19 @@ jobs:
       run: dotnet build INSS.Platform.sln --no-restore --configuration Release
 
     - name: Run tests with coverage
-      run: dotnet test INSS.Platform.sln --no-build --configuration Release --collect:"XPlat Code Coverage"
+      run: dotnet test INSS.Platform.sln --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+    - name: List coverage files (debug)
+      run: |
+        Write-Host "Listing all XML files in TestResults:"
+        Get-ChildItem -Path ./TestResults -Recurse -Filter "*.xml" | ForEach-Object { Write-Host $_.FullName }
+        Write-Host "Listing all cobertura files:"
+        Get-ChildItem -Path ./TestResults -Recurse -Filter "*cobertura*" | ForEach-Object { Write-Host $_.FullName }
 
     - name: Report code coverage
       uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
       with:
-        reports: '**/coverage.cobertura.xml'
+        reports: 'TestResults/**/coverage.cobertura.xml'
         targetdir: 'coverage-report'
         reporttypes: 'HtmlInline_AzurePipelines'
 
