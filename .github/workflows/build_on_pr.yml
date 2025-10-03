@@ -30,15 +30,19 @@ jobs:
 
     - name: List coverage files (debug)
       run: |
-        Write-Host "Listing all XML files in TestResults:"
-        Get-ChildItem -Path ./TestResults -Recurse -Filter "*.xml" | ForEach-Object { Write-Host $_.FullName }
-        Write-Host "Listing all cobertura files:"
-        Get-ChildItem -Path ./TestResults -Recurse -Filter "*cobertura*" | ForEach-Object { Write-Host $_.FullName }
+        Write-Host "Current directory contents:"
+        Get-ChildItem -Recurse | Where-Object { $_.Name -like "*coverage*" -or $_.Name -like "*.xml" } | ForEach-Object { Write-Host $_.FullName }
+        Write-Host "All files in TestResults (if exists):"
+        if (Test-Path ./TestResults) {
+          Get-ChildItem -Path ./TestResults -Recurse | ForEach-Object { Write-Host $_.FullName }
+        } else {
+          Write-Host "TestResults directory not found"
+        }
 
     - name: Report code coverage
       uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
       with:
-        reports: 'TestResults/**/coverage.cobertura.xml'
+        reports: '**/coverage.cobertura.xml;**/*.cobertura.xml;**/TestResults/**/*.xml'
         targetdir: 'coverage-report'
         reporttypes: 'HtmlInline_AzurePipelines'
 
