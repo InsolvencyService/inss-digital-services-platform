@@ -1,6 +1,0 @@
-@INSS.Platform.UserManagement.API_HostAddress = http://localhost:5198
-
-GET {{INSS.Platform.UserManagement.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
