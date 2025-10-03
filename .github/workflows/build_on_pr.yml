@@ -29,11 +29,25 @@ jobs:
       run: |
         Write-Host "=== Projects in INSS.Platform.sln ==="
         dotnet sln INSS.Platform.sln list
-        Write-Host "`n=== Looking for test projects ==="
+        Write-Host "`n=== Looking for test projects in file system ==="
+        $testProjects = @()
         Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object {
           $content = Get-Content $_.FullName -Raw
-          if ($content -like "*Microsoft.NET.Test.Sdk*" -or $content -like "*MSTest*" -or $content -like "*xunit*" -or $content -like "*NUnit*") {
-            Write-Host "TEST PROJECT: $($_.FullName)"
+          if ($content -like "*Microsoft.NET.Test.Sdk*" -or $content -like "*MSTest*" -or $content -like "*xunit*" -or $content -like "*NUnit*" -or $content -like "*bunit*") {
+            Write-Host "TEST PROJECT FOUND: $($_.FullName)"
+            $testProjects += $_.FullName
+          }
+        }
+        if ($testProjects.Count -gt 0) {
+          Write-Host "`n=== Checking if test projects are in solution ==="
+          $solutionProjects = dotnet sln INSS.Platform.sln list
+          foreach ($testProject in $testProjects) {
+            $relativePath = $testProject.Replace((Get-Location).Path + "\", "").Replace("\", "/")
+            if ($solutionProjects -like "*$relativePath*") {
+              Write-Host "✓ $relativePath is in solution"
+            } else {
+              Write-Host "✗ $relativePath is NOT in solution - needs to be added"
+            }
           }
         }
 
