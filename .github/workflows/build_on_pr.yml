@@ -1,0 +1,42 @@
+name: Build and Test on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Build and Test Solution
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Run tests with coverage
+      run: dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage"
+
+    - name: Report code coverage
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
+      with:
+        reports: '**/coverage.cobertura.xml'
+        targetdir: 'coverage-report'
+        reporttypes: 'HtmlInline_AzurePipelines'
+
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage-report
