@@ -1,0 +1,8 @@
+{
+  "serviceName": "Director Conduct Report",
+  "plugins": {
+    "govuk-frontend": {
+      "rebrand": true
+    }
+  }
+}

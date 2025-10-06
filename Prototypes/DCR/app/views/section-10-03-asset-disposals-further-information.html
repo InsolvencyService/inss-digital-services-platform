@@ -1,0 +1,71 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 10 – Director Conduct – Asset Disposals - Further Information</h1>
+    <form class="form" action="/section-11-01-successor-trading" method="post">
+
+      {{ govukCheckboxes({
+        name: "assetDisposalsBenefited",
+        fieldset: {
+          legend: {
+            text: "Who appears to have benefited?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "directorsConnected", text: "Directors or connected parties" },
+          { value: "unconnected", text: "Unconnected parties" },
+          { value: "uncertain", text: "Uncertain" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "disposalsCausedInsolvency",
+        value: data['disposalsCausedInsolvency'],
+        fieldset: {
+          legend: {
+            text: "Did the asset disposals cause or contribute to the company’s insolvency?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "disposalsIdentifiedInRecords",
+        value: data['disposalsIdentifiedInRecords'],
+        fieldset: {
+          legend: {
+            text: "Can these transactions be identified in the company’s books and records?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

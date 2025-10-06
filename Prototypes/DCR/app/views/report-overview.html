@@ -1,0 +1,610 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Task list template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">{{ serviceName }}</h1>
+
+      <h2 class="govuk-heading-m">Section 1 - Conduct Report Administration</h2>
+
+      {% set completedStatus = {
+        text: "Completed"
+      } %}
+
+      {% set incompleteStatus = {
+        tag: {
+          text: "Incomplete",
+          classes: "govuk-tag--blue"
+        }
+      } %}
+
+      {# To switch between the completed and incomplete statues, use some inline logic within the component below, like this: "status: (completedStatus if ... else incompleteStatus)" #}
+
+      {{ govukTaskList({
+        idPrefix: "first-section",
+        items: [
+          {
+            title: {
+              text: "Conduct Reporter Details"
+            },
+            href: "/section-01-01-conduct-reporter-details",
+            status: completedStatus
+          },
+		  {
+            title: {
+              text: "Company Report Details"
+            },
+            href: "/section-01-02-company-report-details",
+            status: completedStatus
+          }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 2 - Company Details</h2>
+
+      {{ govukTaskList({
+        idPrefix: "second-section",
+        items: [
+          {
+            title: {
+              text: "Company Dates"
+            },
+            href: "/section-02-01-company-details-dates",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Trading Name and Address"
+            },
+            href: "/section-02-02-company-details-trading-name-address",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Trading Address"
+            },
+            href: "/section-02-03-company-details-trading-address",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Failed Companies"
+            },
+            href: "/section-02-04-company-details-failed-companies",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Linked Companies"
+            },
+            href: "/section-02-05-company-details-linked-companies",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Bank Details"
+            },
+            href: "/section-02-06-company-details-bank-details",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Records"
+            },
+            href: "/section-02-07-company-details-records",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 3 - Director Details</h2>
+
+      {{ govukTaskList({
+        idPrefix: "third-section",
+        items: [
+          {
+            title: {
+              text: "Director Details"
+            },
+            href: "/section-03-01-director-details",
+            status: completedStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 4 - Company Insolvency</h2>
+
+      {{ govukTaskList({
+        idPrefix: "fourth-section",
+        items: [
+          {
+            title: {
+              text: "Creditors"
+            },
+            href: "/section-04-01-company-insolvency-creditors",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Majority Creditor"
+            },
+            href: "/section-04-02-company-insolvency-majority-creditor",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Creditor Payments"
+            },
+            href: "/section-04-03-company-insolvency-majority-creditor",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Dividends"
+            },
+            href: "/section-04-04-company-insolvency-dividends",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Action to Recover"
+            },
+            href: "/section-04-05-company-insolvency-action-to-recover",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Fund Recovery"
+            },
+            href: "/section-04-06-company-insolvency-fund-recovery",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Insolvency Type"
+            },
+            href: "/section-04-07-company-insolvency-type-of-insolvency",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Live Businesses"
+            },
+            href: "/section-04-08-company-insolvency-live-business",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "S216 Exceptions"
+            },
+            href: "/section-04-09-company-insolvency-s216-exceptions",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Names of Connected Live Businesses"
+            },
+            href: "/section-04-10-company-insolvency-names-of-live-business",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Directors Explanation and Company Deficiency"
+            },
+            href: "/section-04-11-company-insolvency-explanation-values",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 5 - Company Books and Records</h2>
+
+      {{ govukTaskList({
+        idPrefix: "fifth-section",
+        items: [
+          {
+            title: {
+              text: "Received Books and Records"
+            },
+            href: "/section-05-01-books-and-records",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Changes Explained"
+            },
+            href: "/section-05-01-books-and-records-change-explained",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Difficulties Caused By Deficiencies"
+            },
+            href: "/section-05-01-books-and-records-deficiencies-harder",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Value of Deficiencies"
+            },
+            href: "/section-05-01-books-and-records-deficiency-value",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-05-01-books-and-records-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 6 - Director Conduct - Unreasonable Benefits</h2>
+
+      {{ govukTaskList({
+        idPrefix: "sixth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Unreasonable Benefits"
+            },
+            href: "/section-06-01-unreasaonable-benefits",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Value of Unreasonable Benefits"
+            },
+            href: "/section-06-02-unreasaonable-benefits-value",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-06-03-unreasaonable-benefits-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 7 - Director Conduct - Insolvent Trading</h2>
+
+      {{ govukTaskList({
+        idPrefix: "seventh-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Insolvent Trading"
+            },
+            href: "/section-07-01-insolvent-trading",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Sought Advice"
+            },
+            href: "/section-07-02-insolvent-trading-sought-advice",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Acted on Advice"
+            },
+            href: "/section-07-03-insolvent-trading-acted-on-advice",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Reasonable Belief"
+            },
+            href: "/section-07-04-insolvent-trading-reasonable-belief",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Introduced Funds"
+            },
+            href: "/section-07-05-insolvent-trading-introduced-funds",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-07-06-insolvent-trading-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 8 - Director Conduct - Detrimental Transactions</h2>
+
+      {{ govukTaskList({
+        idPrefix: "eighth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Detrimental Transactions"
+            },
+            href: "/section-08-01-detrimental-transactions",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Value of Detrimental Transactions"
+            },
+            href: "/section-08-02-detrimental-transactions-value",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-08-03-detrimental-transactions-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 9 - Director Conduct - Tax Affairs</h2>
+
+      {{ govukTaskList({
+        idPrefix: "ninth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Failure in Tax Affairs"
+            },
+            href: "/section-09-01-tax-affairs",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Time Fell Behind"
+            },
+            href: "/section-09-02-tax-affairs-fell-behind",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Time to Pay Arrangement"
+            },
+            href: "/section-09-03-tax-affairs-time-to-pay-arrangement",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Time to Pay Compliance"
+            },
+            href: "/section-09-04-tax-affairs-time-to-pay-compliance",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Percentage of Liabilities to HMRC"
+            },
+            href: "/section-09-05-tax-affairs-hmrc-liabilities-percentage",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-09-06-tax-affairs-further-information",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Fees and Funding"
+            },
+            href: "/section-09-07-tax-affairs-fees-or-penalties",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 10 - Director Conduct - Asset Disposals</h2>
+
+      {{ govukTaskList({
+        idPrefix: "tenth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Asset Disposals"
+            },
+            href: "/section-10-01-asset-disposals",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Value of Disposed Assets"
+            },
+            href: "/section-10-02-asset-disposals-value",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-10-03-tax-affairs-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 11 - Director Conduct - Successor Trading</h2>
+
+      {{ govukTaskList({
+        idPrefix: "eleventh-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Successor Trading"
+            },
+            href: "/section-11-01-successor-trading",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Director Involvement in Successors"
+            },
+            href: "/section-11-02-successor-trading-director-involvement",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "New Finance"
+            },
+            href: "/section-11-03-successor-trading-new-finance",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Changes to Improve"
+            },
+            href: "/section-11-04-successor-trading-changes-to-improve",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Belief of Viability"
+            },
+            href: "/section-11-05-successor-trading-belief-viability",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Company Ever Make a Profit"
+            },
+            href: "/section-11-06-successor-trading-profit",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-11-07-successor-trading-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 12 - Director Conduct - Customer Treatment</h2>
+
+      {{ govukTaskList({
+        idPrefix: "twelfth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Failure in Customer Treatment"
+            },
+            href: "/section-12-01-customer-treatment",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-12-02-customer-treatment-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 13 - Director Conduct - Financial Support Schemes</h2>
+
+      {{ govukTaskList({
+        idPrefix: "thirteenth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Abuse of Financial Support Schemes"
+            },
+            href: "/section-13-01-financial-support-schemes",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Value of Support Scheme"
+            },
+            href: "/section-13-02-financial-support-schemes-value",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Further Information"
+            },
+            href: "/section-13-03-financial-support-schemes-further-information",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 14 - Director Conduct - Bounce Back Loans</h2>
+
+      {{ govukTaskList({
+        idPrefix: "fourteenth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Abuse of Bounce Back Loans"
+            },
+            href: "/section-14-01-bounce-back-loans",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Details of Bounce Back Loan"
+            },
+            href: "/section-14-02-bounce-back-loans-details",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+	  
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Section 15 - Director Conduct - Other Investigations</h2>
+
+      {{ govukTaskList({
+        idPrefix: "fifteenth-section",
+        items: [
+          {
+            title: {
+              text: "Evidence of Other Investigations"
+            },
+            href: "/section-15-01-other-investigations",
+            status: completedStatus
+          },
+          {
+            title: {
+              text: "Status of Investigations"
+            },
+            href: "/section-15-02-other-investigations-investigations-status",
+            status: incompleteStatus
+          },
+          {
+            title: {
+              text: "Details of Existing Investigations"
+            },
+            href: "/section-15-03-other-investigations-existing-investigations",
+            status: incompleteStatus
+          }
+        ]
+      }) }}
+
+      <div class="govuk-!-margin-top-5">
+        {{ govukButton({ text: "I have completed the form", href: "/submit-this-report" }) }}
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

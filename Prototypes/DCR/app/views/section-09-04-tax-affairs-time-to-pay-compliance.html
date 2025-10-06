@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 9 – Director Conduct – Tax Affairs - Time to Pay Compliance</h1>
+
+    <form class="form" action="/compliedTimeToPay-answer" method="post">
+
+      {{ govukRadios({
+        name: "compliedTimeToPay",
+        value: data['compliedTimeToPay'],
+        fieldset: {
+          legend: {
+            text: "Did the company comply with the terms of any Time-to-Pay arrangements?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 4 - Company Insolvency - Dividends Value
+      </h1>
+
+      <form class="form" action="/section-04-05-company-insolvency-action-to-recover" method="post">
+
+		{{ govukRadios({
+			name: "dividendValue",
+			fieldset: {
+				legend: {
+					text: "What is the estimated value of the dividend to unsecured creditors?"
+				}
+			},
+			items: [
+				{
+				value: "1p-to-10p",
+				text: "1p to 10p in the £"
+				},
+				{
+				value: "11p-to-50p",
+				text: "11p to 50p in the £"
+				},
+				{
+				value: "more-than-50p",
+				text: "More than 50p in the £"
+				},
+				{
+				value: "not-known-yet",
+				text: "Not known yet"
+				}
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

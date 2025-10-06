@@ -1,0 +1,57 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 4 - Company Insolvency - S216 Exceptions
+      </h1>
+
+      <form class="form" action="/s216Exceptions-answer" method="post">
+
+		{{ govukRadios({
+			name: "s216Exceptions",
+			value: data['s216Exceptions'],
+			fieldset: {
+				legend: {
+					text: "Do any of the exceptions in section 216 of the Insolvency Act 1986 apply?"
+				}
+			},
+			hint: {
+				text: "Leave to act under S216(3), Rules 22.4, 22.6 & 22.7 of The Insolvency (England and Wales) Rules 2016."
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

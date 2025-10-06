@@ -1,0 +1,37 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 3 – Individual Director - Alias</h1>
+
+    <form class="form" action="/section-03a-03-individual-director-address" method="post">
+
+      {{ govukInput({
+        label: { text: "Enter any other names" },
+        id: "other-names",
+        name: "otherNames",
+        spellcheck: false
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

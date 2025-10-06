@@ -1,0 +1,98 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 12 – Director Conduct – Customer Treatment - Futher Information</h1>
+    <form class="form" action="/section-13-01-financial-support-schemes" method="post">
+
+      {{ govukRadios({
+        name: "creditorComplaints",
+        value: data['creditorComplaints'],
+        fieldset: {
+          legend: {
+            text: "Have you received creditor complaints about the company’s trading?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "misledCustomers",
+        value: data['misledCustomers'],
+        fieldset: {
+          legend: {
+            text: "Is there evidence that customers were misled or given false assurances?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "customerMoneyUsedForTrading",
+        value: data['customerMoneyUsedForTrading'],
+        fieldset: {
+          legend: {
+            text: "Is there evidence that customer money was used to support general trading?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "ringfenceNonCompliance",
+        value: data['ringfenceNonCompliance'],
+        fieldset: {
+          legend: {
+            text: "Did the company fail to comply with statutory or contractual duties to safeguard (ring-fence) customer money?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "customersIdentifiableInRecords",
+        value: data['customersIdentifiableInRecords'],
+        fieldset: {
+          legend: {
+            text: "Can the customers involved, and the amounts of money, be identified in the company’s records?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

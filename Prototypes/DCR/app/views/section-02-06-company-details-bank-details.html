@@ -1,0 +1,86 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 2 - Company Details - Bank Details
+      </h1>
+
+      <form class="form" action="/section-02-07-company-details-records" method="post">
+
+		{{ govukInput({
+			label: {
+				text: "Which bank held the company’s main account?"
+			},
+			id: "bank-name",
+			name: "bankName",
+			hint: {
+				text: "Enter the name of the bank where the company’s main trading account was held. If you do not know, leave this blank."
+			}
+		}) }}
+		
+		{{ govukInput({
+			label: {
+				text: "What was the sort code of the company’s main bank account?"
+			},
+			id: "sort-code",
+			name: "sortCode",
+			hint: {
+				text: "This is the 6-digit number that identifies the bank and branch. If you do not know, leave this blank."
+			}
+		}) }}
+		
+		{{ govukInput({
+			label: {
+				text: "What was the account number of the company’s main bank account?"
+			},
+			id: "account-number",
+			name: "accountNumber",
+			hint: {
+				text: "Enter the 8-digit account number. If you do not know it, leave this blank."
+			}
+		}) }}
+		
+		{{ govukRadios({
+			name: "bank-statements",
+			fieldset: {
+				legend: {
+					text: "Do you have unmarked bank statements for this account covering the last 12 months of trading?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 3 – Corporate Director - Insolvency Details</h1>
+
+    <form class="form" action="/section-03b-05-corporate-director-recorded-companies-house" method="post">
+
+      {{ govukRadios({
+        name: "corpInsolvencyType",
+        value: data['corpInsolvencyType'],
+        fieldset: { legend: { text: "Type of insolvency" } },
+        items: [
+          { value: "administration", text: "Administration" },
+          { value: "administrative-receivership", text: "Administrative receivership" },
+          { value: "dissolved", text: "Dissolved" },
+          { value: "liquidation", text: "Liquidation" }
+        ]
+      }) }}
+
+      {{ govukDateInput({
+        id: "insolvency-date",
+        namePrefix: "insolvency-date",
+        fieldset: {
+          legend: { text: "Date insolvency started or company dissolved" }
+        }
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

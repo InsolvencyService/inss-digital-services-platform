@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 7 – Director Conduct – Insolvent Trading</h1>
+
+    <form class="form" action="/newDebtsWhileInsolvent-answer" method="post">
+
+      {{ govukRadios({
+        name: "newDebtsWhileInsolvent",
+        value: data['newDebtsWhileInsolvent'],
+        fieldset: {
+          legend: {
+            text: "Did the company take on new debts when directors should reasonably have known it was insolvent?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

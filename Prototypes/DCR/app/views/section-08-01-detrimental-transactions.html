@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 8 – Director Conduct – Detrimental Transactions</h1>
+
+    <form class="form" action="/unfairAdvantageTransactions-answer" method="post">
+
+      {{ govukRadios({
+        name: "unfairAdvantageTransactions",
+        value: data['unfairAdvantageTransactions'],
+        fieldset: {
+          legend: {
+            text: "Is there evidence of transactions that gave some parties an unfair advantage over others?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

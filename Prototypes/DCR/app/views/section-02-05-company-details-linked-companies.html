@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 2 - Company Insolvency - Linked Failed Companies
+      </h1>
+
+      <form class="form" action="/section-02-06-company-details-bank-details" method="post">
+
+		{{ govukInput({
+			label: {
+				text: "What is the name or case reference number of the linked company?"
+			},
+			id: "linked-company",
+			name: "linkedCompany",
+			hint: {
+				text: "You can enter either the company’s registered name or its case reference number (for example, starting with NCL or LQD)."
+			}
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 9 – Director Conduct – Tax Affairs - Further Information</h1>
+
+    <form class="form" action="/persistentLateFiling-answer" method="post">
+
+      {{ govukCheckboxes({
+        name: "howFailedTaxAffairs",
+        fieldset: {
+          legend: {
+            text: "How did the company fail to deal with its tax affairs and liabilities?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "nonPayment", text: "Non-payment or underpayment of liabilities" },
+          { value: "failureFile", text: "Failure to file returns" },
+          { value: "incorrectFalse", text: "Filing incorrect or false returns" },
+          { value: "mticCarousel", text: "MTIC / carousel fraud" },
+          { value: "taxAvoidance", text: "Tax avoidance" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        name: "taxesInvolved",
+        fieldset: {
+          legend: {
+            text: "Which taxes are involved?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "vat", text: "VAT" },
+          { value: "payeNic", text: "PAYE / NIC" },
+          { value: "ct", text: "Corporation tax" },
+          { value: "cis", text: "CIS" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "persistentLateFiling",
+        value: data['persistentLateFiling'],
+        fieldset: {
+          legend: {
+            text: "Did the company persistently fail to file tax returns on time?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "treatedHMRCUnfairly",
+        value: data['treatedHMRCUnfairly'],
+        fieldset: {
+          legend: {
+            text: "Is there evidence that HMRC was treated unfairly compared with other groups?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        name: "treatedBetterThanHMRC",
+        fieldset: {
+          legend: {
+            text: "Compared with HMRC, who was treated better?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "directorsConnected", text: "Directors or connected parties" },
+          { value: "unconnected", text: "Unconnected parties" },
+          { value: "uncertain", text: "Uncertain" }
+        ]
+      }) }}
+
+      {{ govukInput({
+        label: { text: "If registered, what is the company’s VAT number?" },
+        id: "vat-number",
+        name: "vatNumber",
+        spellcheck: false
+      }) }}
+
+      {{ govukInput({
+        label: { text: "List any other HMRC reference numbers for the company that you are aware of." },
+        id: "other-hmrc-refs",
+        name: "otherHmrcRefs",
+        spellcheck: false
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

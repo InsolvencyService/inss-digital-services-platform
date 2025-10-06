@@ -1,0 +1,40 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 3 – Director Details - Third Failure in Five Years</h1>
+
+    <form class="form" action="/section-03a-11-individual-director-restricted" method="post">
+
+      {{ govukRadios({
+        name: "thirdOrMoreFailure5Years",
+        value: data['thirdOrMoreFailure5Years'],
+        fieldset: {
+          legend: { text: "Is this the director’s third (or more) company failure in the last 5 years?" }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

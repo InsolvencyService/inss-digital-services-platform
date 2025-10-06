@@ -1,0 +1,73 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 2 - Company Details - Company Dates
+      </h1>
+
+      <form class="form" action="/section-02-02-company-details-trading-name-address" method="post">
+
+		{{ govukDateInput({
+			id: "ip-appointment",
+			namePrefix: "ip-appointment",
+			fieldset: {
+				legend: {
+					text: "When was the company incorporated?"
+				}
+			},
+			hint: {
+				text: "For example, 27 3 2007"
+			}
+		}) }}
+		
+		{{ govukDateInput({
+			id: "ip-appointment",
+			namePrefix: "ip-appointment",
+			fieldset: {
+				legend: {
+					text: "When did the company start trading?"
+				}
+			},
+			hint: {
+				text: "Leave blank if you’re not sure"
+			}
+		}) }}
+		
+		{{ govukDateInput({
+			id: "ip-appointment",
+			namePrefix: "ip-appointment",
+			fieldset: {
+				legend: {
+					text: "When did the company stop trading?"
+				}
+			},
+			hint: {
+				text: "Leave blank if the company is still trading or if you’re not sure"
+			}
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 6 – Director Conduct – Unreasonable Benefits - Further Information</h1>
+
+    <form class="form" action="/section-07-01-insolvent-trading" method="post">
+
+      {{ govukCheckboxes({
+        name: "howDirectorBenefited",
+        fieldset: {
+          legend: {
+            text: "How did the director benefit?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "excessPay", text: "Pay in excess of a reasonable wage" },
+          { value: "directorsLoan", text: "Director’s loan account" },
+          { value: "excessDividendsRemuneration", text: "Dividends in excess of reasonable remuneration" },
+          { value: "loansOrDividendsAsRemuneration", text: "Loans or dividends taken as remuneration" },
+          { value: "dividendsExcessRetainedProfit", text: "Dividends in excess of retained profit" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "benefitsIdentifiedInRecords",
+        value: data['benefitsIdentifiedInRecords'],
+        fieldset: {
+          legend: {
+            text: "Can these transactions be identified in the company’s books and records?"
+          }
+        },
+        items: [
+          { 
+			value: "yes", 
+			text: "Yes" 
+		  },
+          { 
+		  value: "no", 
+		  text: "No" 
+		  }
+        ]
+      }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

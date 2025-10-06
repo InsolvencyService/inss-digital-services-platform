@@ -1,0 +1,81 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 4 - Company Insolvency - Creditors
+      </h1>
+
+      <form class="form" action="/majorityCreditor-answer" method="post">
+
+		{{ govukRadios({
+			name: "numberCreditors",
+			fieldset: {
+				legend: {
+					text: "How many creditors does the company have?"
+				}
+			},
+			items: [
+				{
+				value: "1-to-10",
+				text: "1 to 10"
+				},
+				{
+				value: "11-to-50",
+				text: "11 to 50"
+				},
+				{
+				value: "51-to-100",
+				text: "51 to 100"
+				},
+				{
+				value: "over-100",
+				text: "Over 100"
+				}
+			]
+		}) }}
+		
+		{{ govukRadios({
+			name: "majorityCreditor",
+			value: data['majorityCreditor'],
+			fieldset: {
+				legend: {
+					text: "Is there a majority creditor?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

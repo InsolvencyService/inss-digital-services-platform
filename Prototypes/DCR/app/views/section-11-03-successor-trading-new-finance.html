@@ -1,0 +1,42 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 11 – Director Conduct – Successor Trading - Introduce New Finance</h1>
+    <form class="form" action="/newFinanceIntroduced-answer" method="post">
+
+      {{ govukRadios({
+        name: "newFinanceIntroduced",
+        value: data['newFinanceIntroduced'],
+        fieldset: {
+          legend: {
+            text: "Was new finance introduced to help this company stay viable?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

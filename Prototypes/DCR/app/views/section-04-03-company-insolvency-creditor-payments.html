@@ -1,0 +1,77 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 4 - Company Insolvency - Creditor Payments
+      </h1>
+
+      <form class="form" action="/unsecuredDividend-answer" method="post">
+
+		{{ govukRadios({
+			name: "securedCreditors",
+			fieldset: {
+				legend: {
+					text: "Will secured creditors be paid in full?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				},
+				{
+				value: "notApplicable",
+				text: "Not applicable"
+				}
+			]
+		}) }}
+
+		{{ govukRadios({		
+			name: "unsecuredDividend",
+			value: data['unsecuredDividend'],
+			fieldset: {
+				legend: {
+					text: "Is it likely that unsecured creditors will receive a dividend?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 4 - Company Insolvency - Fund Recovery
+      </h1>
+
+      <form class="form" action="/section-04-07-company-insolvency-type-of-insolvency" method="post">
+
+		{{ govukCheckboxes({
+			name: "action-relates",
+			fieldset: {
+				legend: {
+					text: "What does the action relate to?"
+				}
+			},
+			hint: {
+				text: "Select all that apply"
+			},
+			items: [
+				{
+					value: "misfeasance",
+					text: "Misfeasance"
+				},
+				{
+					value: "fraudulentTrading",
+					text: "Wrongful or fraudulent trading"
+				},
+				{
+					value: "undervalue",
+					text: "Preference or transaction at undervalue"
+				},
+				{
+					value: "loan",
+					text: "Director’s loan account"
+				},
+				{
+					value: "other",
+					text: "Other"
+				}
+			]
+		}) }}
+		
+		{{ govukCheckboxes({
+			name: "action-against",
+			fieldset: {
+				legend: {
+					text: "Who is the action against?"
+				}
+			},
+			hint: {
+				text: "Select all that apply"
+			},
+			items: [
+				{
+					value: "connected",
+					text: "A director or connected party"
+				},
+				{
+					value: "unconnected",
+					text: "Someone not connected to the company"
+				}
+			]
+		}) }}
+		
+		{{ govukInput({
+			label: {
+				text: "How much do you expect to recover?"
+				},
+			classes: "govuk-input--width-10",
+			id: "expected-recovery",
+			name: "expectedRecovery",
+			inputmode: "decimal",
+			spellcheck: false
+		}) }}
+		
+		{{ govukCheckboxes({
+			name: "action-funded",
+			fieldset: {
+				legend: {
+					text: "How is the action likely to be funded?"
+				}
+			},
+			hint: {
+				text: "Select all that apply"
+			},
+			items: [
+				{
+					value: "assets",
+					text: "Assets in the estate"
+				},
+				{
+					value: "creditors",
+					text: "Creditors"
+				},
+				{
+					value: "other",
+					text: "Other"
+				}
+			]
+		}) }}	
+		
+		{{ govukRadios({
+			name: "thirdParty",
+			fieldset: {
+				legend: {
+					text: "Is the action likely to be assigned to a third party?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				},
+				{
+				value: "uncertain",
+				text: "Uncertain"
+				}
+			]
+		}) }}
+
+		{{ govukCheckboxes({
+			name: "action-funded",
+			fieldset: {
+				legend: {
+					text: "If you have already recovered funds for the estate, who were they recovered from?"
+				}
+			},
+			hint: {
+				text: "Select all that apply"
+			},
+			items: [
+				{
+					value: "assets",
+					text: "A director or connected party"
+				},
+				{
+					value: "unconnected",
+					text: "Someone not connected to the company"
+				},
+				{
+					value: "noneRecovered",
+					text: "No funds have been recovered"
+				}
+			]
+		}) }}
+
+		{{ govukInput({
+			label: {
+				text: "How much has been recovered so far?"
+				},
+			classes: "govuk-input--width-10",
+			id: "recovered",
+			name: "recovered",
+			inputmode: "decimal",
+			spellcheck: false
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 11 – Director Conduct – Successor Trading - Changes to Improve</h1>
+    <form class="form" action="/changesToImproveViability-answer" method="post">
+
+      {{ govukRadios({
+        name: "changesToImproveViability",
+        value: data['changesToImproveViability'],
+        fieldset: {
+          legend: {
+            text: "Did the directors make changes to try to improve the company’s viability?"
+          }
+        },
+        items: [
+          { 
+			value: "yes", 
+			text: "Yes" 
+		  },
+          {
+			value: "no",
+			text: "No"
+		  }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

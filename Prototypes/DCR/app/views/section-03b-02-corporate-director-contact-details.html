@@ -1,0 +1,85 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 3 – Corporate Director - Contact Details</h1>
+
+    <form class="form" action="/section-03b-03-corporate-director-insolvency" method="post">
+
+      {{ govukInput({
+        label: { text: "Contact person at the corporate director (if known)" },
+        id: "contact-person",
+        name: "contactPerson",
+        spellcheck: false
+      }) }}
+
+      {{ govukInput({
+        label: { text: "Correspondence address line 1" },
+        id: "address-line-1",
+        name: "addressLine1",
+        autocomplete: "address-line1",
+        spellcheck: false
+      }) }}
+
+      {{ govukInput({
+        label: { text: "Address line 2" },
+        id: "address-line-2",
+        name: "addressLine2",
+        autocomplete: "address-line2",
+        spellcheck: false
+      }) }}
+
+      {{ govukInput({
+        label: { text: "Town or city" },
+        id: "address-town",
+        name: "addressTown",
+        autocomplete: "address-level2",
+        spellcheck: false
+      }) }}
+
+      {{ govukInput({
+        label: { text: "Postcode" },
+        id: "address-postcode",
+        name: "addressPostcode",
+        autocomplete: "postal-code",
+        spellcheck: false
+      }) }}
+
+      {{ govukInput({
+        label: { text: "Email address (if known)" },
+        id: "email",
+        name: "email",
+        autocomplete: "email",
+        spellcheck: false
+      }) }}
+
+      {{ govukInput({
+        label: { text: "Phone number (if known)" },
+        id: "phone",
+        name: "phone",
+        autocomplete: "tel",
+        spellcheck: false
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

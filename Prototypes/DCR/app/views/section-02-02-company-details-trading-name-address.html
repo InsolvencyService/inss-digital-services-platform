@@ -1,0 +1,141 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 2 - Company Details - Company Trading Name and Registered Address
+      </h1>
+
+      <form class="form" action="/tradingAddress-answer" method="post">
+
+		{{ govukInput({
+			label: {
+				text: "What is the company’s trading name?"
+			},
+			id: "creditor-reference",
+			name: "creditorReference",
+			hint: {
+				text: "Only answer this if the trading name is different from the registered company name."
+			}
+		}) }}
+
+		{% call govukFieldset({
+			legend: {
+				text: "What was the company’s registered office address?",
+				classes: "govuk-fieldset__legend--m",
+				isPageHeading: true
+			}
+		}) %}
+
+		{{ govukInput({
+			label: {
+				text: "Address line 1"
+			},
+			id: "address-line-1",
+			name: "addressLine1",
+			autocomplete: "address-line1"
+		}) }}
+
+		{{ govukInput({
+			label: {
+				text: "Address line 2 (optional)"
+			},
+			id: "address-line-2",
+			name: "addressLine2",
+			autocomplete: "address-line2"
+		}) }}
+
+		{{ govukInput({
+			label: {
+				text: "Town or city"
+			},
+			classes: "govuk-!-width-two-thirds",
+			id: "address-town",
+			name: "addressTown",
+			autocomplete: "address-level2"
+		}) }}
+
+		{{ govukInput({
+			label: {
+				text: "County (optional)"
+			},
+			classes: "govuk-!-width-two-thirds",
+			id: "address-county",
+			name: "addressCounty"
+		}) }}
+
+		{{ govukInput({
+			label: {
+				text: "Postcode"
+			},
+			classes: "govuk-input--width-10",
+			id: "address-postcode",
+			name: "addressPostcode",
+			autocomplete: "postal-code"
+		}) }}
+
+		{% endcall %}
+
+		{{ govukRadios({
+			name: "UkRegistered",
+			fieldset: {
+				legend: {
+					text: "Is the company registered outside the UK but mainly operating in the UK?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+		
+		{{ govukRadios({
+			name: "tradingAddress",
+			value: data['tradingAddress'],
+			fieldset: {
+				legend: {
+					text: "Is the company’s principal trading address different from the registered office address?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

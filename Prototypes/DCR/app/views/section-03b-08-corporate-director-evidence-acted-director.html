@@ -1,0 +1,50 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 3 – Corporate Director - Evidence Acted as a Director</h1>
+
+    <form class="form" action="/section-03b-09-third-failure" method="post">
+
+      {{ govukCheckboxes({
+        name: "corpEvidenceTypes",
+        fieldset: { legend: { text: "What evidence shows that the corporate body acted as a director?" } },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "companyBooks", text: "Company books" },
+          { value: "employees", text: "Employees" },
+          { value: "companyAgent", text: "Company agent" },
+          { value: "bank", text: "Bank" },
+          { value: "creditorsSuppliers", text: "Creditors or suppliers" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukDateInput({
+        id: "corp-acting-start",
+        namePrefix: "corp-acting-start",
+        fieldset: { legend: { text: "Date the corporate body started acting as a director (if known)" } }
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

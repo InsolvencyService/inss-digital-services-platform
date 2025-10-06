@@ -1,0 +1,82 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+	  Section 1 - Company Report Details
+      </h1>
+
+      <form class="form" action="/section-02-01-company-details-dates" method="post">
+
+		
+		{{ govukDateInput({
+			id: "ip-appointment",
+			namePrefix: "ip-appointment",
+			fieldset: {
+				legend: {
+					text: "When was the insolvency practitioner appointed?"
+				}
+			},
+			hint: {
+				text: "For example, 27 3 2007"
+			}
+		}) }}
+		
+		{{ govukInput({
+			label: {
+				text: "What is the internet address (URL) for the report to creditors?"
+			},
+			id: "internet-report",
+			name: "internetReport",
+			hint: {
+				text: "For example, https://www.example.com/report-to-creditors. Leave this blank if there is no online address."
+			}
+		}) }}
+
+		{{ govukInput({
+			label: {
+				text: "What is the creditor reference?"
+			},
+			id: "creditor-reference",
+			name: "creditorReference",
+			hint: {
+				text: "Leave this blank if no reference is available."
+			}
+		}) }}
+	
+		
+		{{ govukInput({
+			label: {
+				text: "What is the password?"
+			},
+			id: "password",
+			name: "password",
+			hint: {
+				text: "Leave this blank if no password is available."
+			}
+		}) }}		
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

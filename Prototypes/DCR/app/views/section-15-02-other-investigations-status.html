@@ -1,0 +1,56 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 15 – Director Conduct – Other Investigations - Investigations Status</h1>
+    <form class="form" action="/existingInvestigations-answer" method="post">
+
+      {{ govukRadios({
+        name: "existingInvestigations",
+        value: data['existingInvestigations'],
+        fieldset: {
+          legend: {
+            text: "Are there any existing investigations or proceedings into these matters?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "uninvestigatedBreaches",
+        value: data['uninvestigatedBreaches'],
+        fieldset: {
+          legend: {
+            text: "Have you identified any potential criminal, statutory, or regulatory breaches that are not currently being investigated by regulators or the police?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

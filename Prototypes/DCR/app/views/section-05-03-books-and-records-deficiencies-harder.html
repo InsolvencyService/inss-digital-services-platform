@@ -1,0 +1,55 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">
+      Section 5 - Books and Records - Difficulty With Deficiencies
+    </h1>
+
+    <form class="form" action="/deficienciesHarder-answer" method="post">
+
+      {{ govukRadios({
+        name: "deficienciesHarder",
+        value: data['deficienciesHarder'],
+        fieldset: {
+          legend: {
+            text: "Have deficiencies in the books and records made it harder to administer the insolvency?"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

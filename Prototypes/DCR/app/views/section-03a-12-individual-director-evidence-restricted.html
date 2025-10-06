@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 3 – Director Details - Evidence Acted Whilst Restricted</h1>
+
+    <form class="form" action="/section-03a-13-individual-director-further-information" method="post">
+
+      {{ govukCheckboxes({
+        name: "evidenceTypesRestricted",
+        fieldset: {
+          legend: { text: "What evidence shows this person acted as a director while bankrupt, disqualified, or otherwise restricted?" }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "companyBooks", text: "Company books" },
+          { value: "employees", text: "Employees" },
+          { value: "companyAgent", text: "Company agent" },
+          { value: "bank", text: "Bank" },
+          { value: "creditorsSuppliers", text: "Creditors or suppliers" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

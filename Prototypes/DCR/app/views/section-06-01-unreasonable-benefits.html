@@ -1,0 +1,54 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 6 – Director Conduct – Unreasonable Benefits</h1>
+
+    <form class="form" action="/unreasonableBenefitsEvidence-answer" method="post">
+
+      {{ govukRadios({
+        name: "unreasonableBenefitsEvidence",
+        value: data['unreasonableBenefitsEvidence'],
+        fieldset: {
+          legend: {
+            text: "Is there evidence that a director benefited unreasonably or excessively from the company’s trading?"
+          }
+        },
+        items: [
+          { 
+			value: "yes",
+			text: "Yes" 
+		  },
+          { 
+			value: "no", 
+			text: "No" 
+		  }
+        ]
+      }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

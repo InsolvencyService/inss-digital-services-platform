@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 9 – Director Conduct – Tax Affairs - Percentage of Liabilities Owed to HMRC</h1>
+
+    <form class="form" action="/hmrcOverHalfLiabilities-answer" method="post">
+
+      {{ govukRadios({
+        name: "hmrcOverHalfLiabilities",
+        value: data['hmrcOverHalfLiabilities'],
+        fieldset: {
+          legend: {
+            text: "Is the amount owed to HMRC more than 50% of the company’s total liabilities?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

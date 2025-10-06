@@ -1,0 +1,47 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 3 – Corporate Director - Details</h1>
+
+    <form class="form" action="/section-03b-02-corporate-director-contact-details" method="post">
+
+      {{ govukInput({
+        label: { text: "Name of corporate director" },
+        id: "corporate-name",
+        name: "corporateName",
+        spellcheck: false
+      }) }}
+
+      {{ govukRadios({
+        name: "registeredOverseas",
+        value: data['registeredOverseas'],
+        fieldset: { legend: { text: "Is this corporate body registered overseas?" } },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

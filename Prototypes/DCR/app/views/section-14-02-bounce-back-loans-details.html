@@ -1,0 +1,141 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 14 – Director Conduct – Bounce Back Loans - Details</h1>
+    <form class="form" action="/section-15-01-other-investigations" method="post">
+
+      {{ govukRadios({
+        name: "multipleBBLs",
+        value: data['multipleBBLs'],
+        fieldset: {
+          legend: {
+            text: "Did the company receive more than one Bounce Back Loan?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "cbilsBeforeBBL",
+        value: data['cbilsBeforeBBL'],
+        fieldset: {
+          legend: {
+            text: "Did the company receive a Coronavirus Business Interruption Loan before applying for a Bounce Back Loan?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "incorpBefore2019DormantToMar2020",
+        value: data['incorpBefore2019DormantToMar2020'],
+        fieldset: {
+          legend: {
+            text: "Was the company incorporated before 1 January 2019 but filed dormant accounts up to 1 March 2020?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "incorporatedAndTradingByMar2020",
+        value: data['incorporatedAndTradingByMar2020'],
+        fieldset: {
+          legend: {
+            text: "Was the company incorporated and trading by 1 March 2020?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "turnoverOverstatedOver25",
+        value: data['turnoverOverstatedOver25'],
+        fieldset: {
+          legend: {
+            text: "If turnover was overstated, was it overstated by more than 25%?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" },
+          { value: "notApplicable", text: "Not applicable" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "lumpSumsOrConnectedPayments",
+        value: data['lumpSumsOrConnectedPayments'],
+        fieldset: {
+          legend: {
+            text: "Did the director withdraw significant lump sums of the Bounce Back Loan, or make significant payments to a connected party shortly after it was received?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "bblRepaymentsMade",
+        value: data['bblRepaymentsMade'],
+        fieldset: {
+          legend: {
+            text: "Has the company made any repayments on the Bounce Back Loan?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "bblOver40001",
+        value: data['bblOver40001'],
+        fieldset: {
+          legend: {
+            text: "Did the company receive a Bounce Back Loan of £40,001 or more?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

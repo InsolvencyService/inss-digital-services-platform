@@ -1,0 +1,64 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 8 – Director Conduct – Detrimental Transactions - Further Information </h1>
+
+    <form class="form" action="/section-09-01-tax-affairs" method="post">
+
+      {{ govukCheckboxes({
+        name: "treatedBetter",
+        fieldset: {
+          legend: {
+            text: "Who was treated better?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "connected", text: "Connected parties" },
+          { value: "unconnected", text: "Unconnected parties" },
+          { value: "uncertain", text: "Uncertain" }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        name: "treatedWorse",
+        fieldset: {
+          legend: {
+            text: "Who was treated worse?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "hmrc", text: "HMRC" },
+          { value: "tradeExpense", text: "Trade and expense creditors" },
+          { value: "bankSecured", text: "Bank or secured  lender" },
+          { value: "customers", text: "Customers" },
+          { value: "employeesPension", text: "Employees (including pension schemes)" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

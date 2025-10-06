@@ -1,0 +1,205 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">
+      Section 5 - Books and Records - Further Information
+    </h1>
+
+    <form class="form" action="/section-06-01-unreasonable-benefits" method="post">
+
+      {{ govukCheckboxes({
+        name: "unresolvedMatters",
+        fieldset: {
+          legend: {
+            text: "What matters have you been unable to resolve because of the deficiencies in the records?"
+          }
+        },
+        hint: {
+          text: "Select all that apply"
+        },
+        items: [
+          {
+            value: "debtorCollections",
+            text: "Debtor collections"
+          },
+          {
+            value: "assetOwnership",
+            text: "Asset ownership"
+          },
+          {
+            value: "assetDisposal",
+            text: "Asset disposal"
+          },
+          {
+            value: "unexplainedTransactions",
+            text: "Unexplained transactions"
+          },
+          {
+            value: "cashWithdrawals",
+            text: "Cash withdrawals"
+          },
+          {
+            value: "directorsLoanAccount",
+            text: "Director’s loan account"
+          },
+          {
+            value: "creditorClaims",
+            text: "Creditor claims"
+          },
+          {
+            value: "other",
+            text: "Other"
+          }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "amountDelivered",
+        value: data['amountDelivered'],
+        fieldset: {
+          legend: {
+            text: "How much of the company’s books and records have been delivered?"
+          }
+        },
+        items: [
+          {
+            value: "none",
+            text: "None"
+          },
+          {
+            value: "some",
+            text: "Some"
+          },
+          {
+            value: "mostImportantOmissions",
+            text: "Most, but with important omissions"
+          }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "everKeptRecords",
+        value: data['everKeptRecords'],
+        fieldset: {
+          legend: {
+            text: "Has the company ever kept records that explain its transactions?"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          },
+          {
+            value: "uncertain",
+            text: "Uncertain"
+          }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "gapAccountsTrading",
+        value: data['gapAccountsTrading'],
+        fieldset: {
+          legend: {
+            text: "What is the gap between the last available accounts (including management accounts) and the end of trading?"
+          }
+        },
+        items: [
+          {
+            value: "1to3",
+            text: "1 to 3 months"
+          },
+          {
+            value: "4to6",
+            text: "4 to 6 months"
+          },
+          {
+            value: "7to12",
+            text: "7 to 12 months"
+          },
+          {
+            value: "over12",
+            text: "Over 12 months"
+          },
+          {
+            value: "neverFiledOrPrepared",
+            text: "Never filed or prepared"
+          }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "transactionsIdentified",
+        value: data['transactionsIdentified'],
+        fieldset: {
+          legend: {
+            text: "Can all the company’s transactions with directors and connected parties be identified?"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          },
+          {
+            value: "uncertain",
+            text: "Uncertain"
+          }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "attemptsRecorded",
+        value: data['attemptsRecorded'],
+        fieldset: {
+          legend: {
+            text: "Have you documented attempts to collect the company’s records, including electronic records?"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No"
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

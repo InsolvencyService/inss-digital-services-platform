@@ -1,0 +1,89 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 4 - Company Insolvency - Majority Creditor
+      </h1>
+
+      <form class="form" action="/section-04-03-company-insolvency-creditor-payments" method="post">
+
+		{{ govukRadios({
+			name: "percentageDeficiency",
+			fieldset: {
+				legend: {
+					text: "What percentage of the total deficiency is this?"
+				}
+			},
+			items: [
+				{
+				value: "51-to-75",
+				text: "51 to 75%"
+				},
+				{
+				value: "76-to-90",
+				text: "76 to 90%"
+				},
+				{
+				value: "91-to-100",
+				text: "91 to 100%"
+				}
+			]
+		}) }}
+		
+		{{ govukRadios({
+			name: "whoMajority",
+			fieldset: {
+				legend: {
+					text: "Who is the majority creditor?"
+				}
+			},
+			items: [
+				{
+				value: "hmrc",
+				text: "HMRC"
+				},
+				{
+				value: "tradeAndExpense",
+				text: "Trade and expense creditors"
+				},
+				{
+				value: "Banks",
+				text: "Banks"
+				},
+				{
+				value: "Investors",
+				text: "Investors"
+				},
+				{
+				value: "directorsConnectedParties",
+				text: "Directors or connected parties"
+				}
+			]
+		}) }}
+
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

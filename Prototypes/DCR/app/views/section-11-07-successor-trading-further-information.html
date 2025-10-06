@@ -1,0 +1,71 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 11 – Director Conduct – Successor Trading - Further Information</h1>
+    <form class="form" action="/section-12-01-customer-treatment" method="post">
+
+      {{ govukRadios({
+        name: "businessPlanPrepared",
+        value: data['businessPlanPrepared'],
+        fieldset: {
+          legend: {
+            text: "Was a business plan prepared?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" },
+          { value: "uncertain", text: "Uncertain" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "similarTradingStyle",
+        value: data['similarTradingStyle'],
+        fieldset: {
+          legend: {
+            text: "Did this company use the same or a similar trading style as the earlier failed companies?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "section216ExceptionsApply",
+        value: data['section216ExceptionsApply'],
+        fieldset: {
+          legend: {
+            text: "Do any of the Section 216 Insolvency Act exceptions apply?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

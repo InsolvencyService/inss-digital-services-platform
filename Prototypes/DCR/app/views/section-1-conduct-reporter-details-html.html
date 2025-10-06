@@ -1,0 +1,125 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Report Contact Details
+      </h1>
+
+      <form class="form" action="/section-2-01-company-details-dates" method="post">
+
+
+		<div class="govuk-form-group">
+			<label class="govuk-label" for="full-name">
+			Name of contact for this report
+			</label>
+		<input class="govuk-input" id="full-name" name="fullName" type="text" spellcheck="false" autocomplete="name">
+		</div>
+		
+		<div class="govuk-form-group">
+			<label class="govuk-label" for="phone-number">
+			Telephone number for the contact of this report
+			</label>
+		<input class="govuk-input govuk-input--width-20" id="phone-number" name="phoneNumber" type="tel" autocomplete="tel">
+		</div>
+		
+		<div class="govuk-form-group">
+			<label class="govuk-label" for="email">
+			Email address for the contact of this report
+			</label>
+		<input class="govuk-input" id="email" name="email" type="email" spellcheck="false" aria-describedby="email-hint" autocomplete="email">
+		</div>
+		
+		<div class="govuk-form-group">
+			<fieldset class="govuk-fieldset" role="group" aria-describedby="ip-appointment-hint">
+				<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+					<label class="govuk-label">
+						Insolvency Practitioner Appointment Date
+					</label>
+				</legend>
+				<div id="ip-appointment-hint" class="govuk-hint">
+					For example, 27 3 2024
+				</div>
+				<div class="govuk-date-input" id="ip-appointment">
+					<div class="govuk-date-input__item">
+						<div class="govuk-form-group">
+							<label class="govuk-label govuk-date-input__label" for="ip-appointment-day">
+							Day
+							</label>
+							<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="ip-appointment-day" name="ip-appointment-day" type="text" inputmode="numeric">
+						</div>
+					</div>
+					<div class="govuk-date-input__item">
+						<div class="govuk-form-group">
+							<label class="govuk-label govuk-date-input__label" for="ip-appointment-month">
+							Month
+							</label>
+							<input class="govuk-input govuk-date-input__input govuk-input--width-2" id="ip-appointment-month" name="ip-appointment-month" type="text" inputmode="numeric">
+						</div>
+					</div>
+					<div class="govuk-date-input__item">
+						<div class="govuk-form-group">
+							<label class="govuk-label govuk-date-input__label" for="ip-appointment-year">
+							Year
+							</label>
+							<input class="govuk-input govuk-date-input__input govuk-input--width-4" id="ip-appointment-year" name="ip-appointment-year" type="text" inputmode="numeric">
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		
+		<div class="govuk-form-group">
+			<label class="govuk-label" for="creditors-report">
+				Internet address for report to creditors
+			</label>
+		<div id="event-name-hint" class="govuk-hint">
+			If available
+		</div>
+			<input class="govuk-input" id="creditors-report" name="creditorsReport" type="text" aria-describedby="creditors-report-hint">
+		</div>
+		
+		<div class="govuk-form-group">
+			<label class="govuk-label" for="creditor-reference">
+				Creditor reference
+			</label>
+			<div id="event-name-hint" class="govuk-hint">
+			If available
+			</div>
+			<input class="govuk-input" id="creditor-reference" name="creditorReference" type="text" aria-describedby="creditor-reference-hint">
+		</div>		
+
+		<div class="govuk-form-group">
+			<label class="govuk-label" for="password">
+				Password
+			</label>
+			<div id="event-name-hint" class="govuk-hint">
+			If available
+			</div>
+			<input class="govuk-input" id="password" name="password" type="text" aria-describedby="password-hint">
+		</div>		
+
+		<button type="submit" class="govuk-button" data-module="govuk-button">
+			Save and continue
+		</button>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

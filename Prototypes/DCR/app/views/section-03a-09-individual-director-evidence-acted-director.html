@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 3 – Individual Director - Evidence Acted as Director</h1>
+
+    <form class="form" action="/section-03a-10-individual-director-third-failure" method="post">
+
+      {{ govukCheckboxes({
+        name: "evidenceTypesActedDirector",
+        fieldset: {
+          legend: { text: "What evidence shows this person acted as a director?" }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "companyBooks", text: "Company books" },
+          { value: "employees", text: "Employees" },
+          { value: "companyAgent", text: "Company agent" },
+          { value: "bank", text: "Bank" },
+          { value: "creditorsSuppliers", text: "Creditors or suppliers" },
+          { value: "otherIncludingAdmission", text: "Other (including admission by the person)" }
+        ]
+      }) }}
+
+      {{ govukDateInput({
+        id: "acting-director-start",
+        namePrefix: "acting-director-start",
+        fieldset: {
+          legend: { text: "Date they started acting as a director (if known)" }
+        }
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

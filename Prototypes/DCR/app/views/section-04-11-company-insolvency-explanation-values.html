@@ -1,0 +1,73 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 4 - Company Insolvency - Directors Explanation and Company Deficiency
+      </h1>
+
+      <form class="form" action="/companyDeficiency-answer" method="post">
+
+		{{ govukRadios({
+			name: "failedExplanation",
+			fieldset: {
+				legend: {
+					text: "Is there evidence that contradicts the directors’ explanation of why the company failed?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+		
+		{{ govukRadios({
+			name: "companyDeficiency",
+			value: data['companyDeficiency'],
+			fieldset: {
+				legend: {
+					text: "Is the company’s deficiency more than £75,000?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}		
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

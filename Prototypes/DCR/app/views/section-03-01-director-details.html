@@ -1,0 +1,51 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 3. Director Details Overview
+      </h1>
+
+      <form class="form" action="/addDirector-answer" method="post">
+
+        <p>
+          Placeholder until design around managing directors has been discussed
+        </p>
+		
+		{{ govukRadios({
+			name: "addDirector",
+			value: data['addDirector'],
+			fieldset: {
+				legend: { text: "Which type of director are you adding?" }
+			},
+			items: [
+				{ value: "individual", text: "Individual" },
+				{ value: "corporate", text: "Corporate" },
+				{ value: "noadditional", text: "No Additional Directors" }
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

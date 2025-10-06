@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 7 – Director Conduct – Insolvent Trading - New Funds</h1>
+
+    <form class="form" action="/introducedFundsOrReducedBenefits-answer" method="post">
+
+      {{ govukRadios({
+        name: "introducedFundsOrReducedBenefits",
+        value: data['introducedFundsOrReducedBenefits'],
+        fieldset: {
+          legend: {
+            text: "Once insolvent, did the directors introduce new funds or reduce their own benefits?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

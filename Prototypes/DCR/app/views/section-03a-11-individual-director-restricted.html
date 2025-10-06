@@ -1,0 +1,40 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 3 – Director Details - Restricted From Being Director</h1>
+
+    <form class="form" action="/actedWhileRestricted-answer" method="post">
+
+      {{ govukRadios({
+        name: "actedWhileRestricted",
+        value: data['actedWhileRestricted'],
+        fieldset: {
+          legend: { text: "Whilst the company was trading, is there evidence this person acted as a director while bankrupt, disqualified, or otherwise restricted?" }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

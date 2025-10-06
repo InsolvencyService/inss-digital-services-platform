@@ -1,0 +1,64 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 3 – Director Details - Further Information</h1>
+
+    <form class="form" action="/section-03-01-director-details" method="post">
+
+      {{ govukRadios({
+        name: "personalGuarantee",
+        value: data['personalGuarantee'],
+        fieldset: {
+          legend: { text: "Has the director given a personal guarantee for any of the company’s debts?" }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "cooperatedWithEnquiries",
+        value: data['cooperatedWithEnquiries'],
+        fieldset: {
+          legend: { text: "Has the director co-operated with your enquiries?" }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "seriousIllHealth",
+        value: data['seriousIllHealth'],
+        fieldset: {
+          legend: { text: "Are you aware of the director suffering from any serious ill-health, either now or while the company was trading?" }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

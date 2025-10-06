@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 3 – Individual Director - Appointment Dates at Companies House</h1>
+
+    <form class="form" action="/section-03a-10-individual-director-third-failure" method="post">
+
+      {{ govukDateInput({
+        id: "appointment-date",
+        namePrefix: "appointment-date",
+        fieldset: {
+          legend: { text: "Date of appointment" }
+        }
+      }) }}
+
+      {{ govukDateInput({
+        id: "resignation-date",
+        namePrefix: "resignation-date",
+        fieldset: {
+          legend: { text: "Date of resignation (if applicable)" }
+        }
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

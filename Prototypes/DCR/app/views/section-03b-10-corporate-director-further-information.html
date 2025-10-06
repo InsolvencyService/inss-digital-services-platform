@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 3 – Corporate Director - Further Information</h1>
+
+    <form class="form" action="/section-03-01-director-details" method="post">
+
+      {{ govukRadios({
+        name: "crossCompanyGuarantee",
+        value: data['crossCompanyGuarantee'],
+        fieldset: { legend: { text: "Has this corporate body given a cross-company guarantee for any of the company’s debts?" } },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" },
+          { value: "not-known", text: "Not known" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "corpCooperated",
+        value: data['corpCooperated'],
+        fieldset: { legend: { text: "Has this corporate body co-operated with your enquiries?" } },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" },
+          { value: "not-applicable", text: "Not applicable" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

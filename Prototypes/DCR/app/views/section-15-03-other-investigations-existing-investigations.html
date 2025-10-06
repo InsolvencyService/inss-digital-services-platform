@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 15 – Director Conduct – Other Investigations - Existing Investigations</h1>
+    <form class="form" action="/report-overview" method="post">
+
+      {{ govukCheckboxes({
+        name: "whoIsTakingAction",
+        fieldset: {
+          legend: {
+            text: "Who is taking the existing action?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "police", text: "Police" },
+          { value: "sfo", text: "Serious Fraud Office" },
+          { value: "hmrc", text: "HMRC" },
+          { value: "fca", text: "Financial Conduct Authority" },
+          { value: "homeOffice", text: "Home Office" },
+          { value: "charityCommission", text: "Charity Commission" },
+          { value: "tradingStandards", text: "Trading Standards" },
+          { value: "otherGovDept", text: "Other government department" },
+          { value: "pensionsRegulator", text: "Pensions Regulator" },
+          { value: "otherThirdPartyRegulator", text: "Other third-party regulator" }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        name: "whatIsActionAbout",
+        fieldset: {
+          legend: {
+            text: "What is this action about?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "illegalWorkers", text: "Employing illegal workers" },
+          { value: "nmwBreaches", text: "National minimum wage breaches" },
+          { value: "taxAvoidance", text: "Tax avoidance" },
+          { value: "tradingWithoutLicences", text: "Trading without proper licences" },
+          { value: "amlBreaches", text: "Breaches of anti-money laundering regulations" },
+          { value: "scamOperations", text: "Scam operations" },
+          { value: "environmentalBreaches", text: "Environmental breaches" },
+          { value: "healthAndSafety", text: "Health and safety breaches" },
+          { value: "pensionIssues", text: "Pension issues" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

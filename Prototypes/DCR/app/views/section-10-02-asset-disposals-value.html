@@ -1,0 +1,53 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 10 – Director Conduct – Asset Disposals - Value of Assets Disposed</h1>
+    <form class="form" action="/whenValueAssetDisposals-answer" method="post">
+
+      {{ govukRadios({
+        name: "whenValueAssetDisposals",
+        value: data['whenValueAssetDisposals'],
+        fieldset: {
+          legend: {
+            text: "When did the asset disposals take place, and what was their value?"
+          }
+        },
+        items: [
+          {
+            value: "within3monthsOver10k",
+            text: "Within the last 3 months of trading or after insolvency, and worth more than £10,000"
+          },
+          {
+            value: "within6monthsOver25k",
+            text: "Within the last 6 months of trading or after insolvency, and worth more than £25,000"
+          },
+          {
+            value: "within12monthsOver50k",
+            text: "Within the last 12 months of trading or after insolvency, and worth more than £50,000"
+          },
+          { value: "noneOfTheAbove", text: "None of the above" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

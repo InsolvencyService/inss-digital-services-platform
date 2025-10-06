@@ -1,0 +1,91 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Section 2 - Company Details - Records
+      </h1>
+
+      <form class="form" action="/section-03-01-director-details" method="post">
+
+		{{ govukRadios({
+			name: "electronic-records",
+			fieldset: {
+				legend: {
+					text: "Did the company keep its records electronically, including in cloud storage?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+	
+		{{ govukRadios({
+			name: "records-available",
+			fieldset: {
+				legend: {
+					text: "Are the company’s records still available?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+		
+		{{ govukRadios({
+			name: "protected",
+			fieldset: {
+				legend: {
+					text: "Have you made secure copies of the company’s records, or protected them with a password?"
+				}
+			},
+			items: [
+				{
+				value: "yes",
+				text: "Yes"
+				},
+				{
+				value: "no",
+				text: "No"
+				}
+			]
+		}) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

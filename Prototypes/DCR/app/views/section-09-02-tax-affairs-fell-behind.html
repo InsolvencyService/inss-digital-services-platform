@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">Section 9 – Director Conduct – Tax Affairs - When Company Fell Behind</h1>
+
+    <form class="form" action="/fellBehindHMRC6m-answer" method="post">
+
+      {{ govukRadios({
+        name: "fellBehindHMRC6m",
+        value: data['fellBehindHMRC6m'],
+        fieldset: {
+          legend: {
+            text: "Did the company fall behind with its payments to HMRC more than 6 months before insolvency?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

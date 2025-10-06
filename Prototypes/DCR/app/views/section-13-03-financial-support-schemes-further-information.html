@@ -1,0 +1,123 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 13 – Director Conduct – Financial Support Schemes - Further Information</h1>
+    <form class="form" action="/section-14-01-bounce-back-loans" method="post">
+
+      {{ govukCheckboxes({
+        name: "schemeMisuseTypes",
+        fieldset: {
+          legend: {
+            text: "How did the company misuse the financial support scheme?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "falseInfo", text: "False information on application" },
+          { value: "misuse", text: "Misuse of funding" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        name: "fundingBasis",
+        fieldset: {
+          legend: {
+            text: "On what basis was the funding paid?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "grant", text: "Grant" },
+          { value: "loan", text: "Loan" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        name: "fundingProvider",
+        fieldset: {
+          legend: {
+            text: "Who provided the funding?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "centralGovernment", text: "Central government" },
+          { value: "regionalLocalGovernment", text: "Regional or local government" },
+          { value: "financialInstitution", text: "Financial institution" },
+          { value: "crowdfunding", text: "Crowdfunding" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukCheckboxes({
+        name: "fundingType",
+        fieldset: {
+          legend: {
+            text: "What type of funding did the company receive?"
+          }
+        },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "startupGrant", text: "Start-up grant" },
+          { value: "startupLoan", text: "Start-up loan" },
+          { value: "smeGrant", text: "Small business grant" },
+          { value: "smeLoan", text: "Small business loan" },
+          { value: "industry", text: "Industry-based funding" },
+          { value: "covid", text: "Covid support scheme" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "covidSupportOnlyBBL",
+        value: data['covidSupportOnlyBBL'],
+        fieldset: {
+          legend: {
+            text: "If the company received Covid support, was this only a Bounce Back Loan?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" },
+          { value: "uncertain", text: "Uncertain" }
+        ]
+      }) }}
+
+      {{ govukRadios({
+        name: "providerComplaints",
+        value: data['providerComplaints'],
+        fieldset: {
+          legend: {
+            text: "Have you received any complaints from the funding provider?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

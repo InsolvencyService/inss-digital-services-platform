@@ -1,0 +1,42 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+  Question page template – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+  text: "Back",
+  href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Section 11 – Director Conduct – Successor Trading</h1>
+    <form class="form" action="/similarToPreviousFailures-answer" method="post">
+
+      {{ govukRadios({
+        name: "similarToPreviousFailures",
+        value: data['similarToPreviousFailures'],
+        fieldset: {
+          legend: {
+            text: "Did this company trade in the same, or a very similar, way to one or more previous failed companies?"
+          }
+        },
+        items: [
+          { value: "yes", text: "Yes" },
+          { value: "no", text: "No" }
+        ]
+      }) }}
+
+      {{ govukButton({ text: "Continue" }) }}
+
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}
