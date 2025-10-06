@@ -28,7 +28,8 @@ jobs:
         working-directory: 'Prototypes/DCR'
 
       - name: Zip app for deployment
-        run: zip -r node-app.zip .
+        run: |
+          zip -r node-app.zip .
         working-directory: 'Prototypes/DCR'
 
       - name: Upload artifact for deployment job
@@ -49,6 +50,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+
+      - name: List downloaded files (debug)
+        run: ls -R
 
       - name: Login to Azure
         uses: azure/login@v2
