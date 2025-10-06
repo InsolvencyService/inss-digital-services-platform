@@ -11,8 +11,12 @@ VALUES (@IdentityProviderId, 'One Login', 'https://oidc.integration.account.gov.
 -- =========================================================================
 -- 2. Assign the Applications
 -- =========================================================================
+DECLARE @ApplicationId_UM UNIQUEIDENTIFIER = NEWID();
 DECLARE @ApplicationId_DCRS UNIQUEIDENTIFIER = NEWID();
 DECLARE @ApplicationId_IPUS UNIQUEIDENTIFIER = NEWID();
+
+INSERT INTO [dbo].[Application] ([Id], [Name], [IdentityProviderId], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (@ApplicationId_UM, 'User Management', @IdentityProviderId, GETDATE(), SUSER_SNAME(), NULL, NULL);
 
 INSERT INTO [dbo].[Application] ([Id], [Name], [IdentityProviderId], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES (@ApplicationId_DCRS, 'Director Conduct Reporting Service', @IdentityProviderId, GETDATE(), SUSER_SNAME(), NULL, NULL);
@@ -24,8 +28,16 @@ VALUES (@ApplicationId_IPUS, 'IP Upload Service', @IdentityProviderId, GETDATE()
 -- =========================================================================
 -- 3. Assign the Roles
 -- =========================================================================
+DECLARE @RoleId_InsolvencyAdministrator UNIQUEIDENTIFIER = NEWID();
+DECLARE @RoleId_OrganisationAdministrator UNIQUEIDENTIFIER = NEWID();
 DECLARE @RoleId_OfficialReceiver UNIQUEIDENTIFIER = NEWID();
 DECLARE @RoleId_InsolvencyPractitioner UNIQUEIDENTIFIER = NEWID();
+
+INSERT INTO [dbo].[Role] ([Id], [Name], [Description], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (@RoleId_InsolvencyAdministrator, 'Insolvency Administrator', 'The Insolvency Administrator can assign organisation administrators.', GETDATE(), SUSER_SNAME(), NULL, NULL);
+
+INSERT INTO [dbo].[Role] ([Id], [Name], [Description], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (@RoleId_OrganisationAdministrator, 'Organisation Administrator', 'The Organisation Administrator can assign users to organisations.', GETDATE(), SUSER_SNAME(), NULL, NULL);
 
 INSERT INTO [dbo].[Role] ([Id], [Name], [Description], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES (@RoleId_OfficialReceiver, 'Official Receiver', 'Official Receiver role with full access.', GETDATE(), SUSER_SNAME(), NULL, NULL);
@@ -38,6 +50,14 @@ VALUES (@RoleId_InsolvencyPractitioner, 'Insolvency Practitioner', 'Insolvency P
 -- 4. Link the Applications to the Roles
 -- =========================================================================
 INSERT INTO [dbo].[ApplicationRole] ([Id], [ApplicationId], [RoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (NEWID(), @ApplicationId_UM, @RoleId_InsolvencyAdministrator, GETDATE(), SUSER_SNAME(), NULL, NULL);
+-- User Management has an Insolvency Administrator role.
+
+INSERT INTO [dbo].[ApplicationRole] ([Id], [ApplicationId], [RoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (NEWID(), @ApplicationId_DCRS, @RoleId_OrganisationAdministrator, GETDATE(), SUSER_SNAME(), NULL, NULL);
+-- DCRS has an Organisation Administrator role.
+
+INSERT INTO [dbo].[ApplicationRole] ([Id], [ApplicationId], [RoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES (NEWID(), @ApplicationId_DCRS, @RoleId_InsolvencyPractitioner, GETDATE(), SUSER_SNAME(), NULL, NULL);
 -- DCRS has an Insolvency Practitioner role.
 
@@ -49,12 +69,20 @@ INSERT INTO [dbo].[ApplicationRole] ([Id], [ApplicationId], [RoleId], [Created],
 VALUES (NEWID(), @ApplicationId_IPUS, @RoleId_InsolvencyPractitioner, GETDATE(), SUSER_SNAME(), NULL, NULL);
 -- IPUS has an Insolvency Practitioner role.
 
+INSERT INTO [dbo].[ApplicationRole] ([Id], [ApplicationId], [RoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (NEWID(), @ApplicationId_IPUS, @RoleId_OrganisationAdministrator, GETDATE(), SUSER_SNAME(), NULL, NULL);
+-- IPUS has an Organisation Administrator role.
+
 -- =========================================================================
 -- 5. Assign the Organisations
 -- =========================================================================
+DECLARE @OrganisationId_InsolvencyService UNIQUEIDENTIFIER = NEWID();
 DECLARE @OrganisationId_AcmeFinancialGroup UNIQUEIDENTIFIER = NEWID();
 DECLARE @OrganisationId_UnityCreditServices UNIQUEIDENTIFIER = NEWID();
 DECLARE @OrganisationId_BrightFutureTrust UNIQUEIDENTIFIER = NEWID();
+
+INSERT INTO [dbo].[Organisation] ([Id], [Name], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (@OrganisationId_InsolvencyService, 'The Insolvency Service', GETDATE(), SUSER_SNAME(), NULL, NULL);
 
 INSERT INTO [dbo].[Organisation] ([Id], [Name], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES (@OrganisationId_AcmeFinancialGroup, 'Acme Financial Group', GETDATE(), SUSER_SNAME(), NULL, NULL);
@@ -102,6 +130,10 @@ VALUES (@UserId_WayneB, NULL, 'Wayne', 'Busby', 'wayne.busby@insolvency.gov.uk',
 -- 7. Link the Users to the Organisations
 -- =========================================================================
 INSERT INTO [dbo].[OrganisationUser] ([Id], [UserId], [OrganisationId], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (NEWID(), @UserId_DaveC, @OrganisationId_InsolvencyService, GETDATE(), SUSER_SNAME(), NULL, NULL);
+--- Dave Cook works at the Insolvency Service
+
+INSERT INTO [dbo].[OrganisationUser] ([Id], [UserId], [OrganisationId], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES (NEWID(), @UserId_DaveC, @OrganisationId_AcmeFinancialGroup, GETDATE(), SUSER_SNAME(), NULL, NULL);
 --- Dave Cook works at Acme Financial Group
 
@@ -127,6 +159,13 @@ VALUES (NEWID(), @UserId_WayneB, @OrganisationId_UnityCreditServices, GETDATE(),
 -- =========================================================================
 INSERT INTO [dbo].[OrganisationUserApplicationRole] ([Id], [OrganisationUserId], [ApplicationRoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES (NEWID(), 
+		(SELECT TOP 1 [Id] FROM [dbo].[OrganisationUser] WHERE [UserId] = @UserId_DaveC AND [OrganisationId] = @OrganisationId_InsolvencyService), 
+		(SELECT TOP 1 [Id] FROM [dbo].[ApplicationRole] WHERE [ApplicationId] = @ApplicationId_UM AND [RoleId] = @RoleId_InsolvencyAdministrator), 
+		GETDATE(), SUSER_SNAME(), NULL, NULL);
+		-- Dave Cook works at The Insolvency Service and has the Insolvency Administrator Role within the User Management application
+
+INSERT INTO [dbo].[OrganisationUserApplicationRole] ([Id], [OrganisationUserId], [ApplicationRoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (NEWID(), 
 		(SELECT TOP 1 [Id] FROM [dbo].[OrganisationUser] WHERE [UserId] = @UserId_DaveC AND [OrganisationId] = @OrganisationId_AcmeFinancialGroup), 
 		(SELECT TOP 1 [Id] FROM [dbo].[ApplicationRole] WHERE [ApplicationId] = @ApplicationId_DCRS AND [RoleId] = @RoleId_OfficialReceiver), 
 		GETDATE(), SUSER_SNAME(), NULL, NULL);
@@ -138,6 +177,13 @@ VALUES (NEWID(),
 		(SELECT TOP 1 [Id] FROM [dbo].[ApplicationRole] WHERE [ApplicationId] = @ApplicationId_IPUS AND [RoleId] = @RoleId_InsolvencyPractitioner), 
 		GETDATE(), SUSER_SNAME(), NULL, NULL);
 		-- Dave Cook works at Acme Financial Group and has the Insolvency Practitioner Role within the IP Upload Service
+
+INSERT INTO [dbo].[OrganisationUserApplicationRole] ([Id], [OrganisationUserId], [ApplicationRoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
+VALUES (NEWID(), 
+		(SELECT TOP 1 [Id] FROM [dbo].[OrganisationUser] WHERE [UserId] = @UserId_DaveC AND [OrganisationId] = @OrganisationId_BrightFutureTrust), 
+		(SELECT TOP 1 [Id] FROM [dbo].[ApplicationRole] WHERE [ApplicationId] = @ApplicationId_DCRS AND [RoleId] = @RoleId_OrganisationAdministrator), 
+		GETDATE(), SUSER_SNAME(), NULL, NULL);
+		-- Dave Cook works at Bright Future Trust and has the Organisation Administrator Role within the Director Conduct Reporting Service
 
 INSERT INTO [dbo].[OrganisationUserApplicationRole] ([Id], [OrganisationUserId], [ApplicationRoleId], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES (NEWID(), 
