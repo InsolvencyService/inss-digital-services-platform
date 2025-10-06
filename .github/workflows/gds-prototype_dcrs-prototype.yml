@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: ./prototypes/DCR
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,4 +52,5 @@ jobs:
           app-name: 'dcrs-prototype'
           slot-name: 'Production'
           package: .
+
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5C0488912AA047229306FF02D749E4EE }}
