@@ -57,6 +57,7 @@
     <Folder Include="Tables" />
     <Folder Include="Scripts" />
     <Folder Include="Scripts\PostDeployment" />
+    <Folder Include="Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeployment\Script.PostDeployment.sql" />
@@ -74,6 +75,7 @@
     <Build Include="Tables\OrganisationUser.sql" />
     <Build Include="Tables\ApplicationRole.sql" />
     <Build Include="Tables\OrganisationUserApplicationRole.sql" />
+    <None Include="Scripts\Useful Scripts.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\PostDeployment\TestData.sql">
@@ -82,5 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="INSS.Platform.UserManagement.Database.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Stored Procedures\EnsureUserIsRegistered.sql" />
+    <Build Include="Stored Procedures\GetUserOrganisationsApplicationsAndRoles.sql" />
   </ItemGroup>
 </Project>
