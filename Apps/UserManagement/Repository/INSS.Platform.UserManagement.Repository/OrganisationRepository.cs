@@ -88,7 +88,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error adding organisation with name {Name}", organisation.Name);
                 return false;
@@ -104,7 +105,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error updating organisation with ID {OrganisationId}", organisation.Id);
                 return false;
@@ -120,9 +122,87 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error deleting organisation with ID {OrganisationId}", organisation.Id);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> AddOrganisationUserAsync(OrganisationUser organisationUser)
+        {
+            try
+            {
+                _dbContext.OrganisationUser.Add(organisationUser);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error adding organisation user with user ID {UserId} organisation ID {OrganisationId}", organisationUser.UserId, organisationUser.OrganisationId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> OrganisationUserExistsAsync(Guid organisationId, Guid userId)
+        {
+            try
+            {
+                return await _dbContext.OrganisationUser.AnyAsync(ou => ou.OrganisationId == organisationId && ou.UserId == userId).ConfigureAwait(false);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error checking existence of organisation user with user ID {UserId} organisation ID {OrganisationId}", userId, organisationId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> RemoveOrganisationUserAsync(Guid organisationId, Guid userId)
+        {
+            try
+            {
+                OrganisationUser? organisationUser = await _dbContext.OrganisationUser
+                    .FirstOrDefaultAsync(ou => ou.OrganisationId == organisationId && ou.UserId == userId)
+                    .ConfigureAwait(false);
+
+                if (organisationUser == null)
+                {
+                    _logger.LogWarning("Organisation user not found with user ID {UserId} organisation ID {OrganisationId}", userId, organisationId);
+                    return false;
+                }
+
+                _dbContext.OrganisationUser.Remove(organisationUser);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error removing organisation user with user ID {UserId} organisation ID {OrganisationId}", userId, organisationId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> RemoveAllOrganisationUsersAsync(Guid organisationId)
+        {
+            try
+            {
+                IQueryable<OrganisationUser> organisationUsers = _dbContext.OrganisationUser.Where(ou => ou.OrganisationId == organisationId);
+                _dbContext.OrganisationUser.RemoveRange(organisationUsers);
+
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error removing all organisation users for organisation ID {OrganisationId}", organisationId);
                 return false;
             }
         }

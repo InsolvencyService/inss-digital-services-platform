@@ -27,6 +27,16 @@ namespace INSS.Platform.UserManagement.Repository
         Task<IEnumerable<Role>> GetRolesByOrganisationUserApplicationAsync(Guid organisationId, Guid userId, Guid applicationId);
 
         /// <summary>
+        /// Retrieves a collection of <see cref="Role"/> entities associated with the specified application.
+        /// </summary>
+        /// <param name="applicationId">The unique identifier of the application.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{Role}"/>
+        /// of roles matching the specified application.
+        /// </returns>
+        Task<IEnumerable<Role>> GetRolesByApplicationAsync(Guid applicationId);
+
+        /// <summary>
         /// Adds a new Role to the data store.
         /// </summary>
         /// <param name="Role">The <see cref="Role"/> to add.</param>

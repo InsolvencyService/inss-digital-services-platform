@@ -74,6 +74,23 @@ namespace INSS.Platform.UserManagement.Repository.Tests
             }
         }
 
+        internal static IEnumerable<OrganisationUser> GenerateOrganisationUsers(Guid organisationId, int userCount = 1)
+        {
+            for (int index = 0; index < userCount; index++)
+            {
+                yield return new OrganisationUser
+                {
+                    Id = Guid.NewGuid(),
+                    OrganisationId = organisationId,
+                    UserId = Guid.NewGuid(),
+                    Created = DateTime.UtcNow,
+                    CreatedBy = "UnitTestOrganisationUser",
+                    Modified = DateTime.UtcNow,
+                    ModifiedBy = "UnitTestOrganisationUser"
+                };
+            }
+        }
+
         internal static OrganisationUser GenerateOrganisationUser(Guid? organisationId = null, Guid? userId = null)
         {
             return new OrganisationUser
@@ -86,6 +103,23 @@ namespace INSS.Platform.UserManagement.Repository.Tests
                 Modified = DateTime.UtcNow,
                 ModifiedBy = "UnitTestOrganisationUser"
             };
+        }
+
+        internal static IEnumerable<ApplicationRole> GenerateApplicationRoles(Guid applicationId, int roleCount = 1)
+        {
+            for (int index = 0; index < roleCount; index++)
+            {
+                yield return new ApplicationRole
+                {
+                    Id = Guid.NewGuid(),
+                    ApplicationId = applicationId,
+                    RoleId = Guid.NewGuid(),
+                    Created = DateTime.UtcNow,
+                    CreatedBy = "UnitTestApplicationRole",
+                    Modified = DateTime.UtcNow,
+                    ModifiedBy = "UnitTestApplicationRole"
+                };
+            }
         }
 
         internal static ApplicationRole GenerateApplicationRole(Guid? applicationId = null, Guid? roleId = null)

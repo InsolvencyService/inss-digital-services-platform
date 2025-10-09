@@ -14,7 +14,6 @@ namespace INSS.Platform.UserManagement.Repository
         /// <returns>The <see cref="Application"/> if found; otherwise, <c>null</c>.</returns>
         Task<Application?> GetApplicationByIdAsync(Guid applicationId);
 
-
         /// <summary>
         /// Retrieves all <see cref="Application"/> entities from the data store.
         /// </summary>
@@ -48,5 +47,49 @@ namespace INSS.Platform.UserManagement.Repository
         /// </summary>
         /// <param name="Application">The <see cref="Application"/> to delete.</param>
         Task<bool> DeleteApplicationAsync(Application application);
+
+        /// <summary>
+        /// Adds a new <see cref="ApplicationRole"/> association to the data store.
+        /// </summary>
+        /// <param name="applicationRole">
+        /// The <see cref="ApplicationRole"/> entity representing the association between an application and a role to add.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation.
+        /// The task result contains <c>true</c> if the association was successfully added; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> AddApplicationRoleAsync(ApplicationRole applicationRole);
+
+        /// <summary>
+        /// Determines whether a specific role exists for the given application.
+        /// </summary>
+        /// <param name="applicationId">The unique identifier of the application.</param>
+        /// <param name="roleId">The unique identifier of the role.</param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation.
+        /// The task result contains <c>true</c> if the role exists for the application; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> ApplicationRoleExistsAsync(Guid applicationId, Guid roleId);
+
+        /// <summary>
+        /// Removes a specific role from the given application.
+        /// </summary>
+        /// <param name="applicationId">The unique identifier of the application.</param>
+        /// <param name="roleId">The unique identifier of the role to remove.</param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation.
+        /// The task result contains <c>true</c> if the role was successfully removed; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> RemoveApplicationRoleAsync(Guid applicationId, Guid roleId);
+
+        /// <summary>
+        /// Removes all roles associated with the given application.
+        /// </summary>
+        /// <param name="applicationId">The unique identifier of the application.</param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation.
+        /// The task result contains <c>true</c> if all roles were successfully removed; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> RemoveAllApplicationRolesAsync(Guid applicationId);
     }
 }

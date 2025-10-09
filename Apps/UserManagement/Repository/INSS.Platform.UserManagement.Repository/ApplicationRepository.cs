@@ -97,7 +97,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error adding application with name {Name}", application.Name);
                 return false;
@@ -113,7 +114,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error updating application with ID {ApplicationId}", application.Id);
                 return false;
@@ -129,9 +131,87 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error deleting application with ID {ApplicationId}", application.Id);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> AddApplicationRoleAsync(ApplicationRole applicationRole)
+        {
+            try
+            {
+                _dbContext.ApplicationRole.Add(applicationRole);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error adding organisation user with user ID {UserId} organisation ID {OrganisationId}", applicationRole.RoleId, applicationRole.RoleId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public Task<bool> ApplicationRoleExistsAsync(Guid applicationId, Guid roleId)
+        {
+            try
+            {
+                return _dbContext.ApplicationRole.AnyAsync(ar => ar.ApplicationId == applicationId && ar.RoleId == roleId);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error checking if role with ID {RoleId} exists for application with ID {ApplicationId}", roleId, applicationId);
+                return Task.FromResult(false);
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> RemoveApplicationRoleAsync(Guid applicationId, Guid roleId)
+        {
+            try
+            {
+                ApplicationRole? applicationRole = await _dbContext.ApplicationRole
+                    .FirstOrDefaultAsync(ar => ar.ApplicationId == applicationId && ar.RoleId == roleId)
+                    .ConfigureAwait(false);
+
+                if (applicationRole == null)
+                {
+                    _logger.LogWarning("Application role not found with role ID {RoleId} application ID {ApplicationId}", roleId, applicationId);
+                    return false;
+                }
+
+                _dbContext.ApplicationRole.Remove(applicationRole);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error removing application role with role ID {RoleId} application ID {ApplicationId}", roleId, applicationId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> RemoveAllApplicationRolesAsync(Guid applicationId)
+        {
+            try
+            {
+                IQueryable<ApplicationRole> applicationRoles = _dbContext.ApplicationRole.Where(ar => ar.ApplicationId == applicationId);
+                _dbContext.ApplicationRole.RemoveRange(applicationRoles);
+
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error removing all application roles for application ID {ApplicationId}", applicationId);
                 return false;
             }
         }

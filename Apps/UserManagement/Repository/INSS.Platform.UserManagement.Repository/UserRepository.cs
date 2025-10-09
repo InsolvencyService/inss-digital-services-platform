@@ -94,7 +94,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error adding user with email {Email}", user.Email);
                 return false;
@@ -110,7 +111,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error updating user with ID {UserId}", user.Id);
                 return false;
@@ -126,7 +128,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error deleting user with ID {UserId}", user.Id);
                 return false;

@@ -329,5 +329,138 @@ namespace INSS.Platform.UserManagement.Repository.Tests
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
+        [Fact]
+        public async Task ApplicationRoleExistsAsync_ReturnsTrue_WhenApplicationRoleExists()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            Role role = TestHelper.GenerateRoles().Single();
+            Application application = TestHelper.GenerateApplications().Single();
+            ApplicationRole ApplicationRole = TestHelper.GenerateApplicationRole(application.Id, role.Id);
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.Role.Add(role);
+            dbContext.Application.Add(application);
+            dbContext.ApplicationRole.Add(ApplicationRole);
+            dbContext.SaveChanges();
+
+            ApplicationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool applicationRoleExists = await repository.ApplicationRoleExistsAsync(application.Id, role.Id);
+
+            // Assert
+            applicationRoleExists.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ApplicationRoleExistsAsync_ReturnsFalse_WhenApplicationRoleNotExists()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            ApplicationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool applicationRoleExists = await repository.ApplicationRoleExistsAsync(Guid.NewGuid(), Guid.NewGuid());
+
+            // Assert
+            applicationRoleExists.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task RemoveApplicationRoleAsync_ReturnsTrue_WhenApplicationRoleIsRemoved()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            Role role = TestHelper.GenerateRoles().Single();
+            Application application = TestHelper.GenerateApplications().Single();
+            ApplicationRole ApplicationRole = TestHelper.GenerateApplicationRole(application.Id, role.Id);
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.Role.Add(role);
+            dbContext.Application.Add(application);
+            dbContext.ApplicationRole.Add(ApplicationRole);
+            dbContext.SaveChanges();
+
+            ApplicationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool result = await repository.RemoveApplicationRoleAsync(application.Id, role.Id);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeTrue();
+                dbContext.ApplicationRole.Count(ar => ar.ApplicationId == application.Id && ar.RoleId == role.Id).Should().Be(0);
+            }
+        }
+
+        [Fact]
+        public async Task RemoveApplicationRoleAsync_ReturnsFalse_ApplicationRoleNotFound()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            ApplicationRepository repository = new(_loggerMock.Object, dbContext);
+
+            Guid applicationId = Guid.NewGuid();
+            Guid roleId = Guid.NewGuid();
+
+            // Act
+            bool result = await repository.RemoveApplicationRoleAsync(applicationId, roleId);
+
+            // Assert
+            result.Should().BeFalse();
+            _loggerMock.Verify(
+                x => x.Log(
+                    LogLevel.Warning,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v is object && v.ToString()!.Contains($"Application role not found with role ID {roleId} application ID {applicationId}")),
+                    It.IsAny<SqlException>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveAllApplicationRolesAsync_ReturnsTrue_WhenApplicationRolesAreRemoved()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            Guid applicationId = Guid.NewGuid();
+            List<ApplicationRole> applicationRoles = TestHelper.GenerateApplicationRoles(applicationId, 3).ToList();
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.ApplicationRole.AddRange(applicationRoles);
+            dbContext.SaveChanges();
+
+            ApplicationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool result = await repository.RemoveAllApplicationRolesAsync(applicationId);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeTrue();
+                dbContext.ApplicationRole.Count(ar => ar.ApplicationId == applicationId).Should().Be(0);
+            }
+        }
     }
 }

@@ -156,6 +156,25 @@ namespace INSS.Platform.UserManagement.Repository.Tests
         }
 
         [Fact]
+        public async Task AddOrganisationUserAsync_ReturnsTrue_WhenOrganisationUserIsAdded()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+            OrganisationUser newOrganisationUser = TestHelper.GenerateOrganisationUser();
+
+            // Act
+            bool result = await repository.AddOrganisationUserAsync(newOrganisationUser);
+
+            // Assert
+            result.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task AddOrganisationAsync_ReturnsFalse_WhenSqlExceptionThrown()
         {
             // Arrange
@@ -301,6 +320,139 @@ namespace INSS.Platform.UserManagement.Repository.Tests
                     It.IsAny<SqlException>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+        }
+
+        [Fact]
+        public async Task OrganisationUserExistsAsync_ReturnsTrue_WhenOrganisationUserExists()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            User user = TestHelper.GenerateUsers().Single();
+            Organisation organisation = TestHelper.GenerateOrganisations().Single();
+            OrganisationUser organisationUser = TestHelper.GenerateOrganisationUser(organisation.Id, user.Id);
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.User.Add(user);
+            dbContext.Organisation.Add(organisation);
+            dbContext.OrganisationUser.Add(organisationUser);
+            dbContext.SaveChanges();
+
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool organisationUserExists = await repository.OrganisationUserExistsAsync(organisation.Id, user.Id);
+
+            // Assert
+            organisationUserExists.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task OrganisationUserExistsAsync_ReturnsFalse_WhenOrganisationUserNotExists()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool organisationUserExists = await repository.OrganisationUserExistsAsync(Guid.NewGuid(), Guid.NewGuid());
+
+            // Assert
+            organisationUserExists.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task RemoveOrganisationUserAsync_ReturnsTrue_WhenOrganisationUserIsRemoved()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            User user = TestHelper.GenerateUsers().Single();
+            Organisation organisation = TestHelper.GenerateOrganisations().Single();
+            OrganisationUser organisationUser = TestHelper.GenerateOrganisationUser(organisation.Id, user.Id);
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.User.Add(user);
+            dbContext.Organisation.Add(organisation);
+            dbContext.OrganisationUser.Add(organisationUser);
+            dbContext.SaveChanges();
+
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool result = await repository.RemoveOrganisationUserAsync(organisation.Id, user.Id);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeTrue();
+                dbContext.OrganisationUser.Count(ou => ou.OrganisationId == organisation.Id && ou.UserId == user.Id).Should().Be(0);
+            }
+        }
+
+        [Fact]
+        public async Task RemoveOrganisationUserAsync_ReturnsFalse_OrganisationUserNotFound()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            Guid organisationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
+
+            // Act
+            bool result = await repository.RemoveOrganisationUserAsync(organisationId, userId);
+
+            // Assert
+            result.Should().BeFalse();
+            _loggerMock.Verify(
+                x => x.Log(
+                    LogLevel.Warning,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v is object && v.ToString()!.Contains($"Organisation user not found with user ID {userId} organisation ID {organisationId}")),
+                    It.IsAny<SqlException>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveAllOrganisationUsersAsync_ReturnsTrue_WhenOrganisationUsersAreRemoved()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            Guid organisationId = Guid.NewGuid();
+            List<OrganisationUser> organisationUsers = TestHelper.GenerateOrganisationUsers(organisationId, 3).ToList();
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.OrganisationUser.AddRange(organisationUsers);
+            dbContext.SaveChanges();
+
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool result = await repository.RemoveAllOrganisationUsersAsync(organisationId);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeTrue();
+                dbContext.OrganisationUser.Count(ou => ou.OrganisationId == organisationId).Should().Be(0);
+            }
         }
     }
 }

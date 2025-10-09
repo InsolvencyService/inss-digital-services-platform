@@ -24,3 +24,7 @@ GO
 
 ALTER TABLE [dbo].[Application] CHECK CONSTRAINT [FK_Application_IdentityProvider]
 GO
+
+ALTER TABLE [dbo].[Application]
+ADD CONSTRAINT [UQ_Application_Name_IdentityProviderId] UNIQUE ([Name], [IdentityProviderId]);
+GO

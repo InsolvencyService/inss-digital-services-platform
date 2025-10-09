@@ -81,6 +81,8 @@ dotnet_naming_style.underscore_prefix_style.capitalization = camel_case
 
 dotnet_diagnostic.CA1707.severity = warning
 
+dotnet_style_allow_multiple_blank_lines_experimental = false:warning
+
 [*Tests.cs]
 # Allow underscores in methods in test files.
 dotnet_diagnostic.CA1707.severity = none

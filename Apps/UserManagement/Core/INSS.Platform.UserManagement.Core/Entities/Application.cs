@@ -15,5 +15,11 @@ namespace INSS.Platform.UserManagement.Core.Entities
         [Required]
         [MaxLength(255)]
         public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the unique identifier of the associated identity provider.
+        /// </summary>
+        [Required]
+        public Guid IdentityProviderId { get; set; }
     }
 }

@@ -19,3 +19,7 @@ GO
 ALTER TABLE [dbo].[IdentityProvider]
 ADD CONSTRAINT [DF_IdentityProvider_Created] DEFAULT (GETUTCDATE()) FOR [Created];
 GO
+
+ALTER TABLE [dbo].[IdentityProvider]
+ADD CONSTRAINT [UQ_IdentityProvider_Name] UNIQUE ([Name]);
+GO

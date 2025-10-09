@@ -141,6 +141,70 @@ namespace INSS.Platform.UserManagement.Repository.Tests
         }
 
         [Fact]
+        public async Task GetRolesByApplicationAsync_ReturnsEmptyList_WhenNoRoles()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            RoleRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            IEnumerable<Role> noRoles = await repository.GetRolesByApplicationAsync(Guid.NewGuid());
+
+            // Assert
+            using(new AssertionScope())
+            {
+                noRoles.Should().NotBeNull();
+                noRoles.Count().Should().Be(0);
+            }
+        }
+
+        [Fact]
+        public async Task GetRolesByApplicationAsync_ReturnsRoles_WhenRolesExist()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            List<Application> applications = TestHelper.GenerateApplications(3).ToList();
+            List<Role> roles = TestHelper.GenerateRoles(3).ToList();
+            List<ApplicationRole> applicationRoles = [];
+
+            for (int index = 0; index < 3; index++)
+            {
+                applicationRoles.Add(TestHelper.GenerateApplicationRole(applications[index].Id, roles[index].Id));
+            }
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.Application.AddRange(applications);
+            dbContext.Role.AddRange(roles);
+            dbContext.ApplicationRole.AddRange(applicationRoles);
+            dbContext.SaveChanges();
+
+            RoleRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act & Assert
+            using (new AssertionScope())
+            {
+                for (int index = 0; index < applications.Count; index++)
+                {
+                    Application app = applications[index];
+                    IEnumerable<Role> foundRoles = await repository.GetRolesByApplicationAsync(app.Id);
+
+                    // Assert
+                    foundRoles.Should().NotBeNull();
+                    foundRoles.Count().Should().Be(1);
+                    foundRoles.First().Should().Be(roles[index]);
+                    foundRoles.First().Name.Should().Be($"TestRole{index}");
+                }
+            }
+        }
+
+        [Fact]
         public async Task AddRoleAsync_ReturnsTrue_WhenRoleIsAdded()
         {
             // Arrange

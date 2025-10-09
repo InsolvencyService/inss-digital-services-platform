@@ -60,15 +60,32 @@ namespace INSS.Platform.UserManagement.Repository
                     return [];
                 }
 
-                return from role in _dbContext.Role
-                       join approle in _dbContext.ApplicationRole on role.Id equals approle.RoleId
-                       join ouar in _dbContext.OrganisationUserApplicationRole on approle.Id equals ouar.ApplicationRoleId
-                       where approle.ApplicationId == applicationId && ouar.OrganisationUserId == orgUser.Id
-                       select role;
+                return await (from role in _dbContext.Role
+                              join approle in _dbContext.ApplicationRole on role.Id equals approle.RoleId
+                              join ouar in _dbContext.OrganisationUserApplicationRole on approle.Id equals ouar.ApplicationRoleId
+                              where approle.ApplicationId == applicationId && ouar.OrganisationUserId == orgUser.Id
+                              select role).ToListAsync().ConfigureAwait(false);
             }
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Error retrieving roles for organisation with ID {OrganisationId} and user with ID {UserId} and application with ID {ApplicationId}", organisationId, userId, applicationId);
+                return [];
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<Role>> GetRolesByApplicationAsync(Guid applicationId)
+        {
+            try
+            {
+                return await (from role in _dbContext.Role
+                              join approle in _dbContext.ApplicationRole on role.Id equals approle.RoleId
+                              where approle.ApplicationId == applicationId
+                              select role).ToListAsync().ConfigureAwait(false);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error retrieving roles for application with ID {ApplicationId}", applicationId);
                 return [];
             }
         }
@@ -82,7 +99,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error adding role with name {Name}", role.Name);
                 return false;
@@ -98,7 +116,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error updating role with ID {RoleId}", role.Id);
                 return false;
@@ -114,7 +133,8 @@ namespace INSS.Platform.UserManagement.Repository
                 await _dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error deleting role with ID {RoleId}", role.Id);
                 return false;

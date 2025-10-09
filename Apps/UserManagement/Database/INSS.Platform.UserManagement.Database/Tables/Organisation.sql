@@ -16,3 +16,7 @@ GO
 ALTER TABLE [dbo].[Organisation]
 ADD CONSTRAINT [DF_Organisation_Created] DEFAULT (GETUTCDATE()) FOR [Created];
 GO
+
+ALTER TABLE [dbo].[Organisation]
+ADD CONSTRAINT [UQ_Organisation_Name] UNIQUE ([Name]);
+GO

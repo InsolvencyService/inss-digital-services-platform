@@ -47,5 +47,52 @@ namespace INSS.Platform.UserManagement.Repository
         /// </summary>
         /// <param name="Organisation">The <see cref="Organisation"/> to delete.</param>
         Task<bool> DeleteOrganisationAsync(Organisation organisation);
+
+        /// <summary>
+        /// Adds a new association between an organisation and a user to the data store.
+        /// </summary>
+        /// <param name="organisationUser">
+        /// The <see cref="OrganisationUser"/> entity representing the association to add.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation, 
+        /// containing <c>true</c> if the association was added successfully; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> AddOrganisationUserAsync(OrganisationUser organisationUser);
+
+        /// <summary>
+        /// Determines whether an association exists between a specified organisation and user.
+        /// </summary>
+        /// <param name="organisationId">The unique identifier of the organisation.</param>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation,
+        /// containing <c>true</c> if the association exists; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> OrganisationUserExistsAsync(Guid organisationId, Guid userId);
+
+        /// <summary>
+        /// Removes an association between an organisation and a user from the data store.
+        /// </summary>
+        /// <param name="organisationUser">
+        /// The <see cref="OrganisationUser"/> entity representing the association to remove.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation,
+        /// containing <c>true</c> if the association was removed successfully; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> RemoveOrganisationUserAsync(Guid organisationId, Guid userId);
+
+        /// <summary>
+        /// Removes all user associations for a specified organisation from the data store.
+        /// </summary>
+        /// <param name="organisationId">
+        /// The unique identifier of the organisation whose user associations are to be removed.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation,
+        /// containing <c>true</c> if all associations were removed successfully; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> RemoveAllOrganisationUsersAsync(Guid organisationId);
     }
 }

@@ -23,6 +23,9 @@ builder.Services.AddDbContext<UserManagementDbContext>(options =>
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IOrganisationRepository, OrganisationRepository>();
+builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 WebApplication app = builder.Build();
 
