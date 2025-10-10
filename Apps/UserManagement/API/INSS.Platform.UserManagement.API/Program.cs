@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using INSS.Platform.UserManagement.Repository;
 using Microsoft.EntityFrameworkCore;
+
+[assembly: ExcludeFromCodeCoverage(Justification = "program.cs does not contain any logic that requires testing.")]
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
