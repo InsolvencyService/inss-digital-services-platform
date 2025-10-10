@@ -29,6 +29,15 @@ namespace INSS.Platform.UserManagement.Repository
         /// <returns>An <see cref="IEnumerable{User}"/> containing users belonging to the specified organisation.</returns>
         Task<IEnumerable<User>> GetUsersByOrganisationAsync(Guid organisationId);
 
+
+        /// <summary>
+        /// Retrieves all users from the data store.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IEnumerable{User}"/> containing all users.
+        /// </returns>
+        Task<IEnumerable<User>> GetUsersAsync();
+
         /// <summary>
         /// Adds a new user to the data store.
         /// </summary>

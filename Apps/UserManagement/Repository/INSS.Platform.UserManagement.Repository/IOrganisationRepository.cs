@@ -31,6 +31,17 @@ namespace INSS.Platform.UserManagement.Repository
         Task<IEnumerable<Organisation>> GetOrganisationsAsync();
 
         /// <summary>
+        /// Retrieves the <see cref="OrganisationUser"/> entity representing the association between a specified organisation and user.
+        /// </summary>
+        /// <param name="organisationId">The unique identifier of the organisation.</param>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <returns>
+        /// A <see cref="Task{OrganisationUser}"/> representing the asynchronous operation,
+        /// containing the <see cref="OrganisationUser"/> if found; otherwise, <c>null</c>.
+        /// </returns>
+        Task<OrganisationUser?> GetOrganisationUserAsync(Guid organisationId, Guid userId);
+
+        /// <summary>
         /// Adds a new Organisation to the data store.
         /// </summary>
         /// <param name="Organisation">The <see cref="Organisation"/> to add.</param>
@@ -70,6 +81,40 @@ namespace INSS.Platform.UserManagement.Repository
         /// containing <c>true</c> if the association exists; otherwise, <c>false</c>.
         /// </returns>
         Task<bool> OrganisationUserExistsAsync(Guid organisationId, Guid userId);
+
+        /// <summary>
+        /// Determines whether an association exists between a specified organisation user and application role.
+        /// </summary>
+        /// <param name="organisationUserId">The unique identifier of the organisation user.</param>
+        /// <param name="applicationRoleId">The unique identifier of the application role.</param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation,
+        /// containing <c>true</c> if the association exists; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> OrganisationUserApplicationRoleExistsAsync(Guid organisationUserId, Guid applicationRoleId);
+
+        /// <summary>
+        /// Adds a new association between an organisation user and an application role to the data store.
+        /// </summary>
+        /// <param name="organisationUserApplicationRole">
+        /// The <see cref="OrganisationUserApplicationRole"/> entity representing the association to add.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation,
+        /// containing <c>true</c> if the association was added successfully; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> AddOrganisationUserApplicationRoleAsync(OrganisationUserApplicationRole organisationUserApplicationRole);
+
+        /// <summary>
+        /// Removes an association between an organisation user and an application role from the data store.
+        /// </summary>
+        /// <param name="organisationUserId">The unique identifier of the organisation user.</param>
+        /// <param name="applicationRoleId">The unique identifier of the application role.</param>
+        /// <returns>
+        /// A <see cref="Task{Boolean}"/> representing the asynchronous operation,
+        /// containing <c>true</c> if the association was removed successfully; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> RemoveOrganisationUserApplicationRoleAsync(Guid organisationUserId, Guid applicationRoleId);
 
         /// <summary>
         /// Removes an association between an organisation and a user from the data store.

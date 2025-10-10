@@ -95,6 +95,23 @@ namespace INSS.Platform.UserManagement.API.Controllers
         }
 
         /// <summary>
+        /// Retrieves all users from the data store.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing a collection of <see cref="User"/> entities.
+        /// Returns <see cref="OkObjectResult"/> with the users if found; otherwise, an empty collection.
+        /// </returns>
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            _logger.LogInformation("Get all users");
+            IEnumerable<User> users = await _userRepository.GetUsersAsync().ConfigureAwait(false);
+
+            _logger.LogInformation("{UserCount} Users found", users.Count());
+            return Ok(users);
+        }
+
+        /// <summary>
         /// Creates a new user in the data store.
         /// </summary>
         /// <param name="user">The <see cref="User"/> to create.</param>

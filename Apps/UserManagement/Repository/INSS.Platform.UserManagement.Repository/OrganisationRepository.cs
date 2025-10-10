@@ -78,6 +78,21 @@ namespace INSS.Platform.UserManagement.Repository
             }
         }
 
+        /// <inheritdoc />
+        public async Task<OrganisationUser?> GetOrganisationUserAsync(Guid organisationId, Guid userId)
+        {
+            try
+            {
+                return await _dbContext.OrganisationUser
+                    .SingleOrDefaultAsync(ou => ou.OrganisationId == organisationId && ou.UserId == userId)
+                    .ConfigureAwait(false);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error retrieving organisation user with organisation ID {OrganisationId} and user ID {UserId}", userId, organisationId);
+                return null;
+            }
+        }
 
         /// <inheritdoc />
         public async Task<bool> AddOrganisationAsync(Organisation organisation)
@@ -203,6 +218,64 @@ namespace INSS.Platform.UserManagement.Repository
             when (ex is SqlException or DbUpdateException)
             {
                 _logger.LogError(ex, "Error removing all organisation users for organisation ID {OrganisationId}", organisationId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> AddOrganisationUserApplicationRoleAsync(OrganisationUserApplicationRole organisationUserApplicationRole)
+        {
+            try
+            {
+                _dbContext.OrganisationUserApplicationRole.Add(organisationUserApplicationRole);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error adding organisation user application role with organisation user ID {OrganisationUserId} and application role ID {ApplicationRoleId}", organisationUserApplicationRole.OrganisationUserId, organisationUserApplicationRole.ApplicationRoleId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> OrganisationUserApplicationRoleExistsAsync(Guid organisationUserId, Guid applicationRoleId)
+        {
+            try
+            {
+                return await _dbContext.OrganisationUserApplicationRole.AnyAsync(ouar => ouar.OrganisationUserId == organisationUserId && ouar.ApplicationRoleId == applicationRoleId).ConfigureAwait(false);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error checking existence of organisation user application role with organisation user ID {OrganisationUserId} and application role ID {ApplicationRoleId}", organisationUserId, applicationRoleId);
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> RemoveOrganisationUserApplicationRoleAsync(Guid organisationUserId, Guid applicationRoleId)
+        {
+            try
+            {
+                OrganisationUserApplicationRole? organisationUserApplicationRole = await _dbContext.OrganisationUserApplicationRole
+                    .FirstOrDefaultAsync(ouar => ouar.OrganisationUserId == organisationUserId && ouar.ApplicationRoleId == applicationRoleId)
+                    .ConfigureAwait(false);
+
+                if (organisationUserApplicationRole == null)
+                {
+                    _logger.LogWarning("Organisation user application role not found with organisation user ID {OrganisationUserId} and application role ID {ApplicationRoleId}", organisationUserId, applicationRoleId);
+                    return false;
+                }
+
+                _dbContext.OrganisationUserApplicationRole.Remove(organisationUserApplicationRole);
+                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                return true;
+            }
+            catch (Exception ex)
+            when (ex is SqlException or DbUpdateException)
+            {
+                _logger.LogError(ex, "Error removing organisation user application role with organisation user ID {OrganisationUserId} and application role ID {ApplicationRoleId}", organisationUserId, applicationRoleId);
                 return false;
             }
         }

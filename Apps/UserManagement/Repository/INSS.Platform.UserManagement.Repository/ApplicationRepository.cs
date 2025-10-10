@@ -89,6 +89,22 @@ namespace INSS.Platform.UserManagement.Repository
         }
 
         /// <inheritdoc />
+        public async Task<ApplicationRole?> GetApplicationRoleAsync(Guid applicationId, Guid roleId)
+        {
+            try
+            {
+                return await _dbContext.ApplicationRole
+                    .SingleOrDefaultAsync(ar => ar.ApplicationId == applicationId && ar.RoleId == roleId)
+                    .ConfigureAwait(false);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error retrieving application role with application ID {ApplicationId} and role ID {RoleId}", applicationId, roleId);
+                return null;
+            }
+        }
+
+        /// <inheritdoc />
         public async Task<bool> AddApplicationAsync(Application application)
         {
             try

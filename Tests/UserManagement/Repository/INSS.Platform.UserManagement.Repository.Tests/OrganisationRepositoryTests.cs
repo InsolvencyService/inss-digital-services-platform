@@ -137,6 +137,59 @@ namespace INSS.Platform.UserManagement.Repository.Tests
         }
 
         [Fact]
+        public async Task GetOrganisationUserAsync_ReturnsOrganisationUser_WhenOrganisationUserExists()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            Guid userId = Guid.NewGuid();
+            Guid organisationId = Guid.NewGuid();
+            OrganisationUser organisationUser = TestHelper.GenerateOrganisationUser(organisationId, userId);
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.OrganisationUser.Add(organisationUser);
+            dbContext.SaveChanges();
+
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            OrganisationUser? foundOrganisationUser = await repository.GetOrganisationUserAsync(organisationId, userId);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                foundOrganisationUser.Should().NotBeNull();
+                foundOrganisationUser.Id.Should().Be(organisationUser.Id);
+                foundOrganisationUser.OrganisationId.Should().Be(organisationUser.OrganisationId);
+                foundOrganisationUser.UserId.Should().Be(organisationUser.UserId);
+                foundOrganisationUser.Created.Should().BeCloseTo(organisationUser.Created ?? new(), TimeSpan.FromSeconds(5));
+                foundOrganisationUser.CreatedBy.Should().Be(organisationUser.CreatedBy);
+                foundOrganisationUser.Modified.Should().BeCloseTo(organisationUser.Modified ?? new(), TimeSpan.FromSeconds(5));
+                foundOrganisationUser.ModifiedBy.Should().Be(organisationUser.ModifiedBy);
+            }
+        }
+
+        [Fact]
+        public async Task GetOrganisationUserAsync_ReturnsNull_WhenOrganisationUserNotExist()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            OrganisationUser? notFoundOrganisationUser = await repository.GetOrganisationUserAsync(Guid.NewGuid(), Guid.NewGuid());
+
+            // Assert
+            notFoundOrganisationUser.Should().BeNull();
+        }
+
+        [Fact]
         public async Task AddOrganisationAsync_ReturnsTrue_WhenOrganisationIsAdded()
         {
             // Arrange
@@ -452,6 +505,58 @@ namespace INSS.Platform.UserManagement.Repository.Tests
             {
                 result.Should().BeTrue();
                 dbContext.OrganisationUser.Count(ou => ou.OrganisationId == organisationId).Should().Be(0);
+            }
+        }
+
+        [Fact]
+        public async Task AddOrganisationUserApplicationRoleAsync_ReturnsTrue_WhenOrganisationUserApplicationRoleIsAdded()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+            OrganisationUserApplicationRole newOrganisationUserApplicationRole = TestHelper.GenerateOrganisationUserApplicationRole();
+
+            // Act
+            bool result = await repository.AddOrganisationUserApplicationRoleAsync(newOrganisationUserApplicationRole);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeTrue();
+                dbContext.OrganisationUserApplicationRole.Count(ouar => ouar.OrganisationUserId == newOrganisationUserApplicationRole.OrganisationUserId 
+                    && ouar.ApplicationRoleId == newOrganisationUserApplicationRole.ApplicationRoleId)
+                    .Should().Be(1);
+            }
+        }
+
+        [Fact]
+        public async Task RemoveOrganisationUserApplicationRoleAsync_ReturnsTrue_WhenOrganisationUserApplicationRoleIsRemoved()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            OrganisationUserApplicationRole organisationUserApplicationRole = TestHelper.GenerateOrganisationUserApplicationRole();
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.OrganisationUserApplicationRole.Add(organisationUserApplicationRole);
+            dbContext.SaveChanges();
+
+            OrganisationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            bool result = await repository.RemoveOrganisationUserApplicationRoleAsync(organisationUserApplicationRole.OrganisationUserId, organisationUserApplicationRole.ApplicationRoleId);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeTrue();
+                dbContext.OrganisationUserApplicationRole.Count(ouar => ouar.OrganisationUserId == organisationUserApplicationRole.OrganisationUserId 
+                && ouar.ApplicationRoleId == organisationUserApplicationRole.ApplicationRoleId).Should().Be(0);
             }
         }
     }

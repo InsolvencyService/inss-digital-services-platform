@@ -53,6 +53,22 @@ namespace INSS.Platform.UserManagement.API.Controllers
         }
 
         /// <summary>
+        /// Retrieves all <see cref="Application"/> entities from the data store.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing a collection of <see cref="Application"/> entities.
+        /// </returns>
+        [HttpGet]
+        public async Task<IActionResult> GetApplicationsAsync()
+        {
+            _logger.LogInformation("Get all applications");
+            IEnumerable<Application> applications = await _applicationRepository.GetApplicationsAsync().ConfigureAwait(false);
+
+            _logger.LogInformation("{ApplicationCount} Applications found", applications.Count());
+            return Ok(applications);
+        }
+
+        /// <summary>
         /// Retrieves all roles associated with a specific application.
         /// </summary>
         /// <param name="applicationId">The unique identifier of the application.</param>

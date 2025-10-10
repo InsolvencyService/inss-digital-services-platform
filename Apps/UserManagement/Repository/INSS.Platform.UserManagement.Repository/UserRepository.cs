@@ -69,6 +69,20 @@ namespace INSS.Platform.UserManagement.Repository
         }
 
         /// <inheritdoc />
+        public async Task<IEnumerable<User>> GetUsersAsync()
+        {
+            try
+            {
+                return await _dbContext.User.ToListAsync().ConfigureAwait(false);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error retrieving all users");
+                return [];
+            }
+        }
+
+        /// <inheritdoc />
         public async Task<IEnumerable<User>> GetUsersByOrganisationAsync(Guid organisationId)
         {
             try

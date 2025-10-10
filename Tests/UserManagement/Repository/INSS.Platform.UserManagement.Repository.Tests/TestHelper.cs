@@ -136,13 +136,13 @@ namespace INSS.Platform.UserManagement.Repository.Tests
             };
         }
 
-        internal static OrganisationUserApplicationRole GenerateOrganisationUserApplicationRole(Guid organisationUserId, Guid applicationRoleId)
+        internal static OrganisationUserApplicationRole GenerateOrganisationUserApplicationRole(Guid? organisationUserId = null, Guid? applicationRoleId = null)
         {
             return new OrganisationUserApplicationRole
             {
                 Id = Guid.NewGuid(),
-                OrganisationUserId = organisationUserId,
-                ApplicationRoleId = applicationRoleId,
+                OrganisationUserId = organisationUserId ?? Guid.NewGuid(),
+                ApplicationRoleId = applicationRoleId ?? Guid.NewGuid(),
                 Created = DateTime.UtcNow,
                 CreatedBy = "UnitTestOrganisationUserApplicationRole",
                 Modified = DateTime.UtcNow,

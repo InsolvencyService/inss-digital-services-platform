@@ -125,6 +125,36 @@ namespace INSS.Platform.UserManagement.Repository.Tests
         }
 
         [Fact]
+        public async Task GetUsersAsync_ReturnsAllUsers()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            List<User> users = TestHelper.GenerateUsers(3).ToList();
+            
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.User.AddRange(users);
+            dbContext.SaveChanges();
+
+            UserRepository repository = new(_loggerMock.Object, dbContext);
+            
+            // Act
+            IEnumerable<User> allUsers = await repository.GetUsersAsync();
+            
+            // Assert
+            using (new AssertionScope())
+            {
+                allUsers.Should().NotBeNull();
+                allUsers.Should().HaveCount(3);
+                allUsers.Should().Contain(u => u.Id == users[0].Id);
+                allUsers.Should().Contain(u => u.Id == users[1].Id);
+                allUsers.Should().Contain(u => u.Id == users[2].Id);
+            }
+        }
+
+        [Fact]
         public async Task GetUsersByOrganisationAsync_ReturnsUsers_WhenUsersExist()
         {
             // Arrange
@@ -134,7 +164,7 @@ namespace INSS.Platform.UserManagement.Repository.Tests
 
             Organisation organisation = TestHelper.GenerateOrganisations().First();
 
-            List<User> users = [.. TestHelper.GenerateUsers(2)];
+            List<User> users = TestHelper.GenerateUsers(2).ToList();
 
             OrganisationUser orgUser1 = GenerateOrganisationUser(organisation.Id, users[0].Id);
             OrganisationUser orgUser2 = GenerateOrganisationUser(organisation.Id, users[1].Id);

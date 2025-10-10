@@ -164,6 +164,61 @@ namespace INSS.Platform.UserManagement.Repository.Tests
         }
 
         [Fact]
+        public async Task GetApplicationRoleAsync_ReturnsApplicationRole_WhenApplicationRoleExists()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            Role role = TestHelper.GenerateRoles().Single();
+            Application application = TestHelper.GenerateApplications().Single();
+            ApplicationRole applicationRole = TestHelper.GenerateApplicationRole(application.Id, role.Id);
+
+            using UserManagementDbContext dbContext = new(_options);
+            dbContext.Role.Add(role);
+            dbContext.Application.Add(application);
+            dbContext.ApplicationRole.Add(applicationRole);
+            dbContext.SaveChanges();
+
+            ApplicationRepository repository = new(_loggerMock.Object, dbContext);
+            // Act
+
+            ApplicationRole? foundApplicationRole = await repository.GetApplicationRoleAsync(application.Id, role.Id);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                foundApplicationRole.Should().NotBeNull();
+                foundApplicationRole.Id.Should().Be(applicationRole.Id);
+                foundApplicationRole.ApplicationId.Should().Be(applicationRole.ApplicationId);
+                foundApplicationRole.RoleId.Should().Be(applicationRole.RoleId);
+                foundApplicationRole.Created.Should().BeCloseTo(applicationRole.Created ?? new(), TimeSpan.FromSeconds(5));
+                foundApplicationRole.CreatedBy.Should().Be(applicationRole.CreatedBy);
+                foundApplicationRole.Modified.Should().BeCloseTo(applicationRole.Modified ?? new(), TimeSpan.FromSeconds(5));
+                foundApplicationRole.ModifiedBy.Should().Be(applicationRole.ModifiedBy);
+            }
+        }
+
+        [Fact]
+        public async Task GetApplicationRoleAsync_ReturnsNull_WhenApplicationRoleNotExist()
+        {
+            // Arrange
+            DbContextOptions<UserManagementDbContext> _options = new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using UserManagementDbContext dbContext = new(_options);
+            ApplicationRepository repository = new(_loggerMock.Object, dbContext);
+
+            // Act
+            ApplicationRole? notFoundApplicationRole = await repository.GetApplicationRoleAsync(Guid.NewGuid(), Guid.NewGuid());
+
+            // Assert
+            notFoundApplicationRole.Should().BeNull();
+        }
+
+        [Fact]
         public async Task AddApplicationAsync_ReturnsTrue_WhenApplicationIsAdded()
         {
             // Arrange

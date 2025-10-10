@@ -139,50 +139,6 @@ namespace INSS.Platform.UserManagement.API.Controllers
             return Ok(roles);
         }
 
-        [HttpPost("{organisationId}/users/{userId}/applications/{applicationId}/roles/{roleId}")]
-        public async Task<IActionResult> AddApplicationRoleToOrganisationUser(Guid organisationId, Guid userId, Guid applicationId, Guid roleId)
-        {
-            // Should we validate that the OrganisationUser and ApplicationRole exist first? or should we create them if they don't?
-            // Should the repository handle this logic?
-
-            _logger.LogInformation("Add application role for application with ID {ApplicationId} and role with ID {RoleId} to organisation with ID {OrganisationId} and user with ID {UserId}", applicationId, roleId, organisationId, userId);
-            OrganisationUser? orgUser = await  _organisationRepository.GetOrganisationUserAsync(organisationId, userId).ConfigureAwait(false);
-            if (orgUser == null)
-            {
-                _logger.LogWarning("Organisation user not found for organisation with ID {OrganisationId} and user with ID {UserId}", organisationId, userId);
-                return NotFound("Organisation user not found");
-            }
-            Application? application = await _applicationRepository.GetApplicationByIdAsync(applicationId).ConfigureAwait(false);
-            if (application == null)
-            {
-                _logger.LogWarning("Application not found with ID {ApplicationId}", applicationId);
-                return NotFound("Application not found");
-            }
-            Role? existingRole = await _roleRepository.GetRoleByIdAsync(role.Id).ConfigureAwait(false);
-            if (existingRole == null)
-            {
-                _logger.LogWarning("Role not found with ID {RoleId}", role.Id);
-                return NotFound("Role not found");
-            }
-            bool associationExists = await _organisationRepository.OrganisationUserApplicationRoleExistsAsync(orgUser.Id, application.Id, existingRole.Id).ConfigureAwait(false);
-            if (associationExists)
-            {
-                _logger.LogWarning("Role with ID {RoleId} already assigned to organisation with ID {OrganisationId}, user with ID {UserId} and application with ID {ApplicationId}", role.Id, organisationId, userId, applicationId);
-                return Conflict("Role already assigned to organisation user for the application.");
-            }
-            OrganisationUserApplicationRole orgUserAppRole = new()
-            {
-                OrganisationUserId = orgUser.Id,
-                ApplicationRoleId = Guid.NewGuid() // This should be the ID of the ApplicationRole entity linking the application and role
-            };
-            Helpers.Auditing.SetCreatedInfo(orgUserAppRole, ControllerContext);
-            bool result = await _organisationRepository.AddOrganisationUserApplicationRoleAsync(orgUserAppRole).ConfigureAwait(false);
-            if (!result)
-            {
-                _logger.LogError("Failed to assign role with ID {RoleId} to");
-            }
-        }
-
         /// <summary>
         /// Creates a new organisation in the data store.
         /// </summary>
@@ -208,6 +164,66 @@ namespace INSS.Platform.UserManagement.API.Controllers
 
             _logger.LogInformation("Organisation created with ID {OrganisationId} {Name}", organisation.Id, organisation.Name);
             return CreatedAtAction(nameof(Get), new { organisationId = organisation.Id }, organisation);
+        }
+
+        /// <summary>
+        /// Updates an existing organisation in the data store.
+        /// </summary>
+        /// <param name="organisation">The <see cref="Organisation"/> to update.</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns <see cref="OkObjectResult"/> if successful; otherwise, <see cref="StatusCodeResult"/>.
+        /// </returns>
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] Organisation organisation)
+        {
+            _logger.LogInformation("Update an organisation with ID {OrganisationId}", organisation.Id);
+
+            Helpers.Auditing.SetModifiedInfo(organisation, ControllerContext);
+
+            bool result = await _organisationRepository.UpdateOrganisationAsync(organisation).ConfigureAwait(false);
+
+            if (!result)
+            {
+                _logger.LogError("Failed to update organisation with ID {OrganisationId}", organisation.Id);
+                return StatusCode(500, "Failed to update organisation.");
+            }
+
+            _logger.LogInformation("Organisation updated with ID {OrganisationId} {Name}", organisation.Id, organisation.Name);
+            return Ok(organisation);
+        }
+
+        /// <summary>
+        /// Deletes an organisation from the data store by their unique identifier.
+        /// </summary>
+        /// <param name="organisationId">The unique identifier of the organisation to delete.</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns <see cref="NoContentResult"/> if successful; otherwise, <see cref="NotFoundResult"/> or <see cref="StatusCodeResult"/>.
+        /// </returns>
+        [HttpDelete("{organisationId}")]
+        public async Task<IActionResult> Delete(Guid organisationId)
+        {
+            //TODO: Check for related entities before allowing delete
+            // Should we just mark as inactive instead e.g. IsDeleted?
+            _logger.LogInformation("Delete organisation with ID {OrganisationId}", organisationId);
+
+            Organisation? organisation = await _organisationRepository.GetOrganisationByIdAsync(organisationId).ConfigureAwait(false);
+            if (organisation == null)
+            {
+                _logger.LogWarning("Organisation not found with ID {OrganisationId}", organisationId);
+                return NotFound("Organisation not found");
+            }
+
+            bool result = await _organisationRepository.DeleteOrganisationAsync(organisation).ConfigureAwait(false);
+            if (!result)
+            {
+                _logger.LogError("Failed to delete organisation with ID {OrganisationId}", organisationId);
+                return StatusCode(500, "Failed to delete organisation.");
+            }
+
+            _logger.LogInformation("Organisation deleted with ID {OrganisationId}", organisationId);
+            return NoContent();
         }
 
         /// <summary>
@@ -310,62 +326,111 @@ namespace INSS.Platform.UserManagement.API.Controllers
         }
 
         /// <summary>
-        /// Updates an existing organisation in the data store.
+        /// Adds an application role to a specific organisation user.
         /// </summary>
-        /// <param name="organisation">The <see cref="Organisation"/> to update.</param>
+        /// <param name="organisationId">The unique identifier of the organisation.</param>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <param name="applicationId">The unique identifier of the application.</param>
+        /// <param name="roleId">The unique identifier of the role.</param>
         /// <returns>
         /// An <see cref="IActionResult"/> indicating the result of the operation.
-        /// Returns <see cref="OkObjectResult"/> if successful; otherwise, <see cref="StatusCodeResult"/>.
+        /// Returns <see cref="CreatedResult"/> if successful; <see cref="ConflictResult"/> if the role is already assigned; <see cref="NotFoundResult"/> if the organisation user or application role is not found; otherwise, <see cref="StatusCodeResult"/>.
         /// </returns>
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] Organisation organisation)
+        [HttpPost("{organisationId}/users/{userId}/applications/{applicationId}/roles/{roleId}")]
+        public async Task<IActionResult> AddApplicationRoleToOrganisationUser(Guid organisationId, Guid userId, Guid applicationId, Guid roleId)
         {
-            _logger.LogInformation("Update an organisation with ID {OrganisationId}", organisation.Id);
-
-            Helpers.Auditing.SetModifiedInfo(organisation, ControllerContext);
-
-            bool result = await _organisationRepository.UpdateOrganisationAsync(organisation).ConfigureAwait(false);
-
-            if (!result)
+            _logger.LogInformation("Add application role for application with ID {ApplicationId} and role with ID {RoleId} to organisation with ID {OrganisationId} and user with ID {UserId}", applicationId, roleId, organisationId, userId);
+            bool organisationUserExists = await _organisationRepository.OrganisationUserExistsAsync(organisationId, userId).ConfigureAwait(false);
+            if (!organisationUserExists)
             {
-                _logger.LogError("Failed to update organisation with ID {OrganisationId}", organisation.Id);
-                return StatusCode(500, "Failed to update organisation.");
+                _logger.LogWarning("Organisation user not found for organisation with ID {OrganisationId} and user with ID {UserId}", organisationId, userId);
+                return NotFound("Organisation user not found");
             }
 
-            _logger.LogInformation("Organisation updated with ID {OrganisationId} {Name}", organisation.Id, organisation.Name);
-            return Ok(organisation);
+            bool applicationRoleExists = await _applicationRepository.ApplicationRoleExistsAsync(applicationId, roleId).ConfigureAwait(false);
+            if (!applicationRoleExists)
+            {
+                _logger.LogWarning("Application role not found for application with ID {ApplicationId} and role with ID {RoleId}", applicationId, roleId);
+                return NotFound("Application user not found");
+            }
+
+            OrganisationUser? organisationUser = await _organisationRepository.GetOrganisationUserAsync(organisationId, userId).ConfigureAwait(false);
+            ApplicationRole? applicationRole = await _applicationRepository.GetApplicationRoleAsync(applicationId, roleId).ConfigureAwait(false);
+
+            bool associationExists = await _organisationRepository.OrganisationUserApplicationRoleExistsAsync(organisationUser!.Id, applicationRole!.Id).ConfigureAwait(false);
+            if (associationExists)
+            {
+                _logger.LogWarning("Role with ID {RoleId} already assigned to organisation with ID {OrganisationId}, user with ID {UserId} and application with ID {ApplicationId}", roleId, organisationId, userId, applicationId);
+                return Conflict("Role is already assigned to organisation user for the application.");
+            }
+
+            OrganisationUserApplicationRole organisationUserApplicationRole = new()
+            {
+                OrganisationUserId = organisationUser.Id,
+                ApplicationRoleId = applicationRole.Id,
+            };
+
+            Helpers.Auditing.SetCreatedInfo(organisationUserApplicationRole, ControllerContext);
+
+            bool result = await _organisationRepository.AddOrganisationUserApplicationRoleAsync(organisationUserApplicationRole).ConfigureAwait(false);
+            if (!result)
+            {
+                _logger.LogError("Failed to assign role with ID {RoleId} to organisation with ID {OrganisationId}, user with ID {UserId} and application with ID {ApplicationId}", roleId, organisationId, userId, applicationId);
+                return StatusCode(500, "Failed to assign application role to organisation user");
+            }
+
+            _logger.LogInformation("Role with ID {RoleId} assigned to organisation with ID {OrganisationId}, user with ID {UserId} and application with ID {ApplicationId}", roleId, organisationId, userId, applicationId);
+            return Created();
         }
 
         /// <summary>
-        /// Deletes an organisation from the data store by their unique identifier.
+        /// Removes a previously assigned application role from a specific organisation user.
         /// </summary>
-        /// <param name="organisationId">The unique identifier of the organisation to delete.</param>
+        /// <param name="organisationId">The unique identifier of the organisation.</param>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <param name="applicationId">The unique identifier of the application.</param>
+        /// <param name="roleId">The unique identifier of the role.</param>
         /// <returns>
         /// An <see cref="IActionResult"/> indicating the result of the operation.
-        /// Returns <see cref="NoContentResult"/> if successful; otherwise, <see cref="NotFoundResult"/> or <see cref="StatusCodeResult"/>.
+        /// Returns <see cref="NoContentResult"/> if successful; <see cref="NotFoundResult"/> if the role is not assigned to the user or if the organisation user or application role is not found; otherwise, <see cref="StatusCodeResult"/>.
         /// </returns>
-        [HttpDelete("{organisationId}")]
-        public async Task<IActionResult> Delete(Guid organisationId)
+        [HttpDelete("{organisationId}/users/{userId}/applications/{applicationId}/roles/{roleId}")]
+        public async Task<IActionResult> RemoveApplicationRoleFromOrganisationUser(Guid organisationId, Guid userId, Guid applicationId, Guid roleId)
         {
-            //TODO: Check for related entities before allowing delete
-            // Should we just mark as inactive instead e.g. IsDeleted?
-            _logger.LogInformation("Delete organisation with ID {OrganisationId}", organisationId);
+            _logger.LogInformation("Remove application role for application with ID {ApplicationId} and role with ID {RoleId} from organisation with ID {OrganisationId} and user with ID {UserId}", applicationId, roleId, organisationId, userId);
 
-            Organisation? organisation = await _organisationRepository.GetOrganisationByIdAsync(organisationId).ConfigureAwait(false);
-            if (organisation == null)
+            bool organisationUserExists = await _organisationRepository.OrganisationUserExistsAsync(organisationId, userId).ConfigureAwait(false);
+            if (!organisationUserExists)
             {
-                _logger.LogWarning("Organisation not found with ID {OrganisationId}", organisationId);
-                return NotFound("Organisation not found");
+                _logger.LogWarning("Organisation user not found for organisation with ID {OrganisationId} and user with ID {UserId}", organisationId, userId);
+                return NotFound("Organisation user not found");
             }
 
-            bool result = await _organisationRepository.DeleteOrganisationAsync(organisation).ConfigureAwait(false);
+            bool applicationRoleExists = await _applicationRepository.ApplicationRoleExistsAsync(applicationId, roleId).ConfigureAwait(false);
+            if (!applicationRoleExists)
+            {
+                _logger.LogWarning("Application role not found for application with ID {ApplicationId} and role with ID {RoleId}", applicationId, roleId);
+                return NotFound("Application user not found");
+            }
+
+            OrganisationUser? organisationUser = await _organisationRepository.GetOrganisationUserAsync(organisationId, userId).ConfigureAwait(false);
+            ApplicationRole? applicationRole = await _applicationRepository.GetApplicationRoleAsync(applicationId, roleId).ConfigureAwait(false);
+
+            bool associationExists = await _organisationRepository.OrganisationUserApplicationRoleExistsAsync(organisationUser!.Id, applicationRole!.Id).ConfigureAwait(false);
+            if (!associationExists)
+            {
+                _logger.LogWarning("Role with ID {RoleId} is not assigned to organisation with ID {OrganisationId}, user with ID {UserId} and application with ID {ApplicationId}", roleId, organisationId, userId, applicationId);
+                return NotFound("Role is not assigned to organisation user for the application.");
+            }
+
+            bool result = await _organisationRepository.RemoveOrganisationUserApplicationRoleAsync(organisationUser!.Id, applicationRole!.Id).ConfigureAwait(false);
             if (!result)
             {
-                _logger.LogError("Failed to delete organisation with ID {OrganisationId}", organisationId);
-                return StatusCode(500, "Failed to delete organisation.");
+                _logger.LogError("Failed to remove role with ID {RoleId} from organisation with ID {OrganisationId}, user with ID {UserId} and application with ID {ApplicationId}", roleId, organisationId, userId, applicationId);
+                return StatusCode(500, "Failed to remove application role from organisation user");
             }
 
-            _logger.LogInformation("Organisation deleted with ID {OrganisationId}", organisationId);
+            _logger.LogInformation("Role with ID {RoleId} removed from organisation with ID {OrganisationId}, user with ID {UserId} and application with ID {ApplicationId}", roleId, organisationId, userId, applicationId);
             return NoContent();
         }
     }

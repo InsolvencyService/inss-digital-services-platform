@@ -83,6 +83,8 @@ dotnet_diagnostic.CA1707.severity = warning
 
 dotnet_style_allow_multiple_blank_lines_experimental = false:warning
 
+dotnet_diagnostic.IDE0055.severity = none
+
 [*Tests.cs]
 # Allow underscores in methods in test files.
 dotnet_diagnostic.CA1707.severity = none
