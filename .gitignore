@@ -191,3 +191,4 @@ project.fragment.lock.json
 *.refactorlog
 *.publish.xml
 /Apps/INSS.Forms/Application/Services/INSS.Forms.Application.Services.Api/appSettings.local.json
+/Apps/UserManagement/API/INSS.Platform.UserManagement.API/appSettings.local.json

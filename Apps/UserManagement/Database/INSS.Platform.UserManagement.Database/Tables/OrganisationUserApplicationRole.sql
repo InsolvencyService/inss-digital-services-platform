@@ -32,4 +32,8 @@ GO
 ALTER TABLE [dbo].[OrganisationUserApplicationRole] CHECK CONSTRAINT [FK_OrganisationUserApplicationRole_ApplicationRole]
 GO
 
+ALTER TABLE [dbo].[OrganisationUserApplicationRole]
+ADD CONSTRAINT [UQ_OrganisationUserApplicationRole_OrganisationUserId_ApplicationRoleId] UNIQUE ([OrganisationUserId], [ApplicationRoleId]);
+GO
+
 

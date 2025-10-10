@@ -26,3 +26,7 @@ GO
 
 ALTER TABLE [dbo].[User] CHECK CONSTRAINT [FK_User_UserIdentity]
 GO
+
+ALTER TABLE [dbo].[User]
+ADD CONSTRAINT [UQ_User_Email] UNIQUE ([Email]);
+GO
