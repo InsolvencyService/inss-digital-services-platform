@@ -192,7 +192,5 @@ project.fragment.lock.json
 *.publish.xml
 /Apps/INSS.Forms/Application/Services/INSS.Forms.Application.Services.Api/appSettings.local.json
 /Apps/UserManagement/API/INSS.Platform.UserManagement.API/appSettings.local.json
-/Apps/Auth/API/INSS.Platform.Auth.API/client_assertion_private_key.pem
-/Apps/Auth/API/INSS.Platform.Auth.API/client_assertion_public_key.pem
 /Apps/Auth/API/INSS.Platform.Auth.API/Keys/private_key.pem
 /Apps/Auth/API/INSS.Platform.Auth.API/Keys/public_key.pem
