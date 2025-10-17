@@ -33,11 +33,11 @@
                 string? autoCleanupInMinutesStr = _appConfig["StateCache:AutoCleanupInMinutes"];
                 if (double.TryParse(autoCleanupInMinutesStr, out double autoCleanupInMinutes))
                 {
-                    await Task.Delay(TimeSpan.FromMinutes(autoCleanupInMinutes), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(autoCleanupInMinutes), stoppingToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken).ConfigureAwait(false);
                 }
             }
         }

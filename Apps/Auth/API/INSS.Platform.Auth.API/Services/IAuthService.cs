@@ -15,7 +15,7 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the login redirect URL as a string.
         /// </returns>
-        Task<string> GetLoginRedirectUrl(string clientUrl, string userId);
+        Task<string> GetLoginRedirectUrlAsync(string clientUrl, string userId);
 
         /// <summary>
         /// Handles the authentication callback by exchanging the authorization code for tokens.
@@ -51,6 +51,6 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains a tuple with validation status, nonce, CSRF token, user ID, and client URL.
         /// </returns>
-        Task<(bool isValid, string nonce, string csrfToken, string userId, string clientUrl)> ValidateAndExtractStateAsync(string token);
+        Task<(bool isValid, string nonce, string csrfToken, string userId, string clientUrl)> ValidateAndExtractRequestStateAsync(string token);
     }
 }

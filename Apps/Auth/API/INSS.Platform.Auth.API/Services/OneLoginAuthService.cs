@@ -36,68 +36,40 @@ namespace INSS.Platform.Auth.API.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string> GetLoginRedirectUrl(string clientUrl, string userId)
+        public async Task<string> GetLoginRedirectUrlAsync(string clientUrl, string userId)
         {
-            GetOneLoginAuthorizeConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri);
+            GetOneLoginAuthorizeRequestConfig(out string clientId, out string authorizeUri, out string scopes, out string _);
 
-            string responseType = "code";
-            string nonce = Guid.NewGuid().ToString("N");
-            string csrfToken = Guid.NewGuid().ToString("N");
-            string vtr = "[\"Cl.Cm\"]";
-            string uiLocales = "en";
+            Dictionary<string, object> requestClaims = await BuildAuthorizeRequestClaimsAsync(clientUrl, userId).ConfigureAwait(false);
 
-            string privateKeyPem = await GetStateJwtPrivateKey().ConfigureAwait(false);
-            string stateToken = CreateJwtSecurityTokenAsync(clientId, authorizeUri, privateKeyPem, GetRequestStateClaims(clientUrl, userId, nonce, csrfToken));
+            string queryPrivateKeyPem = await GetQueryJwtPrivateKeyAsync().ConfigureAwait(false);
+            string securedRequest = CreateJwtSecurityTokenAsync(clientId, authorizeUri, queryPrivateKeyPem, requestClaims);
 
-            Dictionary<string, string> queryParams = new()
-            {
-                { "client_id", clientId },
-                { "redirect_uri", redirectUri },
-                { "response_type", responseType },
-                { "scope", scopes },
-                { "state", stateToken },
-                { "nonce", nonce },
-                { "vtr", vtr },
-                { "ui_locales", uiLocales }
-            };
-
-            string queryString = string.Join("&", queryParams.Select(kvp =>
-                $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
-
-            return $"{authorizeUri}?{queryString}";
+            return $"{authorizeUri}?response_type=code" +
+                   $"&scope={Uri.EscapeDataString(scopes)}" +
+                   $"&client_id={Uri.EscapeDataString(clientId)}" +
+                   $"&request={Uri.EscapeDataString(securedRequest)}";
         }
-
 
         /// <inheritdoc/>
         public async Task<TokenData> HandleCallbackAsync(string authorizationCode, string nonce)
         {
-            GetOneLoginTokenConfig(out string clientId, out string tokenUri, out string redirectUri);
+            GetOneLoginTokenRequestConfig(out string clientId, out string tokenUri, out string redirectUri);
 
             HttpClient httpClient = _httpClientFactory.CreateClient();
             try
             {
-                string privateKeyPem = await GetQueryJwtPrivateKey().ConfigureAwait(false);
-                string clientAssertionToken = CreateJwtSecurityTokenAsync(clientId, tokenUri, privateKeyPem, GetClientAssertionClaims(clientId, tokenUri));
-
-                HttpResponseMessage tokenResponse = await httpClient.PostAsync(tokenUri,
-                    new FormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "client_id", clientId },
-                        { "client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer" },
-                        { "client_assertion", clientAssertionToken },
-                        { "code", authorizationCode },
-                        { "redirect_uri", redirectUri },
-                        { "grant_type", "authorization_code" }
-                    }));
+                FormUrlEncodedContent urlEncodedContent = new(await BuildTokenRequestParametersAsync(authorizationCode, tokenUri, redirectUri, clientId).ConfigureAwait(false));
+                HttpResponseMessage tokenResponse = await httpClient.PostAsync(tokenUri, urlEncodedContent).ConfigureAwait(false);
 
                 if (!tokenResponse.IsSuccessStatusCode)
                 {
-                    string errorContent = await tokenResponse.Content.ReadAsStringAsync();
+                    string errorContent = await tokenResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                     _logger.LogError("Token endpoint returned error: {StatusCode} - {Content}", tokenResponse.StatusCode, errorContent);
                     throw new InvalidOperationException($"Token endpoint error: {tokenResponse.StatusCode}");
                 }
 
-                string tokenContent = await tokenResponse.Content.ReadAsStringAsync();
+                string tokenContent = await tokenResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 JsonDocument tokenJson = JsonDocument.Parse(tokenContent);
                 string? accessToken = tokenJson.RootElement.GetProperty("access_token").GetString();
                 string? idToken = tokenJson.RootElement.GetProperty("id_token").GetString();
@@ -131,11 +103,11 @@ namespace INSS.Platform.Auth.API.Services
         }
 
         /// <inheritdoc/>
-        public async Task<(bool isValid, string nonce, string csrfToken, string userId, string clientUrl)> ValidateAndExtractStateAsync(string token)
+        public async Task<(bool isValid, string nonce, string csrfToken, string userId, string clientUrl)> ValidateAndExtractRequestStateAsync(string token)
         {
-            GetStateValidationConfig(out string clientId, out string authorizeUri);
+            GetOneLoginStateValidationConfig(out string clientId, out string authorizeUri);
 
-            string publicKeyPem = await GetStateJwtPublicKey();
+            string publicKeyPem = await GetStateJwtPublicKeyAsync().ConfigureAwait(false);
 
             RSA rsa = RSA.Create();
             rsa.ImportFromPem(publicKeyPem);
@@ -172,6 +144,43 @@ namespace INSS.Platform.Auth.API.Services
                 _logger.LogError(ex, "Request state validation failed on callback.");
                 return (false, string.Empty, string.Empty, string.Empty, string.Empty);
             }
+        }
+
+        #region Jwt Creation & Claim Validation
+
+
+        /// <summary>
+        /// Creates a JWT security token for authentication flows.
+        /// </summary>
+        /// <param name="clientId">The client ID to use as the issuer of the token.</param>
+        /// <param name="audienceEndpoint">The audience endpoint for which the token is intended.</param>
+        /// <param name="privateKeyPem">The PEM-formatted RSA private key used to sign the token.</param>
+        /// <param name="claims">A dictionary containing the claims to include in the token.</param>
+        /// <returns>
+        /// The serialized JWT token as a string.
+        /// </returns>
+        private static string CreateJwtSecurityTokenAsync(string clientId, string audienceEndpoint, string privateKeyPem, Dictionary<string, object> claims)
+        {
+            RSA rsa = RSA.Create();
+            rsa.ImportFromPem(privateKeyPem);
+
+            RsaSecurityKey privateKey = new(rsa);
+            SigningCredentials credentials = new(privateKey, SecurityAlgorithms.RsaSha256);
+
+            JwtSecurityTokenHandler handler = new();
+            JwtSecurityToken token = handler.CreateJwtSecurityToken(
+                issuer: clientId,
+                audience: audienceEndpoint,
+                subject: new ClaimsIdentity(),
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddMinutes(5),
+                issuedAt: DateTime.UtcNow,
+                signingCredentials: credentials,
+                encryptingCredentials: null,
+                claimCollection: claims
+            );
+
+            return handler.WriteToken(token);
         }
 
         /// <summary>
@@ -228,42 +237,68 @@ namespace INSS.Platform.Auth.API.Services
             }
         }
 
-        /// <summary>
-        /// Creates a JWT security token for authentication flows.
-        /// </summary>
-        /// <param name="clientId">The client ID to use as the issuer of the token.</param>
-        /// <param name="audienceEndpoint">The audience endpoint for which the token is intended.</param>
-        /// <param name="privateKeyPem">The PEM-formatted RSA private key used to sign the token.</param>
-        /// <param name="claims">A dictionary containing the claims to include in the token.</param>
-        /// <returns>
-        /// The serialized JWT token as a string.
-        /// </returns>
-        private static string CreateJwtSecurityTokenAsync(string clientId, string audienceEndpoint, string privateKeyPem, Dictionary<string, object> claims)
+        #endregion
+
+        #region Claims & Parameter Builders
+
+        private async Task<Dictionary<string, object>> BuildAuthorizeRequestClaimsAsync(string clientUrl, string userId)
         {
-            RSA rsa = RSA.Create();
-            rsa.ImportFromPem(privateKeyPem);
+            const string responseType = "code";
+            string nonce = Guid.NewGuid().ToString("N");
+            string csrfToken = Guid.NewGuid().ToString("N");
+            string vtr = "[\"Cl.Cm\"]";
+            string uiLocales = "en"; // English only for now but Welsh is supported by OneLogin as cy
 
-            RsaSecurityKey privateKey = new(rsa);
-            SigningCredentials credentials = new(privateKey, SecurityAlgorithms.RsaSha256);
+            GetOneLoginAuthorizeRequestConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri);
 
-            JwtSecurityTokenHandler handler = new();
-            JwtSecurityToken token = handler.CreateJwtSecurityToken(
-                issuer: clientId,
-                audience: audienceEndpoint,
-                subject: new ClaimsIdentity(),
-                notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddMinutes(5),
-                issuedAt: DateTime.UtcNow,
-                signingCredentials: credentials,
-                encryptingCredentials: null, 
-                claimCollection: claims
-            );
+            Dictionary<string, object> stateClaims = BuildAuthorizeRequestStateClaims(clientUrl, userId, nonce, csrfToken);
+            string statePrivateKeyPem = await GetStateJwtPrivateKeyAsync().ConfigureAwait(false);
+            string stateToken = CreateJwtSecurityTokenAsync(clientId, authorizeUri, statePrivateKeyPem, stateClaims);
 
-            return handler.WriteToken(token);
+            return new Dictionary<string, object>
+            {
+                { "response_type", responseType },
+                { "scope", scopes },
+                { "client_id", clientId },
+                { "state", stateToken },
+                { "redirect_uri", redirectUri },
+                { "nonce", nonce },
+                { "aud", authorizeUri },
+                { "iss", clientId },
+                { "ui_locales", uiLocales },
+                { "vtr", vtr },
+            };
         }
 
         /// <summary>
-        /// Builds the claims dictionary for the request state JWT used in OneLogin authentication flows.
+        /// Builds the parameters required for the token request to the OneLogin token endpoint.
+        /// </summary>
+        /// <param name="authorizationCode">The authorization code received from the authentication provider.</param>
+        /// <param name="tokenUri">The URI of the token endpoint.</param>
+        /// <param name="redirectUri">The redirect URI registered with the authentication provider.</param>
+        /// <param name="clientId">The client ID used for authentication.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains a dictionary of token request parameters.
+        /// </returns>
+        private async Task<Dictionary<string, string>> BuildTokenRequestParametersAsync(string authorizationCode, string tokenUri, string redirectUri, string clientId)
+        {
+            Dictionary<string, object> clientAssertionClaims = BuildClientAssertionClaims(clientId, tokenUri);
+            string privateKeyPem = await GetQueryJwtPrivateKeyAsync().ConfigureAwait(false);
+            string clientAssertionToken = CreateJwtSecurityTokenAsync(clientId, tokenUri, privateKeyPem, clientAssertionClaims);
+
+            return new Dictionary<string, string>
+            {
+                { "client_id", clientId },
+                { "client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer" },
+                { "client_assertion", clientAssertionToken },
+                { "code", authorizationCode },
+                { "redirect_uri", redirectUri },
+                { "grant_type", "authorization_code" }
+            };
+        }
+
+        /// <summary>
+        /// Builds the claims dictionary for the authorize request state JWT, used in OneLogin authentication flows.
         /// </summary>
         /// <param name="clientUrl">The client application's URL to redirect back after authentication.</param>
         /// <param name="userId">The unique identifier of the user initiating the login.</param>
@@ -272,7 +307,7 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A dictionary containing the claims for the request state JWT.
         /// </returns>
-        private static Dictionary<string, object> GetRequestStateClaims(string clientUrl, string userId, string nonce, string csrfToken)
+        private static Dictionary<string, object> BuildAuthorizeRequestStateClaims(string clientUrl, string userId, string nonce, string csrfToken)
         {
             return new Dictionary<string, object>
             {
@@ -293,7 +328,7 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A dictionary containing the claims for the client assertion.
         /// </returns>
-        private static Dictionary<string, object> GetClientAssertionClaims(string clientId, string audienceEndpoint)
+        private static Dictionary<string, object> BuildClientAssertionClaims(string clientId, string audienceEndpoint)
         {
             return new Dictionary<string, object>
             {
@@ -306,6 +341,10 @@ namespace INSS.Platform.Auth.API.Services
             };
         }
 
+        #endregion
+
+        #region Key Retrieval
+
         /// <summary>
         /// Retrieves the private key used for signing query JWTs.
         /// Attempts to read the key from a configured file; if not found, retrieves it from Azure Key Vault.
@@ -313,11 +352,11 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
         /// </returns>
-        private async Task<string> GetQueryJwtPrivateKey()
+        private async Task<string> GetQueryJwtPrivateKeyAsync()
         {
             string keyFileName = _appConfig["OneLogin:QueryJwtPrivateKeyFile"] ?? string.Empty;
 
-            string keyFromFile = await GetKeyFromFileIfConfigured(keyFileName);
+            string keyFromFile = await GetKeyFromFileIfConfiguredAsync(keyFileName).ConfigureAwait(false);
 
             return !string.IsNullOrWhiteSpace(keyFromFile)
                 ? keyFromFile
@@ -331,11 +370,11 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
         /// </returns>
-        private async Task<string> GetStateJwtPrivateKey()
+        private async Task<string> GetStateJwtPrivateKeyAsync()
         {
             string keyFileName = _appConfig["OneLogin:StateJwtPrivateKeyFile"] ?? string.Empty;
 
-            string keyFromFile = await GetKeyFromFileIfConfigured(keyFileName);
+            string keyFromFile = await GetKeyFromFileIfConfiguredAsync(keyFileName).ConfigureAwait(false);
 
             return !string.IsNullOrWhiteSpace(keyFromFile)
                 ? keyFromFile
@@ -349,11 +388,11 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the public key as a PEM-formatted string.
         /// </returns>
-        private async Task<string> GetStateJwtPublicKey()
+        private async Task<string> GetStateJwtPublicKeyAsync()
         {
             string keyFileName = _appConfig["OneLogin:StateJwtPublicKeyFile"] ?? string.Empty;
 
-            string keyFromFile = await GetKeyFromFileIfConfigured(keyFileName);
+            string keyFromFile = await GetKeyFromFileIfConfiguredAsync(keyFileName).ConfigureAwait(false);
 
             return !string.IsNullOrWhiteSpace(keyFromFile) 
                 ? keyFromFile 
@@ -367,7 +406,7 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the key as a string, or an empty string if not found.
         /// </returns>
-        private static async Task<string> GetKeyFromFileIfConfigured(string keyFileName)
+        private static async Task<string> GetKeyFromFileIfConfiguredAsync(string keyFileName)
         {
             if (!string.IsNullOrWhiteSpace(keyFileName))
             {
@@ -401,7 +440,7 @@ namespace INSS.Platform.Auth.API.Services
 
             try
             {
-                KeyVaultSecret secret = await client.GetSecretAsync(secretName);
+                KeyVaultSecret secret = await client.GetSecretAsync(secretName).ConfigureAwait(false);
                 _logger.LogInformation("Successfully retrieved secret: {SecretName}", secretName);
                 return secret.Value;
             }
@@ -412,7 +451,11 @@ namespace INSS.Platform.Auth.API.Services
             }
         }
 
-        private void GetOneLoginAuthorizeConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri)
+        #endregion
+
+        #region Configuration Retrieval
+
+        private void GetOneLoginAuthorizeRequestConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri)
         {
             clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
             authorizeUri = _appConfig["OneLogin:AuthorizeUri"] ?? string.Empty;
@@ -429,7 +472,7 @@ namespace INSS.Platform.Auth.API.Services
             }
         }
 
-        private void GetOneLoginTokenConfig(out string clientId, out string tokenUri, out string redirectUri)
+        private void GetOneLoginTokenRequestConfig(out string clientId, out string tokenUri, out string redirectUri)
         {
             clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
             tokenUri = _appConfig["OneLogin:TokenUri"] ?? string.Empty;
@@ -444,7 +487,7 @@ namespace INSS.Platform.Auth.API.Services
             }
         }
 
-        private void GetStateValidationConfig(out string clientId, out string authorizeUri)
+        private void GetOneLoginStateValidationConfig(out string clientId, out string authorizeUri)
         {
             clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
             authorizeUri = _appConfig["OneLogin:AuthorizeUri"] ?? string.Empty;
@@ -456,5 +499,7 @@ namespace INSS.Platform.Auth.API.Services
                 throw new InvalidOperationException("OneLogin configuration is missing.");
             }
         }
+
+        #endregion
     }
 }

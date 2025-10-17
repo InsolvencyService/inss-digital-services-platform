@@ -35,11 +35,11 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="userId">The optional user ID.</param>
         /// <returns>A redirect to the login URL or an error response.</returns>
         [HttpGet("login")]
-        public async Task<IActionResult> Login([FromQuery] string clientUrl, string userId = "")
+        public async Task<IActionResult> LoginAsync([FromQuery] string clientUrl, string userId = "")
         {
             _logger.LogInformation("Redirect to Login Login Page and pass the UserId (optional):{UserId} and ClientUrl(required):{ClientUrl} so that the process will seamlessly return to the client application after login and token request.", userId, clientUrl);
 
-            (bool success, IActionResult actionResult, string loginUrl) = await TryGetLoginRedirectUrl(clientUrl, userId).ConfigureAwait(false);
+            (bool success, IActionResult actionResult, string loginUrl) = await TryGetLoginRedirectUrlAsync(clientUrl, userId).ConfigureAwait(false);
             
             return success 
                 ? Redirect(loginUrl)  
@@ -53,11 +53,11 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="userId">The optional user ID.</param>
         /// <returns>The login URL or an error response.</returns>
         [HttpGet("login-url")]
-        public async Task<IActionResult> GetLoginUrl([FromQuery] string clientUrl, string userId = "")
+        public async Task<IActionResult> GetLoginUrlAsync([FromQuery] string clientUrl, string userId = "")
         {
             _logger.LogInformation("Get Login Url which will include the UserId (optional):{UserId} and ClientUrl(required):{ClientUrl} so that the process will seamlessly return to the client application after login and token request.", userId, clientUrl);
 
-            (bool success, IActionResult actionResult, string loginUrl) = await TryGetLoginRedirectUrl(clientUrl, userId).ConfigureAwait(false);
+            (bool success, IActionResult actionResult, string loginUrl) = await TryGetLoginRedirectUrlAsync(clientUrl, userId).ConfigureAwait(false);
 
             return success
                 ? Ok(loginUrl)
@@ -71,7 +71,7 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="state">The state value used to correlate the request.</param>
         /// <returns>A redirect to the client application or an error response.</returns>
         [HttpGet("callback")]
-        public async Task<IActionResult> CallBack([FromQuery] string? code, string? state)
+        public async Task<IActionResult> CallBackAsync([FromQuery] string? code, string? state)
         {
             _logger.LogInformation("Callback from Login, code: {Code} - state: {State}", code, state);
 
@@ -81,7 +81,7 @@ namespace INSS.Platform.Auth.API.Controllers
                 return value;
             }
 
-            (bool isStateValid, string nonce, string csrfToken, string userId, string clientUrl) = await _authService.ValidateAndExtractStateAsync(state!).ConfigureAwait(false);
+            (bool isStateValid, string nonce, string csrfToken, string userId, string clientUrl) = await _authService.ValidateAndExtractRequestStateAsync(state!).ConfigureAwait(false);
             // NOTE: We currently do not have a way to validate the csrfToken here because we do not have access to a state cache or the user's session or cookies.
             // Waiting on Wayne to authorize the design for CSRF protection in this flow. 
             _logger.LogInformation("Extracted state parameters - Nonce: {Nonce}, CSRF Token: {CsrfToken}, UserId: {UserId}, ClientUrl: {ClientUrl}", nonce, csrfToken, userId, clientUrl);
@@ -140,13 +140,13 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="userId">The user ID.</param>
         /// <param name="loginUrl">The generated login URL.</param>
         /// <returns>A tuple indicating success and the corresponding action result.</returns>
-        private async Task<(bool result, IActionResult actionResult, string loginUrl)> TryGetLoginRedirectUrl(string clientUrl, string userId)
+        private async Task<(bool result, IActionResult actionResult, string loginUrl)> TryGetLoginRedirectUrlAsync(string clientUrl, string userId)
         {
             string loginUrl;
 
             try
             {
-                loginUrl = await _authService.GetLoginRedirectUrl(clientUrl, userId).ConfigureAwait(false);
+                loginUrl = await _authService.GetLoginRedirectUrlAsync(clientUrl, userId).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
