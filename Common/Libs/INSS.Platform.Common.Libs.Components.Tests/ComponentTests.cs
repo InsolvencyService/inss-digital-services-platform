@@ -173,7 +173,7 @@ namespace INSS.Platform.Common.Libs.Components.Tests
             );
         }
 
-        private class TestModel
+        private sealed class TestModel
         {
             public string? Text { get; set; } = "Initial";
         }
