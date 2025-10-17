@@ -2,7 +2,9 @@
 using Azure.Security.KeyVault.Secrets;
 using INSS.Platform.Auth.API.Dto;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -34,33 +36,26 @@ namespace INSS.Platform.Auth.API.Services
         }
 
         /// <inheritdoc/>
-        public string GetLoginRedirectUrl(string stateCacheKey)
+        public async Task<string> GetLoginRedirectUrl(string clientUrl, string userId)
         {
-            string clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
-            string baseUrl = _appConfig["OneLogin:SignInUri"] ?? string.Empty;
-            string scopes = _appConfig["OneLogin:Scopes"] ?? string.Empty;
-            string redirectUri = _appConfig["OneLogin:RedirectUri"] ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(clientId) ||
-                    string.IsNullOrWhiteSpace(baseUrl) ||
-                    string.IsNullOrWhiteSpace(scopes) ||
-                    string.IsNullOrWhiteSpace(redirectUri))
-            {
-                _logger.LogError("OneLogin configuration is incomplete in appsettings.");
-                throw new InvalidOperationException("OneLogin configuration is missing.");
-            }
+            GetOneLoginAuthorizeConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri);
 
             string responseType = "code";
-            string nonce = "aEwkamaos5B";
-            string vtr = "[\"Cl.Cm\"]"; // Medium authentication
+            string nonce = Guid.NewGuid().ToString("N");
+            string csrfToken = Guid.NewGuid().ToString("N");
+            string vtr = "[\"Cl.Cm\"]";
             string uiLocales = "en";
 
-            Dictionary<string, string> queryParams = new ()
+            string privateKeyPem = await GetStateJwtPrivateKey().ConfigureAwait(false);
+            string stateToken = CreateJwtSecurityTokenAsync(clientId, authorizeUri, privateKeyPem, GetRequestStateClaims(clientUrl, userId, nonce, csrfToken));
+
+            Dictionary<string, string> queryParams = new()
             {
                 { "client_id", clientId },
                 { "redirect_uri", redirectUri },
                 { "response_type", responseType },
                 { "scope", scopes },
-                { "state", stateCacheKey },
+                { "state", stateToken },
                 { "nonce", nonce },
                 { "vtr", vtr },
                 { "ui_locales", uiLocales }
@@ -69,35 +64,27 @@ namespace INSS.Platform.Auth.API.Services
             string queryString = string.Join("&", queryParams.Select(kvp =>
                 $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
 
-            return $"{baseUrl}?{queryString}";
+            return $"{authorizeUri}?{queryString}";
         }
 
-        /// <inheritdoc/>
-        public async Task<TokenData> HandleCallbackAsync(string authorizationCode)
-        {
-            string clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
-            string tokenUri = _appConfig["OneLogin:TokenUri"] ?? string.Empty;
-            string redirectUri = _appConfig["OneLogin:RedirectUri"] ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(clientId) ||
-                string.IsNullOrWhiteSpace(tokenUri) ||
-                string.IsNullOrWhiteSpace(redirectUri))
-            {
-                _logger.LogError("OneLogin configuration is incomplete in appsettings, ClientId or TokenUri values are missing.");
-                throw new InvalidOperationException("OneLogin configuration is missing.");
-            }
+        /// <inheritdoc/>
+        public async Task<TokenData> HandleCallbackAsync(string authorizationCode, string nonce)
+        {
+            GetOneLoginTokenConfig(out string clientId, out string tokenUri, out string redirectUri);
 
             HttpClient httpClient = _httpClientFactory.CreateClient();
             try
             {
-                string clientAssertion = await GenerateClientAssertionAsync(clientId, tokenUri);
+                string privateKeyPem = await GetQueryJwtPrivateKey().ConfigureAwait(false);
+                string clientAssertionToken = CreateJwtSecurityTokenAsync(clientId, tokenUri, privateKeyPem, GetClientAssertionClaims(clientId, tokenUri));
 
                 HttpResponseMessage tokenResponse = await httpClient.PostAsync(tokenUri,
                     new FormUrlEncodedContent(new Dictionary<string, string>
                     {
                         { "client_id", clientId },
                         { "client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer" },
-                        { "client_assertion", clientAssertion },
+                        { "client_assertion", clientAssertionToken },
                         { "code", authorizationCode },
                         { "redirect_uri", redirectUri },
                         { "grant_type", "authorization_code" }
@@ -114,6 +101,8 @@ namespace INSS.Platform.Auth.API.Services
                 JsonDocument tokenJson = JsonDocument.Parse(tokenContent);
                 string? accessToken = tokenJson.RootElement.GetProperty("access_token").GetString();
                 string? idToken = tokenJson.RootElement.GetProperty("id_token").GetString();
+
+                ValidateIdTokenClaims(idToken, nonce);
 
                 return new TokenData
                 {
@@ -141,48 +130,245 @@ namespace INSS.Platform.Auth.API.Services
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Generates a client assertion JWT for authenticating with the OneLogin token endpoint.
-        /// </summary>
-        /// <param name="clientId">The client ID for OneLogin.</param>
-        /// <param name="tokenEndpoint">The token endpoint URI.</param>
-        /// <returns>A JWT string for client assertion.</returns>
-        private async Task<string> GenerateClientAssertionAsync(string clientId, string tokenEndpoint)
+        /// <inheritdoc/>
+        public async Task<(bool isValid, string nonce, string csrfToken, string userId, string clientUrl)> ValidateAndExtractStateAsync(string token)
         {
-            string pemKey = await GetClientAssertionKey();
+            GetStateValidationConfig(out string clientId, out string authorizeUri);
+
+            string publicKeyPem = await GetStateJwtPublicKey();
+
             RSA rsa = RSA.Create();
-            rsa.ImportFromPem(pemKey);
+            rsa.ImportFromPem(publicKeyPem);
 
-            RsaSecurityKey securityKey = new (rsa);
-            SigningCredentials credentials = new (securityKey, SecurityAlgorithms.RsaSha256);
+            RsaSecurityKey publicKey = new(rsa);
 
-            JwtSecurityTokenHandler handler = new ();
+            TokenValidationParameters validationParameters = new()
+            {
+                ValidateIssuer = true,
+                ValidIssuer = clientId,
+                ValidateAudience = true,
+                ValidAudience = authorizeUri,
+                ValidateLifetime = true,
+                IssuerSigningKey = publicKey,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.FromMinutes(5)
+            };
+
+            JwtSecurityTokenHandler handler = new();
+            try
+            {
+                handler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                IEnumerable<Claim> claims = GetClaimsFromJwt(token);
+                string nonce = claims.FirstOrDefault(c => c.Type == "nonce")?.Value ?? string.Empty;
+                string csrfToken = claims.FirstOrDefault(c => c.Type == "csrfToken")?.Value ?? string.Empty;
+                string userId = claims.FirstOrDefault(c => c.Type == "userId")?.Value ?? string.Empty;
+                string clientUrl = claims.FirstOrDefault(c => c.Type == "clientUrl")?.Value ?? string.Empty;
+
+                return (true, nonce, csrfToken, userId, clientUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Request state validation failed on callback.");
+                return (false, string.Empty, string.Empty, string.Empty, string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Validates the claims in the provided ID token against the expected nonce and CSRF token.
+        /// </summary>
+        /// <param name="idToken">The ID token to validate.</param>
+        /// <param name="expectedNonce">The expected nonce value.</param>
+        /// <exception cref="SecurityTokenException">
+        /// Thrown if the nonce or CSRF token claims are missing or do not match the expected values.
+        /// </exception>
+        private void ValidateIdTokenClaims(string? idToken, string expectedNonce)
+        {
+            IEnumerable<Claim> claims = GetClaimsFromJwt(idToken ?? string.Empty);
+
+            Claim? nonceClaim = claims.FirstOrDefault(c => c.Type == "nonce");
+            if (nonceClaim == null || nonceClaim.Value != expectedNonce)
+            {
+                _logger.LogError("ID token nonce claim is missing or does not match the expected nonce.");
+                throw new SecurityTokenException("Invalid ID token nonce.");
+            }
+        }
+
+        /// <summary>
+        /// Extracts claims from a JWT token string.
+        /// </summary>
+        /// <param name="jwtToken">The JWT token as a string.</param>
+        /// <returns>
+        /// An enumerable collection of <see cref="Claim"/> objects extracted from the token.
+        /// Returns an empty collection if the token is null, empty, or invalid.
+        /// </returns>
+        private IEnumerable<Claim> GetClaimsFromJwt(string jwtToken)
+        {
+            if (string.IsNullOrWhiteSpace(jwtToken))
+            {
+                _logger.LogError("Error getting claims. JWT token is null or empty.");
+                return [];
+            }
+
+            try
+            {
+                JwtSecurityTokenHandler handler = new();
+                JwtSecurityToken token = handler.ReadJwtToken(jwtToken);
+                return token.Claims;
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex, "Error getting claims. Invalid JWT token format.");
+                return [];
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting claims. Unexpected error while parsing JWT token.");
+                return [];
+            }
+        }
+
+        /// <summary>
+        /// Creates a JWT security token for authentication flows.
+        /// </summary>
+        /// <param name="clientId">The client ID to use as the issuer of the token.</param>
+        /// <param name="audienceEndpoint">The audience endpoint for which the token is intended.</param>
+        /// <param name="privateKeyPem">The PEM-formatted RSA private key used to sign the token.</param>
+        /// <param name="claims">A dictionary containing the claims to include in the token.</param>
+        /// <returns>
+        /// The serialized JWT token as a string.
+        /// </returns>
+        private static string CreateJwtSecurityTokenAsync(string clientId, string audienceEndpoint, string privateKeyPem, Dictionary<string, object> claims)
+        {
+            RSA rsa = RSA.Create();
+            rsa.ImportFromPem(privateKeyPem);
+
+            RsaSecurityKey privateKey = new(rsa);
+            SigningCredentials credentials = new(privateKey, SecurityAlgorithms.RsaSha256);
+
+            JwtSecurityTokenHandler handler = new();
             JwtSecurityToken token = handler.CreateJwtSecurityToken(
                 issuer: clientId,
-                audience: tokenEndpoint,
-                subject: new System.Security.Claims.ClaimsIdentity(),
+                audience: audienceEndpoint,
+                subject: new ClaimsIdentity(),
                 notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.AddMinutes(5),
                 issuedAt: DateTime.UtcNow,
                 signingCredentials: credentials,
-                encryptingCredentials: null, // Fix: add this argument for required parameter
-                claimCollection: new Dictionary<string, object>
-                {
-                    { "sub", clientId },
-                    { "jti", Guid.NewGuid().ToString() }
-                }
+                encryptingCredentials: null, 
+                claimCollection: claims
             );
 
             return handler.WriteToken(token);
         }
 
         /// <summary>
-        /// Retrieves the client assertion key from a file or Azure Key Vault.
+        /// Builds the claims dictionary for the request state JWT used in OneLogin authentication flows.
         /// </summary>
-        /// <returns>The PEM-encoded client assertion key.</returns>
-        private async Task<string> GetClientAssertionKey()
+        /// <param name="clientUrl">The client application's URL to redirect back after authentication.</param>
+        /// <param name="userId">The unique identifier of the user initiating the login.</param>
+        /// <param name="nonce">A unique nonce value for the authentication request.</param>
+        /// <param name="csrfToken">A CSRF token to protect against cross-site request forgery.</param>
+        /// <returns>
+        /// A dictionary containing the claims for the request state JWT.
+        /// </returns>
+        private static Dictionary<string, object> GetRequestStateClaims(string clientUrl, string userId, string nonce, string csrfToken)
         {
-            string? keyFileName = _appConfig["OneLogin:ClientAssertionKeyFile"];
+            return new Dictionary<string, object>
+            {
+                { "csrfToken", csrfToken },
+                { "nonce", nonce },
+                { "userId", userId},
+                { "clientUrl", clientUrl},
+                { "iat", EpochTime.GetIntDate(DateTime.UtcNow).ToString(CultureInfo.InvariantCulture) },
+                { "exp", EpochTime.GetIntDate(DateTime.UtcNow.AddMinutes(5)).ToString(CultureInfo.InvariantCulture) },
+            };
+        }
+
+        /// <summary>
+        /// Builds the claims dictionary for the client assertion JWT.
+        /// </summary>
+        /// <param name="clientId">The client ID to use as issuer and subject.</param>
+        /// <param name="audienceEndpoint">The audience endpoint for the token.</param>
+        /// <returns>
+        /// A dictionary containing the claims for the client assertion.
+        /// </returns>
+        private static Dictionary<string, object> GetClientAssertionClaims(string clientId, string audienceEndpoint)
+        {
+            return new Dictionary<string, object>
+            {
+                { "aud", audienceEndpoint },
+                { "iss", clientId },
+                { "sub", clientId },
+                { "jti", Guid.NewGuid().ToString() },
+                { "iat", EpochTime.GetIntDate(DateTime.UtcNow).ToString(CultureInfo.InvariantCulture) },
+                { "exp", EpochTime.GetIntDate(DateTime.UtcNow.AddMinutes(5)).ToString(CultureInfo.InvariantCulture) },
+            };
+        }
+
+        /// <summary>
+        /// Retrieves the private key used for signing query JWTs.
+        /// Attempts to read the key from a configured file; if not found, retrieves it from Azure Key Vault.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
+        /// </returns>
+        private async Task<string> GetQueryJwtPrivateKey()
+        {
+            string keyFileName = _appConfig["OneLogin:QueryJwtPrivateKeyFile"] ?? string.Empty;
+
+            string keyFromFile = await GetKeyFromFileIfConfigured(keyFileName);
+
+            return !string.IsNullOrWhiteSpace(keyFromFile)
+                ? keyFromFile
+                : await GetKeyVaultSecretAsync("QueryJwtPrivateKey").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Retrieves the private key used for signing state JWTs.
+        /// Attempts to read the key from a configured file; if not found, retrieves it from Azure Key Vault.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
+        /// </returns>
+        private async Task<string> GetStateJwtPrivateKey()
+        {
+            string keyFileName = _appConfig["OneLogin:StateJwtPrivateKeyFile"] ?? string.Empty;
+
+            string keyFromFile = await GetKeyFromFileIfConfigured(keyFileName);
+
+            return !string.IsNullOrWhiteSpace(keyFromFile)
+                ? keyFromFile
+                : await GetKeyVaultSecretAsync("StateJwtPrivateKey").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Retrieves the public key used for validating state JWTs.
+        /// Attempts to read the key from a configured file; if not found, retrieves it from Azure Key Vault.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains the public key as a PEM-formatted string.
+        /// </returns>
+        private async Task<string> GetStateJwtPublicKey()
+        {
+            string keyFileName = _appConfig["OneLogin:StateJwtPublicKeyFile"] ?? string.Empty;
+
+            string keyFromFile = await GetKeyFromFileIfConfigured(keyFileName);
+
+            return !string.IsNullOrWhiteSpace(keyFromFile) 
+                ? keyFromFile 
+                : await GetKeyVaultSecretAsync("StateJwtPublicKey").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Attempts to read a key from a file if a file name is configured.
+        /// </summary>
+        /// <param name="keyFileName">The name of the key file.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains the key as a string, or an empty string if not found.
+        /// </returns>
+        private static async Task<string> GetKeyFromFileIfConfigured(string keyFileName)
+        {
             if (!string.IsNullOrWhiteSpace(keyFileName))
             {
                 string keyFilePath = Path.Combine(AppContext.BaseDirectory, keyFileName);
@@ -192,7 +378,7 @@ namespace INSS.Platform.Auth.API.Services
                 }
             }
 
-            return await GetKeyVaultSecretAsync("ClientAssertionKey").ConfigureAwait(false);
+            return string.Empty;
         }
 
         /// <summary>
@@ -223,6 +409,51 @@ namespace INSS.Platform.Auth.API.Services
             {
                 _logger.LogError(ex, "Error retrieving secret: {SecretName}", secretName);
                 throw;
+            }
+        }
+
+        private void GetOneLoginAuthorizeConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri)
+        {
+            clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
+            authorizeUri = _appConfig["OneLogin:AuthorizeUri"] ?? string.Empty;
+            scopes = _appConfig["OneLogin:Scopes"] ?? string.Empty;
+            redirectUri = _appConfig["OneLogin:RedirectUri"] ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(clientId) ||
+                    string.IsNullOrWhiteSpace(authorizeUri) ||
+                    string.IsNullOrWhiteSpace(scopes) ||
+                    string.IsNullOrWhiteSpace(redirectUri))
+            {
+                _logger.LogError("OneLogin configuration is incomplete in appsettings, ClientId, AuthorizeUri, Scopes or RedirectUri values are missing.");
+                throw new InvalidOperationException("OneLogin configuration is missing.");
+            }
+        }
+
+        private void GetOneLoginTokenConfig(out string clientId, out string tokenUri, out string redirectUri)
+        {
+            clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
+            tokenUri = _appConfig["OneLogin:TokenUri"] ?? string.Empty;
+            redirectUri = _appConfig["OneLogin:RedirectUri"] ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(clientId) ||
+                string.IsNullOrWhiteSpace(tokenUri) ||
+                string.IsNullOrWhiteSpace(redirectUri))
+            {
+                _logger.LogError("OneLogin configuration is incomplete in appsettings, ClientId, TokenUri or RedirectUri values are missing.");
+                throw new InvalidOperationException("OneLogin configuration is missing.");
+            }
+        }
+
+        private void GetStateValidationConfig(out string clientId, out string authorizeUri)
+        {
+            clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
+            authorizeUri = _appConfig["OneLogin:AuthorizeUri"] ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(clientId) ||
+                string.IsNullOrWhiteSpace(authorizeUri))
+            {
+                _logger.LogError("OneLogin configuration is incomplete in appsettings, ClientId or AuthorizeUri values are missing.");
+                throw new InvalidOperationException("OneLogin configuration is missing.");
             }
         }
     }

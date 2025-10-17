@@ -8,22 +8,24 @@ namespace INSS.Platform.Auth.API.Services
     public interface IAuthService
     {
         /// <summary>
-        /// Generates the login redirect URL for the authentication provider using the specified state cache key.
+        /// Generates the login redirect URL for the authentication provider.
         /// </summary>
-        /// <param name="stateCacheKey">The unique key used to track authentication state.</param>
+        /// <param name="clientUrl">The client application's URL to redirect back after authentication.</param>
+        /// <param name="userId">The unique identifier of the user initiating the login.</param>
         /// <returns>
-        /// The URL to redirect the user to the authentication provider's login page.
+        /// A task that represents the asynchronous operation. The task result contains the login redirect URL as a string.
         /// </returns>
-        string GetLoginRedirectUrl(string stateCacheKey);
+        Task<string> GetLoginRedirectUrl(string clientUrl, string userId);
 
         /// <summary>
-        /// Handles the authentication callback using the provided authorization code and state.
+        /// Handles the authentication callback by exchanging the authorization code for tokens.
         /// </summary>
         /// <param name="authorizationCode">The authorization code received from the authentication provider.</param>
+        /// <param name="nonce">The nonce value used to associate a client session with an ID token.</param>
         /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains <c>true</c> if authentication was successful; otherwise, <c>false</c>.
+        /// A task that represents the asynchronous operation. The task result contains the token data returned from the authentication provider.
         /// </returns>
-        Task<TokenData> HandleCallbackAsync(string authorizationCode);
+        Task<TokenData> HandleCallbackAsync(string authorizationCode, string nonce);
 
         /// <summary>
         /// Logs out the user using the provided ID token.
@@ -41,5 +43,14 @@ namespace INSS.Platform.Auth.API.Services
         /// A task that represents the asynchronous operation. The task result contains <c>true</c> if the user is authenticated; otherwise, <c>false</c>.
         /// </returns>
         Task<bool> IsAuthenticatedAsync();
+
+        /// <summary>
+        /// Validates the state token and extracts authentication parameters.
+        /// </summary>
+        /// <param name="token">The state token to validate.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains a tuple with validation status, nonce, CSRF token, user ID, and client URL.
+        /// </returns>
+        Task<(bool isValid, string nonce, string csrfToken, string userId, string clientUrl)> ValidateAndExtractStateAsync(string token);
     }
 }

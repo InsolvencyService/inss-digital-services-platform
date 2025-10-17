@@ -16,19 +16,16 @@ namespace INSS.Platform.Auth.API.Controllers
     {
         private readonly ILogger<AuthenticationController> _logger;
         private readonly IAuthService _authService;
-        private readonly IStateCache _stateCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationController"/> class.
         /// </summary>
         /// <param name="logger">The logger instance.</param>
         /// <param name="authService">The authentication service.</param>
-        /// <param name="stateCache">The state cache service.</param>
-        public AuthenticationController(ILogger<AuthenticationController> logger, IAuthService authService, IStateCache stateCache)
+        public AuthenticationController(ILogger<AuthenticationController> logger, IAuthService authService)
         {
             _logger = logger;
             _authService = authService;
-            _stateCache = stateCache;
         }
 
         /// <summary>
@@ -38,11 +35,11 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="userId">The optional user ID.</param>
         /// <returns>A redirect to the login URL or an error response.</returns>
         [HttpGet("login")]
-        public IActionResult Login([FromQuery] string clientUrl, string userId = "")
+        public async Task<IActionResult> Login([FromQuery] string clientUrl, string userId = "")
         {
             _logger.LogInformation("Redirect to Login Login Page and pass the UserId (optional):{UserId} and ClientUrl(required):{ClientUrl} so that the process will seamlessly return to the client application after login and token request.", userId, clientUrl);
 
-            (bool success, IActionResult actionResult) = TryGetLoginRedirectUrl(clientUrl, userId, out string loginUrl);
+            (bool success, IActionResult actionResult, string loginUrl) = await TryGetLoginRedirectUrl(clientUrl, userId).ConfigureAwait(false);
             
             return success 
                 ? Redirect(loginUrl)  
@@ -56,11 +53,11 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="userId">The optional user ID.</param>
         /// <returns>The login URL or an error response.</returns>
         [HttpGet("login-url")]
-        public IActionResult GetLoginUrl([FromQuery] string clientUrl, string userId = "")
+        public async Task<IActionResult> GetLoginUrl([FromQuery] string clientUrl, string userId = "")
         {
             _logger.LogInformation("Get Login Url which will include the UserId (optional):{UserId} and ClientUrl(required):{ClientUrl} so that the process will seamlessly return to the client application after login and token request.", userId, clientUrl);
 
-            (bool success, IActionResult actionResult) = TryGetLoginRedirectUrl(clientUrl, userId, out string loginUrl);
+            (bool success, IActionResult actionResult, string loginUrl) = await TryGetLoginRedirectUrl(clientUrl, userId).ConfigureAwait(false);
 
             return success
                 ? Ok(loginUrl)
@@ -78,16 +75,26 @@ namespace INSS.Platform.Auth.API.Controllers
         {
             _logger.LogInformation("Callback from Login, code: {Code} - state: {State}", code, state);
 
-            (bool isValid, IActionResult? value) = ValidateCallbackParameters(code, state, out RequestState? requestState);
+            (bool isValid, IActionResult? value) = ValidateCallbackParameters(code, state);
             if (!isValid)
             {
                 return value;
             }
 
+            (bool isStateValid, string nonce, string csrfToken, string userId, string clientUrl) = await _authService.ValidateAndExtractStateAsync(state!).ConfigureAwait(false);
+            // NOTE: We currently do not have a way to validate the csrfToken here because we do not have access to a state cache or the user's session or cookies.
+            // Waiting on Wayne to authorize the design for CSRF protection in this flow. 
+            _logger.LogInformation("Extracted state parameters - Nonce: {Nonce}, CSRF Token: {CsrfToken}, UserId: {UserId}, ClientUrl: {ClientUrl}", nonce, csrfToken, userId, clientUrl);
+            if (!isStateValid)
+            {
+                _logger.LogError("Invalid state parameter in the callback request.");
+                return BadRequest("Invalid state parameter.");
+            }
+
             TokenData tokenData;
             try
             {
-                tokenData = await _authService.HandleCallbackAsync(code!).ConfigureAwait(false);
+                tokenData = await _authService.HandleCallbackAsync(code!, nonce).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -95,28 +102,8 @@ namespace INSS.Platform.Auth.API.Controllers
                 return StatusCode(500, "Authentication callback failed.");
             }
 
-            Uri clientUrl = BuildClientUrl(requestState!, tokenData);
-            return Redirect(clientUrl.ToString());
-        }
-
-        /// <summary>
-        /// Stores the client URL and user ID in the state cache and returns the generated state key.
-        /// </summary>
-        /// <param name="clientUrl">The client application's URL.</param>
-        /// <param name="userId">The user ID.</param>
-        /// <returns>The generated state key.</returns>
-        private string SetStateCache(string clientUrl, string userId)
-        {
-            string stateKey = Guid.NewGuid().ToString("N");
-            RequestState requestState = new()
-            {
-                ClientUrl = clientUrl,
-                UserId = userId
-            };
-
-            _stateCache.Store(stateKey.ToString(), requestState);
-
-            return stateKey;
+            Uri clientUri = BuildClientUrl(clientUrl, userId, tokenData);
+            return Redirect(clientUri.ToString());
         }
 
         /// <summary>
@@ -125,14 +112,14 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="requestState">The request state containing client URL and user ID.</param>
         /// <param name="tokenData">The token data to include in the URL.</param>
         /// <returns>The constructed client URL.</returns>
-        private static Uri BuildClientUrl(RequestState requestState, TokenData tokenData)
+        private static Uri BuildClientUrl(string clientUrl, string userId, TokenData tokenData)
         {
-            UriBuilder uriBuilder = new(requestState.ClientUrl);
+            UriBuilder uriBuilder = new(clientUrl);
             NameValueCollection query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
-            if (!string.IsNullOrEmpty(requestState.UserId))
+            if (!string.IsNullOrEmpty(userId))
             {
-                query["userId"] = requestState.UserId;
+                query["userId"] = userId;
             }
 
             if (tokenData != null)
@@ -153,54 +140,48 @@ namespace INSS.Platform.Auth.API.Controllers
         /// <param name="userId">The user ID.</param>
         /// <param name="loginUrl">The generated login URL.</param>
         /// <returns>A tuple indicating success and the corresponding action result.</returns>
-        private (bool result, IActionResult actionResult) TryGetLoginRedirectUrl(string clientUrl, string userId, out string loginUrl)
+        private async Task<(bool result, IActionResult actionResult, string loginUrl)> TryGetLoginRedirectUrl(string clientUrl, string userId)
         {
-            loginUrl = string.Empty;
+            string loginUrl;
 
             try
             {
-                string stateCacheKey = SetStateCache(clientUrl, userId);
-                loginUrl = _authService.GetLoginRedirectUrl(stateCacheKey);
+                loginUrl = await _authService.GetLoginRedirectUrl(clientUrl, userId).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error generating login url.");
-                return (result: false, actionResult: StatusCode(500, "login url generation failed."));
+                return (false, StatusCode(500, "login url generation failed."), string.Empty);
             }
 
-            return (result: true, actionResult: Ok());
+            return (true, Ok(), loginUrl);
         }
 
         /// <summary>
-        /// Validates the callback parameters and retrieves the associated request state from the cache.
+        /// Validates the callback parameters received from the authentication provider.
         /// </summary>
-        /// <param name="code">The authorization code.</param>
-        /// <param name="state">The state key.</param>
-        /// <param name="requestState">The retrieved request state object.</param>
-        /// <returns>A tuple indicating validity and the corresponding action result.</returns>
-        private (bool isValid, IActionResult actionResult) ValidateCallbackParameters(string? code, string? state, out RequestState? requestState)
+        /// <param name="code">The authorization code received from the provider.</param>
+        /// <param name="state">The state value used to correlate the request.</param>
+        /// <returns>
+        /// A tuple containing:
+        /// <c>isValid</c>: <c>true</c> if both parameters are present; otherwise, <c>false</c>.
+        /// <c>actionResult</c>: An <see cref="IActionResult"/> representing the validation result.
+        /// </returns>
+        private (bool isValid, IActionResult actionResult) ValidateCallbackParameters(string? code, string? state)
         {
-            requestState = null;
-
             if (string.IsNullOrEmpty(code))
             {
                 _logger.LogError("Authorization code is missing in the callback request.");
-                return (isValid: false, actionResult: BadRequest("Authorization code is missing."));
+                return (false, BadRequest("Authorization code is missing."));
             }
 
             if (string.IsNullOrEmpty(state))
             {
                 _logger.LogError("State is missing in the callback request.");
-                return (isValid: false, actionResult: BadRequest("State code is missing."));
+                return (false, BadRequest("State code is missing."));
             }
 
-            if (!_stateCache.TryGet(state, out requestState) || requestState == null)
-            {
-                _logger.LogError("State object not found in cache with Key: {State}", state);
-                return (isValid: false, actionResult: BadRequest("State object not found in cache."));
-            }
-
-            return (isValid: true, actionResult: Ok());
+            return (true, Ok());
         }
     }
 }

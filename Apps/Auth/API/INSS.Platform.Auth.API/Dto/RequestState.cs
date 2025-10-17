@@ -14,5 +14,7 @@
         /// Gets or sets the URL of the client application initiating the request.
         /// </summary>
         public string ClientUrl { get; set; } = string.Empty;
+
+        public string Nonce { get; set; } = string.Empty;
     }
 }
