@@ -84,6 +84,8 @@ dotnet_diagnostic.CA1707.severity = warning
 dotnet_style_allow_multiple_blank_lines_experimental = false:warning
 
 dotnet_diagnostic.IDE0055.severity = none
+dotnet_diagnostic.BL0008.severity = none
+dotnet_diagnostic.CS8618.severity = none
 
 dotnet_diagnostic.IDE0022.severity = none
 
