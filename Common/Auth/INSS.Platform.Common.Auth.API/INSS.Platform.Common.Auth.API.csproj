@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\INSS.Platform.Common.Auth.Contracts\INSS.Platform.Common.Auth.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Keys\jwt_private_key.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

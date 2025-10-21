@@ -1,6 +1,9 @@
-﻿@inject NavigationManager Navigation
-@inject IConfiguration Configuration
-@inject IHttpContextAccessor HttpContextAccessor
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.Extensions.Primitives
+
+@inject ILogger<GovUKLoginHeader> Logger
+@inject NavigationManager Navigation
+@inject IAuthenticationHelper AuthenticationHelper
 
 <header class="rebranded-cross-service-header" data-module="one-login-header">
     <div class="rebranded-one-login-header" data-one-login-header-nav>
@@ -53,28 +56,34 @@
             <nav aria-label="GOV.UK One Login" class="rebranded-one-login-header__nav" data-open-class="rebranded-one-login-header__nav--open" id="one-login-header__nav">
                 <ul class="rebranded-one-login-header__nav__list">
 
-                    @if (!IsSignedIn)
+                    @if (!isSignedIn)
                     {
-
                         <li class="rebranded-one-login-header__nav__list-item">
-                            <a class="rebranded-one-login-header__nav__link" href="@LoginUrl">
-                            <span class="rebranded-one-login-header__nav__link-content">
-
-                                <svg focusable="false" xmlns="http://www.w3.org/2000/svg" width="15" height="30" viewBox="150 150 250 250" fill="currentcolor" class="rebranded-cross-service-header__logo rebranded-cross-service-header__logo--nav" aria-hidden="true">
-                                    <path d="M300.002 312.261C249.445 312.261 208.346 271.165 208.346 220.608C208.346 170.051 249.445 128.954 300.002 128.954C350.559 128.954 391.655 170.051 391.655 220.608C391.655 271.165 350.559 312.261 300.002 312.261ZM300.002 170.892C272.673 170.892 250.389 193.175 250.389 220.504C250.389 247.83 272.673 270.113 300.002 270.113C327.33 270.113 349.611 247.83 349.611 220.504C349.611 193.175 327.33 170.892 300.002 170.892Z" />
-                                    <path d="M221.275 471.046H179.231V365.202H420.769V407.246H221.275V471.046Z" />
-                                </svg>
-                                GOV.UK One Login
-                            </span>
-                        </a>
-                    </li>
+                            <form @formname="login-form" method="post" @onsubmit="OnLogin">
+                                <button type="submit" class="rebranded-one-login-header__nav__link">
+                                    <AntiforgeryToken />
+                                    <span class="rebranded-one-login-header__nav__link-content">
+                                        <svg focusable="false" xmlns="http://www.w3.org/2000/svg" width="15" height="30" viewBox="150 150 250 250" fill="currentcolor" class="rebranded-cross-service-header__logo rebranded-cross-service-header__logo--nav" aria-hidden="true">
+                                            <path d="M300.002 312.261C249.445 312.261 208.346 271.165 208.346 220.608C208.346 170.051 249.445 128.954 300.002 128.954C350.559 128.954 391.655 170.051 391.655 220.608C391.655 271.165 350.559 312.261 300.002 312.261ZM300.002 170.892C272.673 170.892 250.389 193.175 250.389 220.504C250.389 247.83 272.673 270.113 300.002 270.113C327.33 270.113 349.611 247.83 349.611 220.504C349.611 193.175 327.33 170.892 300.002 170.892Z" />
+                                            <path d="M221.275 471.046H179.231V365.202H420.769V407.246H221.275V471.046Z" />
+                                        </svg>
+                                        GOV.UK One Login
+                                    </span>
+                                </button>
+                            </form>
+                        </li>
                     }
                     else
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
-                            <a class="rebranded-one-login-header__nav__link" href="@SignOutUrl">
-                                <span class="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">Sign out</span>
-                            </a>
+                            <form @formname="logout-form" method="post" @onsubmit="OnLogout">
+                                <button type="submit" class="rebranded-one-login-header__nav__link">
+                                    <AntiforgeryToken />
+                                    <span class="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">
+                                        Sign out
+                                    </span>
+                                </button>
+                            </form>
                         </li>
                     }
                 </ul>
@@ -83,91 +92,150 @@
 
     </div>
 
-    <!-- Navigation -->
-    <section aria-label="Service information"
-             class="govuk-service-navigation"
-             data-module="govuk-service-navigation">
+    <NavigationBar IsSignedIn="@isSignedIn" />
 
-        <div class="govuk-width-container">
-            <div class="govuk-service-navigation__container">
-                <span class="govuk-service-navigation__service-name">
-                    <span class="govuk-service-navigation__text">User Management</span>
-                </span>
-
-                <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
-                    <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
-                        Menu
-                    </button>
-
-                    <ul class="govuk-service-navigation__list" id="navigation">
-                        <li class="govuk-service-navigation__item">
-                            <a class="govuk-service-navigation__link" href="#navigation1">
-                                Debt Relief Order
-                            </a>
-                        </li>
-                        <li class="govuk-service-navigation__item govuk-service-navigation__item--active">
-                            <a class="govuk-service-navigation__link" href="#navigation2" aria-current="true">
-                                <strong class="govuk-service-navigation__active-fallback">Director Conduct Report Service</strong>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </section>
-    <!-- End of service navigation -->
 </header>
 
 
-@code{
+@code {
 
-    public string SignOutUrl { get; set; } = string.Empty;
-
-    private string LoginUrl { get; set; } = string.Empty;
-
-    private bool IsSignedIn { get; set; } = false;
-
-
+    private bool isSignedIn = false;
 
     protected override void OnInitialized()
     {
-        LoginUrl = GenerateOneLoginUrl();
+        Logger.LogInformation("Initializing GOV.UK Login Header Component.");
 
-        var uri = new Uri(Navigation.Uri);
-        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-        var AccessToken = query.TryGetValue("access_token", out var token) ? token.ToString() : null;
-        IsSignedIn = !string.IsNullOrEmpty(AccessToken);
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        string? userId = string.Empty;
+
+        if (IsExistingUserLoginCallback(uri) || IsNewUserLoginCallback(uri, out userId))
+        {
+            if (QueryHelper.TryGetQueryValue(query, "csrf_token", out string? csrfToken)
+                && csrfToken is not null
+                && !AuthenticationHelper.ValidateCsrfTokenInCookie(csrfToken))
+            {
+                string error = Uri.EscapeDataString("Failed to validate the request. The request may have timed out, try again or come back later.");
+                Navigation.NavigateTo($"/error/{error}", true);
+                return;
+            }
+
+            AuthenticationHelper.PersistAuthTokenDataInCookie(Navigation.ToAbsoluteUri(Navigation.Uri));
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // Register the new user id against OneLogin Id
+                // Note the OneLogin Id is the sub claim in the access token;
+
+            }
+        }
+
+
+        isSignedIn = AuthenticationHelper.IsUserSignedIn();
+
+        // Do we need this?
+        // if(!IsSignedIn && !IsRootPath())
+        // {
+        //     Navigation.NavigateTo("/", true);
+        // }
     }
 
-    public string GenerateOneLoginUrl()
+    /// <summary>
+    /// Handles the login process when the user initiates a login action.
+    /// Creates and persists a CSRF token, builds a <see cref="LoginRequest"/>,
+    /// and calls the authentication helper to perform the login.
+    /// </summary>
+    private async Task OnLogin()
     {
-        var baseUrl = Configuration["OIDC:SignInUri"] ?? string.Empty;
-        var clientId = Configuration["OIDC:ClientId"] ?? string.Empty;
-        var redirectUri = Configuration["OIDC:RedirectUri"] ?? string.Empty;
-        var scopes = Configuration["OIDC:Scopes"] ?? string.Empty;
+        Logger.LogInformation("User initiated login.");
 
-        var responseType = "code";
-        var state = Guid.NewGuid().ToString(); // CSRF protection
-        var nonce = Guid.NewGuid().ToString(); // Replay protection
-        var vtr = "[\"Cl.Cm\"]"; // Medium authentication
-        var uiLocales = "en";
+        string csrfToken = AuthenticationHelper.CreateAndPersistCsrfTokenInCookie();
 
-        var queryParams = new Dictionary<string, string>
+        LoginRequest loginRequest = new ()
         {
-            { "client_id", clientId },
-            { "redirect_uri", redirectUri },
-            { "response_type", responseType },
-            { "scope", scopes },
-            { "state", state },
-            { "nonce", nonce },
-            { "vtr", vtr },
-            { "ui_locales", uiLocales }
+            ClientUrl = Navigation.Uri,
+            CsrfToken = csrfToken,
+            UserId = GetUserIdIfIsNewUserRequest(Navigation.ToAbsoluteUri(Navigation.Uri))
         };
 
-        var queryString = string.Join("&", queryParams.Select(kvp =>
-            $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}"));
-
-        return $"{baseUrl}?{queryString}";
+        await AuthenticationHelper.LoginAsync(loginRequest).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Handles the logout process when the user initiates a logout action.
+    /// Retrieves the authentication token from the cookie and calls the authentication helper to perform the logout.
+    /// </summary>
+    private async Task OnLogout()
+    {
+        Logger.LogInformation("User initiated logout.");
+
+        if (AuthenticationHelper.TryGetAuthTokenDataFromCookie(out var tokenData) && tokenData is not null)
+        {
+            await AuthenticationHelper.LogoutAsync(new LogoutRequest
+            {
+                IdToken = tokenData.IdToken,
+            }).ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Extracts the user ID from the query string if the request is for onboarding a new user.
+    /// </summary>
+    /// <param name="uri">The URI to parse for query parameters.</param>
+    /// <returns>The user ID if present and valid for a new user request; otherwise, an empty string.</returns>
+    private string GetUserIdIfIsNewUserRequest(Uri uri)
+    {
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        if (QueryHelper.TryGetQueryValue(query, "user_id", out string? userId) && !QueryHelper.TryGetQueryValue(query, "access_token", out var _))
+        {
+            Logger.LogInformation("New user request for user with ID: {UserId}", userId);
+            return userId!;
+        }
+
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Determines if this is a callback from the Login process which indicates an existing user login.
+    /// Checks for the presence of an "access_token" query parameter and the absence of a "user_id" parameter.
+    /// </summary>
+    /// <param name="uri">The URI to inspect for query parameters.</param>
+    /// <returns>True if the URI represents an existing user login callback; otherwise, false.</returns>
+    private bool IsExistingUserLoginCallback(Uri uri)
+    {
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        bool result = QueryHelper.TryGetQueryValue(query, "access_token", out _) && !QueryHelper.TryGetQueryValue(query, "user_id", out var _);
+
+        Logger.LogInformation("IsExistingUserLoginCallback: {Result}", result);
+        return result;
+    }
+
+    /// <summary>
+    /// Determines if this is a callback from the Login process which indicates a new user login.
+    /// Checks for the presence of both "access_token" and "user_id" query parameters.
+    /// </summary>
+    /// <param name="uri">The URI to inspect for query parameters.</param>
+    /// <param name="userId">Outputs the user ID if present in the query string; otherwise, an empty string.</param>
+    /// <returns>True if the URI represents a new user login callback; otherwise, false.</returns>
+    private bool IsNewUserLoginCallback(Uri uri, out string? userId)
+    {
+        userId = string.Empty;
+
+        Dictionary<string, StringValues> query = QueryHelpers.ParseQuery(uri.Query);
+        bool result = QueryHelper.TryGetQueryValue(query, "access_token", out _) && QueryHelper.TryGetQueryValue(query, "user_id", out userId);
+
+        Logger.LogInformation("IsExistingUserLoginCallback: {Result}, User ID: {userId}", result, userId);
+        return result;
+    }
+
+
+    /// <summary>
+    /// Determines whether the current navigation path is the root path.
+    /// </summary>
+    /// <returns>True if the current path is root; otherwise, false.</returns>
+    private bool IsRootPath()
+    {
+        var relativePath = Navigation.ToBaseRelativePath(Navigation.Uri);
+        return string.IsNullOrEmpty(relativePath) || relativePath == "/";
+    }
 }

@@ -1,20 +1,26 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using INSS.Platform.Auth.API.Dto;
+using INSS.Platform.Common.Auth.Contracts.Request;
+using INSS.Platform.Common.Auth.Contracts.Response;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Web;
 
-namespace INSS.Platform.Auth.API.Services
+namespace INSS.Platform.Common.Auth.API.Services
 {
     /// <summary>
     /// Provides authentication services for OneLogin integration.
     /// </summary>
     public class OneLoginAuthService : IAuthService
     {
+        private const string HttpClientName = "AuthenticationClient";
+
         private readonly ILogger<OneLoginAuthService> _logger;
         private readonly IConfiguration _appConfig;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -36,11 +42,11 @@ namespace INSS.Platform.Auth.API.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string> GetLoginRedirectUrlAsync(string clientUrl, string userId)
+        public async Task<string> GetLoginRedirectUrlAsync(LoginRequest loginRequest)
         {
             GetOneLoginAuthorizeRequestConfig(out string clientId, out string authorizeUri, out string scopes, out string _);
 
-            Dictionary<string, object> requestClaims = await BuildAuthorizeRequestClaimsAsync(clientUrl, userId).ConfigureAwait(false);
+            Dictionary<string, object> requestClaims = await BuildAuthorizeRequestClaimsAsync(loginRequest).ConfigureAwait(false);
 
             string queryPrivateKeyPem = await GetQueryJwtPrivateKeyAsync().ConfigureAwait(false);
             string securedRequest = CreateJwtSecurityTokenAsync(clientId, authorizeUri, queryPrivateKeyPem, requestClaims);
@@ -52,11 +58,46 @@ namespace INSS.Platform.Auth.API.Services
         }
 
         /// <inheritdoc/>
+        public async Task<bool> LogoutAsync(LogoutRequest logoutRequest)
+        {
+            HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
+            try
+            {
+                UriBuilder uriBuilder = new(_appConfig["OneLogin:LogoutUri"] ?? string.Empty);
+                NameValueCollection query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+                query["id_token_hint"] = logoutRequest.IdToken;
+                uriBuilder.Query = query.ToString();
+
+                HttpResponseMessage logoutResponse = await httpClient.GetAsync(uriBuilder.Uri).ConfigureAwait(false);
+
+                if(logoutResponse.StatusCode == HttpStatusCode.Found) 
+                {
+                    return true;
+                }
+
+                if (!logoutResponse.IsSuccessStatusCode)
+                {
+                    string errorContent = await logoutResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    _logger.LogError("Logout endpoint returned error: {StatusCode} - {Content}", logoutResponse.StatusCode, errorContent);
+                    throw new InvalidOperationException($"Logout endpoint error: {logoutResponse.StatusCode}");
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling user logout.");
+                return false;
+            }
+        }
+
+        /// <inheritdoc/>
         public async Task<TokenData> HandleCallbackAsync(string authorizationCode, string nonce)
         {
             GetOneLoginTokenRequestConfig(out string clientId, out string tokenUri, out string redirectUri);
 
-            HttpClient httpClient = _httpClientFactory.CreateClient();
+            HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
             try
             {
                 FormUrlEncodedContent urlEncodedContent = new(await BuildTokenRequestParametersAsync(authorizationCode, tokenUri, redirectUri, clientId).ConfigureAwait(false));
@@ -80,26 +121,13 @@ namespace INSS.Platform.Auth.API.Services
                 {
                     AccessToken = accessToken ?? string.Empty,
                     IdToken = idToken ?? string.Empty,
-                    ExpiresIn = tokenJson.RootElement.GetProperty("expires_in").GetInt32()
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error handling authentication callback.");
-                throw;
+                return new ();
             }
-        }
-
-        /// <inheritdoc/>
-        public Task<bool> IsAuthenticatedAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public Task LogOutAsync(string idToken)
-        {
-            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
@@ -241,17 +269,25 @@ namespace INSS.Platform.Auth.API.Services
 
         #region Claims & Parameter Builders
 
-        private async Task<Dictionary<string, object>> BuildAuthorizeRequestClaimsAsync(string clientUrl, string userId)
+        /// <summary>
+        /// Builds the claims dictionary for the authorize request JWT, used in OneLogin authentication flows.
+        /// </summary>
+        /// <param name="loginRequest">
+        /// The login request containing the client URL, user ID, and CSRF token.
+        /// </param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. The task result contains a dictionary of claims for the authorize request JWT.
+        /// </returns>
+        private async Task<Dictionary<string, object>> BuildAuthorizeRequestClaimsAsync(LoginRequest loginRequest)
         {
             const string responseType = "code";
             string nonce = Guid.NewGuid().ToString("N");
-            string csrfToken = Guid.NewGuid().ToString("N");
             string vtr = "[\"Cl.Cm\"]";
             string uiLocales = "en"; // English only for now but Welsh is supported by OneLogin as cy
 
             GetOneLoginAuthorizeRequestConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri);
 
-            Dictionary<string, object> stateClaims = BuildAuthorizeRequestStateClaims(clientUrl, userId, nonce, csrfToken);
+            Dictionary<string, object> stateClaims = BuildAuthorizeRequestStateClaims(loginRequest.ClientUrl, loginRequest.UserId, nonce, loginRequest.CsrfToken);
             string statePrivateKeyPem = await GetStateJwtPrivateKeyAsync().ConfigureAwait(false);
             string stateToken = CreateJwtSecurityTokenAsync(clientId, authorizeUri, statePrivateKeyPem, stateClaims);
 
@@ -455,6 +491,16 @@ namespace INSS.Platform.Auth.API.Services
 
         #region Configuration Retrieval
 
+        /// <summary>
+        /// Retrieves OneLogin configuration values required for the authorize request.
+        /// </summary>
+        /// <param name="clientId">Outputs the OneLogin client ID.</param>
+        /// <param name="authorizeUri">Outputs the OneLogin authorize URI.</param>
+        /// <param name="scopes">Outputs the OneLogin scopes.</param>
+        /// <param name="redirectUri">Outputs the OneLogin redirect URI.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if any required configuration value is missing.
+        /// </exception>
         private void GetOneLoginAuthorizeRequestConfig(out string clientId, out string authorizeUri, out string scopes, out string redirectUri)
         {
             clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
@@ -472,6 +518,15 @@ namespace INSS.Platform.Auth.API.Services
             }
         }
 
+        /// <summary>
+        /// Retrieves OneLogin configuration values required for the token request.
+        /// </summary>
+        /// <param name="clientId">Outputs the OneLogin client ID.</param>
+        /// <param name="tokenUri">Outputs the OneLogin token URI.</param>
+        /// <param name="redirectUri">Outputs the OneLogin redirect URI.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if any required configuration value is missing.
+        /// </exception>
         private void GetOneLoginTokenRequestConfig(out string clientId, out string tokenUri, out string redirectUri)
         {
             clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;
@@ -487,6 +542,14 @@ namespace INSS.Platform.Auth.API.Services
             }
         }
 
+        /// <summary>
+        /// Retrieves OneLogin configuration values required for state validation.
+        /// </summary>
+        /// <param name="clientId">Outputs the OneLogin client ID.</param>
+        /// <param name="authorizeUri">Outputs the OneLogin authorize URI.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if any required configuration value is missing.
+        /// </exception>
         private void GetOneLoginStateValidationConfig(out string clientId, out string authorizeUri)
         {
             clientId = _appConfig["OneLogin:ClientId"] ?? string.Empty;

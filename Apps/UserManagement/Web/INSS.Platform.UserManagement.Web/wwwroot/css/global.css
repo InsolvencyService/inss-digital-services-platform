@@ -2,3 +2,36 @@
     border: 2px solid #d4351c;
     box-shadow: none;
 }
+
+button.rebranded-one-login-header__nav__link {
+    font-weight: 600 !important;
+    background: none;
+    border: none;
+    height: 100%;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    display: inline;
+}
+
+button.rebranded-one-login-header__nav__link:hover {
+    text-decoration: none;
+}
+
+button.rebranded-one-login-header__nav__link:hover:after,
+button.rebranded-one-login-header__nav__link:active:after {
+    display: block;
+    background-color: #ffffff;
+}
+
+.rebranded-one-login-header__nav__list-item {
+    align-items: stretch !important;
+}
+
+@media (min-width: 40.0625em) {
+button.rebranded-one-login-header__nav__link {
+        position: relative;
+        padding: 15px 0;
+    }
+}

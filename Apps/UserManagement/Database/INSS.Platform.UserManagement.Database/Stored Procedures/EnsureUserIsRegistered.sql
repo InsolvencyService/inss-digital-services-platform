@@ -13,7 +13,7 @@ BEGIN
 	IF NOT EXISTS (
 		SELECT	1
 		FROM [dbo].[User]
-		WHERE Id = @UserId
+		WHERE Id = @userId
 	)
 	BEGIN
 		RAISERROR('User does not exist.', 16, 1);
@@ -25,7 +25,7 @@ BEGIN
 		SELECT	1
 		FROM	[dbo].[User] U LEFT JOIN [dbo].[UserIdentity] UI
 					ON U.UserIdentityId = UI.Id
-		WHERE	U.Id = @UserId
+		WHERE	U.Id = @userId
 				AND UI.IdentityProviderUserId IS NOT NULL
 				AND UI.IdentityProviderUserId <> @identityProviderUserId
 	)
@@ -39,7 +39,7 @@ BEGIN
 		SELECT	1
 		FROM	[dbo].[User] U LEFT JOIN [dbo].[UserIdentity] UI
 					ON U.UserIdentityId = UI.Id
-		WHERE	U.Id = @UserId
+		WHERE	U.Id = @userId
 				AND UI.Id IS NOT NULL
 	)
 	BEGIN
@@ -52,7 +52,7 @@ BEGIN
 
 		UPDATE	[dbo].[User]
 		SET		UserIdentityId = @userIdentityId
-		WHERE	Id = @UserId
+		WHERE	Id = @userId
 
 		PRINT 'User Identity Has Been Created'
 	END

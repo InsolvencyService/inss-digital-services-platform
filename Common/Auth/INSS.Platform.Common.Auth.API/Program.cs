@@ -1,7 +1,7 @@
-using INSS.Platform.Auth.API.Services;
+using INSS.Platform.Common.Auth.API.Services;
 using System.Diagnostics.CodeAnalysis;
 
-namespace INSS.Platform.Auth.API
+namespace INSS.Platform.Common.Auth.API
 {
     /// <summary>
     /// Entry point for the Auth API service.
@@ -20,11 +20,15 @@ namespace INSS.Platform.Auth.API
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
-            builder.Services.AddHttpClient();
+            builder.Services.AddHttpClient("AuthenticationClient")
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AllowAutoRedirect = false
+            });
+
             builder.Services.AddApplicationInsightsTelemetry();
 
             builder.Services.AddScoped<IAuthService, OneLoginAuthService>();
-            builder.Services.AddSingleton<IStateCache, StateCache>();
 
             WebApplication app = builder.Build();
 

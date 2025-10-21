@@ -1,19 +1,20 @@
 ﻿@page "/"
-@inject IHttpContextAccessor HttpContextAccessor
-@inject NavigationManager Navigation
+@inject ILogger<GovUKLoginHeader> Logger
+@inject IAuthenticationHelper AuthenticationHelper
+
 
 <PageTitle>Insolvency Service</PageTitle>
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper" id="main-content">
-        <h1 class="govuk-heading-xl">One Login Demo</h1>
+        <h1 class="govuk-heading-xl">User Management</h1>
 
-        <p class="govuk-body">Welcome to the Insolvency Service One Login demo application.</p>
-        <p class="govuk-body">This application is built using Blazor and demonstrates the ability to login to the application using One Login.</p>
+        <p class="govuk-body">Welcome to the Insolvency Service - User Management Application.</p>
 
-        @if (IsSignedIn)
+        @if (isSignedIn)
         {
             <h3 class="govuk-heading-m"><b>You are logged in!</b></h3>
+            <p class="govuk-body"><b>Your OneLogin Provider User Id is:</b> @providerLoginId</p>
             <p class="govuk-body">To sign out, please <b>click the 'sign out' button</b> in the top right corner.</p>
         }
         else
@@ -25,13 +26,17 @@
 </div>
 
 @code {
-    private bool IsSignedIn { get; set; } = false;
+    private bool isSignedIn { get; set; } = false;
+    private string providerLoginId = string.Empty;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var uri = new Uri(Navigation.Uri);
-        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-        var AccessToken = query.TryGetValue("access_token", out var token) ? token.ToString() : null;
-        IsSignedIn = !string.IsNullOrEmpty(AccessToken);
+        await base.OnInitializedAsync().ConfigureAwait(false);
+
+        Logger.LogInformation("Initializing Home Page Component.");
+
+        isSignedIn = AuthenticationHelper.IsUserSignedIn();
+
+        providerLoginId = AuthenticationHelper.GetLoginProviderUserId() ?? string.Empty;
     }
 }

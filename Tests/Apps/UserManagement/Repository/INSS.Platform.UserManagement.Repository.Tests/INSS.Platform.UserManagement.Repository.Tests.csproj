@@ -37,8 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Apps\UserManagement\Core\INSS.Platform.UserManagement.Core\INSS.Platform.UserManagement.Core.csproj" />
-    <ProjectReference Include="..\..\..\..\Apps\UserManagement\Repository\INSS.Platform.UserManagement.Repository\INSS.Platform.UserManagement.Repository.csproj" />
+    <ProjectReference Include="..\..\..\..\..\Apps\UserManagement\Core\INSS.Platform.UserManagement.Core\INSS.Platform.UserManagement.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\..\Apps\UserManagement\Repository\INSS.Platform.UserManagement.Repository\INSS.Platform.UserManagement.Repository.csproj" />
   </ItemGroup>
 
   <ItemGroup>
