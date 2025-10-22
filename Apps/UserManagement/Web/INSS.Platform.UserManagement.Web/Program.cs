@@ -1,9 +1,28 @@
 using INSS.Platform.UserManagement.Web.Components;
+using INSS.Platform.UserManagement.Web.Components.Helpers;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Services.AddScoped<IAuthenticationHelper, AuthenticationHelper>();
+
+builder.Services.AddHttpClient("AuthenticationClient", client =>
+{
+    string? baseUrl = builder.Configuration["Auth:BaseApiUrl"];
+    if (!string.IsNullOrEmpty(baseUrl))
+    {
+        client.BaseAddress = new Uri(baseUrl);
+    }
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    AllowAutoRedirect = false
+});
 
 WebApplication app = builder.Build();
 

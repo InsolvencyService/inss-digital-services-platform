@@ -1,0 +1,37 @@
+﻿@page "/sign-out"
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager Navigation
+
+<PageTitle>Insolvency Service</PageTitle>
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content">
+        <h1 class="govuk-heading-xl">One Login Demo</h1>
+
+        <h3 class="govuk-heading-m"><b>You have been signed out!</b></h3>
+
+        <p class="govuk-body"><b>To get started, please click the login button in the top right corner.</b></p>
+
+    </main>
+</div>
+
+@code{
+    protected override void OnInitialized()
+    {
+        // Delete the "AccessToken" cookie
+        HttpContextAccessor.HttpContext?.Response.Cookies.Delete("AccessToken");
+
+        var idToken = HttpContextAccessor.HttpContext?.Request.Cookies["IdToken"];
+        if(idToken != null)
+        {
+            // Redirect to the identity provider's logout endpoint
+            var logoutUrl = $"https://oidc.integration.account.gov.uk/logout?id_token_hint={idToken}&post_logout_redirect_uri={Navigation.BaseUri}";
+            Navigation.NavigateTo(logoutUrl);
+        }
+        else
+        {
+            // If no IdToken cookie, just navigate to home page
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+    }
+}

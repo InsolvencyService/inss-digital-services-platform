@@ -32,7 +32,7 @@ BEGIN
 				ON A.[Id] = AR.[ApplicationId]
 			INNER JOIN [dbo].[Role] R
 				ON R.Id = AR.[RoleId]
-	WHERE	OU.[UserId] = @UserId
+	WHERE	OU.[UserId] = @userId
 			AND UI.[IdentityProviderId] = @identityProviderId
 	ORDER BY 
 			O.[Id], U.[Id], A.[Id], R.[Id]
