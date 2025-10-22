@@ -87,6 +87,9 @@ dotnet_diagnostic.IDE0055.severity = none
 dotnet_diagnostic.BL0008.severity = none
 dotnet_diagnostic.CS8618.severity = none
 
+dotnet_diagnostic.IDE0022.severity = none
+
+
 [*Tests.cs]
 # Allow underscores in methods in test files.
 dotnet_diagnostic.CA1707.severity = none

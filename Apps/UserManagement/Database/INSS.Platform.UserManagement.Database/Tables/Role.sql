@@ -18,3 +18,7 @@ ALTER TABLE [dbo].[Role]
 ADD CONSTRAINT [DF_Role_Created] DEFAULT (GETUTCDATE()) FOR [Created];
 GO
 
+ALTER TABLE [dbo].[Role]
+ADD CONSTRAINT [UQ_Role_Name] UNIQUE ([Name]);
+GO
+
