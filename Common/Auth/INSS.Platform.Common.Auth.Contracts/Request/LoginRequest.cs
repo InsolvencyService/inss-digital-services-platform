@@ -1,5 +1,8 @@
-﻿namespace INSS.Platform.Common.Auth.Contracts.Request
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace INSS.Platform.Common.Auth.Contracts.Request
 {
+    [ExcludeFromCodeCoverage(Justification ="DTO's, there is no business logic to test.")]
     /// <summary>
     /// Represents a login request containing CSRF token, client URL, and user identifier.
     /// </summary>

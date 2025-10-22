@@ -1,5 +1,8 @@
-﻿namespace INSS.Platform.Common.Auth.Contracts.Request
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace INSS.Platform.Common.Auth.Contracts.Request
 {
+    [ExcludeFromCodeCoverage(Justification = "DTO's, there is no business logic to test.")]
     /// <summary>
     /// Represents a request to log out a user by providing their ID token.
     /// </summary>

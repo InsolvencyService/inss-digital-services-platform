@@ -31,6 +31,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.UserManagemen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.UserManagement.Repository.Tests", "Tests\Apps\UserManagement\Repository\INSS.Platform.UserManagement.Repository.Tests\INSS.Platform.UserManagement.Repository.Tests.csproj", "{A204986E-9429-273B-B3BC-3837D557C56F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth.Tests", "Auth.Tests", "{44F38F10-35F4-4984-BD64-CC156C649140}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.Common.Auth.API.Tests", "Tests\Common\Auth\INSS.Platform.Common.Auth.API.Tests\INSS.Platform.Common.Auth.API.Tests.csproj", "{37682D22-F512-427E-977C-0F5077410369}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,10 @@ Global
 		{A204986E-9429-273B-B3BC-3837D557C56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A204986E-9429-273B-B3BC-3837D557C56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A204986E-9429-273B-B3BC-3837D557C56F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37682D22-F512-427E-977C-0F5077410369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37682D22-F512-427E-977C-0F5077410369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37682D22-F512-427E-977C-0F5077410369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37682D22-F512-427E-977C-0F5077410369}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +100,7 @@ Global
 		{98C4130D-D80A-4EC4-8D4B-88B2B931B000} = {D854FABD-3E31-46A2-B80D-AF3BE0437173}
 		{F3F3483F-2E44-FB7B-C4F8-FF4641A2A7AF} = {0543599E-FCB0-4969-B8BD-564DD663CCA2}
 		{A204986E-9429-273B-B3BC-3837D557C56F} = {0543599E-FCB0-4969-B8BD-564DD663CCA2}
+		{37682D22-F512-427E-977C-0F5077410369} = {44F38F10-35F4-4984-BD64-CC156C649140}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {167097F9-BB82-490E-AA4D-6FDB4FBA4CE9}

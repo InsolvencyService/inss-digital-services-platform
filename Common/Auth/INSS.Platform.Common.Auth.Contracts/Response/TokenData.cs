@@ -1,5 +1,8 @@
-﻿namespace INSS.Platform.Common.Auth.Contracts.Response
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace INSS.Platform.Common.Auth.Contracts.Response
 {
+    [ExcludeFromCodeCoverage(Justification = "DTO's, there is no business logic to test.")]
     /// <summary>
     /// Data transfer object that represents token information returned from an authentication provider.
     /// </summary>
