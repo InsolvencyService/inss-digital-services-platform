@@ -1,0 +1,78 @@
+﻿@*
+    This component relates to the GDS Design System 'Address' pattern. 
+    https://design-system.service.gov.uk/patterns/addresses/
+*@
+
+@using System.Linq.Expressions
+
+@inherits ControlsBase
+
+@if (hasValidationError)
+{
+    <ErrorSummary Name="@GenerateElementName(Name)" Errors="@summaryErrors" />
+}
+
+<fieldset class="govuk-fieldset" id="@GenerateElementId()">
+    <InputHeadingText Name="address-heading" SmallText="false">What is your address?</InputHeadingText>   
+    <InputValidated Id="@idAddress1" text="Address line 1" Name="@($"{Name}.{nameof(Value.Address1)}")" SmallText="true" Value="@Value.Address1" ValidateFor="() => Value.Address1" HideErrorSummary="true" />
+    <InputValidated Id="@idAddress2" text="Address line 2 (optional)" Name="@($"{Name}.{nameof(Value.Address2)}")" SmallText="true" Value="@Value.Address2" ValidateFor="() => Value.Address2" HideErrorSummary="true" />
+    <InputValidated Id="@idTown" text="Town" Name="@($"{Name}.{nameof(Value.Town)}")" SmallText="true" Value="@Value.Town" ValidateFor="() => Value.Town" HideErrorSummary="true" />
+    <InputValidated Id="@idPostcode" text="Postcode" Name="@($"{Name}.{nameof(Value.Postcode)}")" SmallText="true" Value="@Value.Postcode" ValidateFor="() => Value.Postcode" HideErrorSummary="true" />
+</fieldset>
+
+@code {
+    [CascadingParameter]
+    private EditContext? EditContext { get; set; }
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public Address Value { get; set; } = new Address();
+
+    private IEnumerable<SummaryError> summaryErrors = Enumerable.Empty<SummaryError>();
+    private bool hasValidationError => summaryErrors.Any();
+
+    private string idAddress1 = string.Empty;
+    private string idAddress2 = string.Empty;
+    private string idTown = string.Empty;
+    private string idPostcode = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        idAddress1 = GenerateElementId("address1");
+        idAddress2 = GenerateElementId("address2");
+        idTown = GenerateElementId("town");
+        idPostcode = GenerateElementId("postcode");
+
+        if (EditContext != null)
+        {
+            EditContext.OnValidationStateChanged += (s, e) =>
+            {
+                UpdateSummaryErrors();
+            };
+        }
+
+        base.OnInitialized();
+    }
+
+    /// <summary>
+    /// Updates the <see cref="summaryErrors"/> collection based on the current validation messages.
+    /// Maps each error to the corresponding input element ID.
+    /// </summary>
+    private void UpdateSummaryErrors()
+    {
+        var validationErrors = EditContext?.GetValidationMessages() ?? Enumerable.Empty<string>();
+        summaryErrors = validationErrors.Any()
+            ? validationErrors.Select(e =>
+            {
+                string elementId = idAddress1;
+                if (e.Contains("Address line 2")) elementId = idAddress2;
+                else if (e.Contains("Town")) elementId = idTown;
+                else if (e.Contains("Postcode")) elementId = idPostcode;
+
+                return new SummaryError { ElementId = elementId, Error = e };
+            })
+            : Enumerable.Empty<SummaryError>();
+    }
+}

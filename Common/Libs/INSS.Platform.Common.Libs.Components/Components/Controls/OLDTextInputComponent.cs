@@ -8,7 +8,7 @@ namespace INSS.Platform.Common.Libs.Components.Components.Controls
     /// <summary>
     /// An input component for editing <see cref="string"/> values.
     /// </summary>
-    public class TextInputComponent : InputBase<string?>
+    public class OLDTextInputComponent : InputBase<string?>
     {
         /// <summary>
         /// Gets or sets the associated <see cref="ElementReference"/>.

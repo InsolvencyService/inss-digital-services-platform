@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Rendering;
 namespace INSS.Platform.Common.Libs.Components.Components.Controls
 {
-    public class ButtonComponent : ComponentBase
+    public class OLDButtonComponent : ComponentBase
     {
         [Parameter] public string ButtonText { get; set; } = string.Empty;
 
