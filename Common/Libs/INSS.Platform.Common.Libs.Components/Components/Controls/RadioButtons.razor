@@ -1,0 +1,67 @@
+﻿@*
+    This component relates to the GDS Design System 'Radios' component. 
+    https://design-system.service.gov.uk/components/radios/
+*@
+
+@inherits ControlsBase
+
+<div class="govuk-form-group" id="@GenerateElementId()">
+    <fieldset class="govuk-fieldset" aria-describedby="@GenerateElementId("hint")">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <InputHeadingText Name="heading-radios">
+                @Text
+            </InputHeadingText>
+        </legend>
+        <div id="@GenerateElementId("hint")" class="govuk-hint">
+            @Hint
+        </div>
+
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+
+        <div class="govuk-radios @(Inline ? "govuk-radios--inline" : "")" data-module="govuk-radios" id="@GenerateElementId("radios")">
+            @foreach(var item in Items)
+            {
+                <div class="govuk-radios__item" id="@GenerateElementId("radio-item")">
+                    <input class="govuk-radios__input"
+                           id="@(Id ?? @GenerateElementId("item.Value"))" 
+                           name="@Name"
+                           type="radio"
+                           value="@item.Value"
+                           checked="@(Value == item.Value)" />
+
+                    <label class="govuk-label govuk-radios__label" for="@GenerateElementId("label", item.Value)">
+                        @item.Text
+                    </label>
+                </div>
+            }
+        </div>
+
+    </fieldset>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public List<RadioOption<string>> Items { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; } = null;
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Hint { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Inline { get; set; } = false;
+
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; } = null;
+}

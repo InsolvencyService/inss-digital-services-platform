@@ -1,0 +1,92 @@
+﻿@*
+    This component relates to the GDS Design System 'TextInput' component. 
+    https://design-system.service.gov.uk/components/text-input/
+*@
+
+@inherits ControlsBase
+
+<div class="govuk-form-group" id="inss-forms-id-input-group">
+    <h1 class="govuk-label-wrapper" id="inss-forms-id-input-group-label">
+        <label class="govuk-label @(SmallText ? "" : "govuk-label--l")" for="@GenerateElementId("input")">
+            @Text
+        </label>
+    </h1>
+
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+
+    <div class="govuk-input__wrapper">
+
+        @if (Type == InputFieldType.Currency)
+        {
+            <span class="govuk-input__prefix">£</span>
+        }
+
+        <input class="@style"
+               id="@(Id ?? @GenerateElementId("input"))"
+               name="@Name"
+               type="@type"
+               inputmode="@inputMode"
+               placeholder="@Placeholder"
+               title="@Text"
+               value="@Value"
+               aria-label="@ariaLabel" />
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Id { get; set; } = null;
+
+    [Parameter]
+    public bool SmallText { get; set; } = false;
+
+    [Parameter]
+    public InputFieldType Type { get; set; } = InputFieldType.Text;
+
+    [Parameter]
+    public string? Placeholder { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; } = null;
+
+    string style = "govuk-input";
+    string type = string.Empty;
+    string inputMode = string.Empty;
+    string ariaLabel = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        type = Type.ToString().ToLower();
+        inputMode = Type.ToString().ToLower();
+
+        switch (Type)
+        {
+            case InputFieldType.Number:
+                style += " govuk-input--width-10";
+                inputMode = "numeric";
+                break;
+            case InputFieldType.Telephone:
+                style += " govuk-input--width-30";
+                inputMode = "tel";
+                break;
+            case InputFieldType.Currency:
+                style += " govuk-input--width-10";
+                type = "decimal";
+                inputMode = "decimal";
+                ariaLabel = "Amount in pounds";
+                break;
+        }
+
+        base.OnInitialized();
+    }
+}

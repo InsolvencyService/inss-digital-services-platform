@@ -1,0 +1,31 @@
+﻿@*
+    This component relates to the GDS Design System 'ErrorSummary' component. 
+    https://design-system.service.gov.uk/components/error-summary/
+*@
+
+@inherits ControlsBase
+
+<div class="govuk-error-summary" data-module="govuk-error-summary">
+    <div role="alert">
+        <h2 class="govuk-error-summary__title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                @foreach (var errorItem in Errors)
+                {
+                    <li id="@($"{GenerateElementId("item-error")}-{errorItem.ElementId}")">
+                        <a href="@($"{NavigationManager.Uri}#{errorItem.ElementId}")">@errorItem.Error</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter] 
+    public IEnumerable<SummaryError> Errors { get; set; } = Enumerable.Empty<SummaryError>();
+}

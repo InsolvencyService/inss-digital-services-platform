@@ -1,0 +1,19 @@
+﻿@*
+    This is an INSS 'Heading' component which adhears to the GDS Design System. 
+*@
+
+@inherits ControlsBase
+
+<h1 class="govuk-label-wrapper" id="@GenerateElementId()">
+    <label class="govuk-label @(SmallText ? "" : "govuk-label--l")" id="@GenerateElementId("label")">
+        @ChildContent
+    </label>
+</h1>
+
+@code {
+    [Parameter]
+    public bool SmallText { get; set; } = false;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
