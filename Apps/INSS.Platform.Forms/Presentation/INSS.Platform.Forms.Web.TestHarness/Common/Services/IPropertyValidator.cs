@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace INSS.Platform.Forms.Web.TestHarness.Shared.Services
+namespace INSS.Platform.Forms.Web.TestHarness.Common.Services
 {
     public interface IPropertyValidator
     {

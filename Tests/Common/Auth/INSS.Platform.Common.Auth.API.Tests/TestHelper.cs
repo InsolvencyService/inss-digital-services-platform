@@ -1,6 +1,6 @@
 ﻿namespace INSS.Platform.Common.Auth.API.Tests
 {
-    internal class TestHelper
+    internal sealed class TestHelper
     {
     }
 }

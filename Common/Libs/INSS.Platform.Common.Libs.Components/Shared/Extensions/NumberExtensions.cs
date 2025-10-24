@@ -15,7 +15,7 @@
         /// </returns>
         public static string ToStringAsCurrency(this decimal? number)
         {
-            return (number ?? 0m).ToString("C");
+            return (number ?? 0m).ToStringAsCurrency();
         }
 
         /// <summary>
@@ -27,7 +27,7 @@
         /// </returns>
         public static string ToStringAsCurrency(this decimal number)
         {
-            return number.ToString("C");
+            return number.ToStringAsCurrency();
         }
     }
 }

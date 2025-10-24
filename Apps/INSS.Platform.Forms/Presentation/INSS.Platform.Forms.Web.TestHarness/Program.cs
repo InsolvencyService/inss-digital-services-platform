@@ -1,5 +1,5 @@
 using INSS.Platform.Forms.Web.TestHarness.Components;
-using INSS.Platform.Forms.Web.TestHarness.Shared.Services;
+using INSS.Platform.Forms.Web.TestHarness.Common.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

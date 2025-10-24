@@ -7,7 +7,7 @@ namespace INSS.Platform.Common.Libs.Components.Helpers
     {
         public static List<RadioOption<string>> ToRadioOptions<TEnum>() where TEnum : struct, Enum
         {
-            return Enum.GetValues(typeof(TEnum))
+            return Enum.GetValues<TEnum>()
                 .Cast<TEnum>()
                 .Select(e => new RadioOption<string>
                 {
