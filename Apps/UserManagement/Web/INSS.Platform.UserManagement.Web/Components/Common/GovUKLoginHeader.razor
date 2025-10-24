@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.WebUtilities
+﻿@using INSS.Platform.Common.Auth.Contracts.Response
+@using Microsoft.AspNetCore.WebUtilities
 @using Microsoft.Extensions.Primitives
 
 @inject ILogger<GovUKLoginHeader> Logger
@@ -59,9 +60,9 @@
                     @if (!isSignedIn)
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
-                            <form @formname="login-form" method="post" @onsubmit="OnLogin">
+                            <form @formname="login-form" method="post" @onsubmit="OnLoginAsync">
+                                <AntiforgeryToken />
                                 <button type="submit" class="rebranded-one-login-header__nav__link">
-                                    <AntiforgeryToken />
                                     <span class="rebranded-one-login-header__nav__link-content">
                                         <svg focusable="false" xmlns="http://www.w3.org/2000/svg" width="15" height="30" viewBox="150 150 250 250" fill="currentcolor" class="rebranded-cross-service-header__logo rebranded-cross-service-header__logo--nav" aria-hidden="true">
                                             <path d="M300.002 312.261C249.445 312.261 208.346 271.165 208.346 220.608C208.346 170.051 249.445 128.954 300.002 128.954C350.559 128.954 391.655 170.051 391.655 220.608C391.655 271.165 350.559 312.261 300.002 312.261ZM300.002 170.892C272.673 170.892 250.389 193.175 250.389 220.504C250.389 247.83 272.673 270.113 300.002 270.113C327.33 270.113 349.611 247.83 349.611 220.504C349.611 193.175 327.33 170.892 300.002 170.892Z" />
@@ -71,18 +72,28 @@
                                     </span>
                                 </button>
                             </form>
+                            @* Add the hidden logou form to stop the error stating that the form does not exist. This can happen when the user's auth token expires but the page hasn't been refreshed via a postback. *@
+                            <form @formname="logout-form" method="post" @onsubmit="OnLogoutAsync" style="display:none">
+                                <AntiforgeryToken />
+                                <button type="submit" />
+                            </form>
                         </li>
                     }
                     else
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
-                            <form @formname="logout-form" method="post" @onsubmit="OnLogout">
+                            <form @formname="logout-form" method="post" @onsubmit="OnLogoutAsync">
+                                <AntiforgeryToken />
                                 <button type="submit" class="rebranded-one-login-header__nav__link">
-                                    <AntiforgeryToken />
                                     <span class="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">
                                         Sign out
                                     </span>
                                 </button>
+                            </form>
+                            @* Add the hidden login form to stop the error stating that the form does not exist. This can happen when the user's auth token expires but the page hasn't been refreshed via a postback. *@
+                            <form @formname="login-form" method="post" @onsubmit="OnLoginAsync" style="display:none">
+                                <AntiforgeryToken />
+                                <button type="submit" />
                             </form>
                         </li>
                     }
@@ -98,27 +109,34 @@
 
 
 @code {
-
     private bool isSignedIn = false;
-
-    protected override void OnInitialized()
+   
+    protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Initializing GOV.UK Login Header Component.");
 
+        isSignedIn = AuthenticationHelper.IsUserSignedIn();
+        if (isSignedIn)
+        {
+            return;
+        }
+
+        if (AuthenticationHelper.JwtExistsButHasExpired())
+        {
+            Logger.LogInformation("User JWT exists but has expired or is about to expire. Redirecting user to login");
+
+            AuthenticationHelper.DeleteAuthCookies();
+
+            await OnLoginAsync().ConfigureAwait(false);
+            return;
+        }
+
         var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-        var query = QueryHelpers.ParseQuery(uri.Query);
         string? userId = string.Empty;
 
         if (IsExistingUserLoginCallback(uri) || IsNewUserLoginCallback(uri, out userId))
         {
-            if (QueryHelper.TryGetQueryValue(query, "csrf_token", out string? csrfToken)
-                && csrfToken is not null
-                && !AuthenticationHelper.ValidateCsrfTokenInCookie(csrfToken))
-            {
-                string error = Uri.EscapeDataString("Failed to validate the request. The request may have timed out, try again or come back later.");
-                Navigation.NavigateTo($"/error/{error}", true);
-                return;
-            }
+            ValidateCsrfToken(uri);
 
             AuthenticationHelper.PersistAuthTokenDataInCookie(Navigation.ToAbsoluteUri(Navigation.Uri));
 
@@ -126,18 +144,13 @@
             {
                 // Register the new user id against OneLogin Id
                 // Note the OneLogin Id is the sub claim in the access token;
-
             }
+
+            // Clear the access_token and id_token from the query string by redirecting to the same path without them
+            // This will also ensure that the auth cookies are read afresh on the redirected request.
+            UriBuilder uriBuilder = new(uri) { Query = string.Empty };
+            Navigation.NavigateTo(uriBuilder.Uri.PathAndQuery, forceLoad: true);
         }
-
-
-        isSignedIn = AuthenticationHelper.IsUserSignedIn();
-
-        // Do we need this?
-        // if(!IsSignedIn && !IsRootPath())
-        // {
-        //     Navigation.NavigateTo("/", true);
-        // }
     }
 
     /// <summary>
@@ -145,7 +158,7 @@
     /// Creates and persists a CSRF token, builds a <see cref="LoginRequest"/>,
     /// and calls the authentication helper to perform the login.
     /// </summary>
-    private async Task OnLogin()
+    private async Task OnLoginAsync()
     {
         Logger.LogInformation("User initiated login.");
 
@@ -158,24 +171,27 @@
             UserId = GetUserIdIfIsNewUserRequest(Navigation.ToAbsoluteUri(Navigation.Uri))
         };
 
-        await AuthenticationHelper.LoginAsync(loginRequest).ConfigureAwait(false);
+        string redirectUrl = await AuthenticationHelper.LoginAsync(loginRequest).ConfigureAwait(false);
+
+        if(string.IsNullOrEmpty(redirectUrl))
+        {
+            string error = Uri.EscapeDataString("Login process failed. Try again or come back later.");
+            Navigation.NavigateTo($"/error/{error}", true);
+            return;
+        }
+
+        Navigation.NavigateTo(redirectUrl, forceLoad: true);
     }
 
     /// <summary>
     /// Handles the logout process when the user initiates a logout action.
     /// Retrieves the authentication token from the cookie and calls the authentication helper to perform the logout.
     /// </summary>
-    private async Task OnLogout()
+    private async Task OnLogoutAsync()
     {
         Logger.LogInformation("User initiated logout.");
 
-        if (AuthenticationHelper.TryGetAuthTokenDataFromCookie(out var tokenData) && tokenData is not null)
-        {
-            await AuthenticationHelper.LogoutAsync(new LogoutRequest
-            {
-                IdToken = tokenData.IdToken,
-            }).ConfigureAwait(false);
-        }
+        Navigation.NavigateTo("/logout", true);
     }
 
     /// <summary>
@@ -228,14 +244,22 @@
         return result;
     }
 
-
     /// <summary>
-    /// Determines whether the current navigation path is the root path.
+    /// Validates the CSRF token present in the query string against the token stored in the cookie.
+    /// If the token is invalid or missing, navigates to an error page.
     /// </summary>
-    /// <returns>True if the current path is root; otherwise, false.</returns>
-    private bool IsRootPath()
+    /// <param name="uri">The URI containing the query string to validate.</param>
+    private void ValidateCsrfToken(Uri uri)
     {
-        var relativePath = Navigation.ToBaseRelativePath(Navigation.Uri);
-        return string.IsNullOrEmpty(relativePath) || relativePath == "/";
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (QueryHelper.TryGetQueryValue(query, "csrf_token", out string? csrfToken)
+            && csrfToken is not null
+            && !AuthenticationHelper.ValidateCsrfTokenInCookie(csrfToken))
+        {
+            string error = Uri.EscapeDataString("Failed to validate the CSRF Token. The request may have timed out, try again or come back later.");
+            Navigation.NavigateTo($"/error/{error}", true);
+            return;
+        }
     }
 }

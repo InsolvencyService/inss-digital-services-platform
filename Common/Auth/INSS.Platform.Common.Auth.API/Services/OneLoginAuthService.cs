@@ -76,12 +76,8 @@ namespace INSS.Platform.Common.Auth.API.Services
                     return true;
                 }
 
-                if (!logoutResponse.IsSuccessStatusCode)
-                {
-                    string errorContent = await logoutResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.LogError("Logout endpoint returned error: {StatusCode} - {Content}", logoutResponse.StatusCode, errorContent);
-                    throw new InvalidOperationException($"Logout endpoint error: {logoutResponse.StatusCode}");
-                }
+                string errorContent = await logoutResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                _logger.LogError("Logout endpoint returned error: {StatusCode} - {Content}", logoutResponse.StatusCode, errorContent);
 
                 return false;
             }
@@ -302,7 +298,7 @@ namespace INSS.Platform.Common.Auth.API.Services
                 { "aud", authorizeUri },
                 { "iss", clientId },
                 { "ui_locales", uiLocales },
-                { "vtr", vtr },
+                { "vtr", vtr }
             };
         }
 
@@ -388,7 +384,7 @@ namespace INSS.Platform.Common.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
         /// </returns>
-        private async Task<string> GetQueryJwtPrivateKeyAsync()
+        protected async Task<string> GetQueryJwtPrivateKeyAsync()
         {
             string keyFileName = _appConfig["OneLogin:QueryJwtPrivateKeyFile"] ?? string.Empty;
 
@@ -406,7 +402,7 @@ namespace INSS.Platform.Common.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
         /// </returns>
-        private async Task<string> GetStateJwtPrivateKeyAsync()
+        protected async Task<string> GetStateJwtPrivateKeyAsync()
         {
             string keyFileName = _appConfig["OneLogin:StateJwtPrivateKeyFile"] ?? string.Empty;
 
@@ -424,7 +420,7 @@ namespace INSS.Platform.Common.Auth.API.Services
         /// <returns>
         /// A task that represents the asynchronous operation. The task result contains the public key as a PEM-formatted string.
         /// </returns>
-        private async Task<string> GetStateJwtPublicKeyAsync()
+        protected async Task<string> GetStateJwtPublicKeyAsync()
         {
             string keyFileName = _appConfig["OneLogin:StateJwtPublicKeyFile"] ?? string.Empty;
 

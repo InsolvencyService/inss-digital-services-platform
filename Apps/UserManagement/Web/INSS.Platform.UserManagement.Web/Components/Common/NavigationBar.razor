@@ -1,4 +1,6 @@
-﻿<section aria-label="Service information"
+﻿@inject NavigationManager Navigation
+
+<section aria-label="Service information"
          class="govuk-service-navigation"
          data-module="govuk-service-navigation">
 
@@ -16,19 +18,19 @@
                 <ul class="govuk-service-navigation__list" id="navigation">
                     @if (IsSignedIn)
                     {
-                        <li class="govuk-service-navigation__item govuk-service-navigation__item--active">
-                            <a class="govuk-service-navigation__link" href="#navigation2" aria-current="true">
-                                <strong class="govuk-service-navigation__active-fallback">Home</strong>
+                        <li class="govuk-service-navigation__item @(isHomePage ? "govuk-service-navigation__item--active" : "")">
+                            <a class="govuk-service-navigation__link" href="/" aria-current="true">
+                                <strong class="@(isHomePage ? "govuk-service-navigation__active-fallback" : "")">Home</strong>
                             </a>
                         </li>
-                        <li class="govuk-service-navigation__item">
-                            <a class="govuk-service-navigation__link" href="#navigation1">
-                                Manage Applications
+                        <li class="govuk-service-navigation__item @(IsApplicationsPage ? "govuk-service-navigation__item--active" : "")">
+                            <a class="govuk-service-navigation__link" href="/applications">
+                                <strong class="@(IsApplicationsPage ? "govuk-service-navigation__active-fallback" : "")">Manage Applications</strong>
                             </a>
                         </li>
-                        <li class="govuk-service-navigation__item">
-                            <a class="govuk-service-navigation__link" href="#navigation1">
-                                Manage Roles
+                        <li class="govuk-service-navigation__item @(IsRolesPage ? "govuk-service-navigation__item--active" : "")">
+                            <a class="govuk-service-navigation__link" href="/roles">
+                                <strong class="@(IsRolesPage ? "govuk-service-navigation__active-fallback" : "")">Manage Roles</strong>
                             </a>
                         </li>
                     }
@@ -39,8 +41,17 @@
 </section>
 
 @code {
-    
+
     [Parameter]
     public bool IsSignedIn { get; set; }
+
+    bool isHomePage =>
+        Navigation.ToBaseRelativePath(Navigation.Uri).Equals("", StringComparison.OrdinalIgnoreCase);
+
+    bool IsApplicationsPage =>
+        Navigation.ToBaseRelativePath(Navigation.Uri).Equals("applications", StringComparison.OrdinalIgnoreCase);
+
+    bool IsRolesPage => 
+        Navigation.ToBaseRelativePath(Navigation.Uri).Equals("roles", StringComparison.OrdinalIgnoreCase);
 
 }
