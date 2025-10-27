@@ -1,0 +1,16 @@
+﻿@page "/about-you/first-name"
+
+<EditForm FormName="about-you" Model="aboutYou" OnSubmit="SubmitForm"> 
+    <Input Name="aboutYou.FirstName" Text="First name" Placeholder="Enter your first name" Value="@aboutYou.FirstName" />
+    <SubmitButton Name="about-you-submit" Text="Submit" />
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private AboutYou aboutYou { get; set; } = new AboutYou();
+
+    private void SubmitForm()
+    {
+        Console.WriteLine($"First name: {aboutYou.FirstName}");
+    }
+}

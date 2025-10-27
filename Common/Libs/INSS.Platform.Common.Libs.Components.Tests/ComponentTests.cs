@@ -13,7 +13,7 @@ namespace INSS.Platform.Common.Libs.Components.Tests
         {
             using Bunit.TestContext ctx = new();
 
-            IRenderedComponent<ButtonComponent> cut = ctx.RenderComponent<ButtonComponent>(parameters => parameters
+            IRenderedComponent<OLDButtonComponent> cut = ctx.RenderComponent<OLDButtonComponent>(parameters => parameters
                 .Add(p => p.ButtonText, "Click me")
                 .Add(p => p.CssClass, "my-class"));
 
@@ -31,7 +31,7 @@ namespace INSS.Platform.Common.Libs.Components.Tests
 
             bool clicked = false;
 
-            IRenderedComponent<ButtonComponent> cut = ctx.RenderComponent<ButtonComponent>(parameters => parameters
+            IRenderedComponent<OLDButtonComponent> cut = ctx.RenderComponent<OLDButtonComponent>(parameters => parameters
                 .Add(p => p.ButtonText, "Go")
                 .Add(p => p.OnClick, EventCallback.Factory.Create(this, () => clicked = true)));
 
@@ -46,7 +46,7 @@ namespace INSS.Platform.Common.Libs.Components.Tests
         {
             using Bunit.TestContext ctx = new();
 
-            IRenderedComponent<ButtonComponent> cut = ctx.RenderComponent<ButtonComponent>(parameters => parameters
+            IRenderedComponent<OLDButtonComponent> cut = ctx.RenderComponent<OLDButtonComponent>(parameters => parameters
                 .Add(p => p.ButtonText, "Default"));
 
             AngleSharp.Dom.IElement button = cut.Find("button");
@@ -61,7 +61,7 @@ namespace INSS.Platform.Common.Libs.Components.Tests
             TestModel model = new();
             Expression<Func<string?>> valueExpression = () => model.Text;
 
-            IRenderedComponent<TextInputComponent> cut = RenderComponent<TextInputComponent>(parameters => parameters
+            IRenderedComponent<OLDTextInputComponent> cut = RenderComponent<OLDTextInputComponent>(parameters => parameters
                 .Add(p => p.Value, model.Text)
                 .Add(p => p.ValueChanged, EventCallback.Factory.Create<string?>(this, val => model.Text = val))
                 .Add(p => p.ValueExpression, valueExpression)
@@ -84,7 +84,7 @@ namespace INSS.Platform.Common.Libs.Components.Tests
             Expression<Func<string?>> valueExpression = () => model.Text;
 
             // Act
-            IRenderedComponent<TextInputComponent> cut = RenderComponent<TextInputComponent>(parameters => parameters
+            IRenderedComponent<OLDTextInputComponent> cut = RenderComponent<OLDTextInputComponent>(parameters => parameters
                 .Add(p => p.Value, model.Text)
                 .Add(p => p.ValueExpression, valueExpression)
             );
