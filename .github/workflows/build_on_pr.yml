@@ -42,11 +42,18 @@ jobs:
           Write-Host "`n=== Checking if test projects are in solution ==="
           $solutionProjects = dotnet sln INSS.Platform.sln list
           foreach ($testProject in $testProjects) {
-            $relativePath = $testProject.Replace((Get-Location).Path + "\", "").Replace("\", "/")
-            if ($solutionProjects -like "*$relativePath*") {
-              Write-Host "✓ $relativePath is in solution"
+            $relativePath = $testProject.Replace((Get-Location).Path + "\", "").Trim()
+            $inSolution = $false
+            foreach ($line in $solutionProjects) {
+                if ($line.Trim().ToLower() -eq $relativePath.ToLower()) {
+                    $inSolution = $true
+                    break
+                }
+            }
+            if ($inSolution) {
+                Write-Host "✓ $relativePath is in solution"
             } else {
-              Write-Host "✗ $relativePath is NOT in solution - needs to be added"
+                Write-Host "✗ $relativePath is NOT in solution - needs to be added"
             }
           }
         }
@@ -77,7 +84,8 @@ jobs:
         reports: '**/coverage.cobertura.xml;**/*.cobertura.xml;**/TestResults/**/*.xml'
         targetdir: 'coverage-report'
         reporttypes: 'HtmlInline_AzurePipelines'
-        assemblyfilters: '-Microsoft.AspNetCore.OpenApi.Generated;-System.Runtime.CompilerServices'
+        assemblyfilters: '-*OpenApi.Generated*;-*Runtime.CompilerServices*'
+        classfilters: '-Microsoft.AspNetCore.OpenApi.Generated.*;-System.Runtime.CompilerServices.*'
 
     - name: Upload coverage report as artifact
       if: steps.coverage-check.outputs.has-coverage == 'true'

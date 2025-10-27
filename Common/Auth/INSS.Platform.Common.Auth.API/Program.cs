@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using INSS.Platform.Common.Auth.API.Services;
 using System.Diagnostics.CodeAnalysis;
 
@@ -19,6 +21,19 @@ namespace INSS.Platform.Common.Auth.API
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
+
+            builder.Services.AddSingleton(sp =>
+            {
+                IConfiguration configuration = sp.GetRequiredService<IConfiguration>();
+
+                string? keyVaultUriString = configuration["KeyVault:Uri"] ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(keyVaultUriString))
+                {
+                    throw new InvalidOperationException("KeyVault URI is missing.");
+                }
+
+                return new SecretClient(new Uri(keyVaultUriString), new DefaultAzureCredential());
+            });
 
             builder.Services.AddHttpClient("AuthenticationClient")
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
