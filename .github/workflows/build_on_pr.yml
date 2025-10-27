@@ -84,7 +84,8 @@ jobs:
         reports: '**/coverage.cobertura.xml;**/*.cobertura.xml;**/TestResults/**/*.xml'
         targetdir: 'coverage-report'
         reporttypes: 'HtmlInline_AzurePipelines'
-        assemblyfilters: '-Microsoft.AspNetCore.OpenApi.Generated;-System.Runtime.CompilerServices'
+        assemblyfilters: '-*OpenApi.Generated*;-*Runtime.CompilerServices*'
+        classfilters: '-Microsoft.AspNetCore.OpenApi.Generated.*;-System.Runtime.CompilerServices.*'
 
     - name: Upload coverage report as artifact
       if: steps.coverage-check.outputs.has-coverage == 'true'
