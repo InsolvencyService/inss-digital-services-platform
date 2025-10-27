@@ -55,11 +55,16 @@ namespace INSS.Platform.Forms.Web.TestHarness.Common.Services
                 throw new ArgumentNullException(nameof(model));
             }
 
-            ValidationContext context = new (model);
-
             PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo property in properties)
             {
+                Dictionary<object, object?> items = new()
+                {
+                    { property.Name, property.GetValue(model) }
+                };
+
+                ValidationContext context = new (model, items);
+              
                 object? value = property.GetValue(model);
                 context.MemberName = property.Name;
 
