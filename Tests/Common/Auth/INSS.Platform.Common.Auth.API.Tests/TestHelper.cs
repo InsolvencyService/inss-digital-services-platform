@@ -97,7 +97,7 @@ namespace INSS.Platform.Common.Auth.API.Tests
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private static string GetKeyPem(string keyFileName)
+        internal static string GetKeyPem(string keyFileName)
         {
             string keyFilePath = Path.Combine(AppContext.BaseDirectory, keyFileName);
             if (File.Exists(keyFilePath))
