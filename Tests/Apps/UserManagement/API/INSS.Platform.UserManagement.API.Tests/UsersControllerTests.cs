@@ -54,7 +54,7 @@ namespace INSS.Platform.UserManagement.API.Tests
         public async Task GetUserOrganisations_ReturnsOk_WithOrganisations()
         {
             Guid userId = Guid.NewGuid();
-            var organisations = new List<Organisation>
+            List<Organisation> organisations = new ()
             {
                 new() { Id = Guid.NewGuid(), Name = "Org1" },
                 new() { Id = Guid.NewGuid(), Name = "Org2" }
@@ -112,16 +112,16 @@ namespace INSS.Platform.UserManagement.API.Tests
         [Fact]
         public async Task GetAll_ReturnsOk_WithUsers()
         {
-            var users = new List<User>
+            List<User> users = new ()
             {
                 new() { Id = Guid.NewGuid(), Email = "user1@example.com", FirstName = "User1", LastName = "Test" },
                 new() { Id = Guid.NewGuid(), Email = "user2@example.com", FirstName = "User2", LastName = "Test" }
             };
             _userRepositoryMock.Setup(r => r.GetUsersAsync()).ReturnsAsync(users);
 
-            var controller = CreateController();
+            UsersController controller = CreateController();
 
-            var result = await controller.GetAll();
+            IActionResult result = await controller.GetAll();
 
             using (new AssertionScope())
             {
