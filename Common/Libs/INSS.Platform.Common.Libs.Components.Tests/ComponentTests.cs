@@ -1,8 +1,7 @@
 ﻿using Bunit;
 using INSS.Platform.Common.Libs.Components.Components.Controls;
+using INSS.Platform.Common.Libs.Components.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using System.Linq.Expressions;
 
 namespace INSS.Platform.Common.Libs.Components.Tests
 {
@@ -85,6 +84,77 @@ namespace INSS.Platform.Common.Libs.Components.Tests
             </div>
             </footer>"
             );
+        }
+
+        [Fact]
+        public void Input_Type_Text_RendersCorrectly()
+        {
+            // Arrange & Act
+            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+                .Add(p => p.Text, "Test Label")
+                .Add(p => p.Type, InputFieldType.Text)
+                .Add(p => p.Value, "abc123")
+            );
+
+            // Assert
+            cut.MarkupMatches(@"
+                <div class=""govuk-form-group"" id=""inss-forms-id-input-group"">
+                  <h1 class=""govuk-label-wrapper"" id=""inss-forms-id-input-group-label"">
+                    <label class=""govuk-label govuk-label--l"" for=""inss-components-id--input"">Test Label</label>
+                  </h1>
+                  <div class=""govuk-input__wrapper"">
+                    <input class=""govuk-input"" id=""inss-components-id--input"" name="""" type=""text"" inputmode=""text"" placeholder="""" title=""Test Label"" value=""abc123"" aria-label="""" />
+                  </div>
+                </div>
+                ");
+        }
+
+        [Fact]
+        public void Input_Type_Currency_RendersCorrectly()
+        {
+            // Arrange & Act
+            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+                .Add(p => p.Text, "Amount")
+                .Add(p => p.Type, InputFieldType.Currency)
+                .Add(p => p.Value, "100")
+            );
+
+            // Assert
+            cut.Find("span.govuk-input__prefix").MarkupMatches(@"<span class=""govuk-input__prefix"">£</span>");
+            AngleSharp.Dom.IElement input = cut.Find("input");
+            Assert.Equal("decimal", input.GetAttribute("type"));
+            Assert.Equal("decimal", input.GetAttribute("inputmode"));
+            Assert.Equal("Amount in pounds", input.GetAttribute("aria-label"));
+        }
+
+        [Fact]
+        public void Input_Renders_ChildContent_When_Provided()
+        {
+            // Arrange & Act
+            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+                .Add(p => p.Text, "Test")
+                .Add(p => p.ChildContent, (RenderFragment)(builder =>
+                {
+                    builder.AddContent(0, "<div class='child'>Child</div>");
+                }))
+            );
+
+            // Assert
+            cut.Markup.Contains("Child");
+        }
+
+        [Fact]
+        public void Input_Uses_SmallText_Class_When_Passed()
+        {
+            // Arrange & Act
+            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+                .Add(p => p.Text, "Small Label")
+                .Add(p => p.SmallText, true)
+            );
+
+            // Assert
+            AngleSharp.Dom.IElement label = cut.Find("label");
+            Assert.DoesNotContain("govuk-label--l", label.ClassList);
         }
 
         private sealed class TestModel

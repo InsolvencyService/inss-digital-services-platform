@@ -31,11 +31,11 @@
         var modifiedForm = CurrentEditContext.Model as AboutYou ?? new();
         var cachedForm = new AboutYou(); // This would be written to a database or session in a real app
 
-        FormValidationHelper.ValidateAndAssignFormProperty<Address>(
+        FormValidationHelper.ValidateAndAssignFormProperty<AboutYou, Address>(
             PropertyValidator,
             CurrentEditContext,
             aboutYou,
-            modifiedForm.PostalAddress,
+            aboutYou.PostalAddress,
             cachedForm,
             nameof(aboutYou.PostalAddress)
         );

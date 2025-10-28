@@ -1,5 +1,4 @@
 ﻿using INSS.Platform.Forms.Web.TestHarness.Common.Services;
-using INSS.Platform.Forms.Web.TestHarness.Models;
 using Microsoft.AspNetCore.Components.Forms;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -8,28 +7,29 @@ namespace INSS.Platform.Forms.Web.TestHarness.Common.Validators
 {
     public static class FormValidationHelper
     {
-        public static bool ValidateAndAssignFormProperty(
+        public static bool ValidateAndAssignFormProperty<TForm>(
             IPropertyValidator propertyValidator,
             EditContext editContext,
-            AboutYou aboutYouInstance,
-            AboutYou formToValidate,
-            AboutYou formToPersist,
+            TForm formInstance,
+            TForm formToValidate,
+            TForm formToPersist,
             string property)
+            where TForm : class
         {
-            object? value = formToValidate.GetType().GetProperty(property)?.GetValue(formToValidate);
+            object? value = typeof(TForm).GetProperty(property)?.GetValue(formToValidate);
 
-            IList<System.ComponentModel.DataAnnotations.ValidationResult> errors = propertyValidator.ValidateProperties(formToValidate, new[] { property });
+            IList<ValidationResult> errors = propertyValidator.ValidateProperties(formToValidate, [property]);
             if (errors.Any())
             {
-                ValidationMessageStore validationMessageStore = new ValidationMessageStore(editContext);
+                ValidationMessageStore validationMessageStore = new(editContext);
                 foreach (ValidationResult error in errors)
                 {
-                    FieldIdentifier fieldIdentifier = new FieldIdentifier(aboutYouInstance, error.MemberNames.First());
+                    FieldIdentifier fieldIdentifier = new(formInstance, error.MemberNames.First());
                     validationMessageStore.Add(fieldIdentifier, error.ErrorMessage!);
                 }
 
                 editContext.NotifyValidationStateChanged();
-                SetPropertyValueByName(aboutYouInstance, property, value);
+                SetPropertyValueByName(formInstance, property, value);
                 return false;
             }
 
@@ -46,21 +46,23 @@ namespace INSS.Platform.Forms.Web.TestHarness.Common.Validators
             }
         }
 
-        public static bool ValidateAndAssignFormProperty<TComplex>(
+        public static bool ValidateAndAssignFormProperty<TForm, TComplex>(
             IPropertyValidator propertyValidator,
             EditContext editContext,
-            AboutYou aboutYouInstance,
+            TForm formInstance,
             TComplex complexPropertyToValidate,
-            AboutYou formToPersist,
+            TForm formToPersist,
             string propertyName)
+            where TForm : class
+            where TComplex : class
         {
             IList<ValidationResult> errors = propertyValidator.ValidateAllProperties(complexPropertyToValidate);
             if (errors.Any())
             {
                 ValidationMessageStore validationMessageStore = new(editContext);
 
-                object? formInstance = typeof(AboutYou).GetProperty(propertyName)?.GetValue(aboutYouInstance);
-                if (formInstance is not { })
+                object? formComplexInstance = typeof(TForm).GetProperty(propertyName)?.GetValue(formInstance);
+                if (formComplexInstance is not { })
                 {
                     throw new InvalidOperationException("The property to validate must exist on the bound instance of the Form property.");
                 }
@@ -69,7 +71,7 @@ namespace INSS.Platform.Forms.Web.TestHarness.Common.Validators
                 {
                     foreach (string memberName in error.MemberNames)
                     {
-                        FieldIdentifier fieldIdentifier = new(formInstance, memberName);
+                        FieldIdentifier fieldIdentifier = new(formComplexInstance, memberName);
                         validationMessageStore.Add(fieldIdentifier, error.ErrorMessage!);
                     }
                 }
@@ -79,17 +81,17 @@ namespace INSS.Platform.Forms.Web.TestHarness.Common.Validators
                 foreach (PropertyInfo prop in typeof(TComplex).GetProperties())
                 {
                     object? value = prop.GetValue(complexPropertyToValidate);
-                    prop.SetValue(formInstance, value);
+                    prop.SetValue(formComplexInstance, value);
                 }
 
                 return false;
             }
 
-            object? targetInstance = typeof(AboutYou).GetProperty(propertyName)?.GetValue(formToPersist);
+            object? targetComplexInstance = typeof(TForm).GetProperty(propertyName)?.GetValue(formToPersist);
             foreach (PropertyInfo prop in typeof(TComplex).GetProperties())
             {
                 object? value = prop.GetValue(complexPropertyToValidate);
-                prop.SetValue(targetInstance, value);
+                prop.SetValue(targetComplexInstance, value);
             }
 
             return true;

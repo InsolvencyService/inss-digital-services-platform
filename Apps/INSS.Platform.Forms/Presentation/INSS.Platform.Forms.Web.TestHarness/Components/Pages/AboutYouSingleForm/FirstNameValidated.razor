@@ -2,11 +2,12 @@
 
 @using INSS.Platform.Common.Libs.Components.Models
 @using INSS.Platform.Forms.Web.TestHarness.Common.Services
+@using INSS.Platform.Forms.Web.TestHarness.Common.Validators
 
 @inject IPropertyValidator PropertyValidator;
 
 <EditForm Enhance EditContext="CurrentEditContext" FormName="about-you" OnValidSubmit="SubmitForm">
-    <InputValidated Name="aboutYou.FirstName" Type="InputFieldType.Text" Text="Email" Placeholder="Enter your first name" Value="@aboutYou.FirstName" ValidateFor="() => aboutYou.FirstName" HideErrorSummary="true" />
+    <InputValidated Name="aboutYou.FirstName" Type="InputFieldType.Text" Text="First Name" Placeholder="Enter your first name" Value="@aboutYou.FirstName" ValidateFor="() => aboutYou.FirstName" HideErrorSummary="true" />
     <SubmitButton Name="about-you-submit" Text="Submit" />
 </EditForm>
 
@@ -30,44 +31,13 @@
         var modifiedForm = CurrentEditContext.Model as AboutYou ?? new();
         var cachedForm = new AboutYou(); // This would be written to a database or session in a real app
 
-        ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.FirstName));
-    }
-
-    protected bool ValidateAndAssignFormProperty(AboutYou formToValidate, AboutYou formToPersist, string property)
-    {
-        var value = formToValidate.GetType().GetProperty(property)?.GetValue(formToValidate);
-
-        var errors = PropertyValidator.ValidateProperties(formToValidate, new[] { property });
-        if (errors.Any())
-        {
-            var validationMessageStore = new ValidationMessageStore(CurrentEditContext);
-            foreach (var error in errors)
-            {
-                var fieldIdentifier = new FieldIdentifier(aboutYou, error.MemberNames.First());
-                validationMessageStore.Add(fieldIdentifier, error.ErrorMessage!);
-            }
-
-            // Show the validation message.
-            CurrentEditContext.NotifyValidationStateChanged();
-
-            // Ensure the invalid value remains in the form for user correction.
-            SetPropertyValueByName(aboutYou, property, value);
-
-            return false;
-        }
-
-        // Set the valid value to the item to persist
-        SetPropertyValueByName(formToPersist, property, value);
-
-        return true;
-    }
-
-    protected void SetPropertyValueByName(object target, string propertyName, object? value)
-    {
-        var property = target.GetType().GetProperty(propertyName);
-        if (property != null && property.CanWrite)
-        {
-            property.SetValue(target, value);
-        }
+        FormValidationHelper.ValidateAndAssignFormProperty<AboutYou>(
+            PropertyValidator,
+            CurrentEditContext,
+            aboutYou,
+            modifiedForm,
+            cachedForm,
+            nameof(aboutYou.FirstName)
+        );
     }
 }
