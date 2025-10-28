@@ -2,6 +2,7 @@
 @using INSS.Platform.Common.Libs.Components.Models
 @using INSS.Platform.Common.Libs.Components.Shared.Enums 
 @using INSS.Platform.Forms.Web.TestHarness.Common.Services
+@using INSS.Platform.Forms.Web.TestHarness.Common.Validators
 
 @page "/about-you-validated"
 @inject IPropertyValidator PropertyValidator;
@@ -37,7 +38,15 @@
         // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.Email));
         // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.Salary));
         // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.Telephone));
-        ValidateAndAssignFormProperty(modifiedForm.PostalAddress, cachedForm, nameof(aboutYou.PostalAddress));
+
+        FormValidationHelper.ValidateAndAssignFormProperty<AboutYou, Address>(
+            PropertyValidator,
+            CurrentEditContext,
+            aboutYou,
+            aboutYou.PostalAddress,
+            cachedForm,
+            nameof(aboutYou.PostalAddress)
+        );
     }
 
     protected override void OnInitialized()
@@ -46,96 +55,4 @@
 
         base.OnInitialized();
     }
-
-    protected bool ValidateAndAssignFormProperty(AboutYou formToValidate, AboutYou formToPersist, string property)
-    {
-        var value = formToValidate.GetType().GetProperty(property)?.GetValue(formToValidate);
-
-        var errors = PropertyValidator.ValidateProperties(formToValidate, new[] { property });
-        if (errors.Any())
-        {
-            var validationMessageStore = new ValidationMessageStore(CurrentEditContext);
-            foreach (var error in errors)
-            {
-                var fieldIdentifier = new FieldIdentifier(aboutYou, error.MemberNames.First());
-                validationMessageStore.Add(fieldIdentifier, error.ErrorMessage!);
-            }
-
-            // Show the validation message.
-            CurrentEditContext.NotifyValidationStateChanged();
-
-            // Ensure the invalid value remains in the form for user correction.
-            SetPropertyValueByName(aboutYou, property, value);
-
-            return false;
-        }
-
-        // Set the valid value to the item to persist
-        SetPropertyValueByName(formToPersist, property, value);
-
-        return true;
-    }
-
-    protected void SetPropertyValueByName(object target, string propertyName, object? value)
-    {
-        var property = target.GetType().GetProperty(propertyName);
-        if (property != null && property.CanWrite)
-        {
-            property.SetValue(target, value);
-        }
-    }
-
-    protected bool ValidateAndAssignFormProperty<TComplex>(
-        TComplex complexPropertyToValidate,
-        AboutYou formToPersist,
-        string propertyName)
-    {
-        var errors = PropertyValidator.ValidateAllProperties(complexPropertyToValidate);
-        if (errors.Any())
-        {
-            var validationMessageStore = new ValidationMessageStore(CurrentEditContext);
-
-            var formInstance = typeof(AboutYou).GetProperty(propertyName)?.GetValue(aboutYou);
-            if (formInstance is null)
-            {
-                throw new NullReferenceException("The property to validate must exist on the bound instance of the Form property.");
-            }
-
-            foreach (var error in errors)
-            {
-                foreach (var memberName in error.MemberNames)
-                {
-                    var fieldIdentifier = new FieldIdentifier(formInstance, memberName);
-                    validationMessageStore.Add(fieldIdentifier, error.ErrorMessage!);
-                }
-            }
-
-            // Show the validation message.
-            CurrentEditContext.NotifyValidationStateChanged();
-
-            /// Copies all property values from <paramref name="complexPropertyToValidate"/> to the corresponding properties
-            /// of <paramref name="formInstance"/>. This is used to ensure the invalid values remain in the form for user correction.
-            foreach (var prop in typeof(TComplex).GetProperties())
-            {
-                var value = prop.GetValue(complexPropertyToValidate);
-                prop.SetValue(formInstance, value);
-            }
-
-            return false;
-        }
-
-        /// Copies all property values from <paramref name="complexPropertyToValidate"/> to the corresponding properties
-        /// of the target instance on <paramref name="formToPersist"/>. This is used to ensure the valid values are assigned
-        /// to the persisted form instance after successful validation.
-        var targetInstance = typeof(AboutYou).GetProperty(propertyName)?.GetValue(formToPersist);
-        foreach (var prop in typeof(TComplex).GetProperties())
-        {
-            var value = prop.GetValue(complexPropertyToValidate);
-            prop.SetValue(targetInstance, value);
-        }
-
-        return true;
-    }
-
-
 }
