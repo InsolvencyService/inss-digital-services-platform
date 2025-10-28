@@ -5,7 +5,6 @@ using Microsoft.Extensions.Primitives;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
-using Microsoft.AspNetCore.Components;
 
 namespace INSS.Platform.UserManagement.Web.Components.Helpers
 {
@@ -17,7 +16,6 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
-        private readonly NavigationManager _navigationManager;
 
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
         {
@@ -29,14 +27,12 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             ILogger<AuthenticationHelper> logger,
             IHttpClientFactory httpClientFactory,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration,
-            NavigationManager navigationManager)
+            IConfiguration configuration)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
-            _navigationManager = navigationManager;
         }
 
         /// <inheritdoc />
@@ -64,8 +60,9 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
         }
 
         /// <inheritdoc />
-        public async Task LoginAsync(LoginRequest loginRequest)
+        public async Task<string> LoginAsync(LoginRequest loginRequest)
         {
+            string redirectUrl = string.Empty;
             HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
             try
             {
@@ -75,9 +72,7 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
                 {
                     if (loginResponse.Headers.Location != null)
                     {
-                        HttpContext httpContext = _httpContextAccessor.HttpContext!;
-                        httpContext.Response.Redirect(loginResponse.Headers.Location.ToString());
-                        return;
+                        redirectUrl = loginResponse.Headers.Location.ToString()!;
                     }
                 }
 
@@ -91,25 +86,26 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             {
                 _logger.LogError(ex, "Exception occurred while getting login url from authentication api.");
             }
+
+            return redirectUrl;
         }
 
         public bool IsUserSignedIn()
         {
-            if (!TryGetAuthTokenDataFromCookie(out TokenData? tokenData))
-            {
-                return false;
-            }
+            return TryGetAuthTokenDataFromCookie(out TokenData? tokenData) 
+                && !string.IsNullOrWhiteSpace(tokenData?.AccessToken) 
+                && !IsJwtExpired(tokenData.AccessToken);
+        }
 
-            if (string.IsNullOrWhiteSpace(tokenData?.AccessToken))
-            {
-                return false;
-            }
-
-            return !IsJwtExpiredOrExpiringSoon(tokenData.AccessToken, 30);
+        public bool JwtExistsButHasExpired()
+        {
+            return TryGetAuthTokenDataFromCookie(out TokenData? tokenData) 
+                && !string.IsNullOrWhiteSpace(tokenData?.AccessToken) 
+                && IsJwtExpired(tokenData.AccessToken);
         }
 
         /// <inheritdoc />
-        public async Task LogoutAsync(LogoutRequest logoutRequest)
+        public async Task<bool> LogoutAsync(LogoutRequest logoutRequest)
         {
             HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
             try
@@ -120,14 +116,16 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
                 {
                     string errorContent = await logoutResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                     _logger.LogError("Error calling login from authentication api: {ErrorContent}", errorContent);
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Exception occurred while getting login url from authentication api.");
+                return false;
             }
 
-            DeleteAuthCookies();
+            return true;
         }
 
         /// <inheritdoc />
@@ -148,30 +146,23 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
                 IdToken = idToken!,
             };
 
-            int expiresIn = JwtExpirySeconds(accessToken!);
-            DateTimeOffset cookieExpires = DateTimeOffset.UtcNow.AddSeconds(expiresIn);
-
             CookieOptions options = new()
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.Lax,
                 Path = "/",
-                Expires = cookieExpires
+                // Set a long expiry so the cookie persists, actual token expiry is managed via JWT 
+                // This allows us to detect if the user has logged in but the token is expired so we can force a re-login
+                Expires = DateTimeOffset.UtcNow.AddDays(1), 
+                MaxAge = TimeSpan.FromDays(1)               
+
             };
 
             string cookieName = _configuration["Auth:AuthCookieName"]!;
             string json = JsonSerializer.Serialize(token, _jsonSerializerOptions);
             HttpContext httpContext = _httpContextAccessor.HttpContext!;
             httpContext.Response.Cookies.Append(cookieName, json, options);
-
-            // Clear the access_token and id_token from the query string by redirecting to the same path without them
-            UriBuilder uriBuilder = new(rootUri)
-            {
-                Query = string.Empty // Remove all query parameters
-            };
-            string cleanUrl = uriBuilder.Uri.PathAndQuery;
-            _navigationManager.NavigateTo(cleanUrl, forceLoad: true);
         }
 
         /// <inheritdoc />
@@ -215,7 +206,7 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.Lax,
                 Path = "/",
                 Expires = DateTimeOffset.UtcNow.AddDays(1)
             };
@@ -231,12 +222,8 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
         /// <inheritdoc />
         public bool ValidateCsrfTokenInCookie(string csrfToken)
         {
-            if (!TryGetCsrfTokenFromCookie(out string? storedCsrfToken))
-            {
-                return false;
-            }
-
-            return string.Equals(csrfToken, storedCsrfToken, StringComparison.Ordinal);
+            return TryGetCsrfTokenFromCookie(out string? storedCsrfToken) 
+                && string.Equals(csrfToken, storedCsrfToken, StringComparison.Ordinal);
         }
 
         /// <inheritdoc />
@@ -253,31 +240,19 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             return loginProividerUserId;
         }
 
-
-        /// <summary>
-        /// Deletes the authentication related cookies and redirects the user to the root path.
-        /// </summary>
-        private void DeleteAuthCookies()
+        public void DeleteAuthCookies()
         {
             HttpContext httpContext = _httpContextAccessor.HttpContext!;
-            if (httpContext == null)
-            {
-                return;
-            }
-
             httpContext.Response.Cookies.Delete(_configuration["Auth:AuthCookieName"]!);
             httpContext.Response.Cookies.Delete(_configuration["Auth:CsrfCookieName"]!);
-
-            _navigationManager.NavigateTo("/", forceLoad: true);
         }
 
         /// <summary>
-        /// Determines whether the specified JWT is expired or will expire soon, based on the provided threshold.
+        /// Determines whether the specified JWT is expired.
         /// </summary>
         /// <param name="jwt">The JSON Web Token (JWT) to check.</param>
-        /// <param name="thresholdSeconds">The threshold in seconds to consider the token as expiring soon. Default is 60 seconds.</param>
-        /// <returns><c>true</c> if the JWT is expired or expiring soon; otherwise, <c>false</c>.</returns>
-        private bool IsJwtExpiredOrExpiringSoon(string jwt, int thresholdSeconds = 60)
+        /// <returns><c>true</c> if the JWT has expired; otherwise, <c>false</c>.</returns>
+        private bool IsJwtExpired(string jwt)
         {
             try
             {
@@ -296,7 +271,7 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
                     DateTimeOffset now = DateTimeOffset.UtcNow;
 
                     // Return true if token is expired or will expire within thresholdSeconds
-                    return expiry <= now.AddSeconds(thresholdSeconds);
+                    return expiry <= now;
                 }
 
                 return true;
@@ -308,25 +283,6 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             }
         }
 
-        /// <summary>
-        /// Gets the number of seconds until the JWT token expires.
-        /// </summary>
-        /// <param name="jwt">The JSON Web Token (JWT) string.</param>
-        /// <returns>The number of seconds until the token expires, or 0 if claims are missing or invalid.</returns>
-        private static int JwtExpirySeconds(string jwt)
-        {
-            IEnumerable<Claim> claims = ExtractClaimsFromToken(jwt);
-            string? expClaim = claims.FirstOrDefault(c => c.Type == "exp")?.Value;
-            string? iatClaim = claims.FirstOrDefault(c => c.Type == "iat")?.Value;
-
-            int expiresIn = 0;
-            if (long.TryParse(expClaim, out long expSeconds) && long.TryParse(iatClaim, out long iatSeconds))
-            {
-                expiresIn = (int)(expSeconds - iatSeconds);
-            }
-
-            return expiresIn;
-        }
 
         /// <summary>
         /// Extracts the claims from a JWT token.

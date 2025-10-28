@@ -1,5 +1,4 @@
-﻿using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
+﻿using Azure.Security.KeyVault.Secrets;
 using INSS.Platform.Common.Auth.Contracts.Request;
 using INSS.Platform.Common.Auth.Contracts.Response;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +23,7 @@ namespace INSS.Platform.Common.Auth.API.Services
         private readonly ILogger<OneLoginAuthService> _logger;
         private readonly IConfiguration _appConfig;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly SecretClient _secretClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OneLoginAuthService"/> class.
@@ -34,11 +34,13 @@ namespace INSS.Platform.Common.Auth.API.Services
         public OneLoginAuthService(
             ILogger<OneLoginAuthService> logger,
             IConfiguration appConfig,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            SecretClient secretClient)
         {
             _logger = logger;
             _appConfig = appConfig;
             _httpClientFactory = httpClientFactory;
+            this._secretClient = secretClient;
         }
 
         /// <inheritdoc/>
@@ -76,12 +78,8 @@ namespace INSS.Platform.Common.Auth.API.Services
                     return true;
                 }
 
-                if (!logoutResponse.IsSuccessStatusCode)
-                {
-                    string errorContent = await logoutResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.LogError("Logout endpoint returned error: {StatusCode} - {Content}", logoutResponse.StatusCode, errorContent);
-                    throw new InvalidOperationException($"Logout endpoint error: {logoutResponse.StatusCode}");
-                }
+                string errorContent = await logoutResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                _logger.LogError("Logout endpoint returned error: {StatusCode} - {Content}", logoutResponse.StatusCode, errorContent);
 
                 return false;
             }
@@ -302,7 +300,7 @@ namespace INSS.Platform.Common.Auth.API.Services
                 { "aud", authorizeUri },
                 { "iss", clientId },
                 { "ui_locales", uiLocales },
-                { "vtr", vtr },
+                { "vtr", vtr }
             };
         }
 
@@ -382,78 +380,48 @@ namespace INSS.Platform.Common.Auth.API.Services
         #region Key Retrieval
 
         /// <summary>
-        /// Retrieves the private key used for signing query JWTs.
-        /// Attempts to read the key from a configured file; if not found, retrieves it from Azure Key Vault.
+        /// Retrieves the query JWT private key from configuration or Azure Key Vault.
         /// </summary>
         /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
+        /// A task that represents the asynchronous operation. The task result contains the PEM-formatted private key as a string.
         /// </returns>
-        private async Task<string> GetQueryJwtPrivateKeyAsync()
+        protected async Task<string> GetQueryJwtPrivateKeyAsync()
         {
-            string keyFileName = _appConfig["OneLogin:QueryJwtPrivateKeyFile"] ?? string.Empty;
+            string key = _appConfig["OneLogin:QueryJwtPrivateKey"] ?? string.Empty;
 
-            string keyFromFile = await GetKeyFromFileIfConfiguredAsync(keyFileName).ConfigureAwait(false);
-
-            return !string.IsNullOrWhiteSpace(keyFromFile)
-                ? keyFromFile
+            return !string.IsNullOrWhiteSpace(key)
+                ? key
                 : await GetKeyVaultSecretAsync("QueryJwtPrivateKey").ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Retrieves the private key used for signing state JWTs.
-        /// Attempts to read the key from a configured file; if not found, retrieves it from Azure Key Vault.
+        /// Retrieves the state JWT private key from configuration or Azure Key Vault.
         /// </summary>
         /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains the private key as a PEM-formatted string.
+        /// A task that represents the asynchronous operation. The task result contains the PEM-formatted private key as a string.
         /// </returns>
-        private async Task<string> GetStateJwtPrivateKeyAsync()
+        protected async Task<string> GetStateJwtPrivateKeyAsync()
         {
-            string keyFileName = _appConfig["OneLogin:StateJwtPrivateKeyFile"] ?? string.Empty;
+            string key = _appConfig["OneLogin:StateJwtPrivateKey"] ?? string.Empty;
 
-            string keyFromFile = await GetKeyFromFileIfConfiguredAsync(keyFileName).ConfigureAwait(false);
-
-            return !string.IsNullOrWhiteSpace(keyFromFile)
-                ? keyFromFile
+            return !string.IsNullOrWhiteSpace(key)
+                ? key
                 : await GetKeyVaultSecretAsync("StateJwtPrivateKey").ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Retrieves the public key used for validating state JWTs.
-        /// Attempts to read the key from a configured file; if not found, retrieves it from Azure Key Vault.
+        /// Retrieves the state JWT public key from configuration or Azure Key Vault.
         /// </summary>
         /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains the public key as a PEM-formatted string.
+        /// A task that represents the asynchronous operation. The task result contains the PEM-formatted public key as a string.
         /// </returns>
-        private async Task<string> GetStateJwtPublicKeyAsync()
+        protected async Task<string> GetStateJwtPublicKeyAsync()
         {
-            string keyFileName = _appConfig["OneLogin:StateJwtPublicKeyFile"] ?? string.Empty;
+            string key = _appConfig["OneLogin:StateJwtPublicKey"] ?? string.Empty;
 
-            string keyFromFile = await GetKeyFromFileIfConfiguredAsync(keyFileName).ConfigureAwait(false);
-
-            return !string.IsNullOrWhiteSpace(keyFromFile) 
-                ? keyFromFile 
+            return !string.IsNullOrWhiteSpace(key) 
+                ? key 
                 : await GetKeyVaultSecretAsync("StateJwtPublicKey").ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Attempts to read a key from a file if a file name is configured.
-        /// </summary>
-        /// <param name="keyFileName">The name of the key file.</param>
-        /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains the key as a string, or an empty string if not found.
-        /// </returns>
-        private static async Task<string> GetKeyFromFileIfConfiguredAsync(string keyFileName)
-        {
-            if (!string.IsNullOrWhiteSpace(keyFileName))
-            {
-                string keyFilePath = Path.Combine(AppContext.BaseDirectory, keyFileName);
-                if (File.Exists(keyFilePath))
-                {
-                    return await File.ReadAllTextAsync(keyFilePath).ConfigureAwait(false);
-                }
-            }
-
-            return string.Empty;
         }
 
         /// <summary>
@@ -464,19 +432,9 @@ namespace INSS.Platform.Common.Auth.API.Services
         /// <exception cref="InvalidOperationException">Thrown if the KeyVault URI is missing.</exception>
         private async Task<string> GetKeyVaultSecretAsync(string secretName)
         {
-            string keyVaultUriString = _appConfig["KeyVault:Uri"] ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(keyVaultUriString))
-            {
-                _logger.LogError("KeyVault URI is not configured in appsettings.");
-                throw new InvalidOperationException("KeyVault URI is missing.");
-            }
-
-            Uri keyVaultUri = new(keyVaultUriString);
-            SecretClient client = new(keyVaultUri, new DefaultAzureCredential());
-
             try
             {
-                KeyVaultSecret secret = await client.GetSecretAsync(secretName).ConfigureAwait(false);
+                KeyVaultSecret secret = await _secretClient.GetSecretAsync(secretName).ConfigureAwait(false);
                 _logger.LogInformation("Successfully retrieved secret: {SecretName}", secretName);
                 return secret.Value;
             }
