@@ -19,8 +19,8 @@ namespace INSS.Platform.Common.Auth.API.Tests
         private readonly Mock<IConfiguration> _configMock;
         private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
         private readonly Mock<SecretClient> _secretClientMock;
-        private const string PrivateKeyPemFile = "Keys\\test_private_key.pem";
-        private const string PublicKeyPemFile = "Keys\\test_public_key.pem";
+        private const string TestPrivateKeyPemFile = "Keys\\test_private_key.pem";
+        private const string TestPublicKeyPemFile = "Keys\\test_public_key.pem";
         private const string ClientId = "test-issuer";
         private const string AuthUrl = "https://auth";
         private const string Scope = "openid profile";
@@ -37,9 +37,9 @@ namespace INSS.Platform.Common.Auth.API.Tests
             _configMock.Setup(x => x["OneLogin:TokenUri"]).Returns("https://token");
             _configMock.Setup(x => x["OneLogin:Scopes"]).Returns(Scope);
             _configMock.Setup(x => x["OneLogin:RedirectUri"]).Returns("https://redirect");
-            _configMock.Setup(x => x["OneLogin:QueryJwtPrivateKeyFile"]).Returns(PrivateKeyPemFile);
-            _configMock.Setup(x => x["OneLogin:StateJwtPrivateKeyFile"]).Returns(PrivateKeyPemFile);
-            _configMock.Setup(x => x["OneLogin:StateJwtPublicKeyFile"]).Returns(PublicKeyPemFile);
+            _configMock.Setup(x => x["OneLogin:QueryJwtPrivateKey"]).Returns(TestHelper.GetKeyPem(TestPrivateKeyPemFile));
+            _configMock.Setup(x => x["OneLogin:StateJwtPrivateKey"]).Returns(TestHelper.GetKeyPem(TestPrivateKeyPemFile));
+            _configMock.Setup(x => x["OneLogin:StateJwtPublicKey"]).Returns(TestHelper.GetKeyPem(TestPublicKeyPemFile));
             _configMock.Setup(x => x["OneLogin:LogoutUri"]).Returns("https://logout");
         }
 
@@ -125,8 +125,8 @@ namespace INSS.Platform.Common.Auth.API.Tests
         {
             // Arrange
             const string nonce = "some-nonce";
-            string idToken = TestHelper.CreateIdToken(PrivateKeyPemFile, nonce);
-            string accessToken = TestHelper.CreateAccessToken(PrivateKeyPemFile);
+            string idToken = TestHelper.CreateIdToken(TestPrivateKeyPemFile, nonce);
+            string accessToken = TestHelper.CreateAccessToken(TestPrivateKeyPemFile);
 
             Mock<HttpMessageHandler> handlerMock = new();
             var tokenObj = new { access_token = accessToken, id_token = idToken};
@@ -194,7 +194,7 @@ namespace INSS.Platform.Common.Auth.API.Tests
             const string csrfTokenIn = "some-csrf";
             const string userIdIn = "user-id";
             const string clientUrlIn = "http://some-url";
-            string token = TestHelper.CreateIdToken(PrivateKeyPemFile, nonceIn, csrfTokenIn, userIdIn, clientUrlIn);
+            string token = TestHelper.CreateIdToken(TestPrivateKeyPemFile, nonceIn, csrfTokenIn, userIdIn, clientUrlIn);
 
             OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
 
@@ -221,7 +221,7 @@ namespace INSS.Platform.Common.Auth.API.Tests
             const string userIdIn = "user-id";
             const string clientUrlIn = "http://some-url";
             const string invalidIssuer = "invalid-issuer";
-            string token = TestHelper.CreateIdToken(PrivateKeyPemFile, nonceIn, csrfTokenIn, userIdIn, clientUrlIn, invalidIssuer);
+            string token = TestHelper.CreateIdToken(TestPrivateKeyPemFile, nonceIn, csrfTokenIn, userIdIn, clientUrlIn, invalidIssuer);
 
             OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
 
