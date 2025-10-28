@@ -4,15 +4,15 @@ namespace INSS.Platform.Common.Libs.Components.Models
 {
     public class Address
     {
-        [Required]
+        [Required(ErrorMessage = "Enter address line 1")]
         public string Address1 { get; set; }
 
         public string Address2 { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Enter town or city")]
         public string Town { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Enter postcode")]
         public string Postcode { get; set; }
     }
 }

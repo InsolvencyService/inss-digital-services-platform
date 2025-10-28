@@ -62,17 +62,32 @@
     /// </summary>
     private void UpdateSummaryErrors()
     {
-        var validationErrors = EditContext?.GetValidationMessages() ?? Enumerable.Empty<string>();
-        summaryErrors = validationErrors.Any()
-            ? validationErrors.Select(e =>
+        if (EditContext != null)
+        {
+            var addressProperties = new[]
             {
-                string elementId = idAddress1;
-                if (e.Contains("Address line 2")) elementId = idAddress2;
-                else if (e.Contains("Town")) elementId = idTown;
-                else if (e.Contains("Postcode")) elementId = idPostcode;
+                new { Name = nameof(Address.Address1), Id = idAddress1 },
+                new { Name = nameof(Address.Address2), Id = idAddress2 },
+                new { Name = nameof(Address.Town), Id = idTown },
+                new { Name = nameof(Address.Postcode), Id = idPostcode }
+            };
 
-                return new SummaryError { ElementId = elementId, Error = e };
-            })
-            : Enumerable.Empty<SummaryError>();
+            var errors = new List<SummaryError>();
+
+            foreach (var prop in addressProperties)
+            {
+                var propMessages = EditContext.GetValidationMessages(new FieldIdentifier(Value, prop.Name));
+                foreach (var message in propMessages)
+                {
+                    errors.Add(new SummaryError { ElementId = prop.Id, Error = message });
+                }
+            }
+
+            summaryErrors = errors;
+        }
+        else
+        {
+            summaryErrors = Enumerable.Empty<SummaryError>();
+        }
     }
 }

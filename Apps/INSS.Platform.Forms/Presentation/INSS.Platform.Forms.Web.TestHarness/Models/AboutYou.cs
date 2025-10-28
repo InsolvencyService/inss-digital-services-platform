@@ -24,6 +24,6 @@ namespace INSS.Platform.Forms.Web.TestHarness.Models
         [Phone]
         public string Telephone { get; set; }
 
-        public Address PostalAddress { get; set; }
+        public Address PostalAddress { get; set; } = new Address();
     }
 }
