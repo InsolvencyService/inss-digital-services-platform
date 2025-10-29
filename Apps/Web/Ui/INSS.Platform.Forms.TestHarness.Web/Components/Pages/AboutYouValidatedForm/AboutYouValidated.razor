@@ -1,0 +1,59 @@
+﻿@using INSS.Platform.Components.Web.Common.Enums
+@using INSS.Platform.Components.Web.Helpers
+@using INSS.Platform.Components.Web.Models
+@using INSS.Platform.Forms.TestHarness.Web.Common.Services
+@using INSS.Platform.Forms.TestHarness.Web.Common.Validators
+@using INSS.Platform.Forms.TestHarness.Web.Models
+
+@page "/about-you-validated"
+@inject IPropertyValidator PropertyValidator;
+
+<EditForm Enhance EditContext="CurrentEditContext" FormName="about-you" OnValidSubmit="SubmitForm">
+    <PostalAddressValidated Text="What is your address" Name="aboutYou.PostalAddress" Value="@aboutYou.PostalAddress" />
+
+@*     <Input Name="aboutYou.FirstName" Text="First name" Placeholder="Enter your first name" Value="@aboutYou.FirstName" />
+
+    <InputValidated Name="aboutYou.LastName" Text="Last name" Placeholder="Enter your last name" Value="@aboutYou.LastName" ValidateFor="() => aboutYou.LastName" />
+    <InputValidated Name="aboutYou.Email" Type="InputFieldType.Email" Text="Email" Placeholder="Enter your email" Value="@aboutYou.Email" ValidateFor="() => aboutYou.Email" HideErrorSummary="true" />
+    <InputValidated Name="aboutYou.Telephone" Type="InputFieldType.Telephone" Text="Telephone" Placeholder="Enter your telephone number" Value="@aboutYou.Telephone" ValidateFor="() => aboutYou.Telephone" HideErrorSummary="true" />
+    <InputValidated Name="aboutYou.Salary" Type="InputFieldType.Currency" Text="Salary" Placeholder="Enter your salary" Value="@aboutYou.Salary.ToString()" ValidateFor="() => aboutYou.Salary" HideErrorSummary="true" />
+ *@
+    <SubmitButton Name="about-you-submit" Text="Submit" />
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private AboutYou aboutYou { get; set; } = new ();
+
+    protected EditContext CurrentEditContext { get; set; } = null!;
+
+    private void SubmitForm()
+    {
+        Console.WriteLine($"First name: {aboutYou.FirstName}");
+
+        var modifiedForm = CurrentEditContext.Model as AboutYou ?? new();
+        var cachedForm = new AboutYou(); // This would be written to a database or session in a real app
+
+        // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.FirstName));
+        // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.LastName));
+        // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.Email));
+        // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.Salary));
+        // ValidateAndAssignFormProperty(modifiedForm, cachedForm, nameof(aboutYou.Telephone));
+
+        FormValidationHelper.ValidateAndAssignFormProperty<AboutYou, Address>(
+            PropertyValidator,
+            CurrentEditContext,
+            aboutYou,
+            aboutYou.PostalAddress,
+            cachedForm,
+            nameof(aboutYou.PostalAddress)
+        );
+    }
+
+    protected override void OnInitialized()
+    {
+        CurrentEditContext = new EditContext(aboutYou);
+
+        base.OnInitialized();
+    }
+}
