@@ -1,0 +1,46 @@
+﻿@page "/about-you/AddressForm"
+
+@using INSS.Platform.Components.Web.Common.Enums
+@using INSS.Platform.Components.Web.Models
+@using INSS.Platform.Forms.TestHarness.Web.Common.Services
+@using INSS.Platform.Forms.TestHarness.Web.Common.Validators
+@using INSS.Platform.Forms.TestHarness.Web.Models
+dators
+
+@inject IPropertyValidator PropertyValidator;
+
+<EditForm Enhance EditContext="CurrentEditContext" FormName="about-you" OnValidSubmit="SubmitForm">
+    <PostalAddressValidated Text="What is your address" Name="aboutYou.PostalAddress" Value="@aboutYou.PostalAddress" />
+    <SubmitButton Name="about-you-submit" Text="Submit" />
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private AboutYou aboutYou { get; set; } = new ();
+
+    protected EditContext CurrentEditContext { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        CurrentEditContext = new EditContext(aboutYou);
+
+        base.OnInitialized();
+    }
+
+    private void SubmitForm()
+    {
+        Console.WriteLine($"First address line: {aboutYou.PostalAddress.Address1}");
+
+        var modifiedForm = CurrentEditContext.Model as AboutYou ?? new();
+        var cachedForm = new AboutYou(); // This would be written to a database or session in a real app
+
+        FormValidationHelper.ValidateAndAssignFormProperty<AboutYou, Address>(
+            PropertyValidator,
+            CurrentEditContext,
+            aboutYou,
+            aboutYou.PostalAddress,
+            cachedForm,
+            nameof(aboutYou.PostalAddress)
+        );
+    }   
+}
