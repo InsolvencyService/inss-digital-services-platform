@@ -1,251 +1,189 @@
 ﻿using Azure.Security.KeyVault.Secrets;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using INSS.Platform.Auth.API.Models;
 using INSS.Platform.Auth.API.Services;
-using INSS.Platform.Auth.Contracts.Request;
-using INSS.Platform.Auth.Contracts.Response;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Moq;
-using Moq.Protected;
-using System.Net;
-using System.Text.Encodings.Web;
+using System.Security.Claims;
 
-namespace INSS.Platform.Common.Auth.API.Tests
+namespace INSS.Platform.Auth.API.Tests
 {
     public class OneLoginAuthServiceTests
     {
         private readonly Mock<ILogger<OneLoginAuthService>> _loggerMock;
-        private readonly Mock<IConfiguration> _configMock;
-        private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
         private readonly Mock<SecretClient> _secretClientMock;
-        private const string TestPrivateKeyPemFile = "Keys\\test_private_key.pem";
-        private const string TestPublicKeyPemFile = "Keys\\test_public_key.pem";
-        private const string ClientId = "test-issuer";
-        private const string AuthUrl = "https://auth";
-        private const string Scope = "openid profile";
+        private readonly Mock<IOptions<AuthProviderOptions>> _optionsMock;
+        private readonly AuthProviderOptions _authProviderOptions;
+        private readonly OneLoginAuthService _service;
 
         public OneLoginAuthServiceTests()
         {
             _loggerMock = new Mock<ILogger<OneLoginAuthService>>();
-            _httpClientFactoryMock = new Mock<IHttpClientFactory>();
             _secretClientMock = new Mock<SecretClient>();
+            _authProviderOptions = new AuthProviderOptions
+            {
+                OneLogin = new OneLoginOptions
+                {
+                    ClientId = "test-client-id",
+                    TokenUri = "https://test.token.uri",
+                    JwtPrivateKey = TestHelper.GetKeyPem("Keys\\test_private_key.pem"),
+                    PostSignOutPath = "signout-callback-oidc",
+                    Scopes = new List<string> { "openid", "profile" },
+                    BaseUri = "https://test.base.uri"
+                },
+                AllowedPostSignInRedirectUris = new List<string> { "https://localhost/signin-oidc" },
+                AllowedPostSignOutRedirectUris = new List<string> { "https://localhost/signout-callback-oidc" }
+            };
+            _optionsMock = new Mock<IOptions<AuthProviderOptions>>();
+            _optionsMock.Setup(x => x.Value).Returns(_authProviderOptions);
 
-            _configMock = new Mock<IConfiguration>();
-            _configMock.Setup(x => x["OneLogin:ClientId"]).Returns(ClientId);
-            _configMock.Setup(x => x["OneLogin:AuthorizeUri"]).Returns(AuthUrl);
-            _configMock.Setup(x => x["OneLogin:TokenUri"]).Returns("https://token");
-            _configMock.Setup(x => x["OneLogin:Scopes"]).Returns(Scope);
-            _configMock.Setup(x => x["OneLogin:RedirectUri"]).Returns("https://redirect");
-            _configMock.Setup(x => x["OneLogin:QueryJwtPrivateKey"]).Returns(TestHelper.GetKeyPem(TestPrivateKeyPemFile));
-            _configMock.Setup(x => x["OneLogin:StateJwtPrivateKey"]).Returns(TestHelper.GetKeyPem(TestPrivateKeyPemFile));
-            _configMock.Setup(x => x["OneLogin:StateJwtPublicKey"]).Returns(TestHelper.GetKeyPem(TestPublicKeyPemFile));
-            _configMock.Setup(x => x["OneLogin:LogoutUri"]).Returns("https://logout");
+            _service = new OneLoginAuthService(
+                _loggerMock.Object,
+                _optionsMock.Object,
+                _secretClientMock.Object
+            );
         }
 
         [Fact]
-        public async Task GetLoginRedirectUrlAsync_ReturnsUrl_WhenConfigValid()
+        public async Task AuthorizationCodeReceivedAsync_SetsClientAssertion()
         {
             // Arrange
-            LoginRequest loginRequest = TestHelper.CreateLoginRequest();
-
-            OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
+            AuthorizationCodeReceivedContext context = new(
+                new DefaultHttpContext(),
+                new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                new AuthenticationProperties()
+            )
+            {
+                TokenEndpointRequest = new OpenIdConnectMessage()
+            };
 
             // Act
-            string url = await service.GetLoginRedirectUrlAsync(loginRequest);
+            await _service.AuthorizationCodeReceivedAsync(context);
 
             // Assert
             using (new AssertionScope())
             {
-                url.Should().Contain(AuthUrl);
-                url.Should().Contain($"client_id={ClientId}");
-                url.Should().Contain($"scope={UrlEncoder.Default.Encode(Scope)}");
-                url.Should().Contain("request=");
+                string? assertionType = context.TokenEndpointRequest.ClientAssertionType;
+                string? assertion = context.TokenEndpointRequest.ClientAssertion;
+
+                assertionType.Should().Be("urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
+                assertion.Should().NotBeNullOrWhiteSpace();
             }
         }
 
         [Fact]
-        public async Task LogoutAsync_ReturnsTrue_WhenLogoutSuccess()
+        public async Task TokenValidatedAsync_FailsIfPropertiesAreNull()
         {
             // Arrange
-            LogoutRequest logoutRequest = TestHelper.CreateLogoutRequest();
-
-            Mock<HttpMessageHandler> handlerMock = new();
-            handlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.Found });
-
-            HttpClient httpClient = new(handlerMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
-
-            OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
-
-            // Act
-            bool result = await service.LogoutAsync(logoutRequest);
-
-            // Assert
-            result.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task LogoutAsync_ReturnsFalse_WhenLogoutFails()
-        {
-            // Arrange
-            LogoutRequest logoutRequest = TestHelper.CreateLogoutRequest();
-
-            const string failResponseContent = "request failed";
-            Mock<HttpMessageHandler> handlerMock = new ();
-            handlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.BadRequest, Content = new StringContent(failResponseContent) });
-
-            HttpClient httpClient = new(handlerMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
-
-            OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
+            TokenValidatedContext context = new(
+                new DefaultHttpContext(),
+                new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                new ClaimsPrincipal(),
+                new AuthenticationProperties()
+            )
+            {
+                Properties = null
+            };
 
             // Act
-            bool result = await service.LogoutAsync(logoutRequest);
-
-            // Assert
-            result.Should().BeFalse();
-
-            _loggerMock.Verify(
-                x => x.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v is object && v.ToString()!.Contains($"Logout endpoint returned error: {HttpStatusCode.BadRequest} - {failResponseContent}")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-                Times.Once);
-        }
-
-        [Fact]
-        public async Task HandleCallbackAsync_ReturnsTokenData_WhenSuccess()
-        {
-            // Arrange
-            const string nonce = "some-nonce";
-            string idToken = TestHelper.CreateIdToken(TestPrivateKeyPemFile, nonce);
-            string accessToken = TestHelper.CreateAccessToken(TestPrivateKeyPemFile);
-
-            Mock<HttpMessageHandler> handlerMock = new();
-            var tokenObj = new { access_token = accessToken, id_token = idToken};
-            string tokenJson = System.Text.Json.JsonSerializer.Serialize(tokenObj);
-
-            handlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK, Content = new StringContent(tokenJson) });
-
-            HttpClient httpClient = new(handlerMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
-
-            OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
-
-            // Act
-            TokenData result = await service.HandleCallbackAsync("code", nonce);
+            await _service.TokenValidatedAsync(context);
 
             // Assert
             using (new AssertionScope())
             {
-                result.AccessToken.Should().Be(accessToken);
-                result.IdToken.Should().Be(idToken);
+                context.Result.Succeeded.Should().BeFalse();
+                context.Result.Failure.Should().NotBeNull();
             }
         }
 
         [Fact]
-        public async Task HandleCallbackAsync_ReturnsEmptyTokenData_WhenTokenEndpointFails()
+        public async Task TokenValidatedAsync_FailsIfRequiredTokensAreMissing()
         {
             // Arrange
-            Mock<HttpMessageHandler> handlerMock = new();
-            handlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.BadRequest, Content = new StringContent("fail") });
-
-            HttpClient httpClient = new(handlerMock.Object);
-            _httpClientFactoryMock.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
-
-            OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
+            TokenValidatedContext context = new(
+                new DefaultHttpContext(),
+                new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                new ClaimsPrincipal(),
+                new AuthenticationProperties()
+            )
+            {
+                TokenEndpointResponse = null
+            };
 
             // Act
-            TokenData result = await service.HandleCallbackAsync("code", "nonce");
+            await _service.TokenValidatedAsync(context);
 
             // Assert
             using (new AssertionScope())
             {
-                result.AccessToken.Should().BeNullOrEmpty();
-                result.IdToken.Should().BeNullOrEmpty();
-            }
-
-            _loggerMock.Verify(
-                x => x.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v is object && v.ToString()!.Contains("Error handling authentication callback.")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-                Times.Once);
-        }
-
-        [Fact]
-        public async Task ValidateAndExtractRequestStateAsync_ReturnsValidTuple_WhenTokenValid()
-        {
-            // Arrange
-            const string nonceIn = "some-nonce";
-            const string csrfTokenIn = "some-csrf";
-            const string userIdIn = "user-id";
-            const string clientUrlIn = "http://some-url";
-            string token = TestHelper.CreateIdToken(TestPrivateKeyPemFile, nonceIn, csrfTokenIn, userIdIn, clientUrlIn);
-
-            OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
-
-            // Act
-            (bool isValid, string? nonceOut, string? csrfTokenOut, string? userIdOut, string? clientUrlOut) = await service.ValidateAndExtractRequestStateAsync(token);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                isValid.Should().BeTrue();
-                nonceIn.Should().Be(nonceOut);
-                csrfTokenIn.Should().Be(csrfTokenOut);
-                userIdIn.Should().Be(userIdOut);
-                clientUrlIn.Should().Be(clientUrlOut);
+                context.Result.Succeeded.Should().BeFalse();
+                context.Result.Failure.Should().NotBeNull();
             }
         }
 
         [Fact]
-        public async Task ValidateAndExtractRequestStateAsync_ReturnsInvalidTuple_WhenTokenInvalid()
+        public async Task RedirectToIdentityProviderForSignOutAsync_SetsIdTokenHintAndPostLogoutRedirectUri()
         {
             // Arrange
-            const string nonceIn = "some-nonce";
-            const string csrfTokenIn = "some-csrf";
-            const string userIdIn = "user-id";
-            const string clientUrlIn = "http://some-url";
-            const string invalidIssuer = "invalid-issuer";
-            string token = TestHelper.CreateIdToken(TestPrivateKeyPemFile, nonceIn, csrfTokenIn, userIdIn, clientUrlIn, invalidIssuer);
+            AuthenticationProperties properties = new();
+            properties.StoreTokens([new AuthenticationToken { Name = "id_token", Value = "test-id-token" }]);
 
-            OneLoginAuthService service = new(_loggerMock.Object, _configMock.Object, _httpClientFactoryMock.Object, _secretClientMock.Object);
+            Mock<IAuthenticationService> authenticationServiceMock = new ();
+            AuthenticateResult expectedResult = AuthenticateResult.Success(
+                new AuthenticationTicket(
+                    new ClaimsPrincipal(new ClaimsIdentity()),
+                    properties,
+                    CookieAuthenticationDefaults.AuthenticationScheme
+                )
+            );
+
+            authenticationServiceMock
+                .Setup(x => x.AuthenticateAsync(It.IsAny<HttpContext>(), CookieAuthenticationDefaults.AuthenticationScheme))
+                .ReturnsAsync(expectedResult);
+
+            ServiceCollection services = new();
+            services.AddSingleton(authenticationServiceMock.Object);
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+            DefaultHttpContext httpContext = new()
+            {
+                RequestServices = serviceProvider
+            };
+
+
+            RedirectContext context = new(
+                httpContext,
+                new AuthenticationScheme("oidc", null, typeof(OpenIdConnectHandler)),
+                new OpenIdConnectOptions(),
+                properties
+            )
+            {
+                ProtocolMessage = new OpenIdConnectMessage()
+            };
 
             // Act
-            (bool isValid, string? nonceOut, string? csrfTokenOut, string? userIdOut, string? clientUrlOut) = await service.ValidateAndExtractRequestStateAsync(token);
+            await _service.RedirectToIdentityProviderForSignOutAsync(context);
 
             // Assert
             using (new AssertionScope())
             {
-                isValid.Should().BeFalse();
-                nonceOut.Should().BeEmpty();
-                csrfTokenOut.Should().BeEmpty();
-                userIdOut.Should().BeEmpty();
-                clientUrlOut.Should().BeEmpty();
-            }
+                string? idTokenHint = context.ProtocolMessage.IdTokenHint;
+                string? postLogoutRedirectUri = context.ProtocolMessage.PostLogoutRedirectUri;
 
-            _loggerMock.Verify(
-                x => x.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v is object && v.ToString()!.Contains("Request state validation failed on callback.")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-                Times.Once);
+                idTokenHint.Should().Be("test-id-token");
+                postLogoutRedirectUri.Should().Contain(_authProviderOptions.OneLogin.PostSignOutPath);
+            }
         }
     }
 }
