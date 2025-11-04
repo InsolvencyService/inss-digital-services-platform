@@ -33,16 +33,16 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
         public bool IsUserSignedIn()
         {
             return TryGetAuthTokenDataFromCookie(out TokenData? tokenData) 
-                && !string.IsNullOrWhiteSpace(tokenData?.AccessToken) 
-                && !IsJwtExpired(tokenData.AccessToken);
+                && !string.IsNullOrWhiteSpace(tokenData?.IdToken) 
+                && !IsJwtExpired(tokenData.IdToken);
         }
 
         /// <inheritdoc />
         public bool JwtExistsButHasExpired()
         {
             return TryGetAuthTokenDataFromCookie(out TokenData? tokenData) 
-                && !string.IsNullOrWhiteSpace(tokenData?.AccessToken) 
-                && IsJwtExpired(tokenData.AccessToken);
+                && !string.IsNullOrWhiteSpace(tokenData?.IdToken) 
+                && IsJwtExpired(tokenData.IdToken);
         }
 
         /// <inheritdoc />
@@ -59,7 +59,6 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
 
             TokenData token = new()
             {
-                AccessToken = accessToken!,
                 IdToken = idToken!,
             };
 
@@ -89,7 +88,8 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
 
             if (TryGetAuthTokenDataFromCookie(out TokenData? tokenData))
             {
-                IEnumerable<Claim> claims = ExtractClaimsFromToken(tokenData!.AccessToken);
+                IEnumerable<Claim> claims = ExtractClaimsFromToken(tokenData!.IdToken);
+                //IEnumerable<Claim> claims = ExtractClaimsFromToken(tokenData!.AccessToken);
                 loginProividerUserId = claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             }
 

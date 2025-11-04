@@ -12,17 +12,17 @@ namespace INSS.Platform.Auth.API.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly AuthProviderOptions _options;
+        private readonly AuthenticationProviderOptions _options;
 
 
-        public AuthenticationController(ILogger<AuthenticationController> logger, IOptions<AuthProviderOptions> options)
+        public AuthenticationController(ILogger<AuthenticationController> logger, IOptions<AuthenticationProviderOptions> options)
         {
             _logger = logger;
             _options = options.Value;
         }
 
         [HttpGet("{provider}/signin")]
-        public IActionResult SignIn(AuthProvider provider, 
+        public IActionResult SignIn(AuthenticationProvider provider, 
             [FromQuery] SignInRequest signInRequest)
         {
             _logger.LogInformation("Begin SignIn process for Provider:{Provider} - PostSignInRedirect:{PostSignInRedirectUri} - UserId:{UserId}", provider.ToString(), signInRequest.PostSignInRedirectUri, signInRequest.UserId);
@@ -42,12 +42,12 @@ namespace INSS.Platform.Auth.API.Controllers
                 properties.Items.Add("userId", signInRequest.UserId);
             }
 
-            // Raise the orchestrated set of provider events starting with: OnRedirectToIdentityProvider.
+            // Raise the orchestrated set of provider events starting with: OnAuthorizationCodeReceived.
             return Challenge(properties, provider.ToString());
         }
 
         [HttpGet("{provider}/signout")]
-        public async Task<IActionResult> SignOut(AuthProvider provider, 
+        public async Task<IActionResult> SignOut(AuthenticationProvider provider, 
             [FromQuery] SignOutRequest signOutRequest)
         {
             _logger.LogInformation("Begin SignOut process for Provider:{Provider} - PostSignOutRedirectUri:{PostSignOutRedirectUri}", provider.ToString(), signOutRequest.PostSignOutRedirectUri);
@@ -75,10 +75,16 @@ namespace INSS.Platform.Auth.API.Controllers
             AuthenticationProperties? properties = result.Properties;
 
             // Get the return url for the client that was stored in SignOut()
-            string returnUrl = string.Empty;
+            string returnUrl;
             if (properties?.Items.TryGetValue("returnUrl", out string? value) == true && value is not null)
             {
                 returnUrl = value;
+            }
+            else
+            {
+                // This appears to happen when signing out of Entra, it then makes a second call but provides the returnUrl.
+                _logger.LogInformation("returnUrl is not available in AuthenticationProperties.");
+                return Ok();
             }
 
             // Clear out any remaining cookies

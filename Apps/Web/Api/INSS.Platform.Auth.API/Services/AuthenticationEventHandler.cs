@@ -1,5 +1,5 @@
-﻿using Azure.Security.KeyVault.Secrets;
 using INSS.Platform.Auth.API.Models;
+using INSS.Platform.Auth.Contracts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -15,40 +15,44 @@ using System.Web;
 namespace INSS.Platform.Auth.API.Services
 {
     /// <summary>
-    /// Provides authentication services for OneLogin integration.
+    /// Handles authentication-related events for external identity providers, including processing authorization codes,
+    /// validating tokens, handling sign-out redirection, and managing remote authentication failures.
     /// </summary>
-    public class OneLoginAuthService : IAuthService
+    /// <remarks>This class implements event handlers for authentication workflows involving external
+    /// providers such as OneLogin. It is typically used to customize the authentication process, including generating
+    /// client assertion JWTs, managing token storage, and handling error responses. The event handlers are invoked by
+    /// the authentication middleware during various stages of the authentication lifecycle.</remarks>
+    public class AuthenticationEventHandler : IAuthenticationEventHandler
     {
-        private readonly ILogger<OneLoginAuthService> _logger;
-        private readonly SecretClient _secretClient;
-        private readonly AuthProviderOptions _options;
+        private readonly ILogger<AuthenticationEventHandler> _logger;
+        private readonly AuthenticationProviderOptions _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OneLoginAuthService"/> class.
+        /// Initializes a new instance of the <see cref="AuthenticationEventHandler"/> class.
         /// </summary>
-        /// <param name="logger">The logger instance.</param>
-        /// <param name="appConfig">The application configuration.</param>
-        /// <param name="httpClientFactory">The HTTP client factory.</param>
-        public OneLoginAuthService(
-            ILogger<OneLoginAuthService> logger,
-            IOptions<AuthProviderOptions> options,
-            SecretClient secretClient)
+        /// <param name="logger">The logger instance used for logging authentication events.</param>
+        /// <param name="options">The authentication provider options.</param>
+        public AuthenticationEventHandler(
+            ILogger<AuthenticationEventHandler> logger,
+            IOptions<AuthenticationProviderOptions> options)
         {
             _logger = logger;
             _options = options.Value;
-            _secretClient = secretClient;
         }
 
+
         /// <inheritdoc/>
-        public async Task AuthorizationCodeReceivedAsync(AuthorizationCodeReceivedContext context)
+        public async Task HandleAuthorizationCodeReceivedAsync(
+            AuthorizationCodeReceivedContext context, 
+            AuthenticationProvider provider)
         {
-            _logger.LogInformation("Generating client assertion JWT for OneLogin token request.");
+            _logger.LogInformation("Generating client assertion JWT for {PROVIDER} token request.", provider.ToString());
+
             string clientId = _options.OneLogin.ClientId;
             string audienceEndpoint = _options.OneLogin.TokenUri;
 
             Dictionary<string, object> clientAssertionClaims = BuildClientAssertionClaims(clientId, audienceEndpoint);
-            string privateKeyPem = await GetJwtPrivateKeyAsync();
-            string clientAssertionToken = CreateJwtSecurityTokenAsync(clientId, audienceEndpoint, privateKeyPem, clientAssertionClaims);
+            string clientAssertionToken = CreateJwtSecurityToken(clientId, audienceEndpoint, _options.OneLogin.JwtPrivateKey, clientAssertionClaims);
 
             if (context.TokenEndpointRequest != null)
             {
@@ -58,9 +62,12 @@ namespace INSS.Platform.Auth.API.Services
         }
 
         /// <inheritdoc/>
-        public async Task TokenValidatedAsync(TokenValidatedContext context)
+        public async Task HandleTokenValidatedAsync(
+            TokenValidatedContext context,
+            AuthenticationProvider provider)
         {
-            _logger.LogInformation("Processing TokenValidated event for OneLogin.");
+            _logger.LogInformation("Processing TokenValidated event for {Provider}.", provider.ToString());
+
             if (context.Properties is null)
             {
                 _logger.LogError("Authentication properties are missing in TokenValidatedContext.");
@@ -72,7 +79,7 @@ namespace INSS.Platform.Auth.API.Services
             {
                 returnUrl = context.Request.Headers.Referer;
             }
-            
+
             string accessToken = context.TokenEndpointResponse?.AccessToken ?? string.Empty;
             string idToken = context.TokenEndpointResponse?.IdToken ?? string.Empty;
 
@@ -113,30 +120,45 @@ namespace INSS.Platform.Auth.API.Services
             await context.HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 context.Principal,
-                context.Properties);
+                context.Properties).ConfigureAwait(false);
 
-            _logger.LogInformation("User {User} successfully authenticated via OneLogin.", context.Principal.Identity?.Name);
+            _logger.LogInformation("User {User} successfully authenticated via {Provider}.", context.Principal.Identity?.Name, provider.ToString());
             context.Response.Redirect(uriBuilder.Uri.ToString());
             context.HandleResponse();
         }
 
         /// <inheritdoc/>
-        public async Task RedirectToIdentityProviderForSignOutAsync(RedirectContext context)
+        public async Task HandleRedirectToIdentityProviderForSignOutAsync(
+            RedirectContext context,
+            string signOutCallbackPath)
         {
-            _logger.LogInformation("Processing RedirectToIdentityProviderForSignOut event for OneLogin.");
-            AuthenticateResult authenticateResult = await context.HttpContext.AuthenticateAsync("Cookies");
+            _logger.LogInformation("Processing RedirectToIdentityProviderForSignOut event.");
+
+            AuthenticateResult authenticateResult = await context.HttpContext.AuthenticateAsync("Cookies").ConfigureAwait(false);
             string idToken = authenticateResult.Properties?.GetTokenValue("id_token") ?? string.Empty;
+            context.ProtocolMessage.IdTokenHint = idToken;
 
-            if (!string.IsNullOrEmpty(idToken))
-            {
-                context.ProtocolMessage.IdTokenHint = idToken;
-            }
-
-            string postLogoutRedirectUri = $"{context.Request.Scheme}://{context.Request.Host}/{_options.OneLogin.PostSignOutPath}";
+            string postLogoutRedirectUri = $"{context.Request.Scheme}://{context.Request.Host}/{signOutCallbackPath}";
             _logger.LogInformation("Setting PostLogoutRedirectUri to {PostLogoutRedirectUri}", postLogoutRedirectUri);
             context.ProtocolMessage.PostLogoutRedirectUri = postLogoutRedirectUri;
         }
 
+        /// <inheritdoc/>
+        public async Task HandleRemoteFailureAsync(
+            RemoteFailureContext context)
+        {
+            _logger.LogInformation("Processing RemoteFailure event.");
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            var error = new { error = "Authentication failed", message = context.Failure?.Message ?? "Unknown error" };
+            _logger.LogError("Remote authentication failure: {ErrorMessage}", error);
+
+            await context.Response.WriteAsJsonAsync(error).ConfigureAwait(false);
+
+            context.HandleResponse();
+        }
 
         /// <summary>
         /// Creates a JWT security token for client assertion using the provided client ID, audience endpoint, private key, and claims.
@@ -148,7 +170,7 @@ namespace INSS.Platform.Auth.API.Services
         /// <returns>
         /// A string representation of the signed JWT security token.
         /// </returns>
-        private static string CreateJwtSecurityTokenAsync(string clientId, string audienceEndpoint, string privateKeyPem, Dictionary<string, object> claims)
+        private static string CreateJwtSecurityToken(string clientId, string audienceEndpoint, string privateKeyPem, Dictionary<string, object> claims)
         {
             RSA rsa = RSA.Create();
             rsa.ImportFromPem(privateKeyPem);
@@ -199,46 +221,6 @@ namespace INSS.Platform.Auth.API.Services
                 { "iat", EpochTime.GetIntDate(DateTime.UtcNow).ToString(CultureInfo.InvariantCulture) },
                 { "exp", EpochTime.GetIntDate(DateTime.UtcNow.AddMinutes(5)).ToString(CultureInfo.InvariantCulture) },
             };
-        }
-
-        /// <summary>
-        /// Retrieves the JWT private key for OneLogin authentication.
-        /// </summary>
-        /// <remarks>
-        /// This method first attempts to retrieve the private key from the application configuration.
-        /// If the key is not present or is whitespace, it retrieves the key from Azure Key Vault using the configured secret name.
-        /// </remarks>
-        /// <returns>
-        /// A task that represents the asynchronous operation. The task result contains the PEM-formatted RSA private key as a string.
-        /// </returns>
-        private async Task<string> GetJwtPrivateKeyAsync()
-        {
-            string key = _options.OneLogin.JwtPrivateKey;
-
-            return !string.IsNullOrWhiteSpace(key)
-                ? key
-                : await GetKeyVaultSecretAsync(nameof(_options.OneLogin.JwtPrivateKey)).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Retrieves a secret value from Azure Key Vault.
-        /// </summary>
-        /// <param name="secretName">The name of the secret to retrieve.</param>
-        /// <returns>The secret value as a string.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the KeyVault URI is missing.</exception>
-        private async Task<string> GetKeyVaultSecretAsync(string secretName)
-        {
-            try
-            {
-                KeyVaultSecret secret = await _secretClient.GetSecretAsync(secretName).ConfigureAwait(false);
-                _logger.LogInformation("Successfully retrieved secret: {SecretName}", secretName);
-                return secret.Value;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving secret: {SecretName}", secretName);
-                throw;
-            }
         }
     }
 }

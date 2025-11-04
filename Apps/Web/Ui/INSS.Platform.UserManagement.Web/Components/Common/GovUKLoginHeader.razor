@@ -110,8 +110,25 @@
 
 
 @code {
+
+    /// <summary>
+    /// The authentication provider to use for sign-in and sign-out operations.
+    /// </summary>
+    /// <remarks>
+    /// In a future iteration, this value will be assigned dynamically based on configuration or context.
+    /// Currently only OneLogin and Entra are supported, with OneLogin being the default.
+    /// </remarks>
+    private const string authProvider = "OneLogin";
+ 
+    /// <summary>
+    /// Indicates whether the user is currently signed in.
+    /// </summary>
     private bool isSignedIn = false;
    
+    /// <summary>
+    /// Initializes the component and handles authentication state and login callbacks.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Initializing GOV.UK Login Header Component.");
@@ -152,17 +169,25 @@
         }
     }
 
+    /// <summary>
+    /// Initiates the login process by redirecting the user to the authentication provider's sign-in endpoint.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     private async Task OnLoginAsync()
     {
         Logger.LogInformation("User initiated login.");
 
         string baseUrl = Configuration["Auth:BaseApiUrl"] ?? string.Empty;
-        string signInUrl = $"{baseUrl}/authentication/OneLogin/signin";
+        string signInUrl = $"{baseUrl}/authentication/{authProvider}/signin";
         string redirectUri = Uri.EscapeDataString(Navigation.Uri);
 
         Navigation.NavigateTo($"{signInUrl}?postSignInRedirectUri={redirectUri}", forceLoad: true);
     }
 
+    /// <summary>
+    /// Initiates the logout process by deleting authentication cookies and redirecting the user to the authentication provider's sign-out endpoint.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     private async Task OnLogoutAsync()
     {
         Logger.LogInformation("User initiated logout.");
@@ -170,7 +195,7 @@
         AuthenticationHelper.DeleteAuthCookies();
 
         string baseUrl = Configuration["Auth:BaseApiUrl"] ?? string.Empty;
-        string signOutUrl = $"{baseUrl}/authentication/OneLogin/signout";
+        string signOutUrl = $"{baseUrl}/authentication/{authProvider}/signout";
         string redirectUri = Uri.EscapeDataString(Navigation.Uri);
 
         Navigation.NavigateTo($"{signOutUrl}?postSignOutRedirectUri={redirectUri}", forceLoad: true);

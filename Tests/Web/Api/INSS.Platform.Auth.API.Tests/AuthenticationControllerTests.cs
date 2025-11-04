@@ -17,19 +17,19 @@ namespace INSS.Platform.Auth.API.Tests
     public class AuthenticationControllerTests
     {
         private readonly Mock<ILogger<AuthenticationController>> _loggerMock;
-        private readonly Mock<IOptions<AuthProviderOptions>> _optionsMock;
-        private readonly AuthProviderOptions _options;
+        private readonly Mock<IOptions<AuthenticationProviderOptions>> _optionsMock;
+        private readonly AuthenticationProviderOptions _options;
         private readonly AuthenticationController _controller;
 
         public AuthenticationControllerTests()
         {
-            _options = new AuthProviderOptions
+            _options = new AuthenticationProviderOptions
             {
                 AllowedPostSignInRedirectUris = new List<string> { "https://onelogin.client/callback", "https://entra.client/callback" },
                 AllowedPostSignOutRedirectUris = new List<string> { "https://onelogin.client/callback", "https://entra.client/callback" },
             };
 
-            _optionsMock = new Mock<IOptions<AuthProviderOptions>>();
+            _optionsMock = new Mock<IOptions<AuthenticationProviderOptions>>();
             _optionsMock.Setup(x => x.Value).Returns(_options);
 
             _loggerMock = new Mock<ILogger<AuthenticationController>>();
@@ -37,9 +37,9 @@ namespace INSS.Platform.Auth.API.Tests
         }
 
         [Theory]
-        [InlineData(AuthProvider.OneLogin, "https://onelogin.client/callback")]
-        [InlineData(AuthProvider.Entra, "https://entra.client/callback")]
-        public void SignIn_ReturnsChallenge_WhenRedirectUriIsValid(AuthProvider provider, string redirectUri)
+        [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
+        [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
+        public void SignIn_ReturnsChallenge_WhenRedirectUriIsValid(AuthenticationProvider provider, string redirectUri)
         {
             // Arrange
             SignInRequest signInRequest = new()
@@ -65,9 +65,9 @@ namespace INSS.Platform.Auth.API.Tests
         }
 
         [Theory]
-        [InlineData(AuthProvider.OneLogin)]
-        [InlineData(AuthProvider.Entra)]
-        public void SignIn_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthProvider provider)
+        [InlineData(AuthenticationProvider.OneLogin)]
+        [InlineData(AuthenticationProvider.Entra)]
+        public void SignIn_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthenticationProvider provider)
         {
             // Arrange
             SignInRequest signInRequest = new()
@@ -89,9 +89,9 @@ namespace INSS.Platform.Auth.API.Tests
         }
 
         [Theory]
-        [InlineData(AuthProvider.OneLogin, "https://onelogin.client/callback")]
-        [InlineData(AuthProvider.Entra, "https://entra.client/callback")]
-        public async Task SignOut_ReturnsSignOutResult_WhenRedirectUriIsValid(AuthProvider provider, string redirectUri)
+        [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
+        [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
+        public async Task SignOut_ReturnsSignOutResult_WhenRedirectUriIsValid(AuthenticationProvider provider, string redirectUri)
         {
             // Arrange
             SignOutRequest signOutRequest = new()
@@ -114,9 +114,9 @@ namespace INSS.Platform.Auth.API.Tests
         }
 
         [Theory]
-        [InlineData(AuthProvider.OneLogin)]
-        [InlineData(AuthProvider.Entra)]
-        public async Task SignOut_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthProvider provider)
+        [InlineData(AuthenticationProvider.OneLogin)]
+        [InlineData(AuthenticationProvider.Entra)]
+        public async Task SignOut_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthenticationProvider provider)
         {
             // Arrange
             SignOutRequest signOutRequest = new()
@@ -137,9 +137,9 @@ namespace INSS.Platform.Auth.API.Tests
         }
 
         [Theory]
-        [InlineData(AuthProvider.OneLogin, "https://onelogin.client/callback")]
-        [InlineData(AuthProvider.Entra, "https://entra.client/callback")]
-        public async Task PostSignOut_RedirectsToReturnUrl_AndSignsOutCookie(AuthProvider provider, string redirectUri)
+        [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
+        [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
+        public async Task PostSignOut_RedirectsToReturnUrl_AndSignsOutCookie(AuthenticationProvider provider, string redirectUri)
         {
             // Arrange
             DefaultHttpContext httpContext = new();

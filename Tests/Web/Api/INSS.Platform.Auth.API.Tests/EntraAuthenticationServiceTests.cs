@@ -1,4 +1,3 @@
-﻿using Azure.Security.KeyVault.Secrets;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using INSS.Platform.Auth.API.Models;
@@ -16,39 +15,44 @@ using System.Security.Claims;
 
 namespace INSS.Platform.Auth.API.Tests
 {
-    public class OneLoginAuthServiceTests
+    public class EntraAuthenticationServiceTests
     {
-        private readonly Mock<ILogger<OneLoginAuthService>> _loggerMock;
-        private readonly Mock<SecretClient> _secretClientMock;
-        private readonly Mock<IOptions<AuthProviderOptions>> _optionsMock;
-        private readonly AuthProviderOptions _authProviderOptions;
-        private readonly OneLoginAuthService _service;
+        private readonly Mock<ILogger<EntraAuthenticationService>> _loggerMock;
+        private readonly Mock<ILogger<AuthenticationEventHandler>> _loggerAuthMock;
+        private readonly Mock<IOptions<AuthenticationProviderOptions>> _optionsMock;
+        private readonly IAuthenticationEventHandler _authEventHandler;
+        private readonly AuthenticationProviderOptions _authProviderOptions;
+        private readonly EntraAuthenticationService _service;
 
-        public OneLoginAuthServiceTests()
+        public EntraAuthenticationServiceTests()
         {
-            _loggerMock = new Mock<ILogger<OneLoginAuthService>>();
-            _secretClientMock = new Mock<SecretClient>();
-            _authProviderOptions = new AuthProviderOptions
+            _loggerMock = new Mock<ILogger<EntraAuthenticationService>>();
+
+            _authProviderOptions = new AuthenticationProviderOptions
             {
-                OneLogin = new OneLoginOptions
+                Entra = new EntraOptions
                 {
                     ClientId = "test-client-id",
-                    TokenUri = "https://test.token.uri",
-                    JwtPrivateKey = TestHelper.GetKeyPem("Keys\\test_private_key.pem"),
-                    PostSignOutPath = "signout-callback-oidc",
-                    Scopes = new List<string> { "openid", "profile" },
-                    BaseUri = "https://test.base.uri"
+                    ClientSecret = "test-client-secret",
+                    BaseUri = "https://entra.base.uri",
+                    Tenant = "test-tenant",
+                    SignInCallbackPath = "signin-callback-entra",
+                    SignOutCallbackPath = "signout-callback-entra",
+                    Scopes = new List<string> { "openid", "profile" }
                 },
                 AllowedPostSignInRedirectUris = new List<string> { "https://localhost/signin-oidc" },
-                AllowedPostSignOutRedirectUris = new List<string> { "https://localhost/signout-callback-oidc" }
+                AllowedPostSignOutRedirectUris = new List<string> { "https://localhost/signout-callback-entra" }
             };
-            _optionsMock = new Mock<IOptions<AuthProviderOptions>>();
+            _optionsMock = new Mock<IOptions<AuthenticationProviderOptions>>();
             _optionsMock.Setup(x => x.Value).Returns(_authProviderOptions);
 
-            _service = new OneLoginAuthService(
+            _loggerAuthMock = new Mock<ILogger<AuthenticationEventHandler>>();
+            _authEventHandler = new AuthenticationEventHandler(_loggerAuthMock.Object, _optionsMock.Object);
+
+            _service = new EntraAuthenticationService(
                 _loggerMock.Object,
-                _optionsMock.Object,
-                _secretClientMock.Object
+                _authEventHandler,
+                _optionsMock.Object
             );
         }
 
@@ -70,14 +74,14 @@ namespace INSS.Platform.Auth.API.Tests
             await _service.AuthorizationCodeReceivedAsync(context);
 
             // Assert
-            using (new AssertionScope())
-            {
-                string? assertionType = context.TokenEndpointRequest.ClientAssertionType;
-                string? assertion = context.TokenEndpointRequest.ClientAssertion;
-
-                assertionType.Should().Be("urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
-                assertion.Should().NotBeNullOrWhiteSpace();
-            }
+            _loggerMock.Verify(
+                x => x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v is object && v.ToString()!.Contains("Entra Authentication - AuthorizationCodeReceivedAsync invoked.")),
+                    null,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
         }
 
         [Fact]
@@ -139,7 +143,7 @@ namespace INSS.Platform.Auth.API.Tests
             AuthenticationProperties properties = new();
             properties.StoreTokens([new AuthenticationToken { Name = "id_token", Value = "test-id-token" }]);
 
-            Mock<IAuthenticationService> authenticationServiceMock = new ();
+            Mock<Microsoft.AspNetCore.Authentication.IAuthenticationService> authenticationServiceMock = new();
             AuthenticateResult expectedResult = AuthenticateResult.Success(
                 new AuthenticationTicket(
                     new ClaimsPrincipal(new ClaimsIdentity()),
@@ -182,7 +186,7 @@ namespace INSS.Platform.Auth.API.Tests
                 string? postLogoutRedirectUri = context.ProtocolMessage.PostLogoutRedirectUri;
 
                 idTokenHint.Should().Be("test-id-token");
-                postLogoutRedirectUri.Should().Contain(_authProviderOptions.OneLogin.PostSignOutPath);
+                postLogoutRedirectUri.Should().Contain(_authProviderOptions.Entra.SignOutCallbackPath);
             }
         }
     }

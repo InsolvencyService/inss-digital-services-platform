@@ -34,7 +34,7 @@ namespace INSS.Platform.Auth.API
 
             // Register AuthProviderOptions for DI with controllers and services.
             ConfigurationManager configuration = builder.Configuration;
-            builder.Services.AddOptions<AuthProviderOptions>()
+            builder.Services.AddOptions<AuthenticationProviderOptions>()
                 .Bind(builder.Configuration.GetSection("AuthProviderOptions"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
@@ -50,10 +50,10 @@ namespace INSS.Platform.Auth.API
                 return new SecretClient(new Uri(keyVaultUriString), new DefaultAzureCredential());
             });
 
-            builder.Services.AddScoped<OneLoginAuthService>();
-            builder.Services.AddScoped<EntraAuthService>();
+            builder.Services.AddScoped<OneLoginAuthenticationService>();
+            builder.Services.AddScoped<EntraAuthenticationService>();
 
-            AuthProviderOptions authProviderOptions = GetValidatedAuthProviderOptions(builder);
+            AuthenticationProviderOptions authProviderOptions = GetValidatedAuthProviderOptions(builder);
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "Cookies";
@@ -61,26 +61,59 @@ namespace INSS.Platform.Auth.API
             .AddCookie("Cookies")
             .AddOpenIdConnect("Entra", options =>
             {
-                options.Authority = $"{authProviderOptions.Entra.BaseUri}/{authProviderOptions.Entra.Tenant}/v2.0";
-                options.ClientId = authProviderOptions.Entra.ClientId;
-                options.ClientSecret = authProviderOptions.Entra.ClientSecret;
+                EntraOptions entraOptions = authProviderOptions.Entra;
+                options.Authority = $"{entraOptions.BaseUri}/{entraOptions.Tenant}/v2.0";
+                options.ClientId = entraOptions.ClientId;
+                options.ClientSecret = entraOptions.ClientSecret;
                 options.ResponseType = "code";
                 options.SaveTokens = true;
-            })
-            .AddOpenIdConnect("OneLogin", options =>
-            {
-                options.Authority = authProviderOptions.OneLogin.BaseUri;
-                options.ClientId = authProviderOptions.OneLogin.ClientId;
-                options.ResponseType = "code";
-                options.SaveTokens = true;
+                options.CallbackPath = entraOptions.SignInCallbackPath;
                 options.Scope.Clear();
-                foreach (string scope in authProviderOptions.OneLogin.Scopes)
+                foreach (string scope in entraOptions.Scopes)
                 {
                     options.Scope.Add(scope);
                 }
-                options.CallbackPath = "/authentication/callback";
 
-                options.Events.OnRedirectToIdentityProvider = context =>
+                options.Events.OnAuthorizationCodeReceived = async context =>
+                {
+                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
+                    await entraAuthService.AuthorizationCodeReceivedAsync(context).ConfigureAwait(false);
+                };
+
+                options.Events.OnTokenValidated = async context =>
+                {
+                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
+                    await entraAuthService.TokenValidatedAsync(context).ConfigureAwait(false);
+                };
+
+                options.Events.OnRedirectToIdentityProviderForSignOut = async context =>
+                {
+                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
+                    await entraAuthService.RedirectToIdentityProviderForSignOutAsync(context).ConfigureAwait(false);
+                };
+
+                options.Events.OnRemoteFailure = async context =>
+                {
+                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
+                    await entraAuthService.RemoteFailureAsync(context).ConfigureAwait(false);
+                };
+            })
+
+            .AddOpenIdConnect("OneLogin", options =>
+            {
+                OneLoginOptions oneLoginOptions = authProviderOptions.OneLogin;
+                options.Authority = oneLoginOptions.BaseUri;
+                options.ClientId = oneLoginOptions.ClientId;
+                options.ResponseType = "code";
+                options.SaveTokens = true;
+                options.CallbackPath = oneLoginOptions.SignInCallbackPath;
+                options.Scope.Clear();
+                foreach (string scope in oneLoginOptions.Scopes)
+                {
+                    options.Scope.Add(scope);
+                }
+
+                options.Events.OnRedirectToIdentityProvider = static context =>
                 {
                     context.ProtocolMessage.ResponseMode = "query";
                     context.ProtocolMessage.SetParameter("ui_locales", "en");
@@ -90,31 +123,26 @@ namespace INSS.Platform.Auth.API
 
                 options.Events.OnAuthorizationCodeReceived = async context =>
                 {
-                    OneLoginAuthService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthService>();
-                    await oneLoginAuthService.AuthorizationCodeReceivedAsync(context);
+                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
+                    await oneLoginAuthService.AuthorizationCodeReceivedAsync(context).ConfigureAwait(false);
                 };
 
                 options.Events.OnTokenValidated = async context =>
                 {
-                    OneLoginAuthService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthService>();
-                    await oneLoginAuthService.TokenValidatedAsync(context);
+                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
+                    await oneLoginAuthService.TokenValidatedAsync(context).ConfigureAwait(false);
                 };
 
                 options.Events.OnRedirectToIdentityProviderForSignOut = async context =>
                 {
-                    OneLoginAuthService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthService>();
-                    await oneLoginAuthService.RedirectToIdentityProviderForSignOutAsync(context);
+                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
+                    await oneLoginAuthService.RedirectToIdentityProviderForSignOutAsync(context).ConfigureAwait(false);
                 };
 
-                options.Events.OnRemoteFailure = context =>
+                options.Events.OnRemoteFailure = async context =>
                 {
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    context.Response.ContentType = "application/json";
-                    var error = new { error = "Authentication failed", message = context.Failure?.Message ?? "Unknown error" };
-                    context.Response.WriteAsJsonAsync(error);
-
-                    context.HandleResponse();
-                    return Task.CompletedTask;
+                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
+                    await oneLoginAuthService.RemoteFailureAsync(context);
                 };
             });
 
@@ -138,16 +166,16 @@ namespace INSS.Platform.Auth.API
         }
 
         /// <summary>
-        /// Retrieves and validates the <see cref="AuthProviderOptions"/> configuration section.
+        /// Retrieves and validates the <see cref="AuthenticationProviderOptions"/> configuration section.
         /// </summary>
         /// <param name="builder">The <see cref="WebApplicationBuilder"/> containing the application configuration.</param>
-        /// <returns>A validated <see cref="AuthProviderOptions"/> instance.</returns>
+        /// <returns>A validated <see cref="AuthenticationProviderOptions"/> instance.</returns>
         /// <exception cref="ValidationException">
-        /// Thrown if the <see cref="AuthProviderOptions"/> configuration is invalid.
+        /// Thrown if the <see cref="AuthenticationProviderOptions"/> configuration is invalid.
         /// </exception>
-        private static AuthProviderOptions GetValidatedAuthProviderOptions(WebApplicationBuilder builder)
+        private static AuthenticationProviderOptions GetValidatedAuthProviderOptions(WebApplicationBuilder builder)
         {
-            AuthProviderOptions authProviderOptions = new();
+            AuthenticationProviderOptions authProviderOptions = new();
             builder.Configuration.GetSection("AuthProviderOptions").Bind(authProviderOptions);
 
             ValidationContext validationContext = new(authProviderOptions);

@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies the available authentication providers.
     /// </summary>
-    public enum AuthProvider
+    public enum AuthenticationProvider
     {
         /// <summary>
         /// The OneLogin authentication provider.
