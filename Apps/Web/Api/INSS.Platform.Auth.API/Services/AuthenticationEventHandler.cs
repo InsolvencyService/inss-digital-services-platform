@@ -46,7 +46,7 @@ namespace INSS.Platform.Auth.API.Services
             AuthorizationCodeReceivedContext context, 
             AuthenticationProvider provider)
         {
-            _logger.LogInformation("Generating client assertion JWT for {PROVIDER} token request.", provider.ToString());
+            _logger.LogInformation("Processing AuthorizationCodeReceived event for {Provider}.", provider.ToString());
 
             string clientId = _options.OneLogin.ClientId;
             string audienceEndpoint = _options.OneLogin.TokenUri;
@@ -130,9 +130,10 @@ namespace INSS.Platform.Auth.API.Services
         /// <inheritdoc/>
         public async Task HandleRedirectToIdentityProviderForSignOutAsync(
             RedirectContext context,
-            string signOutCallbackPath)
+            string signOutCallbackPath,
+            AuthenticationProvider provider)
         {
-            _logger.LogInformation("Processing RedirectToIdentityProviderForSignOut event.");
+            _logger.LogInformation("Processing RedirectToIdentityProviderForSignOut event for {Provider}.", provider.ToString());
 
             AuthenticateResult authenticateResult = await context.HttpContext.AuthenticateAsync("Cookies").ConfigureAwait(false);
             string idToken = authenticateResult.Properties?.GetTokenValue("id_token") ?? string.Empty;
@@ -145,9 +146,10 @@ namespace INSS.Platform.Auth.API.Services
 
         /// <inheritdoc/>
         public async Task HandleRemoteFailureAsync(
-            RemoteFailureContext context)
+            RemoteFailureContext context,
+            AuthenticationProvider provider)
         {
-            _logger.LogInformation("Processing RemoteFailure event.");
+            _logger.LogInformation("Processing RemoteFailure event for {Provider}.", provider.ToString());
 
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";

@@ -34,16 +34,20 @@ namespace INSS.Platform.Auth.API.Services
         /// </summary>
         /// <param name="context">The context containing information about the redirect event.</param>
         /// <param name="signOutCallbackPath">The callback path to use after sign-out.</param>
+        /// <param name="provider">The authentication provider associated with the event.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task HandleRedirectToIdentityProviderForSignOutAsync(
             RedirectContext context,
-            string signOutCallbackPath);
+            string signOutCallbackPath,
+            AuthenticationProvider provider);
 
         /// <summary>
         /// Handles the event when a remote authentication failure occurs.
         /// </summary>
         /// <param name="context">The context containing information about the remote failure event.</param>
+        /// <param name="provider">The authentication provider associated with the event.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task HandleRemoteFailureAsync(RemoteFailureContext context);
+        Task HandleRemoteFailureAsync(RemoteFailureContext context,
+            AuthenticationProvider provider);
     }
 }

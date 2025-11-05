@@ -1,7 +1,6 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using INSS.Platform.Auth.API.Models;
 using INSS.Platform.Auth.API.Services;
+using INSS.Platform.Auth.Contracts;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -39,19 +38,7 @@ namespace INSS.Platform.Auth.API
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
-            builder.Services.AddSingleton(sp =>
-            {
-                string? keyVaultUriString = configuration["KeyVault:Uri"] ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(keyVaultUriString))
-                {
-                    throw new InvalidOperationException("KeyVault URI is missing.");
-                }
-
-                return new SecretClient(new Uri(keyVaultUriString), new DefaultAzureCredential());
-            });
-
-            builder.Services.AddScoped<OneLoginAuthenticationService>();
-            builder.Services.AddScoped<EntraAuthenticationService>();
+            builder.Services.AddScoped<IAuthenticationEventHandler, AuthenticationEventHandler>();
 
             AuthenticationProviderOptions authProviderOptions = GetValidatedAuthProviderOptions(builder);
             builder.Services.AddAuthentication(options =>
@@ -74,28 +61,22 @@ namespace INSS.Platform.Auth.API
                     options.Scope.Add(scope);
                 }
 
-                options.Events.OnAuthorizationCodeReceived = async context =>
-                {
-                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
-                    await entraAuthService.AuthorizationCodeReceivedAsync(context).ConfigureAwait(false);
-                };
-
                 options.Events.OnTokenValidated = async context =>
                 {
-                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
-                    await entraAuthService.TokenValidatedAsync(context).ConfigureAwait(false);
+                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
+                    await authEventHandler.HandleTokenValidatedAsync(context, AuthenticationProvider.Entra).ConfigureAwait(false);
                 };
 
                 options.Events.OnRedirectToIdentityProviderForSignOut = async context =>
                 {
-                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
-                    await entraAuthService.RedirectToIdentityProviderForSignOutAsync(context).ConfigureAwait(false);
+                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
+                    await authEventHandler.HandleRedirectToIdentityProviderForSignOutAsync(context, entraOptions.SignOutCallbackPath, AuthenticationProvider.Entra).ConfigureAwait(false);
                 };
 
                 options.Events.OnRemoteFailure = async context =>
                 {
-                    EntraAuthenticationService entraAuthService = context.HttpContext.RequestServices.GetRequiredService<EntraAuthenticationService>();
-                    await entraAuthService.RemoteFailureAsync(context).ConfigureAwait(false);
+                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
+                    await authEventHandler.HandleRemoteFailureAsync(context, AuthenticationProvider.Entra).ConfigureAwait(false);
                 };
             })
 
@@ -123,26 +104,26 @@ namespace INSS.Platform.Auth.API
 
                 options.Events.OnAuthorizationCodeReceived = async context =>
                 {
-                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
-                    await oneLoginAuthService.AuthorizationCodeReceivedAsync(context).ConfigureAwait(false);
+                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
+                    await authEventHandler.HandleAuthorizationCodeReceivedAsync(context, AuthenticationProvider.OneLogin).ConfigureAwait(false);
                 };
 
                 options.Events.OnTokenValidated = async context =>
                 {
-                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
-                    await oneLoginAuthService.TokenValidatedAsync(context).ConfigureAwait(false);
+                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
+                    await authEventHandler.HandleTokenValidatedAsync(context, AuthenticationProvider.OneLogin).ConfigureAwait(false);
                 };
 
                 options.Events.OnRedirectToIdentityProviderForSignOut = async context =>
                 {
-                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
-                    await oneLoginAuthService.RedirectToIdentityProviderForSignOutAsync(context).ConfigureAwait(false);
+                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
+                    await authEventHandler.HandleRedirectToIdentityProviderForSignOutAsync(context, oneLoginOptions.SignOutCallbackPath, AuthenticationProvider.OneLogin).ConfigureAwait(false);
                 };
 
                 options.Events.OnRemoteFailure = async context =>
                 {
-                    OneLoginAuthenticationService oneLoginAuthService = context.HttpContext.RequestServices.GetRequiredService<OneLoginAuthenticationService>();
-                    await oneLoginAuthService.RemoteFailureAsync(context);
+                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
+                    await authEventHandler.HandleRemoteFailureAsync(context, AuthenticationProvider.OneLogin).ConfigureAwait(false);
                 };
             });
 
