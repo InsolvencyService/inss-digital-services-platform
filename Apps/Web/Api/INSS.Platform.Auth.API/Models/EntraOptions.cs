@@ -11,7 +11,7 @@ namespace INSS.Platform.Auth.API.Models
         /// Gets or sets the client ID for the Azure Entra application.
         /// </summary>
         [Required]
-        public string ClientId { get; set; } = string.Empty;
+        public string ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets the client secret for the Azure Entra application.
@@ -23,7 +23,7 @@ namespace INSS.Platform.Auth.API.Models
         /// Gets or sets the base URI for the Azure Entra endpoint.
         /// </summary>
         [Required]
-        public string BaseUri { get; set; } = string.Empty;
+        public string BaseUri { get; set; }
 
         /// <summary>
         /// Gets or sets the tenant identifier for the Azure Entra directory.
@@ -35,13 +35,13 @@ namespace INSS.Platform.Auth.API.Models
         /// Gets or sets the callback path used during the sign-in process with Entra.
         /// </summary>
         [Required]
-        public string SignInCallbackPath { get; set; } = string.Empty;
+        public string SignInCallbackPath { get; set; }
 
         /// <summary>
         /// Gets or sets the callback path used during the sign-out process with Entra.
         /// </summary>
         [Required]
-        public string SignOutCallbackPath { get; set; } = string.Empty;
+        public string SignOutCallbackPath { get; set; }
 
         /// <summary>
         /// Gets or sets the list of scopes requested during authentication.

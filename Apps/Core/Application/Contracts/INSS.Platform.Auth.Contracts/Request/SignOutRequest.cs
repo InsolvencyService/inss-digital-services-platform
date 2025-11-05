@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace INSS.Platform.Auth.Contracts.Request
 {
@@ -11,6 +12,7 @@ namespace INSS.Platform.Auth.Contracts.Request
         /// <summary>
         /// Gets or sets the URI to redirect the user to after sign-out is complete.
         /// </summary>
-        public string PostSignOutRedirectUri { get; set; } = string.Empty;
+        [Required]
+        public string PostSignOutRedirectUri { get; set; }
     }
 }

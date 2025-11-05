@@ -50,11 +50,10 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
         {
             Dictionary<string, StringValues> query = QueryHelpers.ParseQuery(rootUri.Query);
 
-            if (!QueryHelper.TryGetQueryValue(query, "access_token", out string? accessToken)
-                || !QueryHelper.TryGetQueryValue(query, "id_token", out string? idToken))
+            if (!QueryHelper.TryGetQueryValue(query, "id_token", out string? idToken))
             {
-                _logger.LogError("One or more required token parameters are missing in the URL.");
-                throw new ArgumentException("One or more required token parameters are missing in the URL.");
+                _logger.LogError("The id_token parameter is missing in the URL.");
+                throw new ArgumentException("The id_token parameter is missing in the URL.");
             }
 
             TokenData token = new()
@@ -89,7 +88,6 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             if (TryGetAuthTokenDataFromCookie(out TokenData? tokenData))
             {
                 IEnumerable<Claim> claims = ExtractClaimsFromToken(tokenData!.IdToken);
-                //IEnumerable<Claim> claims = ExtractClaimsFromToken(tokenData!.AccessToken);
                 loginProividerUserId = claims.FirstOrDefault(c => c.Type == "sub")?.Value;
             }
 

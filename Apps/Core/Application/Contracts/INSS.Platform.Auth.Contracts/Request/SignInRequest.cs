@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace INSS.Platform.Auth.Contracts.Request
 {
@@ -11,7 +12,8 @@ namespace INSS.Platform.Auth.Contracts.Request
         /// <summary>
         /// Gets or sets the URI to redirect to after a successful sign-in.
         /// </summary>
-        public string PostSignInRedirectUri { get; set; } = string.Empty;
+        [Required]
+        public string PostSignInRedirectUri { get; set; }
 
         /// <summary>
         /// Gets or sets the optional user identifier for the sign-in request.

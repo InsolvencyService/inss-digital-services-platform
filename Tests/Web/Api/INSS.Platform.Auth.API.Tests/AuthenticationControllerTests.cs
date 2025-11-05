@@ -55,9 +55,10 @@ namespace INSS.Platform.Auth.API.Tests
             using (new AssertionScope())
             {
                 result.Should().BeOfType<ChallengeResult>();
-                ChallengeResult? challenge = result as ChallengeResult;
-                challenge!.AuthenticationSchemes.Should().Contain(provider.ToString());
-                challenge.Properties!.Items.Should().ContainKey("returnUrl");
+                ChallengeResult challenge = (ChallengeResult)result;
+                challenge.AuthenticationSchemes.Should().Contain(provider.ToString());
+                challenge.Properties.Should().NotBeNull();
+                challenge.Properties.Items.Should().ContainKey("returnUrl");
                 challenge.Properties.Items["returnUrl"].Should().Be(redirectUri);
                 challenge.Properties.Items.Should().ContainKey("userId");
                 challenge.Properties.Items["userId"].Should().Be("user123");
@@ -83,8 +84,8 @@ namespace INSS.Platform.Auth.API.Tests
             using (new AssertionScope())
             {
                 result.Should().BeOfType<BadRequestObjectResult>();
-                BadRequestObjectResult? badRequest = result as BadRequestObjectResult;
-                badRequest!.Value.Should().Be("Invalid PostSignInRedirectUri");
+                BadRequestObjectResult badRequest = (BadRequestObjectResult)result;
+                badRequest.Value.Should().Be("Invalid PostSignInRedirectUri");
             }
         }
 
@@ -106,9 +107,10 @@ namespace INSS.Platform.Auth.API.Tests
             using (new AssertionScope())
             {
                 result.Should().BeOfType<SignOutResult>();
-                SignOutResult? signOut = result as SignOutResult;
-                signOut!.AuthenticationSchemes.Should().Contain(provider.ToString());
-                signOut.Properties!.Items.Should().ContainKey("returnUrl");
+                SignOutResult signOut = (SignOutResult)result;
+                signOut.AuthenticationSchemes.Should().Contain(provider.ToString());
+                signOut.Properties.Should().NotBeNull();
+                signOut.Properties.Items.Should().ContainKey("returnUrl");
                 signOut.Properties.Items["returnUrl"].Should().Be(redirectUri);
             }
         }
@@ -131,8 +133,8 @@ namespace INSS.Platform.Auth.API.Tests
             using (new AssertionScope())
             {
                 result.Should().BeOfType<BadRequestObjectResult>();
-                BadRequestObjectResult? badRequest = result as BadRequestObjectResult;
-                badRequest!.Value.Should().Be("Invalid PostSignOutRedirectUri");
+                BadRequestObjectResult badRequest = (BadRequestObjectResult)result;
+                badRequest.Value.Should().Be("Invalid PostSignOutRedirectUri");
             }
         }
 
@@ -172,8 +174,8 @@ namespace INSS.Platform.Auth.API.Tests
             using (new AssertionScope())
             {
                 result.Should().BeOfType<RedirectResult>();
-                RedirectResult? redirect = result as RedirectResult;
-                redirect!.Url.Should().Be(redirectUri);
+                RedirectResult redirect = (RedirectResult)result;
+                redirect.Url.Should().Be(redirectUri);
             }
         }
     }

@@ -1,6 +1,5 @@
 using INSS.Platform.Auth.API.Models;
 using INSS.Platform.Auth.API.Services;
-using INSS.Platform.Auth.Contracts;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -19,19 +18,11 @@ namespace INSS.Platform.Auth.API
         public static void Main(string[] args)
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-            builder.Logging.AddSimpleConsole(options =>
-            {
-                options.SingleLine = true;
-                options.TimestampFormat = "[HH:mm:ss] ";
-                options.IncludeScopes = true;
-            });
-
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
             builder.Services.AddApplicationInsightsTelemetry();
 
-            // Register AuthProviderOptions for DI with controllers and services.
             ConfigurationManager configuration = builder.Configuration;
             builder.Services.AddOptions<AuthenticationProviderOptions>()
                 .Bind(builder.Configuration.GetSection("AuthProviderOptions"))
@@ -40,95 +31,9 @@ namespace INSS.Platform.Auth.API
 
             builder.Services.AddScoped<IAuthenticationEventHandler, AuthenticationEventHandler>();
 
-            AuthenticationProviderOptions authProviderOptions = GetValidatedAuthProviderOptions(builder);
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-            })
-            .AddCookie("Cookies")
-            .AddOpenIdConnect("Entra", options =>
-            {
-                EntraOptions entraOptions = authProviderOptions.Entra;
-                options.Authority = $"{entraOptions.BaseUri}/{entraOptions.Tenant}/v2.0";
-                options.ClientId = entraOptions.ClientId;
-                options.ClientSecret = entraOptions.ClientSecret;
-                options.ResponseType = "code";
-                options.SaveTokens = true;
-                options.CallbackPath = entraOptions.SignInCallbackPath;
-                options.Scope.Clear();
-                foreach (string scope in entraOptions.Scopes)
-                {
-                    options.Scope.Add(scope);
-                }
-
-                options.Events.OnTokenValidated = async context =>
-                {
-                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleTokenValidatedAsync(context, AuthenticationProvider.Entra).ConfigureAwait(false);
-                };
-
-                options.Events.OnRedirectToIdentityProviderForSignOut = async context =>
-                {
-                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleRedirectToIdentityProviderForSignOutAsync(context, entraOptions.SignOutCallbackPath, AuthenticationProvider.Entra).ConfigureAwait(false);
-                };
-
-                options.Events.OnRemoteFailure = async context =>
-                {
-                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleRemoteFailureAsync(context, AuthenticationProvider.Entra).ConfigureAwait(false);
-                };
-            })
-
-            .AddOpenIdConnect("OneLogin", options =>
-            {
-                OneLoginOptions oneLoginOptions = authProviderOptions.OneLogin;
-                options.Authority = oneLoginOptions.BaseUri;
-                options.ClientId = oneLoginOptions.ClientId;
-                options.ResponseType = "code";
-                options.SaveTokens = true;
-                options.CallbackPath = oneLoginOptions.SignInCallbackPath;
-                options.Scope.Clear();
-                foreach (string scope in oneLoginOptions.Scopes)
-                {
-                    options.Scope.Add(scope);
-                }
-
-                options.Events.OnRedirectToIdentityProvider = static context =>
-                {
-                    context.ProtocolMessage.ResponseMode = "query";
-                    context.ProtocolMessage.SetParameter("ui_locales", "en");
-                    context.ProtocolMessage.SetParameter("vtr", "[\"Cl.Cm\"]");
-                    return Task.CompletedTask;
-                };
-
-                options.Events.OnAuthorizationCodeReceived = async context =>
-                {
-                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleAuthorizationCodeReceivedAsync(context, AuthenticationProvider.OneLogin).ConfigureAwait(false);
-                };
-
-                options.Events.OnTokenValidated = async context =>
-                {
-                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleTokenValidatedAsync(context, AuthenticationProvider.OneLogin).ConfigureAwait(false);
-                };
-
-                options.Events.OnRedirectToIdentityProviderForSignOut = async context =>
-                {
-                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleRedirectToIdentityProviderForSignOutAsync(context, oneLoginOptions.SignOutCallbackPath, AuthenticationProvider.OneLogin).ConfigureAwait(false);
-                };
-
-                options.Events.OnRemoteFailure = async context =>
-                {
-                    IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleRemoteFailureAsync(context, AuthenticationProvider.OneLogin).ConfigureAwait(false);
-                };
-            });
+            ConfigureAuthenticationProviders(builder);
 
             WebApplication app = builder.Build();
-
             if (app.Environment.IsDevelopment())
             {
                 _ = app.MapOpenApi();
@@ -144,6 +49,25 @@ namespace INSS.Platform.Auth.API
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
+        }
+
+        /// <summary>
+        /// Configures the authentication providers for the application.
+        /// </summary>
+        /// <param name="builder">
+        /// The <see cref="WebApplicationBuilder"/> used to configure services and authentication.
+        /// </param>
+        private static void ConfigureAuthenticationProviders(WebApplicationBuilder builder)
+        {
+            AuthenticationProviderOptions authProviderOptions = GetValidatedAuthProviderOptions(builder);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+            })
+            .AddCookie("Cookies")
+            .AddEntraOpenIdConnect(authProviderOptions.Entra)
+            .AddOneLoginOpenIdConnect(authProviderOptions.OneLogin);
         }
 
         /// <summary>
