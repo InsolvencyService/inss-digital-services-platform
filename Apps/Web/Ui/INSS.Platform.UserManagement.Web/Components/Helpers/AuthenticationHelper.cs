@@ -130,7 +130,7 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             try
             {
                 tokenData = JsonSerializer.Deserialize<TokenData>(cookieValue, _jsonSerializerOptions);
-                return tokenData != null;
+                return tokenData is not null;
             }
             catch (JsonException ex)
             {

@@ -54,7 +54,7 @@ namespace INSS.Platform.Auth.API.Services
             Dictionary<string, object> clientAssertionClaims = BuildClientAssertionClaims(clientId, audienceEndpoint);
             string clientAssertionToken = CreateJwtSecurityToken(clientId, audienceEndpoint, _options.OneLogin.JwtPrivateKey, clientAssertionClaims);
 
-            if (context.TokenEndpointRequest != null)
+            if (context.TokenEndpointRequest is not null)
             {
                 context.TokenEndpointRequest.ClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
                 context.TokenEndpointRequest.ClientAssertion = clientAssertionToken;
@@ -110,7 +110,7 @@ namespace INSS.Platform.Auth.API.Services
 
             uriBuilder.Query = query.ToString();
 
-            if (context.Principal == null)
+            if (context.Principal is null)
             {
                 _logger.LogError("Principal is missing after token validation.");
                 context.Fail("Principal is missing after token validation.");
@@ -184,7 +184,7 @@ namespace INSS.Platform.Auth.API.Services
             JwtSecurityToken token = handler.CreateJwtSecurityToken(
                 issuer: clientId,
                 audience: audienceEndpoint,
-                subject: new ClaimsIdentity(),
+                subject: null,
                 notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.AddMinutes(60),
                 issuedAt: DateTime.UtcNow,

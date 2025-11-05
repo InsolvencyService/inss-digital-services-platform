@@ -58,7 +58,7 @@
             <nav aria-label="GOV.UK One Login" class="rebranded-one-login-header__nav" data-open-class="rebranded-one-login-header__nav--open" id="one-login-header__nav">
                 <ul class="rebranded-one-login-header__nav__list">
 
-                    @if (!isSignedIn)
+                    @if (!_isSignedIn)
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
                             <form @formname="login-form" method="post" @onsubmit="OnLoginAsync">
@@ -104,7 +104,7 @@
 
     </div>
 
-    <NavigationBar IsSignedIn="@isSignedIn" />
+    <NavigationBar IsSignedIn="@_isSignedIn" />
 
 </header>
 
@@ -118,12 +118,12 @@
     /// In a future iteration, this value will be assigned dynamically based on configuration or context.
     /// Currently only OneLogin and Entra are supported, with OneLogin being the default.
     /// </remarks>
-    private const string authProvider = "OneLogin";
+    private const string AuthProvider = "OneLogin";
  
     /// <summary>
     /// Indicates whether the user is currently signed in.
     /// </summary>
-    private bool isSignedIn = false;
+    private bool _isSignedIn = false;
    
     /// <summary>
     /// Initializes the component and handles authentication state and login callbacks.
@@ -133,8 +133,8 @@
     {
         Logger.LogInformation("Initializing GOV.UK Login Header Component.");
 
-        isSignedIn = AuthenticationHelper.IsUserSignedIn();
-        if (isSignedIn)
+        _isSignedIn = AuthenticationHelper.IsUserSignedIn();
+        if (_isSignedIn)
         {
             return;
         }
@@ -156,7 +156,7 @@
         {
             AuthenticationHelper.PersistAuthTokenDataInCookie(Navigation.ToAbsoluteUri(Navigation.Uri));
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrWhiteSpace(userId))
             {
                 // Register the new user id against OneLogin Id
                 // Note the OneLogin Id is the sub claim in the access token;
@@ -178,7 +178,7 @@
         Logger.LogInformation("User initiated login.");
 
         string baseUrl = Configuration["Auth:BaseApiUrl"] ?? string.Empty;
-        string signInUrl = $"{baseUrl}/authentication/{authProvider}/signin";
+        string signInUrl = $"{baseUrl}/authentication/{AuthProvider}/signin";
         string redirectUri = Uri.EscapeDataString(Navigation.Uri);
 
         Navigation.NavigateTo($"{signInUrl}?postSignInRedirectUri={redirectUri}", forceLoad: true);
@@ -194,8 +194,8 @@
 
         AuthenticationHelper.DeleteAuthCookies();
 
-        string baseUrl = Configuration["Auth:BaseApiUrl"] ?? string.Empty;
-        string signOutUrl = $"{baseUrl}/authentication/{authProvider}/signout";
+        string baseUrl = Configuration["Auth:BaseApiUrl"]!;
+        string signOutUrl = $"{baseUrl}/authentication/{AuthProvider}/signout";
         string redirectUri = Uri.EscapeDataString(Navigation.Uri);
 
         Navigation.NavigateTo($"{signOutUrl}?postSignOutRedirectUri={redirectUri}", forceLoad: true);
