@@ -1,6 +1,6 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
+using INSS.Platform.Auth.API.Models;
 using INSS.Platform.Auth.API.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace INSS.Platform.Auth.API
@@ -21,32 +21,19 @@ namespace INSS.Platform.Auth.API
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
-
-            builder.Services.AddSingleton(sp =>
-            {
-                IConfiguration configuration = sp.GetRequiredService<IConfiguration>();
-
-                string? keyVaultUriString = configuration["KeyVault:Uri"] ?? string.Empty;
-                if (string.IsNullOrWhiteSpace(keyVaultUriString))
-                {
-                    throw new InvalidOperationException("KeyVault URI is missing.");
-                }
-
-                return new SecretClient(new Uri(keyVaultUriString), new DefaultAzureCredential());
-            });
-
-            builder.Services.AddHttpClient("AuthenticationClient")
-                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                AllowAutoRedirect = false
-            });
-
             builder.Services.AddApplicationInsightsTelemetry();
 
-            builder.Services.AddScoped<IAuthService, OneLoginAuthService>();
+            ConfigurationManager configuration = builder.Configuration;
+            builder.Services.AddOptions<AuthenticationProviderOptions>()
+                .Bind(builder.Configuration.GetSection("AuthProviderOptions"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            builder.Services.AddScoped<IAuthenticationEventHandler, AuthenticationEventHandler>();
+
+            ConfigureAuthenticationProviders(builder);
 
             WebApplication app = builder.Build();
-
             if (app.Environment.IsDevelopment())
             {
                 _ = app.MapOpenApi();
@@ -58,9 +45,55 @@ namespace INSS.Platform.Auth.API
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
+        }
+
+        /// <summary>
+        /// Configures the authentication providers for the application.
+        /// </summary>
+        /// <param name="builder">
+        /// The <see cref="WebApplicationBuilder"/> used to configure services and authentication.
+        /// </param>
+        private static void ConfigureAuthenticationProviders(WebApplicationBuilder builder)
+        {
+            AuthenticationProviderOptions authProviderOptions = GetValidatedAuthProviderOptions(builder);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+            })
+            .AddCookie("Cookies")
+            .AddEntraOpenIdConnect(authProviderOptions.Entra)
+            .AddOneLoginOpenIdConnect(authProviderOptions.OneLogin);
+        }
+
+        /// <summary>
+        /// Retrieves and validates the <see cref="AuthenticationProviderOptions"/> configuration section.
+        /// </summary>
+        /// <param name="builder">The <see cref="WebApplicationBuilder"/> containing the application configuration.</param>
+        /// <returns>A validated <see cref="AuthenticationProviderOptions"/> instance.</returns>
+        /// <exception cref="ValidationException">
+        /// Thrown if the <see cref="AuthenticationProviderOptions"/> configuration is invalid.
+        /// </exception>
+        private static AuthenticationProviderOptions GetValidatedAuthProviderOptions(WebApplicationBuilder builder)
+        {
+            AuthenticationProviderOptions authProviderOptions = new();
+            builder.Configuration.GetSection("AuthProviderOptions").Bind(authProviderOptions);
+
+            ValidationContext validationContext = new(authProviderOptions);
+            List<ValidationResult> results = new();
+            bool isValid = Validator.TryValidateObject(authProviderOptions, validationContext, results, true);
+
+            if (!isValid)
+            {
+                throw new ValidationException("AuthProviderOptions configuration is invalid: " +
+                    string.Join("; ", results.Select(r => r.ErrorMessage)));
+            }
+
+            return authProviderOptions;
         }
     }
 }

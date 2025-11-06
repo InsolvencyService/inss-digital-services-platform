@@ -12,18 +12,6 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddScoped<IAuthenticationHelper, AuthenticationHelper>();
 
-builder.Services.AddHttpClient("AuthenticationClient", client =>
-{
-    string? baseUrl = builder.Configuration["Auth:BaseApiUrl"];
-    if (!string.IsNullOrEmpty(baseUrl))
-    {
-        client.BaseAddress = new Uri(baseUrl);
-    }
-}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-{
-    AllowAutoRedirect = false
-});
-
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,5 +1,4 @@
-﻿using INSS.Platform.Auth.Contracts.Request;
-using INSS.Platform.Auth.Contracts.Response;
+﻿using INSS.Platform.Auth.Contracts.Response;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,10 +9,7 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
 {
     public class AuthenticationHelper : IAuthenticationHelper
     {
-        private const string HttpClientName = "AuthenticationClient";
-
         private readonly ILogger<AuthenticationHelper> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
 
@@ -25,107 +21,28 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
 
         public AuthenticationHelper(
             ILogger<AuthenticationHelper> logger,
-            IHttpClientFactory httpClientFactory,
             IHttpContextAccessor httpContextAccessor,
             IConfiguration configuration)
         {
             _logger = logger;
-            _httpClientFactory = httpClientFactory;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
         }
 
         /// <inheritdoc />
-        public async Task<string> GetLoginUrlAsync(LoginRequest loginRequest)
-        {
-            HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
-            try
-            {
-                HttpResponseMessage loginResponse = await httpClient.PostAsJsonAsync("/authentication/login-url", loginRequest).ConfigureAwait(false);
-
-                if (!loginResponse.IsSuccessStatusCode)
-                {
-                    string errorContent = await loginResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.LogError("Error getting login url from authentication api: {ErrorContent}", errorContent);
-                    return string.Empty;
-                }
-
-                return await loginResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Exception occurred while getting login url from authentication api.");
-                return string.Empty;
-            }
-        }
-
-        /// <inheritdoc />
-        public async Task<string> LoginAsync(LoginRequest loginRequest)
-        {
-            string redirectUrl = string.Empty;
-            HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
-            try
-            {
-                HttpResponseMessage loginResponse = await httpClient.PostAsJsonAsync("/authentication/login", loginRequest).ConfigureAwait(false);
-
-                if (loginResponse.StatusCode == System.Net.HttpStatusCode.Redirect)
-                {
-                    if (loginResponse.Headers.Location != null)
-                    {
-                        redirectUrl = loginResponse.Headers.Location.ToString()!;
-                    }
-                }
-
-                if (!loginResponse.IsSuccessStatusCode)
-                {
-                    string errorContent = await loginResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.LogError("Error calling login from authentication api: {ErrorContent}", errorContent);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Exception occurred while getting login url from authentication api.");
-            }
-
-            return redirectUrl;
-        }
-
         public bool IsUserSignedIn()
         {
             return TryGetAuthTokenDataFromCookie(out TokenData? tokenData) 
-                && !string.IsNullOrWhiteSpace(tokenData?.AccessToken) 
-                && !IsJwtExpired(tokenData.AccessToken);
-        }
-
-        public bool JwtExistsButHasExpired()
-        {
-            return TryGetAuthTokenDataFromCookie(out TokenData? tokenData) 
-                && !string.IsNullOrWhiteSpace(tokenData?.AccessToken) 
-                && IsJwtExpired(tokenData.AccessToken);
+                && !string.IsNullOrWhiteSpace(tokenData?.IdToken) 
+                && !IsJwtExpired(tokenData.IdToken);
         }
 
         /// <inheritdoc />
-        public async Task<bool> LogoutAsync(LogoutRequest logoutRequest)
+        public bool JwtExistsButHasExpired()
         {
-            HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
-            try
-            {
-                HttpResponseMessage logoutResponse = await httpClient.PostAsJsonAsync("/authentication/logout", logoutRequest).ConfigureAwait(false);
-
-                if (!logoutResponse.IsSuccessStatusCode)
-                {
-                    string errorContent = await logoutResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    _logger.LogError("Error calling login from authentication api: {ErrorContent}", errorContent);
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Exception occurred while getting login url from authentication api.");
-                return false;
-            }
-
-            return true;
+            return TryGetAuthTokenDataFromCookie(out TokenData? tokenData) 
+                && !string.IsNullOrWhiteSpace(tokenData?.IdToken) 
+                && IsJwtExpired(tokenData.IdToken);
         }
 
         /// <inheritdoc />
@@ -133,16 +50,14 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
         {
             Dictionary<string, StringValues> query = QueryHelpers.ParseQuery(rootUri.Query);
 
-            if (!QueryHelper.TryGetQueryValue(query, "access_token", out string? accessToken)
-                || !QueryHelper.TryGetQueryValue(query, "id_token", out string? idToken))
+            if (!QueryHelper.TryGetQueryValue(query, "id_token", out string? idToken))
             {
-                _logger.LogError("One or more required token parameters are missing in the URL.");
-                throw new ArgumentException("One or more required token parameters are missing in the URL.");
+                _logger.LogError("The id_token parameter is missing in the URL.");
+                throw new ArgumentException("The id_token parameter is missing in the URL.");
             }
 
             TokenData token = new()
             {
-                AccessToken = accessToken!,
                 IdToken = idToken!,
             };
 
@@ -166,7 +81,37 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
         }
 
         /// <inheritdoc />
-        public bool TryGetAuthTokenDataFromCookie(out TokenData? tokenData)
+        public string? GetLoginProviderUserId()
+        {
+            string? loginProividerUserId = null;
+
+            if (TryGetAuthTokenDataFromCookie(out TokenData? tokenData))
+            {
+                IEnumerable<Claim> claims = ExtractClaimsFromToken(tokenData!.IdToken);
+                loginProividerUserId = claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            }
+
+            return loginProividerUserId;
+        }
+
+        /// <inheritdoc />
+        public void DeleteAuthCookies()
+        {
+            HttpContext httpContext = _httpContextAccessor.HttpContext!;
+            httpContext.Response.Cookies.Delete(_configuration["Auth:AuthCookieName"]!);
+            httpContext.Response.Cookies.Delete(_configuration["Auth:CsrfCookieName"]!);
+        }
+
+        /// <summary>
+        /// Attempts to retrieve the authentication token data from the authentication cookie.
+        /// </summary>
+        /// <param name="tokenData">
+        /// When this method returns, contains the <see cref="TokenData"/> object if the cookie is found and deserialized successfully; otherwise, <c>null</c>.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the authentication token data was successfully retrieved and deserialized; otherwise, <c>false</c>.
+        /// </returns>
+        private bool TryGetAuthTokenDataFromCookie(out TokenData? tokenData)
         {
             tokenData = null;
             HttpContext httpContext = _httpContextAccessor.HttpContext!;
@@ -185,9 +130,9 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             try
             {
                 tokenData = JsonSerializer.Deserialize<TokenData>(cookieValue, _jsonSerializerOptions);
-                return tokenData != null;
+                return tokenData is not null;
             }
-            catch(JsonException ex)
+            catch (JsonException ex)
             {
                 _logger.LogError(ex, "Error deserializing token data from cookie.");
                 return false;
@@ -197,54 +142,6 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
                 _logger.LogError(ex, "Unexpected error deserializing token data from cookie.");
                 return false;
             }
-        }
-
-        /// <inheritdoc />
-        public string CreateAndPersistCsrfTokenInCookie()
-        {
-            CookieOptions options = new()
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Path = "/",
-                Expires = DateTimeOffset.UtcNow.AddDays(1)
-            };
-
-            string csrfToken = Guid.NewGuid().ToString("N");
-            string cookieName = _configuration["Auth:CsrfCookieName"]!;
-            HttpContext httpContext = _httpContextAccessor.HttpContext!;
-            httpContext.Response.Cookies.Append(cookieName, csrfToken, options);
-
-            return csrfToken;
-        }
-
-        /// <inheritdoc />
-        public bool ValidateCsrfTokenInCookie(string csrfToken)
-        {
-            return TryGetCsrfTokenFromCookie(out string? storedCsrfToken) 
-                && string.Equals(csrfToken, storedCsrfToken, StringComparison.Ordinal);
-        }
-
-        /// <inheritdoc />
-        public string? GetLoginProviderUserId()
-        {
-            string? loginProividerUserId = null;
-
-            if (TryGetAuthTokenDataFromCookie(out TokenData? tokenData))
-            {
-                IEnumerable<Claim> claims = ExtractClaimsFromToken(tokenData!.AccessToken);
-                loginProividerUserId = claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-            }
-
-            return loginProividerUserId;
-        }
-
-        public void DeleteAuthCookies()
-        {
-            HttpContext httpContext = _httpContextAccessor.HttpContext!;
-            httpContext.Response.Cookies.Delete(_configuration["Auth:AuthCookieName"]!);
-            httpContext.Response.Cookies.Delete(_configuration["Auth:CsrfCookieName"]!);
         }
 
         /// <summary>
@@ -295,31 +192,6 @@ namespace INSS.Platform.UserManagement.Web.Components.Helpers
             JwtSecurityToken token = handler.ReadJwtToken(jwt);
 
             return token.Claims;
-        }
-
-        /// <summary>
-        /// Attempts to retrieve the CSRF token from the CSRF cookie.
-        /// </summary>
-        /// <param name="csrfToken">When this method returns, contains the CSRF token if found; otherwise, an empty string.</param>
-        /// <returns><c>true</c> if the CSRF token was successfully retrieved; otherwise, <c>false</c>.</returns>
-        private bool TryGetCsrfTokenFromCookie(out string? csrfToken)
-        {
-            csrfToken = string.Empty;
-            HttpContext httpContext = _httpContextAccessor.HttpContext!;
-            if (httpContext == null)
-            {
-                return false;
-            }
-
-            string cookieName = _configuration["Auth:CsrfCookieName"]!;
-            if (!httpContext.Request.Cookies.TryGetValue(cookieName, out string? cookieValue)
-                || string.IsNullOrWhiteSpace(cookieValue))
-            {
-                return false;
-            }
-
-            csrfToken = cookieValue;
-            return true;
         }
     }
 }

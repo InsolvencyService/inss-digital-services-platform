@@ -5,6 +5,7 @@
 @inject ILogger<GovUKLoginHeader> Logger
 @inject NavigationManager Navigation
 @inject IAuthenticationHelper AuthenticationHelper
+@inject IConfiguration Configuration
 
 <header class="rebranded-cross-service-header" data-module="one-login-header">
     <div class="rebranded-one-login-header" data-one-login-header-nav>
@@ -57,7 +58,7 @@
             <nav aria-label="GOV.UK One Login" class="rebranded-one-login-header__nav" data-open-class="rebranded-one-login-header__nav--open" id="one-login-header__nav">
                 <ul class="rebranded-one-login-header__nav__list">
 
-                    @if (!isSignedIn)
+                    @if (!_isSignedIn)
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
                             <form @formname="login-form" method="post" @onsubmit="OnLoginAsync">
@@ -103,20 +104,37 @@
 
     </div>
 
-    <NavigationBar IsSignedIn="@isSignedIn" />
+    <NavigationBar IsSignedIn="@_isSignedIn" />
 
 </header>
 
 
 @code {
-    private bool isSignedIn = false;
+
+    /// <summary>
+    /// The authentication provider to use for sign-in and sign-out operations.
+    /// </summary>
+    /// <remarks>
+    /// In a future iteration, this value will be assigned dynamically based on configuration or context.
+    /// Currently only OneLogin and Entra are supported, with OneLogin being the default.
+    /// </remarks>
+    private const string AuthProvider = "OneLogin";
+ 
+    /// <summary>
+    /// Indicates whether the user is currently signed in.
+    /// </summary>
+    private bool _isSignedIn = false;
    
+    /// <summary>
+    /// Initializes the component and handles authentication state and login callbacks.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Initializing GOV.UK Login Header Component.");
 
-        isSignedIn = AuthenticationHelper.IsUserSignedIn();
-        if (isSignedIn)
+        _isSignedIn = AuthenticationHelper.IsUserSignedIn();
+        if (_isSignedIn)
         {
             return;
         }
@@ -136,11 +154,9 @@
 
         if (IsExistingUserLoginCallback(uri) || IsNewUserLoginCallback(uri, out userId))
         {
-            ValidateCsrfToken(uri);
-
             AuthenticationHelper.PersistAuthTokenDataInCookie(Navigation.ToAbsoluteUri(Navigation.Uri));
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrWhiteSpace(userId))
             {
                 // Register the new user id against OneLogin Id
                 // Note the OneLogin Id is the sub claim in the access token;
@@ -154,44 +170,35 @@
     }
 
     /// <summary>
-    /// Handles the login process when the user initiates a login action.
-    /// Creates and persists a CSRF token, builds a <see cref="LoginRequest"/>,
-    /// and calls the authentication helper to perform the login.
+    /// Initiates the login process by redirecting the user to the authentication provider's sign-in endpoint.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     private async Task OnLoginAsync()
     {
         Logger.LogInformation("User initiated login.");
 
-        string csrfToken = AuthenticationHelper.CreateAndPersistCsrfTokenInCookie();
+        string baseUrl = Configuration["Auth:BaseApiUrl"] ?? string.Empty;
+        string signInUrl = $"{baseUrl}/authentication/{AuthProvider}/signin";
+        string redirectUri = Uri.EscapeDataString(Navigation.Uri);
 
-        LoginRequest loginRequest = new ()
-        {
-            ClientUrl = Navigation.Uri,
-            CsrfToken = csrfToken,
-            UserId = GetUserIdIfIsNewUserRequest(Navigation.ToAbsoluteUri(Navigation.Uri))
-        };
-
-        string redirectUrl = await AuthenticationHelper.LoginAsync(loginRequest).ConfigureAwait(false);
-
-        if(string.IsNullOrEmpty(redirectUrl))
-        {
-            string error = Uri.EscapeDataString("Login process failed. Try again or come back later.");
-            Navigation.NavigateTo($"/error/{error}", true);
-            return;
-        }
-
-        Navigation.NavigateTo(redirectUrl, forceLoad: true);
+        Navigation.NavigateTo($"{signInUrl}?postSignInRedirectUri={redirectUri}", forceLoad: true);
     }
 
     /// <summary>
-    /// Handles the logout process when the user initiates a logout action.
-    /// Retrieves the authentication token from the cookie and calls the authentication helper to perform the logout.
+    /// Initiates the logout process by deleting authentication cookies and redirecting the user to the authentication provider's sign-out endpoint.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     private async Task OnLogoutAsync()
     {
         Logger.LogInformation("User initiated logout.");
 
-        Navigation.NavigateTo("/logout", true);
+        AuthenticationHelper.DeleteAuthCookies();
+
+        string baseUrl = Configuration["Auth:BaseApiUrl"]!;
+        string signOutUrl = $"{baseUrl}/authentication/{AuthProvider}/signout";
+        string redirectUri = Uri.EscapeDataString(Navigation.Uri);
+
+        Navigation.NavigateTo($"{signOutUrl}?postSignOutRedirectUri={redirectUri}", forceLoad: true);
     }
 
     /// <summary>
@@ -242,24 +249,5 @@
 
         Logger.LogInformation("IsExistingUserLoginCallback: {Result}, User ID: {userId}", result, userId);
         return result;
-    }
-
-    /// <summary>
-    /// Validates the CSRF token present in the query string against the token stored in the cookie.
-    /// If the token is invalid or missing, navigates to an error page.
-    /// </summary>
-    /// <param name="uri">The URI containing the query string to validate.</param>
-    private void ValidateCsrfToken(Uri uri)
-    {
-        var query = QueryHelpers.ParseQuery(uri.Query);
-
-        if (QueryHelper.TryGetQueryValue(query, "csrf_token", out string? csrfToken)
-            && csrfToken is not null
-            && !AuthenticationHelper.ValidateCsrfTokenInCookie(csrfToken))
-        {
-            string error = Uri.EscapeDataString("Failed to validate the CSRF Token. The request may have timed out, try again or come back later.");
-            Navigation.NavigateTo($"/error/{error}", true);
-            return;
-        }
     }
 }

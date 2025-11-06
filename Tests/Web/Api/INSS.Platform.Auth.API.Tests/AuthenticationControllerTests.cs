@@ -1,215 +1,181 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Execution;
 using INSS.Platform.Auth.API.Controllers;
-using INSS.Platform.Auth.API.Services;
+using INSS.Platform.Auth.API.Models;
+using INSS.Platform.Auth.Contracts;
 using INSS.Platform.Auth.Contracts.Request;
-using INSS.Platform.Auth.Contracts.Response;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 using Moq;
 
-namespace INSS.Platform.Common.Auth.API.Tests
+namespace INSS.Platform.Auth.API.Tests
 {
     public class AuthenticationControllerTests
     {
         private readonly Mock<ILogger<AuthenticationController>> _loggerMock;
-        private readonly Mock<IAuthService> _authServiceMock;
+        private readonly Mock<IOptions<AuthenticationProviderOptions>> _optionsMock;
+        private readonly AuthenticationProviderOptions _options;
         private readonly AuthenticationController _controller;
 
         public AuthenticationControllerTests()
         {
+            _options = new AuthenticationProviderOptions
+            {
+                AllowedPostSignInRedirectUris = new List<string> { "https://onelogin.client/callback", "https://entra.client/callback" },
+                AllowedPostSignOutRedirectUris = new List<string> { "https://onelogin.client/callback", "https://entra.client/callback" },
+            };
+
+            _optionsMock = new Mock<IOptions<AuthenticationProviderOptions>>();
+            _optionsMock.Setup(x => x.Value).Returns(_options);
+
             _loggerMock = new Mock<ILogger<AuthenticationController>>();
-            _authServiceMock = new Mock<IAuthService>();
-            _controller = new AuthenticationController(_loggerMock.Object, _authServiceMock.Object);
+            _controller = new AuthenticationController(_loggerMock.Object, _optionsMock.Object);
         }
 
-        [Fact]
-        public async Task LoginAsync_ReturnsRedirect_WhenSuccess()
+        [Theory]
+        [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
+        [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
+        public void SignIn_ReturnsChallenge_WhenRedirectUriIsValid(AuthenticationProvider provider, string redirectUri)
         {
             // Arrange
-            LoginRequest request = TestHelper.CreateLoginRequest();
-            _authServiceMock.Setup(x => x.GetLoginRedirectUrlAsync(request)).ReturnsAsync("https://login");
+            SignInRequest signInRequest = new()
+            {
+                PostSignInRedirectUri = redirectUri,
+                UserId = "user123"
+            };
 
             // Act
-            IActionResult result = await _controller.LoginAsync(request);
+            IActionResult result = _controller.SignIn(provider, signInRequest);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<ChallengeResult>();
+                ChallengeResult challenge = (ChallengeResult)result;
+                challenge.AuthenticationSchemes.Should().Contain(provider.ToString());
+                challenge.Properties.Should().NotBeNull();
+                challenge.Properties.Items.Should().ContainKey("returnUrl");
+                challenge.Properties.Items["returnUrl"].Should().Be(redirectUri);
+                challenge.Properties.Items.Should().ContainKey("userId");
+                challenge.Properties.Items["userId"].Should().Be("user123");
+            }
+        }
+
+        [Theory]
+        [InlineData(AuthenticationProvider.OneLogin)]
+        [InlineData(AuthenticationProvider.Entra)]
+        public void SignIn_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthenticationProvider provider)
+        {
+            // Arrange
+            SignInRequest signInRequest = new()
+            {
+                PostSignInRedirectUri = "https://malicious/callback",
+                UserId = "user123"
+            };
+
+            // Act
+            IActionResult result = _controller.SignIn(provider, signInRequest);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<BadRequestObjectResult>();
+                BadRequestObjectResult badRequest = (BadRequestObjectResult)result;
+                badRequest.Value.Should().Be("Invalid PostSignInRedirectUri");
+            }
+        }
+
+        [Theory]
+        [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
+        [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
+        public async Task SignOut_ReturnsSignOutResult_WhenRedirectUriIsValid(AuthenticationProvider provider, string redirectUri)
+        {
+            // Arrange
+            SignOutRequest signOutRequest = new()
+            {
+                PostSignOutRedirectUri = redirectUri
+            };
+
+            // Act
+            IActionResult result = await _controller.SignOut(provider, signOutRequest);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<SignOutResult>();
+                SignOutResult signOut = (SignOutResult)result;
+                signOut.AuthenticationSchemes.Should().Contain(provider.ToString());
+                signOut.Properties.Should().NotBeNull();
+                signOut.Properties.Items.Should().ContainKey("returnUrl");
+                signOut.Properties.Items["returnUrl"].Should().Be(redirectUri);
+            }
+        }
+
+        [Theory]
+        [InlineData(AuthenticationProvider.OneLogin)]
+        [InlineData(AuthenticationProvider.Entra)]
+        public async Task SignOut_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthenticationProvider provider)
+        {
+            // Arrange
+            SignOutRequest signOutRequest = new()
+            {
+                PostSignOutRedirectUri = "https://malicious/signout"
+            };
+
+            // Act
+            IActionResult result = await _controller.SignOut(provider, signOutRequest);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<BadRequestObjectResult>();
+                BadRequestObjectResult badRequest = (BadRequestObjectResult)result;
+                badRequest.Value.Should().Be("Invalid PostSignOutRedirectUri");
+            }
+        }
+
+        [Theory]
+        [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
+        [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
+        public async Task PostSignOut_RedirectsToReturnUrl_AndSignsOutCookie(AuthenticationProvider provider, string redirectUri)
+        {
+            // Arrange
+            DefaultHttpContext httpContext = new();
+            AuthenticationProperties authProperties = new(new Dictionary<string, string?>
+            {
+                { "returnUrl", redirectUri }
+            });
+
+            AuthenticateResult authenticateResult = AuthenticateResult.Success(new AuthenticationTicket(new System.Security.Claims.ClaimsPrincipal(), authProperties, provider.ToString()));
+            Mock<IAuthenticationService> authServiceMock = new();
+            authServiceMock.Setup(x => x.AuthenticateAsync(httpContext, "Cookies")).ReturnsAsync(authenticateResult);
+            authServiceMock.Setup(x => x.SignOutAsync(httpContext, "Cookies", null)).Returns(Task.CompletedTask);
+
+            httpContext.RequestServices = new ServiceCollection()
+                .AddSingleton(authServiceMock.Object)
+                .BuildServiceProvider();
+
+            AuthenticationController controller = new(_loggerMock.Object, _optionsMock.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = httpContext
+                }
+            };
+
+            // Act
+            IActionResult result = await controller.PostSignOut();
 
             // Assert
             using (new AssertionScope())
             {
                 result.Should().BeOfType<RedirectResult>();
-                RedirectResult? redirect = result as RedirectResult;
-                redirect.Should().NotBeNull();
-                redirect!.Url.Should().Be("https://login");
-            }
-        }
-
-        [Fact]
-        public async Task LoginAsync_ReturnsError_WhenException()
-        {
-            LoginRequest request = TestHelper.CreateLoginRequest();
-            _authServiceMock.Setup(x => x.GetLoginRedirectUrlAsync(request)).ThrowsAsync(new InvalidOperationException("fail"));
-
-            IActionResult result = await _controller.LoginAsync(request);
-
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<ObjectResult>();
-                ObjectResult? objectResult = result as ObjectResult;
-                objectResult.Should().NotBeNull();
-                objectResult!.StatusCode.Should().Be(500);
-            }
-        }
-
-        [Fact]
-        public async Task LoginUrlAsync_ReturnsOkWithUrl_WhenSuccess()
-        {
-            LoginRequest request = TestHelper.CreateLoginRequest();
-            _authServiceMock.Setup(x => x.GetLoginRedirectUrlAsync(request)).ReturnsAsync("https://login");
-
-            IActionResult result = await _controller.LoginUrlAsync(request);
-
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                OkObjectResult? okResult = result as OkObjectResult;
-                okResult.Should().NotBeNull();
-                okResult!.Value.Should().Be("https://login");
-            }
-        }
-
-        [Fact]
-        public async Task LoginUrlAsync_ReturnsError_WhenException()
-        {
-            LoginRequest request = TestHelper.CreateLoginRequest();
-            _authServiceMock.Setup(x => x.GetLoginRedirectUrlAsync(request)).ThrowsAsync(new InvalidOperationException("fail"));
-
-            IActionResult result = await _controller.LoginUrlAsync(request);
-
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<ObjectResult>();
-                ObjectResult? objectResult = result as ObjectResult;
-                objectResult.Should().NotBeNull();
-                objectResult!.StatusCode.Should().Be(500);
-            }
-        }
-
-        [Fact]
-        public async Task LogOutAsync_ReturnsOk_WhenSuccess()
-        {
-            LogoutRequest request = TestHelper.CreateLogoutRequest();
-            _authServiceMock.Setup(x => x.LogoutAsync(request)).ReturnsAsync(true);
-
-            IActionResult result = await _controller.LogOutAsync(request);
-
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<OkObjectResult>();
-                OkObjectResult? okResult = result as OkObjectResult;
-                okResult.Should().NotBeNull();
-                okResult!.Value.Should().Be("Logout successful.");
-            }
-        }
-
-        [Fact]
-        public async Task LogOutAsync_ReturnsError_WhenFailed()
-        {
-            LogoutRequest request = TestHelper.CreateLogoutRequest();
-            _authServiceMock.Setup(x => x.LogoutAsync(request)).ReturnsAsync(false);
-
-            IActionResult result = await _controller.LogOutAsync(request);
-
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<ObjectResult>();
-                ObjectResult? objectResult = result as ObjectResult;
-                objectResult.Should().NotBeNull();
-                objectResult!.StatusCode.Should().Be(500);
-                objectResult.Value.Should().Be("Logout failed.");
-            }
-        }
-
-        [Fact]
-        public async Task CallBackAsync_ReturnsBadRequest_WhenCodeMissing()
-        {
-            IActionResult result = await _controller.CallBackAsync(null, "state");
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<BadRequestObjectResult>();
-                BadRequestObjectResult? badRequest = result as BadRequestObjectResult;
-                badRequest.Should().NotBeNull();
-                badRequest!.Value.Should().Be("Authorization code is missing.");
-            }
-        }
-
-        [Fact]
-        public async Task CallBackAsync_ReturnsBadRequest_WhenStateMissing()
-        {
-            IActionResult result = await _controller.CallBackAsync("code", null);
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<BadRequestObjectResult>();
-                BadRequestObjectResult? badRequest = result as BadRequestObjectResult;
-                badRequest.Should().NotBeNull();
-                badRequest!.Value.Should().Be("State code is missing.");
-            }
-        }
-
-        [Fact]
-        public async Task CallBackAsync_ReturnsBadRequest_WhenStateInvalid()
-        {
-            _authServiceMock.Setup(x => x.ValidateAndExtractRequestStateAsync("state"))
-                .ReturnsAsync((false, "", "", "", ""));
-
-            IActionResult result = await _controller.CallBackAsync("code", "state");
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<BadRequestObjectResult>();
-                BadRequestObjectResult? badRequest = result as BadRequestObjectResult;
-                badRequest.Should().NotBeNull();
-                badRequest!.Value.Should().Be("Invalid state parameter.");
-            }
-        }
-
-        [Fact]
-        public async Task CallBackAsync_ReturnsError_WhenHandleCallbackThrows()
-        {
-            _authServiceMock.Setup(x => x.ValidateAndExtractRequestStateAsync("state"))
-                .ReturnsAsync((true, "nonce", "csrf", "user", "https://client"));
-            _authServiceMock.Setup(x => x.HandleCallbackAsync("code", "nonce"))
-                .ThrowsAsync(new SecurityTokenMalformedException("invalid token"));
-
-            IActionResult result = await _controller.CallBackAsync("code", "state");
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<ObjectResult>();
-                ObjectResult? objectResult = result as ObjectResult;
-                objectResult.Should().NotBeNull();
-                objectResult!.StatusCode.Should().Be(500);
-                objectResult.Value.Should().Be("Authentication callback failed.");
-            }
-        }
-
-        [Fact]
-        public async Task CallBackAsync_ReturnsRedirect_WhenSuccess()
-        {
-            _authServiceMock.Setup(x => x.ValidateAndExtractRequestStateAsync("state"))
-                .ReturnsAsync((true, "nonce", "csrf", "user", "https://client"));
-            _authServiceMock.Setup(x => x.HandleCallbackAsync("code", "nonce"))
-                .ReturnsAsync(new TokenData { AccessToken = "at", IdToken = "it" });
-
-            IActionResult result = await _controller.CallBackAsync("code", "state");
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<RedirectResult>();
-                RedirectResult? redirect = result as RedirectResult;
-                redirect.Should().NotBeNull();
-                redirect!.Url.Should().Contain("https://client");
-                redirect.Url.Should().Contain("csrf_token=csrf");
-                redirect.Url.Should().Contain("user_id=user");
-                redirect.Url.Should().Contain("access_token=at");
-                redirect.Url.Should().Contain("id_token=it");
+                RedirectResult redirect = (RedirectResult)result;
+                redirect.Url.Should().Be(redirectUri);
             }
         }
     }

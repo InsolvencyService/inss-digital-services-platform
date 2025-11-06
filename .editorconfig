@@ -80,6 +80,8 @@ dotnet_naming_style.underscore_prefix_style.required_prefix = _
 dotnet_naming_style.underscore_prefix_style.capitalization = camel_case
 
 dotnet_diagnostic.CA1707.severity = warning
+dotnet_diagnostic.CA1711.severity = silent
+
 
 dotnet_style_allow_multiple_blank_lines_experimental = false:warning
 
