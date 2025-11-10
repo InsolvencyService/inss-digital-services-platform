@@ -29,6 +29,13 @@ namespace INSS.Platform.Auth.API.Tests
 
             _providerOptions = new AuthenticationProviderOptions
             {
+                Inss = new InssOptions
+                {
+                    Audience = "inss-audience",
+                    ExpiryMinutes = 5,
+                    Issuer = "inss-issuer",
+                    JwtPrivateKey = TestHelper.GetKeyPem("Keys\\test_private_key.pem")
+                },
                 OneLogin = new OneLoginOptions
                 {
                     ClientId = "test-client-id",
@@ -48,8 +55,7 @@ namespace INSS.Platform.Auth.API.Tests
                     SignOutCallbackPath = "signout-callback-entra",
                     Scopes = new List<string> { "openid", "profile" }
                 },
-                AllowedPostSignInRedirectUris = new List<string> { "https://localhost/signin-oidc" },
-                AllowedPostSignOutRedirectUris = new List<string> { "https://localhost/signout-callback-oidc" }
+                AllowedClientRedirectUrls = new List<string> { "https://localhost/signin-oidc" }
             };
 
             _optionsMock = new Mock<IOptions<AuthenticationProviderOptions>>();
@@ -148,6 +154,12 @@ namespace INSS.Platform.Auth.API.Tests
                 Items = { { "returnUrl", "https://localhost/client_app" }, { "userId", "test-user-id" } }
             };
  
+            string accessToken = TestHelper.CreateAccessTokenForTest(
+                _providerOptions.Inss.JwtPrivateKey,
+                _providerOptions.OneLogin.ClientId,
+                _providerOptions.OneLogin.TokenUri,
+                5);
+
             TokenValidatedContext context = new(
                 httpContextMock.Object,
                 new AuthenticationScheme("oidc", null, typeof(IAuthenticationHandler)),
@@ -158,7 +170,7 @@ namespace INSS.Platform.Auth.API.Tests
                 TokenEndpointResponse = new OpenIdConnectMessage
                 {
                     IdToken = "test-id-token",
-                    AccessToken = "test-access-token"
+                    AccessToken = accessToken
                 }
             };
 
@@ -170,9 +182,9 @@ namespace INSS.Platform.Auth.API.Tests
             {
                 List<AuthenticationToken>? tokens = context.Properties?.GetTokens().ToList();
                 tokens.Should().ContainSingle(t => t.Name == "id_token" && t.Value == "test-id-token");
-                tokens.Should().ContainSingle(t => t.Name == "access_token" && t.Value == "test-access-token");
+                tokens.Should().ContainSingle(t => t.Name == "access_token" && t.Value == accessToken);
                 context.Response.StatusCode.Should().Be(StatusCodes.Status302Found);
-                context.Response.Headers.Location.Should().Contain("https://localhost/client_app?user_id=test-user-id&access_token=test-access-token&id_token=test-id-token");
+                context.Response.Headers.Location.ToString().Should().StartWith("https://localhost/client_app?token=");
             }
 
             authServiceMock.Verify(x =>

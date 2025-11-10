@@ -1,32 +1,38 @@
-using INSS.Platform.UserManagement.Web.Components;
-using INSS.Platform.UserManagement.Web.Components.Helpers;
+using GovUk.Frontend.AspNetCore;
+using INSS.Platform.UserManagement.Web;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddApplicationInsightsTelemetry();
 
-builder.Services.AddScoped<IAuthenticationHelper, AuthenticationHelper>();
+builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+
+builder.Services.AddGovUkFrontend(options =>
+{
+    options.Rebrand = true;
+});
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseGovUkFrontend();
+
 if (!app.Environment.IsDevelopment())
 {
-    _ = app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    _ = app.UseHsts();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+
 app.UseHttpsRedirection();
-
-app.UseAntiforgery();
-
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapStaticAssets();
-app.MapRazorComponents<App>();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();
