@@ -25,8 +25,7 @@ namespace INSS.Platform.Auth.API.Tests
         {
             _options = new AuthenticationProviderOptions
             {
-                AllowedPostSignInRedirectUris = new List<string> { "https://onelogin.client/callback", "https://entra.client/callback" },
-                AllowedPostSignOutRedirectUris = new List<string> { "https://onelogin.client/callback", "https://entra.client/callback" },
+                AllowedClientRedirectUrls = new List<string> { "https://onelogin.client", "https://entra.client/" },
             };
 
             _optionsMock = new Mock<IOptions<AuthenticationProviderOptions>>();
@@ -39,12 +38,12 @@ namespace INSS.Platform.Auth.API.Tests
         [Theory]
         [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
         [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
-        public void SignIn_ReturnsChallenge_WhenRedirectUriIsValid(AuthenticationProvider provider, string redirectUri)
+        public void SignIn_ReturnsChallenge_WhenRedirectUrlIsValid(AuthenticationProvider provider, string redirectUrl)
         {
             // Arrange
             SignInRequest signInRequest = new()
             {
-                PostSignInRedirectUri = redirectUri,
+                ClientRedirectUrl = redirectUrl,
                 UserId = "user123"
             };
 
@@ -59,7 +58,7 @@ namespace INSS.Platform.Auth.API.Tests
                 challenge.AuthenticationSchemes.Should().Contain(provider.ToString());
                 challenge.Properties.Should().NotBeNull();
                 challenge.Properties.Items.Should().ContainKey("returnUrl");
-                challenge.Properties.Items["returnUrl"].Should().Be(redirectUri);
+                challenge.Properties.Items["returnUrl"].Should().Be(redirectUrl);
                 challenge.Properties.Items.Should().ContainKey("userId");
                 challenge.Properties.Items["userId"].Should().Be("user123");
             }
@@ -68,12 +67,12 @@ namespace INSS.Platform.Auth.API.Tests
         [Theory]
         [InlineData(AuthenticationProvider.OneLogin)]
         [InlineData(AuthenticationProvider.Entra)]
-        public void SignIn_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthenticationProvider provider)
+        public void SignIn_ReturnsBadRequest_WhenRedirectUrlIsInvalid(AuthenticationProvider provider)
         {
             // Arrange
             SignInRequest signInRequest = new()
             {
-                PostSignInRedirectUri = "https://malicious/callback",
+                ClientRedirectUrl = "https://malicious/callback",
                 UserId = "user123"
             };
 
@@ -85,23 +84,17 @@ namespace INSS.Platform.Auth.API.Tests
             {
                 result.Should().BeOfType<BadRequestObjectResult>();
                 BadRequestObjectResult badRequest = (BadRequestObjectResult)result;
-                badRequest.Value.Should().Be("Invalid PostSignInRedirectUri");
+                badRequest.Value.Should().Be("Invalid ClientRedirectUrl");
             }
         }
 
         [Theory]
-        [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
-        [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
-        public async Task SignOut_ReturnsSignOutResult_WhenRedirectUriIsValid(AuthenticationProvider provider, string redirectUri)
+        [InlineData(AuthenticationProvider.OneLogin)]
+        [InlineData(AuthenticationProvider.Entra)]
+        public void SignOut_ReturnsSignOutResult(AuthenticationProvider provider)
         {
-            // Arrange
-            SignOutRequest signOutRequest = new()
-            {
-                PostSignOutRedirectUri = redirectUri
-            };
-
-            // Act
-            IActionResult result = await _controller.SignOut(provider, signOutRequest);
+            // Arrange & Act
+            IActionResult result = _controller.SignOut(provider);
 
             // Assert
             using (new AssertionScope())
@@ -109,45 +102,19 @@ namespace INSS.Platform.Auth.API.Tests
                 result.Should().BeOfType<SignOutResult>();
                 SignOutResult signOut = (SignOutResult)result;
                 signOut.AuthenticationSchemes.Should().Contain(provider.ToString());
-                signOut.Properties.Should().NotBeNull();
-                signOut.Properties.Items.Should().ContainKey("returnUrl");
-                signOut.Properties.Items["returnUrl"].Should().Be(redirectUri);
-            }
-        }
-
-        [Theory]
-        [InlineData(AuthenticationProvider.OneLogin)]
-        [InlineData(AuthenticationProvider.Entra)]
-        public async Task SignOut_ReturnsBadRequest_WhenRedirectUriIsInvalid(AuthenticationProvider provider)
-        {
-            // Arrange
-            SignOutRequest signOutRequest = new()
-            {
-                PostSignOutRedirectUri = "https://malicious/signout"
-            };
-
-            // Act
-            IActionResult result = await _controller.SignOut(provider, signOutRequest);
-
-            // Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeOfType<BadRequestObjectResult>();
-                BadRequestObjectResult badRequest = (BadRequestObjectResult)result;
-                badRequest.Value.Should().Be("Invalid PostSignOutRedirectUri");
             }
         }
 
         [Theory]
         [InlineData(AuthenticationProvider.OneLogin, "https://onelogin.client/callback")]
         [InlineData(AuthenticationProvider.Entra, "https://entra.client/callback")]
-        public async Task PostSignOut_RedirectsToReturnUrl_AndSignsOutCookie(AuthenticationProvider provider, string redirectUri)
+        public async Task PostSignOut_RedirectsToReturnUrl_AndSignsOutCookie(AuthenticationProvider provider, string redirectUrl)
         {
             // Arrange
             DefaultHttpContext httpContext = new();
             AuthenticationProperties authProperties = new(new Dictionary<string, string?>
             {
-                { "returnUrl", redirectUri }
+                { "returnUrl", redirectUrl }
             });
 
             AuthenticateResult authenticateResult = AuthenticateResult.Success(new AuthenticationTicket(new System.Security.Claims.ClaimsPrincipal(), authProperties, provider.ToString()));
@@ -175,7 +142,7 @@ namespace INSS.Platform.Auth.API.Tests
             {
                 result.Should().BeOfType<RedirectResult>();
                 RedirectResult redirect = (RedirectResult)result;
-                redirect.Url.Should().Be(redirectUri);
+                redirect.Url.Should().Be(redirectUrl);
             }
         }
     }

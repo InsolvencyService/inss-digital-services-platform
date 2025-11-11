@@ -1,5 +1,6 @@
 using INSS.Platform.Auth.API.Models;
 using INSS.Platform.Auth.API.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -23,7 +24,6 @@ namespace INSS.Platform.Auth.API
             builder.Services.AddOpenApi();
             builder.Services.AddApplicationInsightsTelemetry();
 
-            ConfigurationManager configuration = builder.Configuration;
             builder.Services.AddOptions<AuthenticationProviderOptions>()
                 .Bind(builder.Configuration.GetSection("AuthProviderOptions"))
                 .ValidateDataAnnotations()
@@ -61,11 +61,11 @@ namespace INSS.Platform.Auth.API
         {
             AuthenticationProviderOptions authProviderOptions = GetValidatedAuthProviderOptions(builder);
 
-            builder.Services.AddAuthentication(options =>
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
             {
-                options.DefaultScheme = "Cookies";
+                options.Cookie.Name = "INSS.Platform.Auth.Api";
             })
-            .AddCookie("Cookies")
             .AddEntraOpenIdConnect(authProviderOptions.Entra)
             .AddOneLoginOpenIdConnect(authProviderOptions.OneLogin);
         }

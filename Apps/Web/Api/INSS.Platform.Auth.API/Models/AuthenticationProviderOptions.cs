@@ -8,6 +8,11 @@ namespace INSS.Platform.Auth.API.Models
     public class AuthenticationProviderOptions : IValidatableObject
     {
         /// <summary>
+        /// Gets or sets the configuration options for the INSS JWT.
+        /// </summary>
+        public InssOptions Inss { get; set; } = new();
+
+        /// <summary>
         /// Gets or sets the Entra authentication provider options.
         /// </summary>
         public EntraOptions Entra { get; set; } = new();
@@ -18,16 +23,10 @@ namespace INSS.Platform.Auth.API.Models
         public OneLoginOptions OneLogin { get; set; } = new();
 
         /// <summary>
-        /// Gets or sets the list of allowed URIs to redirect to after sign-in.
+        /// Gets or sets the list of allowed client URLs for redirect after after sign-in/out.
         /// </summary>
         [Required]
-        public List<string> AllowedPostSignInRedirectUris { get; set; } = new();
-
-        /// <summary>
-        /// Gets or sets the list of allowed URIs to redirect to after sign-out.
-        /// </summary>
-        [Required]
-        public List<string> AllowedPostSignOutRedirectUris { get; set; } = new();
+        public List<string> AllowedClientRedirectUrls { get; set; } = [];
 
         /// <summary>
         /// Validates the current <see cref="AuthenticationProviderOptions"/> instance.
@@ -66,14 +65,9 @@ namespace INSS.Platform.Auth.API.Models
                 yield return new ValidationResult("OneLoginScopes must not be empty.", [nameof(OneLogin.Scopes)]);
             }
 
-            if (AllowedPostSignInRedirectUris.Count == 0)
+            if (AllowedClientRedirectUrls.Count == 0)
             {
-                yield return new ValidationResult("AllowedPostSignInRedirectUris must not be empty.", [nameof(AllowedPostSignInRedirectUris)]);
-            }
-
-            if (AllowedPostSignOutRedirectUris.Count == 0)
-            {
-                yield return new ValidationResult("AllowedPostSignOutRedirectUris must not be empty.", [nameof(AllowedPostSignOutRedirectUris)]);
+                yield return new ValidationResult("AllowedClientRedirectUrls must not be empty.", [nameof(AllowedClientRedirectUrls)]);
             }
         }
     }

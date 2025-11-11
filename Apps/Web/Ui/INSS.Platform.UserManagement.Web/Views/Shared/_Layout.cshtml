@@ -1,13 +1,31 @@
-﻿@using INSS.Platform.Auth.Contracts.Response
-@using Microsoft.AspNetCore.WebUtilities
-@using Microsoft.Extensions.Primitives
+﻿@{
+    Layout = "_GovUkPageTemplate";
 
-@inject ILogger<GovUKLoginHeader> Logger
-@inject NavigationManager Navigation
-@inject IAuthenticationHelper AuthenticationHelper
-@inject IConfiguration Configuration
+    bool activeHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Home";
+    bool activeApplications = ViewContext.RouteData.Values["controller"]?.ToString() == "Applications";
+    bool activeRoles = ViewContext.RouteData.Values["controller"]?.ToString() == "Roles";
+    bool _isSignedIn = User.Identity?.IsAuthenticated is true;
+}
 
-<header class="rebranded-cross-service-header" data-module="one-login-header">
+@section BodyStart {
+}
+
+@section Header {
+    <link href="/css/service-header.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/site.css" />
+    <noscript>
+        <div style="background-color: #ddffdd; color:  #070; padding: 10px; text-align: center;">
+            JavaScript is currently turned off in your browser. You can still access and use all site features with JavaScript disabled.
+        </div>
+    </noscript>
+    <div id="js-enabled-message" style="display:none; background-color: #ffdddd; color: #900; padding: 10px; text-align: center;">
+        JavaScript is enabled in your browser, disable it to ensure that this application still works with JavaScript disabled.
+    </div>
+    <script>
+        document.getElementById('js-enabled-message').style.display = 'block';
+    </script>
+
+    <header class="rebranded-cross-service-header" data-module="one-login-header">
     <div class="rebranded-one-login-header" data-one-login-header-nav>
         <div class="rebranded-one-login-header__container govuk-width-container">
             <div class="rebranded-one-login-header__logo">
@@ -61,8 +79,7 @@
                     @if (!_isSignedIn)
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
-                            <form @formname="login-form" method="post" @onsubmit="OnLoginAsync">
-                                <AntiforgeryToken />
+                            <form asp-controller="Account" asp-action="Login" method="post">
                                 <button type="submit" class="rebranded-one-login-header__nav__link">
                                     <span class="rebranded-one-login-header__nav__link-content">
                                         <svg focusable="false" xmlns="http://www.w3.org/2000/svg" width="15" height="30" viewBox="150 150 250 250" fill="currentcolor" class="rebranded-cross-service-header__logo rebranded-cross-service-header__logo--nav" aria-hidden="true">
@@ -73,28 +90,17 @@
                                     </span>
                                 </button>
                             </form>
-                            @* Add the hidden logou form to stop the error stating that the form does not exist. This can happen when the user's auth token expires but the page hasn't been refreshed via a postback. *@
-                            <form @formname="logout-form" method="post" @onsubmit="OnLogoutAsync" style="display:none">
-                                <AntiforgeryToken />
-                                <button type="submit" />
-                            </form>
                         </li>
                     }
                     else
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
-                            <form @formname="logout-form" method="post" @onsubmit="OnLogoutAsync">
-                                <AntiforgeryToken />
+                            <form asp-controller="Account" asp-action="Logout" method="post">
                                 <button type="submit" class="rebranded-one-login-header__nav__link">
                                     <span class="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">
                                         Sign out
                                     </span>
                                 </button>
-                            </form>
-                            @* Add the hidden login form to stop the error stating that the form does not exist. This can happen when the user's auth token expires but the page hasn't been refreshed via a postback. *@
-                            <form @formname="login-form" method="post" @onsubmit="OnLoginAsync" style="display:none">
-                                <AntiforgeryToken />
-                                <button type="submit" />
                             </form>
                         </li>
                     }
@@ -103,151 +109,36 @@
         </div>
 
     </div>
-
-    <NavigationBar IsSignedIn="@_isSignedIn" />
-
 </header>
 
-
-@code {
-
-    /// <summary>
-    /// The authentication provider to use for sign-in and sign-out operations.
-    /// </summary>
-    /// <remarks>
-    /// In a future iteration, this value will be assigned dynamically based on configuration or context.
-    /// Currently only OneLogin and Entra are supported, with OneLogin being the default.
-    /// </remarks>
-    private const string AuthProvider = "OneLogin";
- 
-    /// <summary>
-    /// Indicates whether the user is currently signed in.
-    /// </summary>
-    private bool _isSignedIn = false;
-   
-    /// <summary>
-    /// Initializes the component and handles authentication state and login callbacks.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    protected override async Task OnInitializedAsync()
-    {
-        Logger.LogInformation("Initializing GOV.UK Login Header Component.");
-
-        _isSignedIn = AuthenticationHelper.IsUserSignedIn();
-        if (_isSignedIn)
+    <govuk-service-navigation service-name="User Management" service-url="/Home">
+        @if (_isSignedIn)
         {
-            return;
+            <govuk-service-navigation-nav>
+                <govuk-service-navigation-nav-item href="/Home" active="@activeHome">Home</govuk-service-navigation-nav-item>
+                <govuk-service-navigation-nav-item href="/Applications" active="@activeApplications">Applications</govuk-service-navigation-nav-item>
+                <govuk-service-navigation-nav-item href="/Roles" active="@activeRoles">Roles</govuk-service-navigation-nav-item>
+            </govuk-service-navigation-nav>
         }
-
-        if (AuthenticationHelper.JwtExistsButHasExpired())
-        {
-            Logger.LogInformation("User JWT exists but has expired or is about to expire. Redirecting user to login");
-
-            AuthenticationHelper.DeleteAuthCookies();
-
-            await OnLoginAsync().ConfigureAwait(false);
-            return;
-        }
-
-        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
-        string? userId = string.Empty;
-
-        if (IsExistingUserLoginCallback(uri) || IsNewUserLoginCallback(uri, out userId))
-        {
-            AuthenticationHelper.PersistAuthTokenDataInCookie(Navigation.ToAbsoluteUri(Navigation.Uri));
-
-            if (!string.IsNullOrWhiteSpace(userId))
+        else
             {
-                // Register the new user id against OneLogin Id
-                // Note the OneLogin Id is the sub claim in the access token;
+            <govuk-service-navigation-nav>
+                <govuk-service-navigation-nav-item href="/Roles" active="@activeRoles">Roles</govuk-service-navigation-nav-item>
+            </govuk-service-navigation-nav>
             }
+        </govuk-service-navigation>
+}
 
-            // Clear the access_token and id_token from the query string by redirecting to the same path without them
-            // This will also ensure that the auth cookies are read afresh on the redirected request.
-            UriBuilder uriBuilder = new(uri) { Query = string.Empty };
-            Navigation.NavigateTo(uriBuilder.Uri.PathAndQuery, forceLoad: true);
-        }
-    }
+@RenderBody()
 
-    /// <summary>
-    /// Initiates the login process by redirecting the user to the authentication provider's sign-in endpoint.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    private async Task OnLoginAsync()
-    {
-        Logger.LogInformation("User initiated login.");
-
-        string baseUrl = Configuration["Auth:BaseApiUrl"] ?? string.Empty;
-        string signInUrl = $"{baseUrl}/authentication/{AuthProvider}/signin";
-        string redirectUri = Uri.EscapeDataString(Navigation.Uri);
-
-        Navigation.NavigateTo($"{signInUrl}?postSignInRedirectUri={redirectUri}", forceLoad: true);
-    }
-
-    /// <summary>
-    /// Initiates the logout process by deleting authentication cookies and redirecting the user to the authentication provider's sign-out endpoint.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    private async Task OnLogoutAsync()
-    {
-        Logger.LogInformation("User initiated logout.");
-
-        AuthenticationHelper.DeleteAuthCookies();
-
-        string baseUrl = Configuration["Auth:BaseApiUrl"]!;
-        string signOutUrl = $"{baseUrl}/authentication/{AuthProvider}/signout";
-        string redirectUri = Uri.EscapeDataString(Navigation.Uri);
-
-        Navigation.NavigateTo($"{signOutUrl}?postSignOutRedirectUri={redirectUri}", forceLoad: true);
-    }
-
-    /// <summary>
-    /// Extracts the user ID from the query string if the request is for onboarding a new user.
-    /// </summary>
-    /// <param name="uri">The URI to parse for query parameters.</param>
-    /// <returns>The user ID if present and valid for a new user request; otherwise, an empty string.</returns>
-    private string GetUserIdIfIsNewUserRequest(Uri uri)
-    {
-        var query = QueryHelpers.ParseQuery(uri.Query);
-        if (QueryHelper.TryGetQueryValue(query, "user_id", out string? userId) && !QueryHelper.TryGetQueryValue(query, "access_token", out var _))
-        {
-            Logger.LogInformation("New user request for user with ID: {UserId}", userId);
-            return userId!;
-        }
-
-        return string.Empty;
-    }
-
-    /// <summary>
-    /// Determines if this is a callback from the Login process which indicates an existing user login.
-    /// Checks for the presence of an "access_token" query parameter and the absence of a "user_id" parameter.
-    /// </summary>
-    /// <param name="uri">The URI to inspect for query parameters.</param>
-    /// <returns>True if the URI represents an existing user login callback; otherwise, false.</returns>
-    private bool IsExistingUserLoginCallback(Uri uri)
-    {
-        var query = QueryHelpers.ParseQuery(uri.Query);
-        bool result = QueryHelper.TryGetQueryValue(query, "access_token", out _) && !QueryHelper.TryGetQueryValue(query, "user_id", out var _);
-
-        Logger.LogInformation("IsExistingUserLoginCallback: {Result}", result);
-        return result;
-    }
-
-    /// <summary>
-    /// Determines if this is a callback from the Login process which indicates a new user login.
-    /// Checks for the presence of both "access_token" and "user_id" query parameters.
-    /// </summary>
-    /// <param name="uri">The URI to inspect for query parameters.</param>
-    /// <param name="userId">Outputs the user ID if present in the query string; otherwise, an empty string.</param>
-    /// <returns>True if the URI represents a new user login callback; otherwise, false.</returns>
-    private bool IsNewUserLoginCallback(Uri uri, out string? userId)
-    {
-        userId = string.Empty;
-
-        Dictionary<string, StringValues> query = QueryHelpers.ParseQuery(uri.Query);
-        bool result = QueryHelper.TryGetQueryValue(query, "access_token", out _) && QueryHelper.TryGetQueryValue(query, "user_id", out userId);
-
-        Logger.LogInformation("IsExistingUserLoginCallback: {Result}, User ID: {userId}", result, userId);
-        return result;
-    }
+@section Footer {
+    <govuk-footer>
+        <govuk-footer-meta>
+            <govuk-footer-meta-items>
+                <govuk-footer-meta-item href="#">Item 1</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="#">Item 2</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="#">Item 3</govuk-footer-meta-item>
+            </govuk-footer-meta-items>
+        </govuk-footer-meta>
+    </govuk-footer>
 }

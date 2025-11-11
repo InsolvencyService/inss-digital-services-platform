@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11201.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.UserManagement.Web", "Apps\Web\Ui\INSS.Platform.UserManagement.Web\INSS.Platform.UserManagement.Web.csproj", "{4F2DA357-2953-45EA-217A-28CE99EFACCF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{4F00CE3E-C473-4371-8B4B-BEF52EF62595}"
@@ -68,16 +66,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.Components.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.Forms.TestHarness.Web", "Apps\Web\Ui\INSS.Platform.Forms.TestHarness.Web\INSS.Platform.Forms.TestHarness.Web.csproj", "{9351D303-BCBE-2258-6A3C-AF3F3DB11720}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INSS.Platform.UserManagement.Web", "Apps\Web\Ui\INSS.Platform.UserManagement.Web\INSS.Platform.UserManagement.Web.csproj", "{4F2DA357-2953-45EA-217A-28CE99EFACCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{450543A5-081D-20B0-0BD5-6AFE591E7CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{450543A5-081D-20B0-0BD5-6AFE591E7CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{450543A5-081D-20B0-0BD5-6AFE591E7CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -122,12 +118,15 @@ Global
 		{9351D303-BCBE-2258-6A3C-AF3F3DB11720}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9351D303-BCBE-2258-6A3C-AF3F3DB11720}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9351D303-BCBE-2258-6A3C-AF3F3DB11720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F2DA357-2953-45EA-217A-28CE99EFACCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{4F2DA357-2953-45EA-217A-28CE99EFACCF} = {EE43B354-5ECC-47BC-A36E-13A4266049E1}
 		{4F00CE3E-C473-4371-8B4B-BEF52EF62595} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{EE43B354-5ECC-47BC-A36E-13A4266049E1} = {4F00CE3E-C473-4371-8B4B-BEF52EF62595}
 		{C0E1D6C3-A7B1-4727-A47A-0373FDA31D88} = {4F00CE3E-C473-4371-8B4B-BEF52EF62595}
@@ -156,6 +155,7 @@ Global
 		{3E81016C-AC6C-FF84-A3D9-BBB226B8AF00} = {CFA8A2BD-52D9-4EED-AD69-0B24407D39BA}
 		{A309EB8B-EB94-CCB0-9167-21F265C20DA2} = {EE43B354-5ECC-47BC-A36E-13A4266049E1}
 		{9351D303-BCBE-2258-6A3C-AF3F3DB11720} = {EE43B354-5ECC-47BC-A36E-13A4266049E1}
+		{4F2DA357-2953-45EA-217A-28CE99EFACCF} = {EE43B354-5ECC-47BC-A36E-13A4266049E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A487B290-CEBF-4788-AFA3-37382949A23F}

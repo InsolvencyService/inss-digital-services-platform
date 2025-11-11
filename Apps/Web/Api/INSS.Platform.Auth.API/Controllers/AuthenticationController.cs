@@ -2,6 +2,7 @@
 using INSS.Platform.Auth.Contracts;
 using INSS.Platform.Auth.Contracts.Request;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -13,7 +14,8 @@ namespace INSS.Platform.Auth.API.Controllers
     {
         private readonly ILogger<AuthenticationController> _logger;
         private readonly AuthenticationProviderOptions _options;
-
+        private const string ReturnUrlKey = "returnUrl";
+        private const string UserIdKey = "userId";
 
         public AuthenticationController(ILogger<AuthenticationController> logger, IOptions<AuthenticationProviderOptions> options)
         {
@@ -25,21 +27,21 @@ namespace INSS.Platform.Auth.API.Controllers
         public IActionResult SignIn(AuthenticationProvider provider, 
             [FromQuery] SignInRequest signInRequest)
         {
-            _logger.LogInformation("Begin SignIn process for Provider:{Provider} - PostSignInRedirect:{PostSignInRedirectUri} - UserId:{UserId}", provider.ToString(), signInRequest.PostSignInRedirectUri, signInRequest.UserId);
+            _logger.LogInformation("Begin SignIn process for Provider:{Provider} - ClientRedirectUrl:{ClientRedirectUrl} - UserId:{UserId}", provider.ToString(), signInRequest.ClientRedirectUrl, signInRequest.UserId);
 
-            if (ValidatePostSignInRedirectUri(signInRequest) is { Valid: false } result)
+            if (ValidateClientRedirectUrl(signInRequest.ClientRedirectUrl) is { Valid: false } result)
             {
                 return result.ActionResult!;
             }
 
             AuthenticationProperties properties = new(new Dictionary<string, string?>(1)
             {
-                { "returnUrl", signInRequest.PostSignInRedirectUri }
+                { ReturnUrlKey, signInRequest.ClientRedirectUrl }
             });
 
             if (!string.IsNullOrEmpty(signInRequest.UserId))
             {
-                properties.Items.Add("userId", signInRequest.UserId);
+                properties.Items.Add(UserIdKey, signInRequest.UserId);
             }
 
             // Raise the orchestrated set of provider events starting with: OnAuthorizationCodeReceived.
@@ -47,95 +49,67 @@ namespace INSS.Platform.Auth.API.Controllers
         }
 
         [HttpGet("{provider}/signout")]
-        public async Task<IActionResult> SignOut(AuthenticationProvider provider, 
-            [FromQuery] SignOutRequest signOutRequest)
+        public IActionResult SignOut(AuthenticationProvider provider)
         {
-            _logger.LogInformation("Begin SignOut process for Provider:{Provider} - PostSignOutRedirectUri:{PostSignOutRedirectUri}", provider.ToString(), signOutRequest.PostSignOutRedirectUri);
-
-            if (ValidatePostSignOutRedirectUri(signOutRequest) is { Valid: false } result)
-            {
-                return result.ActionResult!;
-            }
-
-            AuthenticationProperties properties = new(new Dictionary<string, string?>(1)
-            {
-                { "returnUrl", signOutRequest.PostSignOutRedirectUri }
-            });
+            _logger.LogInformation("Begin SignOut process for Provider:{Provider}", provider.ToString());
 
             // Raise the OnRedirectToIdentityProviderForSignOut Event for the provider.
-            return SignOut(properties, provider.ToString());
+            return SignOut(provider.ToString());
         }
 
         [HttpGet("post-signout")]
         public async Task<IActionResult> PostSignOut()
         {
-            _logger.LogInformation("Begin PostSignOut process after being redirected from the provider.");
+            _logger.LogInformation("Begin PostSignOut process after being called back from the sign-out provider.");
 
-            AuthenticateResult result = await HttpContext.AuthenticateAsync("Cookies");
+            AuthenticateResult result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             AuthenticationProperties? properties = result.Properties;
 
-            // Get the return url for the client that was stored in SignOut()
-            string returnUrl;
-            if (properties?.Items.TryGetValue("returnUrl", out string? value) == true && value is not null)
+            string clientReturnUrl;
+            if (properties?.Items.TryGetValue(ReturnUrlKey, out string? value) == true)
             {
-                returnUrl = value;
+                clientReturnUrl = value!;
             }
             else
             {
-                // This appears to happen when signing out of Entra, it then makes a second call but provides the returnUrl.
-                _logger.LogInformation("returnUrl is not available in AuthenticationProperties.");
+                // This occurs when signing out of Entra as you are initially prompted with a list of accounts to sign out of.
+                // A second call is then made which and provides the returnUrl.
+                _logger.LogInformation("{ReturnUrl} is not available in AuthenticationProperties.", ReturnUrlKey);
                 return Ok();
             }
 
             // Clear out any remaining cookies
-            await HttpContext.SignOutAsync("Cookies");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return Redirect(returnUrl);
+            return Redirect(clientReturnUrl);
         }
 
-        private (bool Valid, IActionResult? ActionResult) ValidatePostSignInRedirectUri(SignInRequest signInRequest)
+        /// <summary>
+        /// Validates the client redirect URL against the list of allowed URLs.
+        /// Only the base URL (scheme + host + port) is validated. Path and query components are ignored.
+        /// </summary>
+        /// <param name="clientRedirectUrl">The client redirect URL to validate.</param>
+        /// <returns>
+        /// A tuple indicating whether the URL is valid and, if not valid, an <see cref="IActionResult"/> describing the error.
+        /// </returns>
+        private (bool Valid, IActionResult? ActionResult) ValidateClientRedirectUrl(string clientRedirectUrl)
         {
-            if (!string.IsNullOrEmpty(signInRequest.PostSignInRedirectUri) && signInRequest.PostSignInRedirectUri.EndsWith('/'))
-            {
-                // Trim trailing slash to ensure that redirect URIs are compared correctly in both the provider and api configuration.
-                signInRequest.PostSignInRedirectUri = signInRequest.PostSignInRedirectUri.TrimEnd('/');
-            }
+            Uri absoluteUrl = new(clientRedirectUrl, UriKind.Absolute);
+            string baseUrl = absoluteUrl.GetLeftPart(UriPartial.Authority);
 
-            bool isAllowed = _options.AllowedPostSignInRedirectUris.Any(allowed => string.Equals(allowed, signInRequest.PostSignInRedirectUri, StringComparison.OrdinalIgnoreCase));
+            bool isAllowed = _options.AllowedClientRedirectUrls
+                .Any(allowed => string.Equals(allowed.TrimEnd('/'), baseUrl, StringComparison.OrdinalIgnoreCase));
 
             if (!isAllowed)
             {
                 _logger.LogError(
-                    "Invalid PostSignOutRedirectUri. {PostSignInRedirectUri} does not exist in the list of allowed client redirect uri's: {PostSignInRedirectUris}",
-                    signInRequest.PostSignInRedirectUri,
-                    string.Join(",", _options.AllowedPostSignInRedirectUris)
+                    "Invalid ClientRedirectUrl {ClientRedirectUrl} (base: {BaseUrl}) does not exist in the list of allowed client redirect url's: {AllowedClientRedirectUrls}",
+                    clientRedirectUrl,
+                    baseUrl,
+                    string.Join(",", _options.AllowedClientRedirectUrls)
                 );
 
-                return (Valid: false, ActionResult: BadRequest("Invalid PostSignInRedirectUri"));
-            }
-
-            return (Valid: true, ActionResult: null);
-        }
-
-        private (bool Valid, IActionResult? ActionResult) ValidatePostSignOutRedirectUri(SignOutRequest signOutRequest)
-        {
-            if (!string.IsNullOrEmpty(signOutRequest.PostSignOutRedirectUri) && signOutRequest.PostSignOutRedirectUri.EndsWith('/'))
-            {
-                // Trim trailing slash to ensure that redirect URIs are compared correctly in both the provider and api configuration.
-                signOutRequest.PostSignOutRedirectUri = signOutRequest.PostSignOutRedirectUri.TrimEnd('/');
-            }
-
-            bool isAllowed = _options.AllowedPostSignOutRedirectUris.Any(allowed => string.Equals(allowed, signOutRequest.PostSignOutRedirectUri, StringComparison.OrdinalIgnoreCase));
-
-            if (!isAllowed)
-            {
-                _logger.LogError(
-                    "Invalid PostSignOutRedirectUri. {PostSignOutRedirectUri} does not exist in the list of allowed client redirect uri's: {PostSignOutRedirectUris}",
-                    signOutRequest.PostSignOutRedirectUri,
-                    string.Join(",", _options.AllowedPostSignOutRedirectUris)
-                );
-
-                return (Valid: false, ActionResult: BadRequest("Invalid PostSignOutRedirectUri"));
+                return (Valid: false, ActionResult: BadRequest("Invalid ClientRedirectUrl"));
             }
 
             return (Valid: true, ActionResult: null);

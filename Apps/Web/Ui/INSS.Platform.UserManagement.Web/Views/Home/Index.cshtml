@@ -1,0 +1,38 @@
+﻿@using System.Security.Claims
+@{
+    ViewData["Title"] = "Home";
+
+    bool _isSignedIn = User.Identity?.IsAuthenticated is true;
+    string _providerLoginId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content">
+        <h1 class="govuk-heading-xl">User Management</h1>
+
+        <p class="govuk-body">Welcome to the Insolvency Service - User Management Application.</p>
+
+        @if (_isSignedIn)
+        {
+            <h3 class="govuk-heading-m"><b>You are logged in!</b></h3>
+            <p class="govuk-body"><b>Your Authentication Provider User Id is:</b> @_providerLoginId</p>
+            <p class="govuk-body">To sign out, please <b>click the 'sign out' button</b> in the top right corner.</p>
+        }
+        else
+        {
+            <p class="govuk-body">To get started, <b>please click the login button</b> in the top right corner.</p>
+        }
+
+
+        @if (_isSignedIn)
+        {
+            <p>Welcome, @User.Identity?.Name</p>
+            <ul>
+                @foreach (var claim in User.Claims)
+                {
+                    <li>@claim.Type: @claim.Value</li>
+                }
+            </ul>
+        }
+    </main>
+</div>
