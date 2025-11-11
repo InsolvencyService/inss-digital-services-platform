@@ -49,7 +49,7 @@ namespace INSS.Platform.Auth.API.Controllers
         }
 
         [HttpGet("{provider}/signout")]
-        public async Task<IActionResult> SignOut(AuthenticationProvider provider)
+        public IActionResult SignOut(AuthenticationProvider provider)
         {
             _logger.LogInformation("Begin SignOut process for Provider:{Provider}", provider.ToString());
 

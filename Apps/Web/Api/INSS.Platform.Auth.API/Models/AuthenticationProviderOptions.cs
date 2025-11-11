@@ -26,7 +26,7 @@ namespace INSS.Platform.Auth.API.Models
         /// Gets or sets the list of allowed client URLs for redirect after after sign-in/out.
         /// </summary>
         [Required]
-        public List<string> AllowedClientRedirectUrls { get; set; } = new();
+        public List<string> AllowedClientRedirectUrls { get; set; } = [];
 
         /// <summary>
         /// Validates the current <see cref="AuthenticationProviderOptions"/> instance.

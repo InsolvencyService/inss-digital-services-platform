@@ -47,7 +47,7 @@ namespace INSS.Platform.UserManagement.Web.Controllers
         /// </returns>
         public async Task<IActionResult> Index(string? token, string? redirectUrl = null)
         {
-            if (!string.IsNullOrEmpty(token) && _jwtAuthentication.ValidateJwt(token, out ClaimsPrincipal principal))
+            if (!string.IsNullOrWhiteSpace(token) && _jwtAuthentication.ValidateJwt(token, out ClaimsPrincipal principal))
             {
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 

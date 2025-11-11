@@ -14,8 +14,7 @@ namespace INSS.Platform.Auth.API.Services
         /// </summary>
         /// <param name="context">The context containing information about the authorization code received event.</param>
         /// <param name="provider">The authentication provider associated with the event.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        Task HandleAuthorizationCodeReceivedAsync(
+        void HandleAuthorizationCodeReceived(
             AuthorizationCodeReceivedContext context,
             AuthenticationProvider provider);
 

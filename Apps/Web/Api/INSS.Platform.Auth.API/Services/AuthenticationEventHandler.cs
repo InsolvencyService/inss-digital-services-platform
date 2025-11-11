@@ -44,17 +44,18 @@ namespace INSS.Platform.Auth.API.Services
 
 
         /// <inheritdoc/>
-        public async Task HandleAuthorizationCodeReceivedAsync(
+        public void HandleAuthorizationCodeReceived(
             AuthorizationCodeReceivedContext context, 
             AuthenticationProvider provider)
         {
             _logger.LogInformation("Processing AuthorizationCodeReceived event for {Provider}.", provider.ToString());
 
+            const int JwtExpiryMinutes = 5;
             string clientId = _options.OneLogin.ClientId;
             string audienceEndpoint = _options.OneLogin.TokenUri;
 
             Dictionary<string, object> clientAssertionClaims = BuildClientAssertionClaims(clientId, audienceEndpoint);
-            string clientAssertionToken = CreateJwtSecurityToken(clientId, audienceEndpoint, _options.OneLogin.JwtPrivateKey, 5, clientAssertionClaims);
+            string clientAssertionToken = CreateJwtSecurityToken(clientId, audienceEndpoint, _options.OneLogin.JwtPrivateKey, JwtExpiryMinutes, clientAssertionClaims);
 
             if (context.TokenEndpointRequest is not null)
             {
@@ -205,7 +206,13 @@ namespace INSS.Platform.Auth.API.Services
 
             if (context.Properties is null)
             {
-                context.Fail("Authentication properties are missing.");
+                context.Fail("TokenValidatedContext.Properties is null.");
+                return false;
+            }
+
+            if (context.Principal is null)
+            {
+                context.Fail("TokenValidatedContext.Principal is null.");
                 return false;
             }
 
@@ -223,12 +230,6 @@ namespace INSS.Platform.Auth.API.Services
                 new AuthenticationToken { Name = "id_token", Value = idToken },
                 new AuthenticationToken { Name = "access_token", Value = accessToken },
             ]);
-
-            if (context.Principal is null)
-            {
-                context.Fail("TokenValidatedContext.Principal is null.");
-                return false;
-            }
 
             return true;
         }
@@ -249,7 +250,7 @@ namespace INSS.Platform.Auth.API.Services
             string? returnUrl = null;
             context.Properties?.Items.TryGetValue(ReturnUrlKey, out returnUrl);
 
-            if (string.IsNullOrEmpty(returnUrl))
+            if (string.IsNullOrWhiteSpace(returnUrl))
             {
                 returnUrl = context.Request.Headers.Referer;
             }

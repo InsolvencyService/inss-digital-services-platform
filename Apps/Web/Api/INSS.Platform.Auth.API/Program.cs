@@ -64,7 +64,7 @@ namespace INSS.Platform.Auth.API
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
-                options.Cookie.Name = "Platform.Auth.Api";
+                options.Cookie.Name = "INSS.Platform.Auth.Api";
             })
             .AddEntraOpenIdConnect(authProviderOptions.Entra)
             .AddOneLoginOpenIdConnect(authProviderOptions.OneLogin);
