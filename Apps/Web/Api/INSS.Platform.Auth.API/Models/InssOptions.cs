@@ -21,9 +21,9 @@ namespace INSS.Platform.Auth.API.Models
 
         /// <summary>
         /// Gets or sets the expiry duration (in minutes) for the JWT token.
-        /// Must be greater than zero and less than or equal to 1,440.
+        /// Must be greater than zero and less than or equal to 10,080 (1 Week).
         /// </summary>
-        [Range(1, 1440, ErrorMessage = "Expiry Minutes must be greater than zero and less than or equal to 1,440 (1 Day).")]
+        [Range(1, 10080, ErrorMessage = "Expiry Minutes must be greater than zero and less than or equal to 10,080 (1 Week).")]
         public int ExpiryMinutes { get; set; }
 
         /// <summary>
