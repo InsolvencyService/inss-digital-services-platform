@@ -65,7 +65,7 @@ namespace INSS.Platform.Auth.API.Tests
         }
 
         [Fact]
-        public async Task HandleAuthorizationCodeReceivedAsync_SetsClientAssertion_ForOneLogin()
+        public void HandleAuthorizationCodeReceived_SetsClientAssertion_ForOneLogin()
         {
             AuthorizationCodeReceivedContext context = new(
                 new DefaultHttpContext(),
@@ -77,7 +77,7 @@ namespace INSS.Platform.Auth.API.Tests
                 TokenEndpointRequest = new OpenIdConnectMessage()
             };
 
-            await _handler.HandleAuthorizationCodeReceivedAsync(context, AuthenticationProvider.OneLogin);
+            _handler.HandleAuthorizationCodeReceived(context, AuthenticationProvider.OneLogin);
 
             using (new AssertionScope())
             {

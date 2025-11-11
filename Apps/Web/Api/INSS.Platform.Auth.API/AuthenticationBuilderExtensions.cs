@@ -85,10 +85,11 @@ namespace INSS.Platform.Auth.API
                     return Task.CompletedTask;
                 };
 
-                options.Events.OnAuthorizationCodeReceived = async context =>
+                options.Events.OnAuthorizationCodeReceived = context =>
                 {
                     IAuthenticationEventHandler authEventHandler = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationEventHandler>();
-                    await authEventHandler.HandleAuthorizationCodeReceivedAsync(context, AuthenticationProvider.OneLogin).ConfigureAwait(false);
+                    authEventHandler.HandleAuthorizationCodeReceived(context, AuthenticationProvider.OneLogin);
+                    return Task.CompletedTask;
                 };
 
                 options.Events.OnTokenValidated = async context =>

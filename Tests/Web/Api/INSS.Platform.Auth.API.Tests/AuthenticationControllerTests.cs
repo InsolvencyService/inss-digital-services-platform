@@ -91,10 +91,10 @@ namespace INSS.Platform.Auth.API.Tests
         [Theory]
         [InlineData(AuthenticationProvider.OneLogin)]
         [InlineData(AuthenticationProvider.Entra)]
-        public async Task SignOut_ReturnsSignOutResult(AuthenticationProvider provider)
+        public void SignOut_ReturnsSignOutResult(AuthenticationProvider provider)
         {
             // Arrange & Act
-            IActionResult result = await _controller.SignOut(provider);
+            IActionResult result = _controller.SignOut(provider);
 
             // Assert
             using (new AssertionScope())
