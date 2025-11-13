@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-  </PropertyGroup>
-
   <ItemGroup>
 	<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
 	<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
