@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace INSS.Platform.Components.Web.Tests
 {
-    public class ComponentTests : Bunit.TestContext
+    public class ComponentTests : BunitContext
     {
         [Fact]
         public void Header_RendersCorrectly()
         {
             // Arrange
-            IRenderedComponent<Header> cut = RenderComponent<Header>(); // Replace with your actual component name
+            IRenderedComponent<Header> cut = Render<Header>(); // Replace with your actual component name
 
             // Act & Assert
             cut.MarkupMatches(@"
@@ -46,7 +46,7 @@ namespace INSS.Platform.Components.Web.Tests
         public void Footer_RendersCorrectly()
         {
             // Act
-            IRenderedComponent<Footer> cut = RenderComponent<Footer>();
+            IRenderedComponent<Footer> cut = Render<Footer>();
 
             // Assert: Check for main footer element and key content
             cut.MarkupMatches(@"
@@ -90,7 +90,7 @@ namespace INSS.Platform.Components.Web.Tests
         public void Input_Type_Text_RendersCorrectly()
         {
             // Arrange & Act
-            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+            IRenderedComponent<Input> cut = Render<Input>(parameters => parameters
                 .Add(p => p.Text, "Test Label")
                 .Add(p => p.Type, InputFieldType.Text)
                 .Add(p => p.Value, "abc123")
@@ -113,7 +113,7 @@ namespace INSS.Platform.Components.Web.Tests
         public void Input_Type_Currency_RendersCorrectly()
         {
             // Arrange & Act
-            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+            IRenderedComponent<Input> cut = Render<Input>(parameters => parameters
                 .Add(p => p.Text, "Amount")
                 .Add(p => p.Type, InputFieldType.Currency)
                 .Add(p => p.Value, "100")
@@ -131,7 +131,7 @@ namespace INSS.Platform.Components.Web.Tests
         public void Input_Renders_ChildContent_When_Provided()
         {
             // Arrange & Act
-            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+            IRenderedComponent<Input> cut = Render<Input>(parameters => parameters
                 .Add(p => p.Text, "Test")
                 .Add(p => p.ChildContent, (RenderFragment)(builder =>
                 {
@@ -147,7 +147,7 @@ namespace INSS.Platform.Components.Web.Tests
         public void Input_Uses_SmallText_Class_When_Passed()
         {
             // Arrange & Act
-            IRenderedComponent<Input> cut = RenderComponent<Input>(parameters => parameters
+            IRenderedComponent<Input> cut = Render<Input>(parameters => parameters
                 .Add(p => p.Text, "Small Label")
                 .Add(p => p.SmallText, true)
             );
