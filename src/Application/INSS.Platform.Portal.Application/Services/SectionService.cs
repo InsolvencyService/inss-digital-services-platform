@@ -17,7 +17,7 @@ public sealed class SectionService : IModelService<SectionModel>
     
     public async Task<SectionModel> LoadAsync(string? pageUrl)
     {
-        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? throw new InvalidOperationException("FormModel cannot be null.");
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
         SectionModel section = form.FindSection(pageUrl!);
         return section;
     }
@@ -29,7 +29,7 @@ public sealed class SectionService : IModelService<SectionModel>
 
     public async Task<string> SaveAsync(string requestPath, SectionModel model)
     {
-        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? throw new InvalidOperationException("FormModel cannot be null.");
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
         SectionModel section = form.FindSection(requestPath) ?? throw new InvalidOperationException($"Section not found for path: {requestPath}");
         section.IsComplete = true;
         await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);

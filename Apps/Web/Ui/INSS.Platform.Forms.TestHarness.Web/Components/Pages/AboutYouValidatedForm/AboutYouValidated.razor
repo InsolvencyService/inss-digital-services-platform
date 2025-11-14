@@ -9,7 +9,7 @@
 @inject IPropertyValidator PropertyValidator;
 
 <EditForm Enhance EditContext="CurrentEditContext" FormName="about-you" OnValidSubmit="SubmitForm">
-    <PostalAddressValidated Text="What is your address" Name="aboutYou.PostalAddress" Value="@aboutYou.PostalAddress" />
+    <PostalAddressValidated Text="What is your address" Name="aboutYou.PostalAddress" Value="@AboutYou.PostalAddress" />
 
 @*     <Input Name="aboutYou.FirstName" Text="First name" Placeholder="Enter your first name" Value="@aboutYou.FirstName" />
 
@@ -23,13 +23,13 @@
 
 @code {
     [SupplyParameterFromForm]
-    private AboutYou aboutYou { get; set; } = new ();
+    private AboutYou AboutYou { get; set; } = new ();
 
     protected EditContext CurrentEditContext { get; set; } = null!;
 
     private void SubmitForm()
     {
-        Console.WriteLine($"First name: {aboutYou.FirstName}");
+        Console.WriteLine($"First name: {AboutYou.FirstName}");
 
         var modifiedForm = CurrentEditContext.Model as AboutYou ?? new();
         var cachedForm = new AboutYou(); // This would be written to a database or session in a real app
@@ -43,16 +43,16 @@
         FormValidationHelper.ValidateAndAssignFormProperty<AboutYou, Address>(
             PropertyValidator,
             CurrentEditContext,
-            aboutYou,
-            aboutYou.PostalAddress,
+            AboutYou,
+            AboutYou.PostalAddress,
             cachedForm,
-            nameof(aboutYou.PostalAddress)
+            nameof(AboutYou.PostalAddress)
         );
     }
 
     protected override void OnInitialized()
     {
-        CurrentEditContext = new EditContext(aboutYou);
+        CurrentEditContext = new EditContext(AboutYou);
 
         base.OnInitialized();
     }

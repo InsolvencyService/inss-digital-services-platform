@@ -5,26 +5,26 @@
 omponents.Shared.Enums
 @page "/about-you"
 
-<EditForm FormName="about-you" Model="aboutYou" OnSubmit="SubmitForm">
-    <Input Name="aboutYou.FirstName" Text="First name" Placeholder="Enter your first name" Value="@aboutYou.FirstName" />
-    <Input Name="aboutYou.LastName" Text="Last name" Placeholder="Enter your last name" Value="@aboutYou.LastName" />
-    <Input Name="aboutYou.Email" Type="InputFieldType.Email" Text="Email" Placeholder="Enter your email" Value="@aboutYou.Email" />
-    <Input Name="aboutYou.Telephone" Type="InputFieldType.Telephone" Text="Telephone" Placeholder="Enter your telephone number" Value="@aboutYou.Telephone" />
-    <Input Name="aboutYou.Salary" Type="InputFieldType.Currency" Text="Salary" Placeholder="Enter your salary" Value="@aboutYou.Salary.ToString()" />
+<EditForm FormName="about-you" Model="AboutYou" OnSubmit="SubmitForm">
+    <Input Name="aboutYou.FirstName" Text="First name" Placeholder="Enter your first name" Value="@AboutYou.FirstName" />
+    <Input Name="aboutYou.LastName" Text="Last name" Placeholder="Enter your last name" Value="@AboutYou.LastName" />
+    <Input Name="aboutYou.Email" Type="InputFieldType.Email" Text="Email" Placeholder="Enter your email" Value="@AboutYou.Email" />
+    <Input Name="aboutYou.Telephone" Type="InputFieldType.Telephone" Text="Telephone" Placeholder="Enter your telephone number" Value="@AboutYou.Telephone" />
+    <Input Name="aboutYou.Salary" Type="InputFieldType.Currency" Text="Salary" Placeholder="Enter your salary" Value="@AboutYou.Salary.ToString()" />
 
-    <RadioButtons Name="aboutYou.Employed" Text="Are you employed" Inline="false" Value="@aboutYou.Employed.ToString()" Items="@employedStatus" />
+    <RadioButtons Name="aboutYou.Employed" Text="Are you employed" Inline="false" Value="@AboutYou.Employed.ToString()" Items="@EmployedStatus" />
 
     <SubmitButton Name="about-you-submit" Text="Submit" />
 </EditForm>
 
 @code {
     [SupplyParameterFromForm]
-    private AboutYou aboutYou { get; set; } = new AboutYou();
+    private AboutYou AboutYou { get; set; } = new AboutYou();
 
-    public List<RadioOption<string>> employedStatus { get; set; } = EnumHelper.ToRadioOptions<YesNoType>();
+    private List<RadioOption<string>> EmployedStatus { get; set; } = EnumHelper.ToRadioOptions<YesNoType>();
  
     private void SubmitForm()
     {
-        Console.WriteLine($"First name: {aboutYou.FirstName}");
+        Console.WriteLine($"First name: {AboutYou.FirstName}");
     }
 }

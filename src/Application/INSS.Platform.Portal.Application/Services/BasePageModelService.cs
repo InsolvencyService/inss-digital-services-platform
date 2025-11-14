@@ -22,7 +22,7 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
 
     public async Task<TPageModel> LoadAsync(string? pageUrl)
     {
-        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? throw new InvalidOperationException("FormModel cannot be null.");
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
         TPageModel page = form.FindPage<TPageModel>(pageUrl!);
         _journeyService.TransitionPrevious(form, page);
         return page;
@@ -30,11 +30,11 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
 
     public async Task ValidateAsync(ModelStateDictionary modelState, TPageModel model)
     {
-        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
 
         if (!modelState.IsValid)
         {
-            model.PreviousPageUrl = form?.NavigationHistory?.LastOrDefault() ?? string.Empty;
+            model.PreviousPageUrl = form.NavigationHistory.LastOrDefault() ?? string.Empty;
             return;
         }
 
@@ -42,14 +42,14 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
 
         if (!modelState.IsValid)
         {
-            model.PreviousPageUrl = form?.NavigationHistory?.LastOrDefault() ?? string.Empty;
+            model.PreviousPageUrl = form.NavigationHistory.LastOrDefault() ?? string.Empty;
         }
     }
 
     public async Task<string> SaveAsync(string requestPath, TPageModel model)
     {
-        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? throw new InvalidOperationException("FormModel cannot be null.");
-        TPageModel? page = form.FindPage<TPageModel>(requestPath) ?? throw new InvalidOperationException($"PageModel for path '{requestPath}' cannot be null.");
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+        TPageModel page = form.FindPage<TPageModel>(requestPath);
         form.AddNavigation(page.PageUrl);
 
         CopySourceToTargetModel(model, page);

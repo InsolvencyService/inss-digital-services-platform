@@ -61,15 +61,15 @@ public class FormModel : BaseModel
                 }
             }
         }
-        
-        throw new Exception("Unable to find the page!"); // TODO: Better error
+
+        throw new InvalidOperationException($"Unable to find page model for path '{pageUrl}'.");
     }
 
-    public SectionModel FindSection(string pageUrl)
+    public SectionModel FindSection(string sectionPageUrl)
     {
-        SectionModel? section = Sections.FirstOrDefault(s => s.PageUrl == pageUrl);
+        SectionModel? section = Sections.FirstOrDefault(s => s.PageUrl == sectionPageUrl);
         
-        return section ?? throw new Exception("Unable to find the section!"); // TODO: Better error
+        return section ?? throw new InvalidOperationException($"Unable to find section model for path '{sectionPageUrl}'.");
     }
     
     public SectionModel FindSectionForPage(string pageUrl)
@@ -82,7 +82,7 @@ public class FormModel : BaseModel
             }
         }
 
-        throw new Exception("Unable to find the section for page."); // TODO: Better error
+        throw new InvalidOperationException($"Unable to find section model for path '{pageUrl}'.");
     }
 
     public void Initialize()

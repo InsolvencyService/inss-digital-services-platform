@@ -23,14 +23,11 @@ public sealed class FormService : IModelService<FormModel>
     
     public async Task<FormModel> LoadAsync(string? pageUrl)
     {
-        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? await _formModelFactory.CreateAsync();
-        if (form != null)
-        {
-            form.PopAllNavigationHistory();
-            form.AddNavigation(form.PageUrl);
-            await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
-        }
-        return form!;
+        FormModel form = await CreateFormModelAsync();
+        form.PopAllNavigationHistory();
+        form.AddNavigation(form.PageUrl);
+        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
+        return form;
     }
 
     public Task ValidateAsync(ModelStateDictionary modelState, FormModel model)
@@ -40,15 +37,25 @@ public sealed class FormService : IModelService<FormModel>
 
     public async Task<string> SaveAsync(string requestPath, FormModel model)
     {
-        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
-        if (form != null)
-        {
-            form.PopAllNavigationHistory();
-            await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
-        }
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+        form.PopAllNavigationHistory();
+        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
         
         // TODO: Push to an API
         
         return await Task.FromResult(requestPath);
+    }
+
+    private async Task<FormModel> CreateFormModelAsync()
+    {
+        string sessionId = _userSessionResolver.GetUserId();
+
+        if (!await this._formStateService.FormExistsAsync(sessionId))
+        {
+            FormModel form = await this._formModelFactory.CreateAsync();
+            await _formStateService.SaveAsync(sessionId, form);
+        }
+
+        return await _formStateService.GetAsync(sessionId);
     }
 }
