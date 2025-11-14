@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <ItemGroup>
+        <PackageReference Include="GovUk.Frontend.AspNetCore" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\..\Application\INSS.Platform.Portal.Application\INSS.Platform.Portal.Application.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\INSS.Platform.Portal.Infrastructure\INSS.Platform.Portal.Infrastructure.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Include="Views\Address\Index.cshtml" />
+      <EmbeddedResource Include="Views\BankAccount\Index.cshtml" />
+      <EmbeddedResource Include="Views\Form\Index.cshtml" />
+      <EmbeddedResource Include="Views\FullName\Index.cshtml" />
+      <EmbeddedResource Include="Views\Summary\Index.cshtml" />
+    </ItemGroup>
+
+</Project>

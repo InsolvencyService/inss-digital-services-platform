@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Home Value";
+}
+
+@addTagHelper GovUk.Frontend.AspNetCore.TagHelpers.*, GovUk.Frontend.AspNetCore
+@addTagHelper INSS.Platform.Portal.Web.Components.TagHelpers.*, INSS.Platform.Portal.Web.Components
+ 
+@model INSS.Platform.Portal.Web.Models.HomeValueModel
+
+<govuk-back-link href="@Model.PreviousPageUrl" />
+
+<form method="post">
+    <govuk-input for="@Model.Value" input-class="govuk-input--width-10" inputmode="numeric">
+        <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your home worth?</govuk-input-label>
+        <govuk-input-hint>Enter value in pounds</govuk-input-hint>
+        <govuk-input-prefix>&pound;</govuk-input-prefix>
+    </govuk-input>
+    <inss-error-message asp-for="@Model.Value"/>
+    <govuk-button type="submit">Save and continue</govuk-button>
+    
+</form>

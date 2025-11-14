@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Form Task Summary";
+}
+
+@addTagHelper GovUk.Frontend.AspNetCore.TagHelpers.*, GovUk.Frontend.AspNetCore
+@addTagHelper INSS.Platform.Portal.Web.Components.TagHelpers.*, INSS.Platform.Portal.Web.Components
+@model INSS.Platform.Portal.Domain.FormModel
+
+<form method="post">
+    <inss-task-list>
+        @foreach(var section in Model.Sections)
+        {
+            <inss-task-list-item name="@(section.Name)" is-complete="@(section.IsComplete)" url="@(section.Pages.First().PageUrl)" />
+        }
+        <govuk-button type="submit" disabled="!@Model.CanSubmit">Submit form</govuk-button>
+    </inss-task-list>
+</form>

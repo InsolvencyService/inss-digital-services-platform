@@ -93,6 +93,10 @@ dotnet_diagnostic.IDE0022.severity = none
 dotnet_diagnostic.IDE0028.severity = silent
 dotnet_diagnostic.IDE0046.severity = silent
 
+# Suppress namespace warning for C# files
+csharp_style_namespace_declarations = file_scoped:warning
+
+
 [*.razor]
 dotnet_diagnostic.BL0008.severity = none
 
