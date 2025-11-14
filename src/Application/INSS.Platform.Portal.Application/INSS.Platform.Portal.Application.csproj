@@ -2,8 +2,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc" />
-        <PackageReference Include="Microsoft.Extensions.Http" />
-        <PackageReference Include="System.Text.RegularExpressions" />
+        <PackageReference Include="Microsoft.Extensions.Http" />        
     </ItemGroup>
     
     <ItemGroup>

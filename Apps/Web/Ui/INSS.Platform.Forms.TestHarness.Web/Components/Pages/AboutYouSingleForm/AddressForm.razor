@@ -13,12 +13,13 @@ dators
 
 @code {
     [SupplyParameterFromForm]
-    private AboutYou AboutYou { get; set; } = new ();
+    private AboutYou AboutYou { get; set; }
 
     protected EditContext CurrentEditContext { get; set; } = null!;
 
     protected override void OnInitialized()
     {
+        AboutYou ??= new();
         CurrentEditContext = new EditContext(AboutYou);
 
         base.OnInitialized();
