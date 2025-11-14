@@ -2,7 +2,7 @@
 (
 	[Id] UNIQUEIDENTIFIER NOT NULL,
 	[Name] NVARCHAR(255) NOT NULL,
-	[Description] NVARCHAR(1024) NOT NULL,
+	[Description] NVARCHAR(512) NOT NULL,
 	[Created] DATETIME2 NOT NULL,
 	[CreatedBy] NVARCHAR(255) NOT NULL,
 	[Modified] DATETIME2 NULL,
@@ -15,10 +15,9 @@
 GO
 
 ALTER TABLE [dbo].[Role]
-ADD CONSTRAINT [DF_Role_Created] DEFAULT (GETUTCDATE()) FOR [Created];
-GO
-
-ALTER TABLE [dbo].[Role]
 ADD CONSTRAINT [UQ_Role_Name] UNIQUE ([Name]);
 GO
 
+ALTER TABLE [dbo].[Role]
+ADD CONSTRAINT [DF_Role_Created] DEFAULT (GETUTCDATE()) FOR [Created];
+GO

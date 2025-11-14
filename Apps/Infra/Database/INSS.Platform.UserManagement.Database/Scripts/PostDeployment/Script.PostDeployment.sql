@@ -10,8 +10,18 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-:r .\TearDownTestData.sql
+:r .\TearDown.sql
 
-:r .\TestData.sql
+:r .\Seed.sql
+
+:r .\Authentication.sql
+
+:r .\Product.sql
+
+:r .\Role.sql
+
+:r .\ProductPermission.sql
+
+:r .\Party.sql
 
 
