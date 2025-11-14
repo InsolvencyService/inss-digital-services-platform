@@ -23,17 +23,14 @@ public sealed class FormService : IModelService<FormModel>
     
     public async Task<FormModel> LoadAsync(string? pageUrl)
     {
-        var form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
-
-        if (form is null)
+        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? await _formModelFactory.CreateAsync();
+        if (form != null)
         {
-            form = await _formModelFactory.CreateAsync();
+            form.PopAllNavigationHistory();
+            form.AddNavigation(form.PageUrl);
+            await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
         }
-
-        form.PopAllNavigationHistory();
-        form.AddNavigation(form.PageUrl);
-        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
-        return  form;
+        return form!;
     }
 
     public Task ValidateAsync(ModelStateDictionary modelState, FormModel model)
@@ -43,9 +40,12 @@ public sealed class FormService : IModelService<FormModel>
 
     public async Task<string> SaveAsync(string requestPath, FormModel model)
     {
-        var form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
-        form.PopAllNavigationHistory();
-        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
+        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+        if (form != null)
+        {
+            form.PopAllNavigationHistory();
+            await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
+        }
         
         // TODO: Push to an API
         

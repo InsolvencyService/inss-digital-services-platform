@@ -4,7 +4,7 @@
 namespace INSS.Platform.Portal.Web.Components.TagHelpers;
 
 [HtmlTargetElement("inss-task-list-item")]
-public class  TaskListItemTagHelper : TagHelper
+public class TaskListItemTagHelper : TagHelper
 {
     public string Name { get; set; } = string.Empty;
     public bool IsComplete { get; set; }

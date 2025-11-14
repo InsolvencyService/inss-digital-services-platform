@@ -51,11 +51,11 @@ public class FormModel : BaseModel
     
     public TPage FindPage<TPage>(string pageUrl) where TPage : PageModel
     {
-        foreach (var section in Sections)
+        foreach (SectionModel section in Sections)
         {
-            foreach (var page in section.Pages)
+            foreach (PageModel page in section.Pages)
             {
-                if (pageUrl.EndsWith(page.PageUrl)&& page is TPage modelPage)
+                if (pageUrl.EndsWith(page.PageUrl, StringComparison.Ordinal) && page is TPage modelPage)
                 {
                     return modelPage;
                 }
@@ -67,14 +67,14 @@ public class FormModel : BaseModel
 
     public SectionModel FindSection(string pageUrl)
     {
-        var section = Sections.FirstOrDefault(s => s.PageUrl == pageUrl);
+        SectionModel? section = Sections.FirstOrDefault(s => s.PageUrl == pageUrl);
         
         return section ?? throw new Exception("Unable to find the section!"); // TODO: Better error
     }
     
     public SectionModel FindSectionForPage(string pageUrl)
     {
-        foreach (var section in Sections)
+        foreach (SectionModel section in Sections)
         {
             if (section.Pages.Any(page => page.PageUrl == pageUrl))
             {
@@ -104,11 +104,11 @@ public class FormModel : BaseModel
 
     private static JsonSerializerOptions CreateOptions(FormModel form)
     {
-        var derivedPageModelTypes = new List<JsonDerivedType>();
+        List<JsonDerivedType> derivedPageModelTypes = new();
 
-        foreach (var section in form.Sections)
+        foreach (SectionModel section in form.Sections)
         {
-            foreach (var page in section.Pages)
+            foreach (PageModel page in section.Pages)
             {
                 if (derivedPageModelTypes.Any(t => 
                         t.TypeDiscriminator?.ToString() == page.GetType().Name))
@@ -119,8 +119,8 @@ public class FormModel : BaseModel
                 derivedPageModelTypes.Add(new JsonDerivedType(page.GetType(), page.GetType().Name));
             }
         }
-        
-        var options = new JsonSerializerOptions
+
+        JsonSerializerOptions options = new()
         {
             TypeInfoResolver = new DefaultJsonTypeInfoResolver
             {
@@ -135,7 +135,7 @@ public class FormModel : BaseModel
                                 TypeDiscriminatorPropertyName = "$type"
                             };
 
-                            foreach (var type in derivedPageModelTypes)
+                            foreach (JsonDerivedType type in derivedPageModelTypes)
                             {
                                 typeInfo.PolymorphismOptions.DerivedTypes.Add(type);
                             }

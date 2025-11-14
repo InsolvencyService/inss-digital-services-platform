@@ -24,28 +24,28 @@ public abstract class PageModel : BaseModel
         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
 
-        var displayValueList = new List<string>();
+        List<string> displayValueList = new();
 
-        var propertiesToIgnore = PropertiesToIgnore();
+        string[] propertiesToIgnore = PropertiesToIgnore();
 
-        foreach (var property in GetType().GetProperties(propertyFlags))
+        foreach (PropertyInfo property in GetType().GetProperties(propertyFlags))
         {
             if (propertiesToIgnore.Contains(property.Name))
             {
                 continue;
             }
-            
-            var value = property.GetValue(this, null);
+
+            object? value = property.GetValue(this, null);
 
             if (value is null)
             {
                 continue;
             }
-            
-            var displayValueFormat = property.GetCustomAttribute<DisplayFormatAttribute>();
 
-            var displayValue = displayValueFormat?.DataFormatString is not null
-                ? string.Format(displayValueFormat.DataFormatString, value)
+            DisplayFormatAttribute? displayValueFormat = property.GetCustomAttribute<DisplayFormatAttribute>();
+
+            string? displayValue = displayValueFormat?.DataFormatString is not null
+                ? string.Format(CultureInfo.GetCultureInfo("en-GB"), displayValueFormat.DataFormatString, value)
                 : value.ToString();
 
             if (!string.IsNullOrWhiteSpace(displayValue))

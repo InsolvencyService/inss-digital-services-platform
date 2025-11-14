@@ -22,34 +22,34 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
 
     public async Task<TPageModel> LoadAsync(string? pageUrl)
     {
-        var form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
-        var page = form.FindPage<TPageModel>(pageUrl!);
+        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? throw new InvalidOperationException("FormModel cannot be null.");
+        TPageModel page = form.FindPage<TPageModel>(pageUrl!);
         _journeyService.TransitionPrevious(form, page);
         return page;
     }
 
     public async Task ValidateAsync(ModelStateDictionary modelState, TPageModel model)
     {
-        var form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
-        
+        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+
         if (!modelState.IsValid)
         {
-            model.PreviousPageUrl = form.NavigationHistory.Last();
+            model.PreviousPageUrl = form?.NavigationHistory?.LastOrDefault() ?? string.Empty;
             return;
         }
-        
+
         await ValidateAdditionalAsync(modelState, model);
-        
+
         if (!modelState.IsValid)
         {
-            model.PreviousPageUrl = form.NavigationHistory.Last();
+            model.PreviousPageUrl = form?.NavigationHistory?.LastOrDefault() ?? string.Empty;
         }
     }
 
     public async Task<string> SaveAsync(string requestPath, TPageModel model)
     {
-        var form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
-        var page = form.FindPage<TPageModel>(requestPath);
+        FormModel? form = await _formStateService.GetAsync(_userSessionResolver.GetUserId()) ?? throw new InvalidOperationException("FormModel cannot be null.");
+        TPageModel? page = form.FindPage<TPageModel>(requestPath) ?? throw new InvalidOperationException($"PageModel for path '{requestPath}' cannot be null.");
         form.AddNavigation(page.PageUrl);
 
         CopySourceToTargetModel(model, page);
