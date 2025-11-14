@@ -60,6 +60,8 @@ dotnet_diagnostic.IDE0009.severity = none
 dotnet_diagnostic.IDE0058.severity = none
 dotnet_diagnostic.CA1873.severity = none
 dotnet_diagnostic.CA1848.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1311.severity = none
 
 # if can be simplified
 dotnet_diagnostic.IDE0046.severity = suggestion
@@ -92,6 +94,10 @@ dotnet_diagnostic.CS8618.severity = none
 dotnet_diagnostic.IDE0022.severity = none
 dotnet_diagnostic.IDE0028.severity = silent
 dotnet_diagnostic.IDE0046.severity = silent
+
+# Suppress namespace warning for C# files
+csharp_style_namespace_declarations = file_scoped:warning
+
 
 [*.razor]
 dotnet_diagnostic.BL0008.severity = none

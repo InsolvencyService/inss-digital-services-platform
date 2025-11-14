@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = $"Summary Page {Model.Name}";
+}
+
+@addTagHelper GovUk.Frontend.AspNetCore.TagHelpers.*, GovUk.Frontend.AspNetCore
+@addTagHelper INSS.Platform.Portal.Web.Components.TagHelpers.*, INSS.Platform.Portal.Web.Components
+ 
+@model INSS.Platform.Portal.Domain.SectionModel
+
+<govuk-back-link href="@Model.PreviousPageUrl" />
+
+<form method="post">
+    
+    <govuk-summary-list>
+        
+        @foreach (var page in Model.Pages)
+        {
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>
+                    @(page.Title)
+                </govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                    @foreach (var propValue in page.GetValues())
+                    {
+                        <p class="govuk-body">@(propValue)</p>
+                    }
+                </govuk-summary-list-row-value>
+                <govuk-summary-list-row-actions>
+                    <govuk-summary-list-row-action href="@(page.PageUrl)" visually-hidden-text="@Model.Name">Change</govuk-summary-list-row-action>
+                </govuk-summary-list-row-actions>
+            </govuk-summary-list-row>    
+        }
+        
+    </govuk-summary-list>
+    
+    <govuk-button type="submit">Submit and continue</govuk-button>
+    
+</form>

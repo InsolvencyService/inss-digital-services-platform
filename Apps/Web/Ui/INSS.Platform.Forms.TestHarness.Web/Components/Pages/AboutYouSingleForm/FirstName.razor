@@ -2,17 +2,17 @@
 @using INSS.Platform.Components.Web.Common.Enums
 @using INSS.Platform.Forms.TestHarness.Web.Models
 
-<EditForm FormName="about-you" Model="aboutYou" OnSubmit="SubmitForm"> 
-    <Input Name="aboutYou.FirstName" Text="First name" Placeholder="Enter your first name" Value="@aboutYou.FirstName" />
+<EditForm FormName="about-you" Model="AboutYou" OnSubmit="SubmitForm"> 
+    <Input Name="aboutYou.FirstName" Text="First name" Placeholder="Enter your first name" Value="@AboutYou.FirstName" />
     <SubmitButton Name="about-you-submit" Text="Submit" />
 </EditForm>
 
 @code {
     [SupplyParameterFromForm]
-    private AboutYou aboutYou { get; set; } = new AboutYou();
+    private AboutYou AboutYou { get; set; }
 
     private void SubmitForm()
     {
-        Console.WriteLine($"First name: {aboutYou.FirstName}");
+        Console.WriteLine($"First name: {AboutYou.FirstName}");
     }
 }
