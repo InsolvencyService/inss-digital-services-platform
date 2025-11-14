@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[PartyType]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(512) NOT NULL,
+	[Created] DATETIME2 NOT NULL,
+	[CreatedBy] NVARCHAR(255) NOT NULL,
+	[Modified] DATETIME2 NULL,
+	[ModifiedBy] NVARCHAR(255) NULL,
+	CONSTRAINT [PK_PartyType] PRIMARY KEY CLUSTERED 
+	(
+		[Id]
+	) 
+)
+GO
+
+ALTER TABLE [dbo].[PartyType]
+ADD CONSTRAINT [UQ_PartyType] UNIQUE ([Name]);
+GO
+
+ALTER TABLE [dbo].[PartyType]
+ADD CONSTRAINT [DF_PartyType_Created] DEFAULT (GETUTCDATE()) FOR [Created];
+GO
