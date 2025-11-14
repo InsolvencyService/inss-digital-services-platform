@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[AddressType]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(512) NOT NULL,
+	[Created] DATETIME2 NOT NULL,
+	[CreatedBy] NVARCHAR(255) NOT NULL,
+	[Modified] DATETIME2 NULL,
+	[ModifiedBy] NVARCHAR(255) NULL,
+	CONSTRAINT [PK_AddressType] PRIMARY KEY CLUSTERED 
+	(
+		[Id]
+	) 
+)
+GO
+
+ALTER TABLE [dbo].[AddressType]
+ADD CONSTRAINT [UQ_AddressType] UNIQUE ([Name]);
+GO
+
+ALTER TABLE [dbo].[AddressType]
+ADD CONSTRAINT [DF_AddressType_Created] DEFAULT (GETUTCDATE()) FOR [Created];
+GO

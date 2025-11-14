@@ -1,0 +1,31 @@
+﻿CREATE TABLE [dbo].[Group]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[PartyId] UNIQUEIDENTIFIER NOT NULL,
+	[Name] NVARCHAR(255) NOT NULL,
+	[Description] NVARCHAR(512) NOT NULL,
+	[Created] DATETIME2 NOT NULL,
+	[CreatedBy] NVARCHAR(255) NOT NULL,
+	[Modified] DATETIME2 NULL,
+	[ModifiedBy] NVARCHAR(255) NULL,
+	CONSTRAINT [PK_Group] PRIMARY KEY CLUSTERED 
+	(
+		[Id]
+	) 
+)
+GO
+
+ALTER TABLE [dbo].[Group] ADD CONSTRAINT [FK_Group_Party] FOREIGN KEY([PartyId])
+REFERENCES [dbo].[Party] ([Id])
+GO
+
+ALTER TABLE [dbo].[Group] CHECK CONSTRAINT [FK_Group_Party]
+GO
+
+ALTER TABLE [dbo].[Group]
+ADD CONSTRAINT [UQ_Group_Name] UNIQUE ([Name]);
+GO
+
+ALTER TABLE [dbo].[Group]
+ADD CONSTRAINT [DF_Group_Created] DEFAULT (GETUTCDATE()) FOR [Created];
+GO

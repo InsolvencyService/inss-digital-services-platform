@@ -63,30 +63,49 @@
     <PostDeploy Include="Scripts\PostDeployment\Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Scripts\PostDeployment\TeardownTestData.sql">
+    <None Include="Scripts\PostDeployment\Teardown.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Build Include="Tables\IdentityProvider.sql" />
-    <Build Include="Tables\UserIdentity.sql" />
-    <Build Include="Tables\User.sql" />
+    <Build Include="Tables\Individual.sql" />
     <Build Include="Tables\Organisation.sql" />
-    <Build Include="Tables\Application.sql" />
     <Build Include="Tables\Role.sql" />
-    <Build Include="Tables\OrganisationUser.sql" />
-    <Build Include="Tables\ApplicationRole.sql" />
-    <Build Include="Tables\OrganisationUserApplicationRole.sql" />
-    <None Include="Scripts\Useful Scripts.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Scripts\PostDeployment\TestData.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\PostDeployment\SecretValues.sql" />
+    <None Include="Scripts\PostDeployment\Product.sql" />
+    <None Include="Scripts\PostDeployment\Party.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="INSS.Platform.UserManagement.Database.publish.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Stored Procedures\EnsureUserIsRegistered.sql" />
-    <Build Include="Stored Procedures\GetUserOrganisationsApplicationsAndRoles.sql" />
+    <Build Include="Tables\Party.sql" />
+    <Build Include="Tables\PartyType.sql" />
+    <Build Include="Tables\Group.sql" />
+    <Build Include="Tables\Address.sql" />
+    <Build Include="Tables\AddressType.sql" />
+    <Build Include="Tables\PartyRelationShip.sql" />
+    <Build Include="Tables\RelationshipType.sql" />
+    <Build Include="Tables\PartyAuthenticationProviderMetadata.sql" />
+    <Build Include="Tables\AuthenticationProvider.sql" />
+    <Build Include="Tables\AuthenticationProviderMetadata.sql" />
+    <Build Include="Tables\AuthenticationPolicy.sql" />
+    <Build Include="Tables\AuthenticationPolicyProvider.sql" />
+    <Build Include="Tables\Product.sql" />
+    <Build Include="Tables\RoleMetadata.sql" />
+    <Build Include="Tables\ProductRole.sql" />
+    <Build Include="Tables\ProductAuthenticationPolicyProvider.sql" />
+    <Build Include="Tables\PartyProductRole.sql" />
+    <Build Include="Tables\Permission.sql" />
+    <Build Include="Tables\Resource.sql" />
+    <Build Include="Tables\ResourcePermission.sql" />
+    <Build Include="Tables\ProductRoleResourcePermission.sql" />
+    <None Include="Scripts\PostDeployment\SecretKeys.sql" />
+    <None Include="Scripts\PostDeployment\Authentication.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\PostDeployment\Role.sql" />
+    <None Include="Scripts\PostDeployment\ProductPermission.sql" />
+    <None Include="Scripts\PostDeployment\Seed.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
