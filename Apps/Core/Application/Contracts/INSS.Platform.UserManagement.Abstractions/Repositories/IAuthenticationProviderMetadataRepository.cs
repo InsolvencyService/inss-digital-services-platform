@@ -5,7 +5,5 @@ namespace INSS.Platform.UserManagement.Abstractions.Repositories
     /// <summary>
     /// Defines a contract for a repository that manages <see cref="AuthenticationProviderMetadata"/> entities.
     /// </summary>
-    public interface IAuthenticationProviderMetadataRepository : IRepositoryBase<AuthenticationProviderMetadata> 
-    { 
-    }
+    public interface IAuthenticationProviderMetadataRepository : IRepositoryBase<AuthenticationProviderMetadata> { }
 }
