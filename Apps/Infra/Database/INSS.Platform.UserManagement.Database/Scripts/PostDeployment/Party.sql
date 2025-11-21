@@ -48,12 +48,10 @@ VALUES
 (NEWID(), @PartyId_DaveCook, @PartyId_BrightFutureTrust, @RelationshipTypeId_EmployedBy, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
 (NEWID(), @PartyId_GlenStone, @PartyId_BrightFutureTrust, @RelationshipTypeId_EmployedBy, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
 (NEWID(), @PartyId_SteveSaunders, @PartyId_BrightFutureTrust, @RelationshipTypeId_EmployedBy, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
-(NEWID(), @PartyId_WayneBusby, @PartyId_BrightFutureTrust, @RelationshipTypeId_EmployedBy, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
 
 (NEWID(), @PartyId_BrightFutureTrust, @PartyId_DaveCook, @RelationshipTypeId_Employs, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
 (NEWID(), @PartyId_BrightFutureTrust, @PartyId_GlenStone, @RelationshipTypeId_Employs, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
 (NEWID(), @PartyId_BrightFutureTrust, @PartyId_SteveSaunders, @RelationshipTypeId_Employs, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
-(NEWID(), @PartyId_BrightFutureTrust, @PartyId_WayneBusby, @RelationshipTypeId_Employs, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 (NEWID(), @PartyId_ButchCassidy, @PartyId_UnityCreditServices, @RelationshipTypeId_EmployedBy, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL),
 (NEWID(), @PartyId_UnityCreditServices, @PartyId_ButchCassidy, @RelationshipTypeId_Employs, GETDATE(), NULL, GETDATE(), SUSER_SNAME(), NULL, NULL);

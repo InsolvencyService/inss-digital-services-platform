@@ -8,10 +8,10 @@ DECLARE @RelationshipTypeId_HasMember UNIQUEIDENTIFIER = NEWID();
 
 INSERT INTO [dbo].[RelationshipType] ([Id], [Name], [Description], [Created], [CreatedBy], [Modified], [ModifiedBy])
 VALUES
-(@RelationshipTypeId_EmployedBy, 'Employed By', 'The party is employed by another party.', GETDATE(), SUSER_SNAME(), NULL, NULL),
+(@RelationshipTypeId_EmployedBy, 'EmployedBy', 'The party is employed by another party.', GETDATE(), SUSER_SNAME(), NULL, NULL),
 (@RelationshipTypeId_Employs, 'Employs', 'The party employs another party.', GETDATE(), SUSER_SNAME(), NULL, NULL),
-(@RelationshipTypeId_IsMemberOf, 'Is Member Of', 'The party is a member of another party.', GETDATE(), SUSER_SNAME(), NULL, NULL),
-(@RelationshipTypeId_HasMember, 'Has Member', 'The party has a member that is another party.', GETDATE(), SUSER_SNAME(), NULL, NULL);
+(@RelationshipTypeId_IsMemberOf, 'MemberOf', 'The party is a member of another party.', GETDATE(), SUSER_SNAME(), NULL, NULL),
+(@RelationshipTypeId_HasMember, 'HasMember', 'The party has a member that is another party.', GETDATE(), SUSER_SNAME(), NULL, NULL);
 
 
 -- =========================================================================

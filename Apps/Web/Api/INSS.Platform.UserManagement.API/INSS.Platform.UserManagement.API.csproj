@@ -8,8 +8,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Application\INSS.Platform.UserManagement.Repository\INSS.Platform.UserManagement.Repository.csproj" />
+    <ProjectReference Include="..\..\..\Core\Application\Contracts\INSS.Platform.UserManagement.Abstractions\INSS.Platform.UserManagement.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\Core\Domain\Common\INSS.Platform.UserManagement.Entities\INSS.Platform.UserManagement.Entities.csproj" />
+    <ProjectReference Include="..\..\..\Infra\Persistence\INSS.Platform.UserManagement.Repository\INSS.Platform.UserManagement.Repository.csproj" />
   </ItemGroup>
 
 </Project>

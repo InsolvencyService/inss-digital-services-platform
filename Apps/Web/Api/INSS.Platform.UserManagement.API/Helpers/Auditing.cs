@@ -39,8 +39,7 @@ namespace INSS.Platform.UserManagement.API.Helpers
         /// <returns>The current user's name, or "Unknown" if not available.</returns>
         private static string GetCurrentUserName(ControllerContext controllerContext)
         {
-            string? currentUser = controllerContext.HttpContext.User.Identity?.Name;
-            return currentUser ?? "Unknown";
+            return controllerContext.HttpContext.User.Identity?.Name ?? "Unknown";
         }
     }
 }
