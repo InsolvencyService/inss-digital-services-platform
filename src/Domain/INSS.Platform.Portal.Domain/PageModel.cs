@@ -16,6 +16,8 @@ public abstract class PageModel : BaseModel
     
     public string PathName { get; init; } = "page";
 
+    protected virtual IEnumerable<string> ResetableProperties { get; } = [];
+
     public string[] GetValues()
     {
         const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance;
@@ -66,7 +68,39 @@ public abstract class PageModel : BaseModel
             nameof(PreviousPageUrl),
             nameof(PathName),
             nameof(Controller),
-            nameof(Action)
+            nameof(Action),
+            nameof(Id)
         ];
+    }
+
+    public void Reset()
+    {
+        foreach (string propertyName in ResetableProperties)
+        {
+            PropertyInfo? property = GetType().GetProperty(propertyName);
+            if (property is not null && property.CanWrite)
+            {
+                Type propertyType = property.PropertyType;
+                object? defaultValue = propertyType.IsValueType
+                    ? Activator.CreateInstance(propertyType)
+                    : null;
+                property.SetValue(this, defaultValue);
+            }
+        }
+
+        Id = Guid.NewGuid().ToString("D");
+    }
+
+    public void CopyTo(PageModel pageModel)
+    {
+        foreach (string propertyName in ResetableProperties)
+        {
+            PropertyInfo? property = GetType().GetProperty(propertyName);
+            if (property is not null && property.CanWrite)
+            {
+                PropertyInfo targetPropery = pageModel.GetType().GetProperty(propertyName)!;
+                targetPropery.SetValue(pageModel, property.GetValue(this));
+            }
+        }
     }
 }

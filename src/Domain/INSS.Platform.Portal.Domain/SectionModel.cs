@@ -22,7 +22,7 @@ public sealed class SectionModel : BaseModel
     
     public PageModel? GetNextPage(string pageUrl)
     {
-        for (var i = 0; i < Pages.Length; i++)
+        for (int i = 0; i < Pages.Length; i++)
         {
             if (Pages[i].PageUrl == pageUrl && i < Pages.Length - 1)
             {
@@ -37,4 +37,17 @@ public sealed class SectionModel : BaseModel
     {
         return Pages.Last().PageUrl == page.PageUrl;   
     }
+    public PageModel? GetPreviousPage(string pageUrl)
+    {
+        for (int i = 0; i < Pages.Length; i++)
+        {
+            if (Pages[i].PageUrl == pageUrl && i > 0)
+            {
+                return Pages[i - 1];
+            }
+        }
+
+        return null;
+    }
+
 }

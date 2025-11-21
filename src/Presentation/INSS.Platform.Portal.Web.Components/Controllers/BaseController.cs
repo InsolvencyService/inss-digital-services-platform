@@ -15,10 +15,15 @@ public class BaseController<T> : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public virtual async Task<IActionResult> Index(string? id = null)
     {
-        var model = await _modelService.LoadAsync(Request.Path.Value);
-        return View(model);
+        if (id is null)
+        {
+            T? model = await _modelService.LoadAsync(Request.Path.Value);
+            return View(model);
+        }
+
+        return Redirect(await _modelService.GetPageUrlAsync(Request.Path.Value, id));
     }
 
     [HttpPost]
@@ -28,7 +33,7 @@ public class BaseController<T> : Controller
 
         if (ModelState.IsValid)
         {
-            var navigateTo = await _modelService.SaveAsync(Request.Path.Value!, model);
+            string navigateTo = await _modelService.SaveAsync(Request.Path.Value!, model);
             return Redirect(navigateTo);
         }
 

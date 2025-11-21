@@ -58,4 +58,9 @@ public sealed class FormService : IModelService<FormModel>
 
         return await _formStateService.GetAsync(sessionId);
     }
+
+    public Task<string> GetPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using GovUk.Frontend.AspNetCore;
 using INSS.Platform.Portal.Application.Factories;
+using INSS.Platform.Portal.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,22 +11,22 @@ public static class WebApplicationExtensions
     public static WebApplication UseComponents(this WebApplication app)
     {
         app.UseGovUkFrontend();
-        
-        var modelDataFactory = app.Services.GetRequiredService<IFormModelFactory>();
 
-        var form = modelDataFactory.CreateAsync().Result;
+        IFormModelFactory modelDataFactory = app.Services.GetRequiredService<IFormModelFactory>();
+
+        FormModel form = modelDataFactory.CreateAsync().Result;
 
         app.MapControllerRoute(name: form.PathName,
             pattern: $"{form.PathName}",
             defaults: new { controller = form.Controller, action = form.Action });
 
-        foreach (var section in form.Sections)
+        foreach (SectionModel section in form.Sections)
         {
             app.MapControllerRoute(name: "summary",
                 pattern: section.PageUrl,
                 defaults: new { controller = "Summary", action = "Index" });
             
-            foreach (var page in section.Pages)
+            foreach (PageModel page in section.Pages)
             {
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}",
                     pattern: page.PageUrl,

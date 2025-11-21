@@ -20,7 +20,7 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
         _userSessionResolver = userSessionResolver;
     }
 
-    public async Task<TPageModel> LoadAsync(string? pageUrl)
+    public virtual async Task<TPageModel> LoadAsync(string? pageUrl)
     {
         FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
         TPageModel page = form.FindPage<TPageModel>(pageUrl!);
@@ -69,5 +69,10 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
     {
         // Override if required
         return Task.CompletedTask;
+    }
+
+    public virtual Task<string> GetPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
     }
 }

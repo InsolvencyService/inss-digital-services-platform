@@ -147,4 +147,24 @@ public class FormModel : BaseModel
 
         return options;
     }
+
+    public void AddOrUpdatePreviousPageInSummaryList(SummaryListModel summaryList)
+    {
+        SectionModel section = FindSectionForPage(summaryList.PageUrl);
+        PageModel previousPage = section.GetPreviousPage(summaryList.PageUrl)!;
+        PageModel? pageToUpdate = summaryList.Pages.FirstOrDefault(p => p.Id == previousPage.Id);
+
+        if(pageToUpdate is not null)
+        {
+            previousPage.CopyTo(pageToUpdate);
+        }
+        else
+        {
+            string json = JsonSerializer.Serialize(previousPage, _options);
+            PageModel previousPageCopy = JsonSerializer.Deserialize<PageModel>(json, _options)!;
+            summaryList.AddPage(previousPageCopy);
+        }
+
+        previousPage.Reset();
+    }
 }

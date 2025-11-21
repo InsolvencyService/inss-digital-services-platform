@@ -20,10 +20,10 @@ public class BankAccountService : BasePageModelService<BankAccountModel>
     
     protected override async Task ValidateAdditionalAsync(ModelStateDictionary modelState, BankAccountModel model)
     {
-        var client = _clientFactory.CreateClient();
+        HttpClient client = _clientFactory.CreateClient();
         client.BaseAddress = new Uri("https://vseries.bottomline.com/api/");
 
-        var response = await client.GetAsync($"getukbankbranch/?apikey=2T2-2E42AEF5-3CF8-4FD9-B1A5-09A9BF03551D&sortCode={model.SortCode}");
+        HttpResponseMessage response = await client.GetAsync($"getukbankbranch/?apikey=2T2-2E42AEF5-3CF8-4FD9-B1A5-09A9BF03551D&sortCode={model.SortCode}");
 
         if (!response.IsSuccessStatusCode || await response.Content.ReadAsStringAsync() == "null")
         {
