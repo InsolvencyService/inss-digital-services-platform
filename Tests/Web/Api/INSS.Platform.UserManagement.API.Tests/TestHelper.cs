@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using INSS.Platform.UserManagement.Abstractions.Results;
+using INSS.Platform.UserManagement.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ClientModel.Primitives;
 using System.Security.Claims;
 using System.Security.Principal;
 

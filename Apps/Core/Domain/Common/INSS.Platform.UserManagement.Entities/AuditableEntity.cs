@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace INSS.Platform.UserManagement.Entities
+﻿namespace INSS.Platform.UserManagement.Entities
 {
     /// <summary>
     /// Represents an entity with audit information such as creation and modification details.
@@ -10,7 +8,6 @@ namespace INSS.Platform.UserManagement.Entities
         /// <summary>
         /// Gets or sets the unique identifier for the entity.
         /// </summary>
-        [Required]
         public Guid Id { get; set; }
 
         /// <summary>
@@ -21,7 +18,6 @@ namespace INSS.Platform.UserManagement.Entities
         /// <summary>
         /// Gets or sets the username or identifier of the user who created the entity.
         /// </summary>
-        [MaxLength(255)]
         public string? CreatedBy { get; set; } = string.Empty;
 
         /// <summary>
@@ -32,7 +28,6 @@ namespace INSS.Platform.UserManagement.Entities
         /// <summary>
         /// Gets or sets the username or identifier of the user who last modified the entity.
         /// </summary>
-        [MaxLength(255)]
         public string? ModifiedBy { get; set; }
     }
 }

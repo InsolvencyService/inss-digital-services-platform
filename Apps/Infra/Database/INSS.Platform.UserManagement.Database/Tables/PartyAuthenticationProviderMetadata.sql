@@ -3,7 +3,7 @@
 	[Id] UNIQUEIDENTIFIER NOT NULL,
 	[PartyId] UNIQUEIDENTIFIER NOT NULL,
 	[AuthenticationPolicyProviderId] UNIQUEIDENTIFIER NOT NULL,
-	[AuthenticationProviderUserId] NVARCHAR(255) NULL,
+	[AuthenticationProviderUserId] NVARCHAR(255) NOT NULL,
 	[AuthenticationProviderSessionData] NVARCHAR(MAX) NULL,
 	[Created] DATETIME2 NOT NULL,
 	[CreatedBy] NVARCHAR(255) NOT NULL,
