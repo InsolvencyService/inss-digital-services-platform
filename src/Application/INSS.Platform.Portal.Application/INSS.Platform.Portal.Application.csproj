@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- 
+        Disable pruning for this project - there is an issue with System.Text.RegularExpressions 4.3.0 but adding 4.3.1 
+        explicitly causes the dotnet 10 pruning error. Bit of a circular issue needs investigation.
+        Pruning has been enabled in dotnet 10 by default.
+        -->
+        <RestoreEnablePackagePruning>false</RestoreEnablePackagePruning>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <!-- Not required but 4.3.0 is flagged with vulnerabilities - see above -->
+        <PackageReference Include="System.Text.RegularExpressions" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\..\Domain\INSS.Platform.Portal.Domain\INSS.Platform.Portal.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

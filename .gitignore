@@ -153,6 +153,9 @@ artifacts/
 .vscode/
 .vs
 
+# Rider
+.idea
+
 # MSTest and NUnit test results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
