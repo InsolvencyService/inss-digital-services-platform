@@ -17,13 +17,8 @@ public class BaseController<T> : Controller
     [HttpGet]
     public virtual async Task<IActionResult> Index(string? id = null)
     {
-        if (id is null)
-        {
-            T? model = await _modelService.LoadAsync(Request.Path.Value);
-            return View(model);
-        }
-
-        return Redirect(await _modelService.GetPageUrlAsync(Request.Path.Value, id));
+        T? model = await _modelService.LoadAsync(Request.Path.Value);
+        return View(model);
     }
 
     [HttpPost]
