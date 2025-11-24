@@ -1,57 +1,31 @@
 <Solution>
-  <Folder Name="/Apps/" />
-  <Folder Name="/Apps/Core/" />
-  <Folder Name="/Apps/Core/Applications/">
-    <Project Path="Apps/Core/Application/INSS.Platform.UserManagement.Repository/INSS.Platform.UserManagement.Repository.csproj" />
-  </Folder>
-  <Folder Name="/Apps/Core/Applications/Contracts/">
-    <Project Path="Apps/Core/Application/Contracts/INSS.Platform.Auth.Contracts/INSS.Platform.Auth.Contracts.csproj" />
-  </Folder>
-  <Folder Name="/Apps/Core/Domain/">
-    <Project Path="Apps/Core/Domain/Common/INSS.Platform.UserManagement.Entities/INSS.Platform.UserManagement.Entities.csproj" />
-  </Folder>
-  <Folder Name="/Apps/Infra/" />
-  <Folder Name="/Apps/Infra/Database/">
-    <File Path="Database Projects.txt" />
-  </Folder>
-  <Folder Name="/Apps/Web/" />
-  <Folder Name="/Apps/Web/Api/">
-    <Project Path="Apps/Web/Api/INSS.Platform.Auth.API/INSS.Platform.Auth.API.csproj" />
-    <Project Path="Apps/Web/Api/INSS.Platform.UserManagement.API/INSS.Platform.UserManagement.API.csproj" />
-  </Folder>
-  <Folder Name="/Apps/Web/Ui/">
-    <Project Path="Apps/Web/Ui/INSS.Platform.Components.Web/INSS.Platform.Components.Web.csproj" />
-    <Project Path="Apps/Web/Ui/INSS.Platform.Forms.TestHarness.Web/INSS.Platform.Forms.TestHarness.Web.csproj" />
-    <Project Path="Apps/Web/Ui/INSS.Platform.UserManagement.Web/INSS.Platform.UserManagement.Web.csproj" />
-  </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/Application/">
+    <Project Path="src/Application/INSS.Platform.Auth.Application/INSS.Platform.Auth.Application.csproj" />
     <Project Path="src/Application/INSS.Platform.Portal.Application/INSS.Platform.Portal.Application.csproj" />
+    <Project Path="src/Application/INSS.Platform.UserManagement.Application/INSS.Platform.UserManagement.Application.csproj" />
   </Folder>
   <Folder Name="/src/Domain/">
     <Project Path="src/Domain/INSS.Platform.Portal.Domain/INSS.Platform.Portal.Domain.csproj" />
+    <Project Path="src/Domain/INSS.Platform.UserManagement.Domain/INSS.Platform.UserManagement.Domain.csproj" />
   </Folder>
   <Folder Name="/src/Infrastructure/">
     <Project Path="src/Infrastructure/INSS.Platform.Portal.Infrastructure/INSS.Platform.Portal.Infrastructure.csproj" />
+    <Project Path="src/Infrastructure/INSS.Platform.UserManagement.Infrastructure/INSS.Platform.UserManagement.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/Presentation/">
+    <Project Path="src/Presentation/INSS.Platform.Auth.API/INSS.Platform.Auth.API.csproj" />
     <Project Path="src/Presentation/INSS.Platform.Portal.Web.Components/INSS.Platform.Portal.Web.Components.csproj" />
     <Project Path="src/Presentation/INSS.Platform.Portal.Web/INSS.Platform.Portal.Web.csproj" />
+    <Project Path="src/Presentation/INSS.Platform.UserManagement.API/INSS.Platform.UserManagement.API.csproj" />
+    <Project Path="src/Presentation/INSS.Platform.UserManagement.Web/INSS.Platform.UserManagement.Web.csproj" />
   </Folder>
-  <Folder Name="/Tests/" />
-  <Folder Name="/Tests/Core/" />
-  <Folder Name="/Tests/Core/Applications/">
-    <Project Path="Tests/Core/Applications/INSS.Platform.UserManagement.Repository.Tests/INSS.Platform.UserManagement.Repository.Tests.csproj" />
+  <Folder Name="/test/" />
+  <Folder Name="/test/Infrastructure/">
+    <Project Path="test/Infrastructure/INSS.Platform.UserManagement.Infrastructure.Tests/INSS.Platform.UserManagement.Infrastructure.Tests.csproj" />
   </Folder>
-  <Folder Name="/Tests/Core/Domain/" />
-  <Folder Name="/Tests/Infra/" />
-  <Folder Name="/Tests/Infra/Database/" />
-  <Folder Name="/Tests/Web/" />
-  <Folder Name="/Tests/Web/Api/">
-    <Project Path="Tests/Web/Api/INSS.Platform.Auth.API.Tests/INSS.Platform.Auth.API.Tests.csproj" />
-    <Project Path="Tests/Web/Api/INSS.Platform.UserManagement.API.Tests/INSS.Platform.UserManagement.API.Tests.csproj" />
-  </Folder>
-  <Folder Name="/Tests/Web/Ui/">
-    <Project Path="Tests/Web/Ui/INSS.Platform.Components.Web.Tests/INSS.Platform.Components.Web.Tests.csproj" />
+  <Folder Name="/test/Presentation/">
+    <Project Path="test/Presentation/INSS.Platform.Auth.API.Tests/INSS.Platform.Auth.API.Tests.csproj" />
+    <Project Path="test/Presentation/INSS.Platform.UserManagement.API.Tests/INSS.Platform.UserManagement.API.Tests.csproj" />
   </Folder>
 </Solution>

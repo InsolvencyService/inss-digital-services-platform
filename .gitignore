@@ -193,8 +193,4 @@ project.fragment.lock.json
 *.dbmdl
 *.refactorlog
 *.publish.xml
-/Apps/INSS.Forms/Application/Services/INSS.Forms.Application.Services.Api/appSettings.local.json
-/Apps/Auth/API/INSS.Platform.Auth.API/Keys/private_key.pem
-/Apps/Auth/API/INSS.Platform.Auth.API/Keys/public_key.pem
-/Apps/Web/Api/INSS.Platform.UserManagement.API/appSettings.local.json
-/Apps/Infra/Database/INSS.Platform.UserManagement.Database/Scripts/PostDeployment/SecretValues.sql
+/src/Infrastructure/INSS.Platform.UserManagement.Database/Scripts/PostDeployment/SecretValues.sql
