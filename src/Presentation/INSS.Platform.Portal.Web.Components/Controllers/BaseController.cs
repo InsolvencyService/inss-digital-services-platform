@@ -15,7 +15,7 @@ public class BaseController<T> : Controller
     }
 
     [HttpGet]
-    public virtual async Task<IActionResult> Index(string? id = null)
+    public async Task<IActionResult> Index()
     {
         T? model = await _modelService.LoadAsync(Request.Path.Value);
         return View(model);
@@ -33,5 +33,17 @@ public class BaseController<T> : Controller
         }
 
         return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Change(string id)
+    {
+        return Redirect(await _modelService.GetPageUrlAsync(Request.Path.Value!.Replace("/change/", ""), id));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Remove(string id)
+    {
+        return Redirect(await _modelService.GetRemovedPageUrlAsync(Request.Path.Value!.Replace("/remove/", ""), id));
     }
 }

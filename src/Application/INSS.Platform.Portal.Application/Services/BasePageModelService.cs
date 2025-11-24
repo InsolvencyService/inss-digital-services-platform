@@ -28,6 +28,18 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
         return page;
     }
 
+    public virtual async Task<string> GetRemovedPageUrlAsync(string? pageUrl, string id)
+    {
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+        TPageModel page = form.FindPage<TPageModel>(pageUrl!);
+        SectionModel sectionModel = form.FindSectionForPage(page.PageUrl);
+        PageModel removePage = sectionModel.InsertRemovePage(page, id);
+        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
+        return removePage.PageUrl;
+        //_journeyService.TransitionPrevious(form, page);
+        //return page;
+    }
+
     public async Task ValidateAsync(ModelStateDictionary modelState, TPageModel model)
     {
         FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());

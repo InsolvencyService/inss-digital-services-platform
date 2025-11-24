@@ -22,7 +22,11 @@ public class SummaryListModel : PageModel
 
     public string GetChangeUrl(PageModel page)
     {
-        //var index = Array.IndexOf(Pages, page);
-        return $"{PageUrl}?id={page.Id}";
+        return $"{PageUrl}/change/?id={page.Id}";
+    }
+
+    public string GetRemoveUrl(PageModel page)
+    {
+        return $"{PageUrl}/remove/?id={page.Id}";
     }
 }

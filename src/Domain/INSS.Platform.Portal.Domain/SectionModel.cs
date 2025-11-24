@@ -50,4 +50,13 @@ public sealed class SectionModel : BaseModel
         return null;
     }
 
+    public PageModel InsertRemovePage(PageModel page, string id)
+    {
+        List<PageModel> pageList = Pages.ToList();
+        ConfirmModel confirmModel = new() { Id = id, PageUrl = $"{page.PageUrl}/confirm" };
+        pageList.Insert(pageList.IndexOf(page) + 1, confirmModel);
+        Pages = pageList.ToArray();
+        return confirmModel;
+    }
+
 }

@@ -20,6 +20,10 @@ public static class WebApplicationExtensions
             pattern: $"{form.PathName}",
             defaults: new { controller = form.Controller, action = form.Action });
 
+        app.MapControllerRoute(name: "confirm",
+            pattern: "tasks/about-you/summary-list/confirm",
+            defaults: new { controller = "Confirm", action = "Index" });
+
         foreach (SectionModel section in form.Sections)
         {
             app.MapControllerRoute(name: "summary",
@@ -31,6 +35,14 @@ public static class WebApplicationExtensions
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}",
                     pattern: page.PageUrl,
                     defaults: new { controller = page.Controller, action = page.Action });
+
+                app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-change",
+                    pattern: page.PageUrl + "/change",
+                    defaults: new { controller = page.Controller, action = "Change" });
+
+                app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-remove",
+                    pattern: page.PageUrl + "/remove",
+                    defaults: new { controller = page.Controller, action = "Remove" });
             }
         }
 

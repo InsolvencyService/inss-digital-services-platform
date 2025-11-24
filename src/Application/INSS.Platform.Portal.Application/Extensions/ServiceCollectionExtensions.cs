@@ -15,6 +15,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IModelService<SectionModel>, SectionService>();
         services.AddTransient<IModelService<FormModel>, FormService>();
         services.AddTransient<IModelService<SummaryListModel>, SummaryListService>();
+        services.AddTransient<IModelService<ConfirmModel>, ConfirmService>();
+
         return services;
     }
 }

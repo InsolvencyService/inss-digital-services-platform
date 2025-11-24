@@ -8,4 +8,5 @@ public interface IModelService<TModel>
     Task ValidateAsync(ModelStateDictionary modelState, TModel model);
     Task<string> SaveAsync(string requestPath, TModel model);
     Task<string> GetPageUrlAsync(string? pageUrl, string id);
+    Task<string> GetRemovedPageUrlAsync(string? pageUrl, string id);
 }

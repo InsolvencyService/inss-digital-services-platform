@@ -40,4 +40,9 @@ public sealed class SectionService : IModelService<SectionModel>
     {
         throw new NotImplementedException();
     }
+
+    public Task<string> GetRemovedPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
+    }
 }
