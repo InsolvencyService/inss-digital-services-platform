@@ -7,7 +7,6 @@
     
     <ItemGroup>
         <PackageReference Include="GovUk.Frontend.AspNetCore" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
     </ItemGroup>
     
