@@ -35,4 +35,19 @@ public sealed class SectionService : IModelService<SectionModel>
         await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
         return form.PageUrl;
     }
+
+    public Task<string> GetPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> GetRemovedPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> GetPostRemovedPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -85,6 +85,34 @@ public class FormModel : BaseModel
         throw new InvalidOperationException($"Unable to find section model for path '{pageUrl}'.");
     }
 
+    public void RemovePageModel(string id)
+    {
+        foreach (SectionModel section in Sections)
+        {
+            foreach (PageModel page in section.Pages)
+            {
+                if (page.Id == id)
+                {
+                    section.RemovePage(page);
+                    return;
+                }
+
+                if(page is SummaryListModel summaryList)
+                {
+                    foreach (PageModel summaryPage in summaryList.Pages)
+                    {
+                        if (summaryPage.Id == id)
+                        {
+                            summaryList.RemovePage(summaryPage);
+                            return;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     public void Initialize()
     {
         _options ??= CreateOptions(this);
@@ -146,5 +174,25 @@ public class FormModel : BaseModel
         };
 
         return options;
+    }
+
+    public void AddOrUpdatePreviousPageInSummaryList(SummaryListModel summaryList)
+    {
+        SectionModel section = FindSectionForPage(summaryList.PageUrl);
+        PageModel previousPage = section.GetPreviousPage(summaryList.PageUrl)!;
+        PageModel? pageToUpdate = summaryList.Pages.FirstOrDefault(p => p.Id == previousPage.Id);
+
+        if(pageToUpdate is not null)
+        {
+            previousPage.CopyTo(pageToUpdate);
+        }
+        else
+        {
+            string json = JsonSerializer.Serialize(previousPage, _options);
+            PageModel previousPageCopy = JsonSerializer.Deserialize<PageModel>(json, _options)!;
+            summaryList.AddPage(previousPageCopy);
+        }
+
+        previousPage.Reset();
     }
 }

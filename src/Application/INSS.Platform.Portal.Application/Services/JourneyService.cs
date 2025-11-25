@@ -3,7 +3,7 @@ using INSS.Platform.Portal.Domain;
 
 namespace INSS.Platform.Portal.Application.Services;
 
-public sealed class JourneyService : IJourneyService
+public class JourneyService : IJourneyService
 {
     private readonly IServiceProvider _serviceProvider;
 
@@ -16,7 +16,7 @@ public sealed class JourneyService : IJourneyService
     {
         if (pageModel is not null)
         {
-            var previousNavigation = form.NavigationHistory.Last();
+            string previousNavigation = form.NavigationHistory.Last();
 
             // If we have navigated back and we are on the page of the last entry then we need to remove it
             if (previousNavigation == pageModel.PageUrl)
@@ -30,17 +30,17 @@ public sealed class JourneyService : IJourneyService
     
     public void TransitionNext(FormModel form, PageModel pageModel)
     {
-        var resolver = GetJourneyResolver(pageModel);
-            
-        var nextPage = resolver.Resolve(form, pageModel);
+        IJourneyResolver resolver = GetJourneyResolver(pageModel);
+
+        PageModel? nextPage = resolver.Resolve(form, pageModel);
 
         if (nextPage is not null)
         {
             pageModel.NextPageUrl = nextPage.PageUrl;
             return;
         }
-        
-        var section = form.FindSectionForPage(pageModel.PageUrl);
+
+        SectionModel section = form.FindSectionForPage(pageModel.PageUrl);
 
         if (section.IsLastPageInSection(pageModel))
         {
@@ -55,7 +55,7 @@ public sealed class JourneyService : IJourneyService
     
     private IJourneyResolver GetJourneyResolver(PageModel page)
     {
-        var resolverType = typeof(IJourneyResolver<>).MakeGenericType(page.GetType());
+        Type resolverType = typeof(IJourneyResolver<>).MakeGenericType(page.GetType());
         return (IJourneyResolver)(_serviceProvider.GetService(resolverType) ?? new DefaultJourneyResolver());
     }
 }

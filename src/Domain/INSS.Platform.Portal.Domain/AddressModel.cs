@@ -27,4 +27,14 @@ public class AddressModel : PageModel
     [Required(ErrorMessage = "Enter postcode")]
     [RegularExpression(PostcodeRegexPattern, ErrorMessage = "Enter a full UK postcode")]
     public string Postcode { get; set; } = string.Empty;
+
+    protected override IEnumerable<string> ResetableProperties { get; } =
+    [
+        nameof(AddressLine1),
+        nameof(AddressLine2),
+        nameof(TownCity),
+        nameof(County),
+        nameof(Postcode),
+        nameof(Id)
+    ];
 }

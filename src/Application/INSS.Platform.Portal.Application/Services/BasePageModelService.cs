@@ -20,12 +20,43 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
         _userSessionResolver = userSessionResolver;
     }
 
-    public async Task<TPageModel> LoadAsync(string? pageUrl)
+    public virtual async Task<TPageModel> LoadAsync(string? pageUrl)
     {
         FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
         TPageModel page = form.FindPage<TPageModel>(pageUrl!);
         _journeyService.TransitionPrevious(form, page);
         return page;
+    }
+
+    public virtual async Task<string> GetRemovedPageUrlAsync(string? pageUrl, string id)
+    {
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+        TPageModel page = form.FindPage<TPageModel>(pageUrl!);
+        SectionModel sectionModel = form.FindSectionForPage(page.PageUrl);
+        ConfirmModel nextPage = (ConfirmModel)sectionModel.GetNextPage(page.PageUrl)!;
+        nextPage.ConfirmationId = id;
+        nextPage.NextPageUrl = page.PageUrl + "/post-remove/";
+        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
+        return nextPage.PageUrl;
+        //_journeyService.TransitionPrevious(form, page);
+        //return page;
+    }
+
+    public virtual async Task<string> GetPostRemovedPageUrlAsync(string? pageUrl, string id)
+    {
+        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
+        SummaryListModel page = form.FindPage<SummaryListModel>(pageUrl!);
+
+        if (page.Pages.Length == 0)
+        {
+            return page.PreviousPageUrl; // Got to the address page
+        }
+
+        page.Reload = true;
+
+        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
+
+        return page.PageUrl;
     }
 
     public async Task ValidateAsync(ModelStateDictionary modelState, TPageModel model)
@@ -46,7 +77,7 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
         }
     }
 
-    public async Task<string> SaveAsync(string requestPath, TPageModel model)
+    public virtual async Task<string> SaveAsync(string requestPath, TPageModel model)
     {
         FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
         TPageModel page = form.FindPage<TPageModel>(requestPath);
@@ -69,5 +100,10 @@ public abstract class BasePageModelService<TPageModel> : IModelService<TPageMode
     {
         // Override if required
         return Task.CompletedTask;
+    }
+
+    public virtual Task<string> GetPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
     }
 }

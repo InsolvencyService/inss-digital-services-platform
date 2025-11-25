@@ -19,10 +19,18 @@ public sealed class SectionModel : BaseModel
         page.PageUrl = $"{PageUrl}/{page.PathName}";
         Pages = Pages.Concat([page]).ToArray();
     }
-    
+
+    public void RemovePage(PageModel page)
+    {
+        List<PageModel> pageList = Pages.ToList();
+
+        pageList.Remove(page);
+        Pages = pageList.ToArray();
+    }       
+
     public PageModel? GetNextPage(string pageUrl)
     {
-        for (var i = 0; i < Pages.Length; i++)
+        for (int i = 0; i < Pages.Length; i++)
         {
             if (Pages[i].PageUrl == pageUrl && i < Pages.Length - 1)
             {
@@ -35,6 +43,31 @@ public sealed class SectionModel : BaseModel
     
     public bool IsLastPageInSection(PageModel page)
     {
+        // As the summary list and confirm page belong together, if the page is the summary lkist page then we need to
+        // skip the next page too
+
+        if (page is SummaryListModel)
+        {
+            PageModel? nextPage = GetNextPage(page.PageUrl);
+
+            if (nextPage is not null)
+            {
+                return Pages.Last().PageUrl == nextPage.PageUrl;
+            }         
+        }
+        
         return Pages.Last().PageUrl == page.PageUrl;   
+    }
+    public PageModel? GetPreviousPage(string pageUrl)
+    {
+        for (int i = 0; i < Pages.Length; i++)
+        {
+            if (Pages[i].PageUrl == pageUrl && i > 0)
+            {
+                return Pages[i - 1];
+            }
+        }
+
+        return null;
     }
 }

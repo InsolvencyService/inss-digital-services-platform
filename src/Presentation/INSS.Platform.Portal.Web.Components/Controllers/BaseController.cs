@@ -17,7 +17,7 @@ public class BaseController<T> : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var model = await _modelService.LoadAsync(Request.Path.Value);
+        T? model = await _modelService.LoadAsync(Request.Path.Value);
         return View(model);
     }
 
@@ -28,10 +28,29 @@ public class BaseController<T> : Controller
 
         if (ModelState.IsValid)
         {
-            var navigateTo = await _modelService.SaveAsync(Request.Path.Value!, model);
+            string navigateTo = await _modelService.SaveAsync(Request.Path.Value!, model);
             return Redirect(navigateTo);
         }
 
         return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Change(string id)
+    {
+        return Redirect(await _modelService.GetPageUrlAsync(Request.Path.Value!.Replace("/change/", ""), id));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Remove(string id)
+    {
+        return Redirect(await _modelService.GetRemovedPageUrlAsync(Request.Path.Value!.Replace("/remove/", ""), id));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> PostRemove(string id)
+    {
+        string path = Request.Path.Value!.Replace("/post-remove/", "");
+        return Redirect(await _modelService.GetPostRemovedPageUrlAsync(path, id));
     }
 }

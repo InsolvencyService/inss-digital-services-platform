@@ -19,7 +19,12 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
         SectionModel sectionAboutYou = new() { Name = "About You", PathName = "about-you" };
         form.AddSection(sectionAboutYou);
         sectionAboutYou.AddPage(new FullNameModel { Title = "Full Name"});
-        sectionAboutYou.AddPage(new AddressModel { Title = "Address"});
+        AddressModel currentAddress = new() { Title = "Address" };
+        sectionAboutYou.AddPage(currentAddress);
+        SummaryListModel summaryList =new() { Title = "Your Addresses"};
+        sectionAboutYou.AddPage(summaryList);
+        ConfirmModel confirm = new() { Title = "Confirm Address Deletion" }; 
+        sectionAboutYou.AddPage(confirm);
 
         form.Initialize();
 
