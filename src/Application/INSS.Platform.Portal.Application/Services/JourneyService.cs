@@ -3,7 +3,7 @@ using INSS.Platform.Portal.Domain;
 
 namespace INSS.Platform.Portal.Application.Services;
 
-public sealed class JourneyService : IJourneyService
+public class JourneyService : IJourneyService
 {
     private readonly IServiceProvider _serviceProvider;
 

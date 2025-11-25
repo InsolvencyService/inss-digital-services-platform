@@ -1,4 +1,5 @@
-﻿using INSS.Platform.Portal.Application.Services;
+﻿using INSS.Platform.Portal.Application.Resolvers;
+using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Domain;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IModelService<FormModel>, FormService>();
         services.AddTransient<IModelService<SummaryListModel>, SummaryListService>();
         services.AddTransient<IModelService<ConfirmModel>, ConfirmService>();
+        services.AddTransient<IJourneyResolver<SummaryListModel>, SummaryListJourneyResolver>();
 
         return services;
     }

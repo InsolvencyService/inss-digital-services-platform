@@ -22,6 +22,11 @@ public abstract class PageModel : BaseModel
     {
         const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance;
         
+        if (this is ConfirmModel)
+        {
+            return [];
+        }
+
         // Ensure UK culture for formatting
         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-GB");
@@ -41,6 +46,16 @@ public abstract class PageModel : BaseModel
 
             if (value is null)
             {
+                continue;
+            }
+
+            if (typeof(IEnumerable<PageModel>).IsAssignableFrom(property.PropertyType))
+            {
+                foreach (PageModel page in (IEnumerable<PageModel>)value)
+                {
+                    displayValueList.AddRange(page.GetValues());
+                }
+
                 continue;
             }
 

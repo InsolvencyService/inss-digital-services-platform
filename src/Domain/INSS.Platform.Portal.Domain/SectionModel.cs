@@ -43,6 +43,19 @@ public sealed class SectionModel : BaseModel
     
     public bool IsLastPageInSection(PageModel page)
     {
+        // As the summary list and confirm page belong together, if the page is the summary lkist page then we need to
+        // skip the next page too
+
+        if (page is SummaryListModel)
+        {
+            PageModel? nextPage = GetNextPage(page.PageUrl);
+
+            if (nextPage is not null)
+            {
+                return Pages.Last().PageUrl == nextPage.PageUrl;
+            }         
+        }
+        
         return Pages.Last().PageUrl == page.PageUrl;   
     }
     public PageModel? GetPreviousPage(string pageUrl)

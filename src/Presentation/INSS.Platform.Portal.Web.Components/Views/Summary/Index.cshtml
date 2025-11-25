@@ -15,12 +15,18 @@
         
         @foreach (var page in Model.Pages)
         {
+            List<string> propValues = page.GetValues().ToList();
+            if (propValues.Count == 0)
+            {
+                continue;
+            }
+
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>
                     @(page.Title)
                 </govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    @foreach (var propValue in page.GetValues())
+                    @foreach (var propValue in propValues)
                     {
                         <p class="govuk-body">@(propValue)</p>
                     }
