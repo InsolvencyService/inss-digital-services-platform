@@ -68,4 +68,9 @@ public sealed class FormService : IModelService<FormModel>
     {
         throw new NotImplementedException();
     }
+
+    public Task<string> GetPostRemovedPageUrlAsync(string? pageUrl, string id)
+    {
+        throw new NotImplementedException();
+    }
 }

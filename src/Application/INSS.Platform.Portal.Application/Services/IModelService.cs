@@ -9,4 +9,6 @@ public interface IModelService<TModel>
     Task<string> SaveAsync(string requestPath, TModel model);
     Task<string> GetPageUrlAsync(string? pageUrl, string id);
     Task<string> GetRemovedPageUrlAsync(string? pageUrl, string id);
+
+    Task<string> GetPostRemovedPageUrlAsync(string? pageUrl, string id);
 }

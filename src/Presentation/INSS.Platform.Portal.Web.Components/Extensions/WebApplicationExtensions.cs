@@ -43,6 +43,10 @@ public static class WebApplicationExtensions
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-remove",
                     pattern: page.PageUrl + "/remove",
                     defaults: new { controller = page.Controller, action = "Remove" });
+
+                app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-post-remove",
+                    pattern: page.PageUrl + "/post-remove",
+                    defaults: new { controller = page.Controller, action = "PostRemove" });
             }
         }
 

@@ -35,19 +35,27 @@ public class SummaryListService : BasePageModelService<SummaryListModel>
         return await Task.FromResult(pageToChange.PageUrl); 
     }
 
-    protected override void CopySourceToTargetModel(SummaryListModel sourceModel, SummaryListModel targetModel)
-    {
-        //targetModel.Pages.AddRange(sourceModel.SummaryList ?? Enumerable.Empty<AddressModel>());
-    }
-
     public override async Task<SummaryListModel> LoadAsync(string? pageUrl)
     { 
         FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
         SummaryListModel page = form.FindPage<SummaryListModel>(pageUrl!);
         _journeyService.TransitionPrevious(form, page);
-        form.AddOrUpdatePreviousPageInSummaryList(page);
+
+        if (!page.Reload)
+        {
+            form.AddOrUpdatePreviousPageInSummaryList(page);
+        }
+
+        page.Reload = false;
 
         await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
         return page;
     }
+
+    protected override void CopySourceToTargetModel(SummaryListModel sourceModel, SummaryListModel targetModel)
+    {
+        //targetModel.Pages.AddRange(sourceModel.SummaryList ?? Enumerable.Empty<AddressModel>());
+    }
+
+
 }

@@ -23,6 +23,8 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
         sectionAboutYou.AddPage(currentAddress);
         SummaryListModel summaryList =new() { Title = "Your Addresses"};
         sectionAboutYou.AddPage(summaryList);
+        ConfirmModel confirm = new() { Title = "Confirm Address Deletion" }; 
+        sectionAboutYou.AddPage(confirm);
 
         form.Initialize();
 

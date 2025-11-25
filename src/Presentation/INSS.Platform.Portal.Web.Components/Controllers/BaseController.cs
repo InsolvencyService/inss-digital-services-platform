@@ -46,4 +46,11 @@ public class BaseController<T> : Controller
     {
         return Redirect(await _modelService.GetRemovedPageUrlAsync(Request.Path.Value!.Replace("/remove/", ""), id));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> PostRemove(string id)
+    {
+        string path = Request.Path.Value!.Replace("/post-remove/", "");
+        return Redirect(await _modelService.GetPostRemovedPageUrlAsync(path, id));
+    }
 }

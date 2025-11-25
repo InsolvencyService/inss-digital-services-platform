@@ -11,7 +11,7 @@ public class ConfirmModel : PageModel
         Controller = "Confirm";
     }
 
-    public string ConfirmationId { get; set; }
+    public string? ConfirmationId { get; set; }
 
     [Required(ErrorMessage = "Choose Yes or No to confirm")]
     public bool Confirm { get; set; }

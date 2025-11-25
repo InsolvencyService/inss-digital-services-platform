@@ -19,7 +19,15 @@ public sealed class SectionModel : BaseModel
         page.PageUrl = $"{PageUrl}/{page.PathName}";
         Pages = Pages.Concat([page]).ToArray();
     }
-    
+
+    public void RemovePage(PageModel page)
+    {
+        List<PageModel> pageList = Pages.ToList();
+
+        pageList.Remove(page);
+        Pages = pageList.ToArray();
+    }       
+
     public PageModel? GetNextPage(string pageUrl)
     {
         for (int i = 0; i < Pages.Length; i++)
@@ -49,14 +57,4 @@ public sealed class SectionModel : BaseModel
 
         return null;
     }
-
-    public PageModel InsertRemovePage(PageModel page, string id)
-    {
-        List<PageModel> pageList = Pages.ToList();
-        ConfirmModel confirmModel = new() { Id = id, PageUrl = $"{page.PageUrl}/confirm" };
-        pageList.Insert(pageList.IndexOf(page) + 1, confirmModel);
-        Pages = pageList.ToArray();
-        return confirmModel;
-    }
-
 }

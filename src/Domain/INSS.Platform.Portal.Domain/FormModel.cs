@@ -85,6 +85,34 @@ public class FormModel : BaseModel
         throw new InvalidOperationException($"Unable to find section model for path '{pageUrl}'.");
     }
 
+    public void RemovePageModel(string id)
+    {
+        foreach (SectionModel section in Sections)
+        {
+            foreach (PageModel page in section.Pages)
+            {
+                if (page.Id == id)
+                {
+                    section.RemovePage(page);
+                    return;
+                }
+
+                if(page is SummaryListModel summaryList)
+                {
+                    foreach (PageModel summaryPage in summaryList.Pages)
+                    {
+                        if (summaryPage.Id == id)
+                        {
+                            summaryList.RemovePage(summaryPage);
+                            return;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     public void Initialize()
     {
         _options ??= CreateOptions(this);

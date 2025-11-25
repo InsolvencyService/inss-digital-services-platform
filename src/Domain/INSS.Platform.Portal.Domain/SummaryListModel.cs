@@ -11,6 +11,8 @@ public class SummaryListModel : PageModel
 
     public PageModel[] Pages { get; set; } = [];
 
+    public bool Reload { get; set; }
+
     public void AddPage(PageModel page)
     {
         // Copy the page and add - clone
@@ -18,6 +20,14 @@ public class SummaryListModel : PageModel
         // Add identifier to copy of page
 
         Pages = Pages.Concat([page]).ToArray();
+    }
+
+    public void RemovePage(PageModel page)
+    {
+        List<PageModel> pageList = Pages.ToList();
+
+        pageList.Remove(page);
+        Pages = pageList.ToArray();
     }
 
     public string GetChangeUrl(PageModel page)
