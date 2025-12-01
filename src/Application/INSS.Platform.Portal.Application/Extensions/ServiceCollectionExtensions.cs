@@ -1,5 +1,6 @@
-﻿using INSS.Platform.Portal.Application.Resolvers;
+﻿using INSS.Platform.Portal.Application.Options;
 using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Application.Validation;
 using INSS.Platform.Portal.Domain;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,18 +8,17 @@ namespace INSS.Platform.Portal.Application.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddApplication(
+        this IServiceCollection services, 
+        Action<ApplicationOptions>? configure = null)
     {
-        services.AddSingleton<IJourneyService, JourneyService>();
-        services.AddTransient<IModelService<BankAccountModel>, BankAccountService>();
-        services.AddTransient<IModelService<AddressModel>, AddressService>();
-        services.AddTransient<IModelService<FullNameModel>, FullNameService>();
-        services.AddTransient<IModelService<SectionModel>, SectionService>();
-        services.AddTransient<IModelService<FormModel>, FormService>();
-        services.AddTransient<IModelService<SummaryListModel>, SummaryListService>();
-        services.AddTransient<IModelService<ConfirmModel>, ConfirmService>();
-        services.AddTransient<IJourneyResolver<SummaryListModel>, SummaryListJourneyResolver>();
+        ApplicationOptions options = new();
+        configure?.Invoke(options);
 
+        services.AddSingleton<IModelStateValidator<BankAccountModel>, BankAccountModelStateValidator>();
+        services.AddSingleton<IModelTypeService>(_ => new ModelTypeService(options.ModelAssemblies.ToArray()));
+        services.AddTransient<IFormService, FormService>();
+        services.AddSingleton<IFormSerializationService, FormSerializationService>();
         return services;
     }
 }

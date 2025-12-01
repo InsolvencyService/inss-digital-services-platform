@@ -1,0 +1,26 @@
+﻿@addTagHelper GovUk.Frontend.AspNetCore.TagHelpers.*, GovUk.Frontend.AspNetCore
+@addTagHelper INSS.Platform.Portal.Web.Components.TagHelpers.*, INSS.Platform.Portal.Web.Components
+@model INSS.Platform.Portal.Domain.SummaryListModel
+
+<govuk-summary-list>
+    @foreach (var item in Model.Items)
+    {
+        <govuk-summary-list-row>
+            <govuk-summary-list-row-key>
+                @(item.Name)
+            </govuk-summary-list-row-key>
+            <govuk-summary-list-row-value>
+                @foreach (var propValue in item.GetValues())
+                {
+                    <p class="govuk-body">@(propValue)</p>
+                }
+            </govuk-summary-list-row-value>
+            <govuk-summary-list-row-actions>
+                <govuk-summary-list-row-action href="@(Model.GetChangeUrl(item))" visually-hidden-text="@item.Name">Change</govuk-summary-list-row-action>
+                <govuk-summary-list-row-action href="@(Model.GetRemoveUrl(item))" visually-hidden-text="@item.Name">Remove</govuk-summary-list-row-action>
+            </govuk-summary-list-row-actions>
+        </govuk-summary-list-row>
+    }
+</govuk-summary-list>
+
+<govuk-button-link href="@Model.PreviousPageUrl">Add Another</govuk-button-link>

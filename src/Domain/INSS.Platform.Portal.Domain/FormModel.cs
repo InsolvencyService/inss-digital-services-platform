@@ -1,198 +1,112 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
-
-namespace INSS.Platform.Portal.Domain;
+﻿namespace INSS.Platform.Portal.Domain;
 
 public class FormModel : BaseModel
 {
-    private readonly List<string> _navList = [];
-    private static JsonSerializerOptions? _options;
-    
     public FormModel()
     {
         PathName = "tasks";
-        Controller = "Form";
-        PageUrl = $"/{PathName}";
+        Name = "Tasks";
     }
 
-    public SectionModel[] Sections { get; set; } = [];
-    
-    public string PageUrl { get; set; }
-
-    public string[] NavigationHistory => _navList.ToArray();
-
-    public string PathName { get; init; }
+    public SectionModel[] Sections { get; init; } = [];
 
     public bool CanSubmit => Sections.All(s => s.IsComplete);
     
-    public void AddSection(SectionModel section)
+    public BaseModel FindPage(string pageUrl)
     {
-        section.PageUrl = $"/{PathName}/{section.PathName}";
-        Sections = Sections.Concat([section]).ToArray();
-    }
-    
-    public void AddNavigation(string url)
-    {
-        _navList.Add(url);
-    }
+        if (pageUrl == PageUrl) return this;
 
-    public void PopLastNavigationHistory()
-    {
-        if (_navList.Count > 0)
+        foreach (var section in Sections)
         {
-            _navList.Remove(_navList.Last());
-        }
-    }
-
-    public void PopAllNavigationHistory()
-    {
-        _navList.Clear();
-    }
-    
-    public TPage FindPage<TPage>(string pageUrl) where TPage : PageModel
-    {
-        foreach (SectionModel section in Sections)
-        {
-            foreach (PageModel page in section.Pages)
-            {
-                if (pageUrl.EndsWith(page.PageUrl, StringComparison.Ordinal) && page is TPage modelPage)
-                {
-                    return modelPage;
-                }
-            }
-        }
-
-        throw new InvalidOperationException($"Unable to find page model for path '{pageUrl}'.");
-    }
-
-    public SectionModel FindSection(string sectionPageUrl)
-    {
-        SectionModel? section = Sections.FirstOrDefault(s => s.PageUrl == sectionPageUrl);
-        
-        return section ?? throw new InvalidOperationException($"Unable to find section model for path '{sectionPageUrl}'.");
-    }
-    
-    public SectionModel FindSectionForPage(string pageUrl)
-    {
-        foreach (SectionModel section in Sections)
-        {
-            if (section.Pages.Any(page => page.PageUrl == pageUrl))
+            if (section.PageUrl == pageUrl || section.PageUrl + "/summary" == pageUrl)
             {
                 return section;
             }
-        }
 
-        throw new InvalidOperationException($"Unable to find section model for path '{pageUrl}'.");
-    }
-
-    public void RemovePageModel(string id)
-    {
-        foreach (SectionModel section in Sections)
-        {
-            foreach (PageModel page in section.Pages)
+            foreach (var page in section.Pages)
             {
-                if (page.Id == id)
+                if (page.PageUrl == pageUrl)
                 {
-                    section.RemovePage(page);
-                    return;
+                    return page;
                 }
-
-                if(page is SummaryListModel summaryList)
-                {
-                    foreach (PageModel summaryPage in summaryList.Pages)
-                    {
-                        if (summaryPage.Id == id)
-                        {
-                            summaryList.RemovePage(summaryPage);
-                            return;
-                        }
-                    }
-                }
-
             }
         }
+
+        return this; // TODO: Handle?
     }
 
-    public void Initialize()
+    public SummaryListModel FindSummaryList(string itemId)
     {
-        _options ??= CreateOptions(this);
+        foreach (var section in Sections)
+        {
+            foreach (var page in section.Pages)
+            {
+                if (page is SummaryListModel summaryList && summaryList.Items.Any(i => i.Id == itemId))
+                {
+                    return summaryList;
+                }
+            }
+        }
 
-        // TODO: Could validate all paths are unique and throw exception if not
-    }
-
-    public static FormModel Deserialize(string json)
-    {
-        return JsonSerializer.Deserialize<FormModel>(json, _options)!;
+        throw new InvalidOperationException("Shouldn't get here");
     }
     
-    public string Serialize()
+    public BaseModel FindPageBefore(BaseModel currentPage)
     {
-        return JsonSerializer.Serialize(this, _options);
-    }
-
-    private static JsonSerializerOptions CreateOptions(FormModel form)
-    {
-        List<JsonDerivedType> derivedPageModelTypes = new();
-
-        foreach (SectionModel section in form.Sections)
+        foreach (var section in Sections)
         {
-            foreach (PageModel page in section.Pages)
+            for (int i = 0; i < section.Pages.Length; i++)
             {
-                if (derivedPageModelTypes.Any(t => 
-                        t.TypeDiscriminator?.ToString() == page.GetType().Name))
+                if (section.Pages[i].Id == currentPage.Id && i > 0)
                 {
-                    continue;
+                    return section.Pages[i - 1];
                 }
-                
-                derivedPageModelTypes.Add(new JsonDerivedType(page.GetType(), page.GetType().Name));
             }
         }
 
-        JsonSerializerOptions options = new()
+        throw new InvalidOperationException("Shouldn't get here");
+    }
+    
+    public BaseModel GetNextPageAfter(string pageUrl)
+    {
+        foreach (var section in Sections)
         {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver
+            if (section.PageUrl == pageUrl)
             {
-                Modifiers =
+                return this; // We have completed the section so return to the task list
+            }
+
+            // TODO: Need to integrate with state machine to decide on next page
+
+            for (int i = 0; i < section.Pages.Length; i++)
+            {
+                if (section.Pages[i].PageUrl == pageUrl)
                 {
-                    typeInfo =>
+                    if (i < section.Pages.Length - 1)
                     {
-                        if (typeInfo.Type == typeof(PageModel))
-                        {
-                            typeInfo.PolymorphismOptions = new JsonPolymorphismOptions
-                            {
-                                TypeDiscriminatorPropertyName = "$type"
-                            };
-
-                            foreach (JsonDerivedType type in derivedPageModelTypes)
-                            {
-                                typeInfo.PolymorphismOptions.DerivedTypes.Add(type);
-                            }
-                        }
+                        return section.Pages[i + 1];
                     }
+
+                    return section; // TODO: return the summary for the section
                 }
             }
-        };
+        }
 
-        return options;
+        return this; // TODO: Is this what we want?
     }
-
-    public void AddOrUpdatePreviousPageInSummaryList(SummaryListModel summaryList)
+    
+    public void Initialize()
     {
-        SectionModel section = FindSectionForPage(summaryList.PageUrl);
-        PageModel previousPage = section.GetPreviousPage(summaryList.PageUrl)!;
-        PageModel? pageToUpdate = summaryList.Pages.FirstOrDefault(p => p.Id == previousPage.Id);
-
-        if(pageToUpdate is not null)
+        PageUrl = $"/{PathName}";
+        
+        foreach (var section in Sections)
         {
-            previousPage.CopyTo(pageToUpdate);
-        }
-        else
-        {
-            string json = JsonSerializer.Serialize(previousPage, _options);
-            PageModel previousPageCopy = JsonSerializer.Deserialize<PageModel>(json, _options)!;
-            summaryList.AddPage(previousPageCopy);
-        }
+            section.PageUrl = $"{PageUrl}/{section.PathName}";
 
-        previousPage.Reset();
+            foreach (var page in section.Pages)
+            {
+                page.PageUrl = $"{section.PageUrl}/{page.PathName}";
+            }
+        }
     }
 }

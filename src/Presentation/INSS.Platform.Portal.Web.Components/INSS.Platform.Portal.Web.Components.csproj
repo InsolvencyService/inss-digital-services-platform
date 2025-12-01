@@ -16,11 +16,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <None Include="Views\Address\Index.cshtml" />
-      <None Include="Views\BankAccount\Index.cshtml" />
-      <EmbeddedResource Include="Views\Form\Index.cshtml" />
-      <None Include="Views\FullName\Index.cshtml" />
-      <None Include="Views\Summary\Index.cshtml" />
+      <UpToDateCheckInput Remove="Views\Confirm\Index.cshtml" />
     </ItemGroup>
 
 </Project>

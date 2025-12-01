@@ -1,76 +1,123 @@
 ﻿using INSS.Platform.Portal.Application.Factories;
-using INSS.Platform.Portal.Application.Resolvers;
 using INSS.Platform.Portal.Domain;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace INSS.Platform.Portal.Application.Services;
 
-public sealed class FormService : IModelService<FormModel>
+// TODO: Refactor - use handlers??
+
+public sealed class FormService : IFormService
 {
-    private readonly IFormModelFactory _formModelFactory;
     private readonly IFormStateService _formStateService;
-    private readonly IUserSessionResolver _userSessionResolver;
-    
-    public FormService(
-        IFormModelFactory formModelFactory, 
-        IFormStateService  formStateService,
-        IUserSessionResolver userSessionResolver)
+    private readonly IFormModelFactory _formModelFactory;
+
+    public FormService(IFormStateService formStateService, IFormModelFactory formModelFactory)
     {
-        _formModelFactory = formModelFactory;
         _formStateService = formStateService;
-        _userSessionResolver = userSessionResolver;
+        _formModelFactory = formModelFactory;
     }
     
-    public async Task<FormModel> LoadAsync(string? pageUrl)
+    public async Task<BaseModel> GetAsync(string path)
     {
-        FormModel form = await CreateFormModelAsync();
-        form.PopAllNavigationHistory();
-        form.AddNavigation(form.PageUrl);
-        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
-        return form;
-    }
-
-    public Task ValidateAsync(ModelStateDictionary modelState, FormModel model)
-    {
-        return Task.CompletedTask;
-    }
-
-    public async Task<string> SaveAsync(string requestPath, FormModel model)
-    {
-        FormModel form = await _formStateService.GetAsync(_userSessionResolver.GetUserId());
-        form.PopAllNavigationHistory();
-        await _formStateService.SaveAsync(_userSessionResolver.GetUserId(), form);
+        FormModel form;
         
-        // TODO: Push to an API
-        
-        return await Task.FromResult(requestPath);
-    }
-
-    private async Task<FormModel> CreateFormModelAsync()
-    {
-        string sessionId = _userSessionResolver.GetUserId();
-
-        if (!await this._formStateService.FormExistsAsync(sessionId))
+        if (!await _formStateService.FormExistsAsync())
         {
-            FormModel form = await this._formModelFactory.CreateAsync();
-            await _formStateService.SaveAsync(sessionId, form);
+            form = await _formModelFactory.CreateAsync();
+            await _formStateService.SaveAsync(form);
+        }
+        else
+        {
+            form = await _formStateService.GetAsync();
+        }
+        
+        return form.FindPage(path);
+    }
+
+    public async Task<string> SaveAsync(BaseModel model)
+    {
+        FormModel form = await _formStateService.GetAsync();
+
+        if (model is ConfirmModel confirm)
+        {
+            SummaryListModel summaryList2 = form.FindSummaryList(confirm.Id);
+            
+            if (confirm.Confirmed)
+            {
+                summaryList2.Items = summaryList2.Items.Where(i => i.Id != confirm.Id).ToArray();
+                await _formStateService.SaveAsync(form);
+            }
+
+            if (summaryList2.Items.Length == 0)
+            {
+                BaseModel previousPage = form.FindPageBefore(summaryList2);
+                return previousPage.PageUrl;
+            }
+            
+            return summaryList2.PageUrl;
         }
 
-        return await _formStateService.GetAsync(sessionId);
+        BaseModel currentModel = form.FindPage(model.PageUrl);
+
+        if (currentModel is SectionModel section)
+        {
+            section.IsComplete = true;
+        }
+        else if (currentModel is not SummaryListModel)
+        {
+            model.CopyTo(currentModel);   
+        }
+
+        BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
+        page.PreviousPageUrl = model.PageUrl;
+        
+        // See if the next page is a summary list. If so then we need to...
+        if (page is SummaryListModel summaryList)
+        {
+            BaseModel? currentItem = summaryList.Items.FirstOrDefault(p => p.Id == currentModel.Id);
+
+            if (currentItem is null)
+            {
+                // Add a copy
+                summaryList.Items = summaryList.Items.Concat([currentModel.Clone()]).ToArray();
+                currentModel.Reset();
+            }
+            else
+            {
+                // Replace
+                currentModel.CopyTo(currentItem);
+                currentModel.Reset();
+            }
+            
+        }
+        
+        await _formStateService.SaveAsync(form);
+        
+        page.PreviousPageUrl = model.PageUrl;
+
+        return page is SectionModel ? page.PageUrl + "/summary" : page.PageUrl;
     }
 
-    public Task<string> GetPageUrlAsync(string? pageUrl, string id)
+    public async Task<string> ChangeAsync(string itemId)
     {
-        throw new NotImplementedException();
+        FormModel form = await _formStateService.GetAsync();
+        
+        SummaryListModel summaryList = form.FindSummaryList(itemId);
+        BaseModel page = summaryList.Items.First(i => i.Id == itemId);
+        BaseModel previousPage = form.FindPageBefore(summaryList);
+        page.CopyTo(previousPage);
+        previousPage.Id = page.Id;
+
+        await _formStateService.SaveAsync(form);
+        
+        return previousPage.PageUrl;
     }
 
-    public Task<string> GetRemovedPageUrlAsync(string? pageUrl, string id)
+    public async Task<ConfirmModel> RemoveAsync(string itemId)
     {
-        throw new NotImplementedException();
-    }
+        FormModel form = await _formStateService.GetAsync();
 
-    public Task<string> GetPostRemovedPageUrlAsync(string? pageUrl, string id)
-    {
-        throw new NotImplementedException();
+        SummaryListModel summaryList = form.FindSummaryList(itemId);
+
+        return new ConfirmModel { Id = itemId, PageUrl = summaryList.PageUrl };
     }
 }

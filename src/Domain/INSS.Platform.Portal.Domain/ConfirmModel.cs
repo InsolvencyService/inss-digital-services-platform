@@ -2,17 +2,14 @@
 
 namespace INSS.Platform.Portal.Domain;
 
-public class ConfirmModel : PageModel
+public class ConfirmModel : BaseModel
 {
     public ConfirmModel()
     {
         PathName = "confirm";
-        Title = "Confirm";
-        Controller = "Confirm";
+        Name = "Confirm";
     }
 
-    public string? ConfirmationId { get; set; }
-
     [Required(ErrorMessage = "Choose Yes or No to confirm")]
-    public bool Confirm { get; set; }
+    public bool Confirmed { get; init; }
 }
