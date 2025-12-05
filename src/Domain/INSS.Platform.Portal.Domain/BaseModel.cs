@@ -36,9 +36,9 @@ public abstract class BaseModel
     
     public void CopyTo(BaseModel pageModel)
     {
-        var properties = GetType().GetProperties(DerivedTypeBinding);
+        PropertyInfo[] properties = GetType().GetProperties(DerivedTypeBinding);
 
-        foreach (var property in properties)
+        foreach (PropertyInfo property in properties)
         {
             property.SetValue(pageModel, property.GetValue(this));
         }
@@ -48,10 +48,10 @@ public abstract class BaseModel
     {
         BaseModel clone = (BaseModel)Activator.CreateInstance(GetType())!;
         clone.Id = Id;
-        
-        var properties = GetType().GetProperties(DerivedTypeBinding);
 
-        foreach (var property in properties)
+        PropertyInfo[] properties = GetType().GetProperties(DerivedTypeBinding);
+
+        foreach (PropertyInfo property in properties)
         {
             property.SetValue(clone, property.GetValue(this));
         }
@@ -62,10 +62,10 @@ public abstract class BaseModel
     public void Reset()
     {
         Id = Guid.NewGuid().ToString("D");
-        
-        var properties = GetType().GetProperties(DerivedTypeBinding);
 
-        foreach (var property in properties)
+        PropertyInfo[] properties = GetType().GetProperties(DerivedTypeBinding);
+
+        foreach (PropertyInfo property in properties)
         {
             property.SetValue(this, null);
         }
@@ -75,7 +75,7 @@ public abstract class BaseModel
     {
         List<string> displayValueList = [];
 
-        var props = GetType().GetProperties(DerivedTypeBinding);
+        PropertyInfo[] props = GetType().GetProperties(DerivedTypeBinding);
         
         foreach (PropertyInfo property in props)
         {

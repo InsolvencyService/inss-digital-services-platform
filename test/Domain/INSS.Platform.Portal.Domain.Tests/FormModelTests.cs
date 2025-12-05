@@ -56,20 +56,20 @@ public class FormModelTests
     {
         string unknownItemId = Guid.NewGuid().ToString("D");
         FormModel form = CreateFormModel();
-        BaseModel currentPage = form.Sections[0].Pages[0]; // AddressModel
+        BaseModel address = form.Sections[0].Pages[0];
         
-        FormModelException exception = Assert.Throws<FormModelException>(() => form.FindPageBefore(currentPage));
+        FormModelException exception = Assert.Throws<FormModelException>(() => form.FindPageBefore(address));
         
-        Assert.Equal($"Unable to find the page before {currentPage.PageUrl}.", exception.Message);
+        Assert.Equal($"Unable to find the page before {address.PageUrl}.", exception.Message);
     }
 
     [Fact]
     public void KnownPageUrl_FindPageBefore_ReturnsPreviousPage()
     {
         FormModel form = CreateFormModel();
-        BaseModel currentPage = form.Sections[0].Pages[1]; // BankAccountModel
+        BaseModel bankAccount = form.Sections[0].Pages[1];
         
-        BaseModel item = form.FindPageBefore(currentPage);
+        BaseModel item = form.FindPageBefore(bankAccount);
         
         Assert.NotNull(item);
         Assert.IsType<AddressModel>(item);
