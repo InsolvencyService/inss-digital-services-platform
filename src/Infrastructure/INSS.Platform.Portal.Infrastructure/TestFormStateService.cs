@@ -8,7 +8,7 @@ namespace INSS.Platform.Portal.Infrastructure;
 public sealed class TestFormStateService : IFormStateService
 {
     private readonly IUserSessionResolver _userSessionResolver;
-    private static readonly ConcurrentDictionary<string, FormModel> _cache2 = new();
+    private static readonly ConcurrentDictionary<string, FormModel> _cache = new();
 
     public TestFormStateService(IUserSessionResolver userSessionResolver)
     {
@@ -18,14 +18,14 @@ public sealed class TestFormStateService : IFormStateService
     public Task<bool> FormExistsAsync()
     {
         string sessionId = _userSessionResolver.GetUserId();
-        return Task.FromResult(_cache2.ContainsKey(sessionId));
+        return Task.FromResult(_cache.ContainsKey(sessionId));
     }
 
     public Task<FormModel> GetAsync()
     {
         string sessionId = _userSessionResolver.GetUserId();
         
-        if (_cache2.TryGetValue(sessionId, out var model))
+        if (_cache.TryGetValue(sessionId, out FormModel? model))
         {
             return Task.FromResult(model);
         }
@@ -36,7 +36,7 @@ public sealed class TestFormStateService : IFormStateService
     public Task SaveAsync(FormModel model)
     {
         string sessionId = _userSessionResolver.GetUserId();
-        _cache2[sessionId] = model;
+        _cache[sessionId] = model;
         return Task.CompletedTask;
     }
 }
