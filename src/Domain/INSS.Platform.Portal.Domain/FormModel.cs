@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Portal.Domain;
+﻿using INSS.Platform.Portal.Domain.Exceptions;
+
+namespace INSS.Platform.Portal.Domain;
 
 public class FormModel : BaseModel
 {
@@ -14,16 +16,19 @@ public class FormModel : BaseModel
     
     public BaseModel FindPage(string pageUrl)
     {
-        if (pageUrl == PageUrl) return this;
+        if (pageUrl == PageUrl)
+        {
+            return this;
+        }
 
-        foreach (var section in Sections)
+        foreach (SectionModel section in Sections)
         {
             if (section.PageUrl == pageUrl || section.PageUrl + "/summary" == pageUrl)
             {
                 return section;
             }
 
-            foreach (var page in section.Pages)
+            foreach (BaseModel page in section.Pages)
             {
                 if (page.PageUrl == pageUrl)
                 {
@@ -32,14 +37,14 @@ public class FormModel : BaseModel
             }
         }
 
-        return this; // TODO: Handle?
+        throw new FormModelException($"Unable to find the page associated with {pageUrl}.");
     }
 
     public SummaryListModel FindSummaryList(string itemId)
     {
-        foreach (var section in Sections)
+        foreach (SectionModel section in Sections)
         {
-            foreach (var page in section.Pages)
+            foreach (BaseModel page in section.Pages)
             {
                 if (page is SummaryListModel summaryList && summaryList.Items.Any(i => i.Id == itemId))
                 {
@@ -48,12 +53,12 @@ public class FormModel : BaseModel
             }
         }
 
-        throw new InvalidOperationException("Shouldn't get here");
+        throw new FormModelException($"Unable to find the summary list for the specified item {itemId}.");
     }
     
     public BaseModel FindPageBefore(BaseModel currentPage)
     {
-        foreach (var section in Sections)
+        foreach (SectionModel section in Sections)
         {
             for (int i = 0; i < section.Pages.Length; i++)
             {
@@ -64,19 +69,17 @@ public class FormModel : BaseModel
             }
         }
 
-        throw new InvalidOperationException("Shouldn't get here");
+        throw new FormModelException($"Unable to find the page before {currentPage.PageUrl}.");
     }
     
     public BaseModel GetNextPageAfter(string pageUrl)
     {
-        foreach (var section in Sections)
+        foreach (SectionModel section in Sections)
         {
             if (section.PageUrl == pageUrl)
             {
-                return this; // We have completed the section so return to the task list
+                return this;
             }
-
-            // TODO: Need to integrate with state machine to decide on next page
 
             for (int i = 0; i < section.Pages.Length; i++)
             {
@@ -87,23 +90,23 @@ public class FormModel : BaseModel
                         return section.Pages[i + 1];
                     }
 
-                    return section; // TODO: return the summary for the section
+                    return section;
                 }
             }
         }
 
-        return this; // TODO: Is this what we want?
+        return this;
     }
     
     public void Initialize()
     {
         PageUrl = $"/{PathName}";
         
-        foreach (var section in Sections)
+        foreach (SectionModel section in Sections)
         {
             section.PageUrl = $"{PageUrl}/{section.PathName}";
 
-            foreach (var page in section.Pages)
+            foreach (BaseModel page in section.Pages)
             {
                 page.PageUrl = $"{section.PageUrl}/{page.PathName}";
             }

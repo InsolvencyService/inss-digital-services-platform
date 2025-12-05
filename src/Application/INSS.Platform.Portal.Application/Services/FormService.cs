@@ -3,8 +3,6 @@ using INSS.Platform.Portal.Domain;
 
 namespace INSS.Platform.Portal.Application.Services;
 
-// TODO: Refactor - use handlers??
-
 public sealed class FormService : IFormService
 {
     private readonly IFormStateService _formStateService;
@@ -39,21 +37,7 @@ public sealed class FormService : IFormService
 
         if (model is ConfirmModel confirm)
         {
-            SummaryListModel summaryList2 = form.FindSummaryList(confirm.Id);
-            
-            if (confirm.Confirmed)
-            {
-                summaryList2.Items = summaryList2.Items.Where(i => i.Id != confirm.Id).ToArray();
-                await _formStateService.SaveAsync(form);
-            }
-
-            if (summaryList2.Items.Length == 0)
-            {
-                BaseModel previousPage = form.FindPageBefore(summaryList2);
-                return previousPage.PageUrl;
-            }
-            
-            return summaryList2.PageUrl;
+            return await GetPostComfirmPageUrlAsync(form, confirm);
         }
 
         BaseModel currentModel = form.FindPage(model.PageUrl);
@@ -70,24 +54,9 @@ public sealed class FormService : IFormService
         BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
         page.PreviousPageUrl = model.PageUrl;
         
-        // See if the next page is a summary list. If so then we need to...
         if (page is SummaryListModel summaryList)
         {
-            BaseModel? currentItem = summaryList.Items.FirstOrDefault(p => p.Id == currentModel.Id);
-
-            if (currentItem is null)
-            {
-                // Add a copy
-                summaryList.Items = summaryList.Items.Concat([currentModel.Clone()]).ToArray();
-                currentModel.Reset();
-            }
-            else
-            {
-                // Replace
-                currentModel.CopyTo(currentItem);
-                currentModel.Reset();
-            }
-            
+            UpdateSummaryListModel(summaryList, currentModel);
         }
         
         await _formStateService.SaveAsync(form);
@@ -100,7 +69,6 @@ public sealed class FormService : IFormService
     public async Task<string> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        
         SummaryListModel summaryList = form.FindSummaryList(itemId);
         BaseModel page = summaryList.Items.First(i => i.Id == itemId);
         BaseModel previousPage = form.FindPageBefore(summaryList);
@@ -119,5 +87,42 @@ public sealed class FormService : IFormService
         SummaryListModel summaryList = form.FindSummaryList(itemId);
 
         return new ConfirmModel { Id = itemId, PageUrl = summaryList.PageUrl };
+    }
+
+    private async Task<string> GetPostComfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
+    {
+        SummaryListModel summaryList = form.FindSummaryList(confirm.Id);
+            
+        if (confirm.Confirmed)
+        {
+            summaryList.Items = summaryList.Items.Where(i => i.Id != confirm.Id).ToArray();
+            await _formStateService.SaveAsync(form);
+        }
+
+        if (summaryList.Items.Length == 0)
+        {
+            BaseModel previousPage = form.FindPageBefore(summaryList);
+            return previousPage.PageUrl;
+        }
+        
+        return summaryList.PageUrl;
+    }
+
+    private static void UpdateSummaryListModel(SummaryListModel summaryList, BaseModel currentModel)
+    {
+        BaseModel? currentItem = summaryList.Items.FirstOrDefault(p => p.Id == currentModel.Id);
+
+        if (currentItem is null)
+        {
+            // Add a copy
+            summaryList.Items = [.. summaryList.Items, currentModel.Clone()];
+            currentModel.Reset();
+        }
+        else
+        {
+            // Replace
+            currentModel.CopyTo(currentItem);
+            currentModel.Reset();
+        }
     }
 }
