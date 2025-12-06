@@ -21,6 +21,9 @@
     <Project Path="src/Presentation/INSS.Platform.UserManagement.Web/INSS.Platform.UserManagement.Web.csproj" />
   </Folder>
   <Folder Name="/test/" />
+  <Folder Name="/test/Application/">
+    <Project Path="test/Application/INSS.Platform.Portal.Application.Tests/INSS.Platform.Portal.Application.Tests.csproj" />
+  </Folder>
   <Folder Name="/test/Domain/">
     <Project Path="test/Domain/INSS.Platform.Portal.Domain.Tests/INSS.Platform.Portal.Domain.Tests.csproj" />
   </Folder>
