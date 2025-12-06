@@ -108,6 +108,6 @@ public abstract class BaseModel
             }
         }
 
-        return displayValueList.ToArray();
+        return [.. displayValueList];
     }
 }

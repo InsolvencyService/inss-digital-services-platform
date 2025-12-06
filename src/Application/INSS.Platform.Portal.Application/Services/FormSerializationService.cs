@@ -33,28 +33,30 @@ public sealed class FormSerializationService : IFormSerializationService
             {
                 Modifiers =
                 {
-                    typeInfo =>
-                    {
-                        if (typeInfo.Type == typeof(BaseModel))
-                        {
-                            typeInfo.PolymorphismOptions = new JsonPolymorphismOptions
-                            {
-                                TypeDiscriminatorPropertyName = "$type"
-                            };
-
-                            foreach (JsonDerivedType type in GetJsonDerivedTypes(modelTypeService))
-                            {
-                                typeInfo.PolymorphismOptions.DerivedTypes.Add(type);
-                            }
-                        }
-                    }
+                    typeInfo => AddPolymorphicTypeDiscrimianators(modelTypeService, typeInfo)
                 }
             }
         };
 
         return options;
     }
-    
+
+    private static void AddPolymorphicTypeDiscrimianators(IModelTypeService modelTypeService, JsonTypeInfo typeInfo)
+    {
+        if (typeInfo.Type == typeof(BaseModel))
+        {
+            typeInfo.PolymorphismOptions = new JsonPolymorphismOptions
+            {
+                TypeDiscriminatorPropertyName = "$type"
+            };
+
+            foreach (JsonDerivedType type in GetJsonDerivedTypes(modelTypeService))
+            {
+                typeInfo.PolymorphismOptions.DerivedTypes.Add(type);
+            }
+        }
+    }
+
     private static List<JsonDerivedType> GetJsonDerivedTypes(IModelTypeService modelTypeService)
     {
         List<JsonDerivedType> derivedPageModelTypes = [];

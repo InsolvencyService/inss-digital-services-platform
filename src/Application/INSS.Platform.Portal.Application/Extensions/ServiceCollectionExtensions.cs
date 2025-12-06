@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         configure?.Invoke(options);
 
         services.AddSingleton<IModelStateValidator<BankAccountModel>, BankAccountModelStateValidator>();
-        services.AddSingleton<IModelTypeService>(_ => new ModelTypeService(options.ModelAssemblies.ToArray()));
+        services.AddSingleton<IModelTypeService>(_ => new ModelTypeService([.. options.ModelAssemblies]));
         services.AddTransient<IFormService, FormService>();
         services.AddSingleton<IFormSerializationService, FormSerializationService>();
         return services;

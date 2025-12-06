@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 
 namespace INSS.Platform.Portal.Web.Components.Extensions;
 
@@ -8,9 +10,9 @@ public static class FormCollectionExtensions
     {
         Dictionary<string, object?> result = new(StringComparer.OrdinalIgnoreCase);
         
-        foreach (var entry in form)
+        foreach (KeyValuePair<string, StringValues> entry in form)
         {
-            var property = type.GetProperty(entry.Key);
+            PropertyInfo? property = type.GetProperty(entry.Key);
 
             if (property is null)
             {
@@ -29,10 +31,12 @@ public static class FormCollectionExtensions
         Type targetType = Nullable.GetUnderlyingType(conversionType) ?? conversionType;
 
         // Null handling for nullable types
-        if (value == null || value == DBNull.Value)
+        if (value is null || value == DBNull.Value)
+        {
             return conversionType.IsValueType && Nullable.GetUnderlyingType(conversionType) == null
                 ? Activator.CreateInstance(conversionType) // Default for value types
                 : null;
+        }
 
         return Convert.ChangeType(value, targetType, Thread.CurrentThread.CurrentCulture);
     }
