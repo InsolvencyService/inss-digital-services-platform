@@ -15,19 +15,17 @@ public sealed class BankAccountModelStateValidator : IModelStateValidator<BankAc
     
     public async Task ValidateAsync(ModelStateDictionary modelState, BaseModel model)
     {
-        if (model is BankAccountModel bankAccount)
+        if (model is not BankAccountModel bankAccount)
         {
-            bool exists = await this._bankClient.BankAccountExistsAsync(bankAccount.AccountNumber, bankAccount.SortCode);
-
-            if (!exists)
-            {
-                modelState.AddModelError(nameof(bankAccount.AccountNumber), "Bank account account number not found");
-                modelState.AddModelError(nameof(bankAccount.SortCode), "Bank account sort code not found");
-            }
-            
-            return;
+            throw new InvalidCastException("Unable to cast the model to the bank account model.");
         }
 
-        throw new InvalidOperationException("Unable to cast the model to the bank account model.");
+        bool exists = await this._bankClient.BankAccountExistsAsync(bankAccount.AccountNumber, bankAccount.SortCode);
+
+        if (!exists)
+        {
+            modelState.AddModelError(nameof(bankAccount.AccountNumber), "Bank account account number not found");
+            modelState.AddModelError(nameof(bankAccount.SortCode), "Bank account sort code not found");
+        }
     }
 }

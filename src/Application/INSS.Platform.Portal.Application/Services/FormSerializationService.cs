@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using INSS.Platform.Portal.Domain;
+using INSS.Platform.Portal.Domain.Exceptions;
 
 namespace INSS.Platform.Portal.Application.Services;
 
@@ -21,7 +22,7 @@ public sealed class FormSerializationService : IFormSerializationService
     public FormModel Deserialize(string json)
     {
         return JsonSerializer.Deserialize<FormModel>(json, _options) 
-               ?? throw new InvalidOperationException("Unable to deserialize the json to a form model.");
+               ?? throw new FormModelException("Unable to deserialize the json to a form model.");
     }
     
     private static JsonSerializerOptions CreateOptions(IModelTypeService modelTypeService)

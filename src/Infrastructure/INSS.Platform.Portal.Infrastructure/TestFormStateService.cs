@@ -2,6 +2,7 @@
 using INSS.Platform.Portal.Application.Resolvers;
 using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Domain;
+using INSS.Platform.Portal.Domain.Exceptions;
 
 namespace INSS.Platform.Portal.Infrastructure;
 
@@ -30,7 +31,7 @@ public sealed class TestFormStateService : IFormStateService
             return Task.FromResult(model);
         }
 
-        throw new InvalidOperationException($"Unable to find the form model for the session {sessionId}");
+        throw new FormModelException($"Unable to find the form model for the session {sessionId}");
     }
     
     public Task SaveAsync(FormModel model)
