@@ -8,13 +8,6 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
 {
     public Task<FormModel> CreateAsync()
     {
-        /*
-        // Example serialize and deserialize
-        var json = form.Serialize();
-
-        var form2 = FormModel.Deserialize(json);
-        */
-        
         FormModel form = new()
         {
             Sections =
