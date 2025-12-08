@@ -1,17 +1,13 @@
 using INSS.Platform.Portal.Application.Factories;
-using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Web.Components.Extensions;
 using INSS.Platform.Portal.Web.Factories;
 using INSS.Platform.Portal.Web.Models;
-using INSS.Platform.Portal.Web.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.AddComponents();
+builder.AddComponents(typeof(HomeValueModel).Assembly);
 
 builder.Services.AddTransient<IFormModelFactory, WebAppFormModelFactory>();
-
-builder.Services.AddTransient<IModelService<HomeValueModel>, HomeValueService>();
 
 WebApplication app = builder.Build();
 

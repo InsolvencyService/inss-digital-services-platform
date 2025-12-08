@@ -1,0 +1,12 @@
+﻿@model INSS.Platform.Portal.Domain.BankAccountModel
+
+<govuk-input for="@Model.AccountNumber" input-class="govuk-input--width-10" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your account number?</govuk-input-label>
+    <govuk-input-hint>Must be 8 digits long</govuk-input-hint>
+</govuk-input>
+<inss-error-message asp-for="@Model.AccountNumber"/>
+<govuk-input for="@Model.SortCode" input-class="govuk-input--width-10" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your sort code?</govuk-input-label>
+    <govuk-input-hint>Must be in the format 11-22-33</govuk-input-hint>
+</govuk-input>
+<inss-error-message asp-for="@Model.SortCode"/>

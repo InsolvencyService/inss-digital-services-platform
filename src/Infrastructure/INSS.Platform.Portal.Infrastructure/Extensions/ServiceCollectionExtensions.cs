@@ -1,5 +1,7 @@
-﻿using INSS.Platform.Portal.Application.Resolvers;
+﻿using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Portal.Application.Resolvers;
 using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Infrastructure.Clients;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace INSS.Platform.Portal.Infrastructure.Extensions;
@@ -10,6 +12,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IFormStateService, TestFormStateService>();
         services.AddSingleton<IUserSessionResolver, TestUserSessionResolver>();
+        services.AddSingleton<IBankClient, MockBankClient>();
         return services;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using INSS.Platform.Portal.Application.Factories;
 using INSS.Platform.Portal.Domain;
-using INSS.Platform.Portal.Web.Models;
+using HomeValueModel = INSS.Platform.Portal.Web.Models.HomeValueModel;
 
 namespace INSS.Platform.Portal.Web.Factories;
 
@@ -8,33 +8,46 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
 {
     public Task<FormModel> CreateAsync()
     {
-        FormModel form = new();
-        PrefabModelSections.AddYourDetails(form);
-
-        SectionModel section = new() { Name = "Assets", PathName = "assets" };
-        form.AddSection(section);
-        section.AddPage(new BankAccountModel());
-        section.AddPage(new HomeValueModel());
-
-        SectionModel sectionAboutYou = new() { Name = "About You", PathName = "about-you" };
-        form.AddSection(sectionAboutYou);
-        sectionAboutYou.AddPage(new FullNameModel { Title = "Full Name"});
-        AddressModel currentAddress = new() { Title = "Address" };
-        sectionAboutYou.AddPage(currentAddress);
-        SummaryListModel summaryList =new() { Title = "Your Addresses"};
-        sectionAboutYou.AddPage(summaryList);
-        ConfirmModel confirm = new() { Title = "Confirm Address Deletion" }; 
-        sectionAboutYou.AddPage(confirm);
+        FormModel form = new()
+        {
+            Sections =
+            [
+                new SectionModel
+                {
+                    Name = "Your Details",
+                    PathName = "your-details",
+                    Pages =
+                    [
+                        new AddressModel(),
+                        new BankAccountModel()
+                    ]
+                },
+                new SectionModel
+                {
+                    Name = "Assets",
+                    PathName = "assets",
+                    Pages =
+                    [
+                        new BankAccountModel(),
+                        new HomeValueModel()
+                    ]
+                },
+                new SectionModel
+                {
+                    Name = "About You",
+                    PathName = "about-you",
+                    Pages =
+                    [
+                        new FullNameModel(),
+                        new AddressModel(),
+                        new SummaryListModel { PathName = "address-list", Name = "Address List"}
+                    ]
+                }
+            ]
+        };
 
         form.Initialize();
-
-        /*
-        // Example serialize and deserialize
-        var json = form.Serialize();
         
-        var form2 = FormModel.Deserialize(json);
-        */
-
         return Task.FromResult(form);
     }
 }

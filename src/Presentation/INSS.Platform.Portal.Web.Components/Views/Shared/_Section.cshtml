@@ -1,0 +1,30 @@
+﻿@model INSS.Platform.Portal.Domain.SectionModel
+
+<govuk-summary-list>
+
+    @foreach (var page in Model.Pages)
+    {
+        List<string> propValues = page.GetValues().ToList();
+        
+        if (propValues.Count == 0)
+        {
+            continue;
+        }
+
+        <govuk-summary-list-row>
+            <govuk-summary-list-row-key>
+                @(page.Name)
+            </govuk-summary-list-row-key>
+            <govuk-summary-list-row-value>
+                @foreach (var propValue in propValues)
+                {
+                    <p class="govuk-body">@(propValue)</p>
+                }
+            </govuk-summary-list-row-value>
+            <govuk-summary-list-row-actions>
+                <govuk-summary-list-row-action href="@(page.PageUrl)" visually-hidden-text="@Model.Name">Change</govuk-summary-list-row-action>
+            </govuk-summary-list-row-actions>
+        </govuk-summary-list-row>
+    }
+
+</govuk-summary-list>

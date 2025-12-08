@@ -2,16 +2,15 @@
 
 namespace INSS.Platform.Portal.Domain;
 
-public sealed class FullNameModel : PageModel
+public sealed class FullNameModel : BaseModel
 {
     public FullNameModel()
     {
         PathName = "full-name";
-        Title = "Full Name";
-        Controller = "FullName";
+        Name = "Fullname";
     }
-
+    
     [Required(ErrorMessage = "Enter your full name")]
     [RegularExpression("^[A-Za-z\\s\\-']+$", ErrorMessage = "Full name can only contain letters, spaces, hyphens and apostrophes")]
-    public string FullName { get; set; } = string.Empty;
+    public string FullName { get; init; } = string.Empty;
 }

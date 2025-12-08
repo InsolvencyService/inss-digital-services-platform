@@ -1,42 +1,22 @@
 ﻿namespace INSS.Platform.Portal.Domain;
 
-public class SummaryListModel : PageModel
+public sealed class SummaryListModel : BaseModel
 {
     public SummaryListModel()
     {
         PathName = "summary-list";
-        Title = "Summary List";
-        Controller = "SummaryList";
+        Name = "Summary List";
     }
 
-    public PageModel[] Pages { get; set; } = [];
+    public BaseModel[] Items { get; set; } = [];
 
-    public bool Reload { get; set; }
-
-    public void AddPage(PageModel page)
+    public string GetChangeUrl(BaseModel item)
     {
-        // Copy the page and add - clone
-
-        // Add identifier to copy of page
-
-        Pages = Pages.Concat([page]).ToArray();
+        return $"{PageUrl}/change/?itemId={item.Id}";
     }
-
-    public void RemovePage(PageModel page)
+    
+    public string GetRemoveUrl(BaseModel item)
     {
-        List<PageModel> pageList = Pages.ToList();
-
-        pageList.Remove(page);
-        Pages = pageList.ToArray();
-    }
-
-    public string GetChangeUrl(PageModel page)
-    {
-        return $"{PageUrl}/change/?id={page.Id}";
-    }
-
-    public string GetRemoveUrl(PageModel page)
-    {
-        return $"{PageUrl}/remove/?id={page.Id}";
+        return $"{PageUrl}/remove/?itemId={item.Id}";
     }
 }

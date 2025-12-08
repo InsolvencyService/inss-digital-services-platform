@@ -1,17 +1,30 @@
 ﻿@{
-    ViewData["Title"] = "Form Task Summary";
+    ViewData["Title"] = "Todo Page";
 }
-
 @addTagHelper GovUk.Frontend.AspNetCore.TagHelpers.*, GovUk.Frontend.AspNetCore
 @addTagHelper INSS.Platform.Portal.Web.Components.TagHelpers.*, INSS.Platform.Portal.Web.Components
-@model INSS.Platform.Portal.Domain.FormModel
+@using INSS.Platform.Portal.Domain
+@model INSS.Platform.Portal.Domain.BaseModel
 
-<form method="post">
-    <inss-task-list>
-        @foreach(var section in Model.Sections)
-        {
-            <inss-task-list-item name="@(section.Name)" is-complete="@(section.IsComplete)" url="@(section.Pages.First().PageUrl)" />
-        }
-        <govuk-button type="submit" disabled="!@Model.CanSubmit">Submit form</govuk-button>
-    </inss-task-list>
-</form>
+@if (Model is not FormModel)
+{
+    <govuk-back-link href="@Model.PreviousPageUrl"/>
+}
+
+@using (@Html.BeginForm("Index", "Form", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Kind)
+    @Html.HiddenFor(m => m.PageUrl)
+    @await Html.PartialAsync(@Model.ViewName, Model)
+
+    @if (Model is FormModel form)
+    {
+        <govuk-button type="submit" disabled="!@form.CanSubmit">Submit form</govuk-button>
+    }
+    else
+    {
+        <govuk-button type="submit">Save and continue</govuk-button>
+    }
+}
