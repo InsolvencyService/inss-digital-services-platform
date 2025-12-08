@@ -42,13 +42,17 @@ public sealed class FormService : IFormService
 
         BaseModel currentModel = form.FindPage(model.PageUrl);
 
-        if (currentModel is SectionModel section)
+        switch (currentModel)
         {
-            section.IsComplete = true;
-        }
-        else if (currentModel is not SummaryListModel)
-        {
-            model.CopyTo(currentModel);   
+            case SectionModel section:
+                section.IsComplete = true;
+                break;
+            case SummaryListModel:
+                // No action required
+                break;
+            default:
+                model.CopyTo(currentModel);
+                break;
         }
 
         BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
@@ -70,7 +74,7 @@ public sealed class FormService : IFormService
     {
         FormModel form = await _formStateService.GetAsync();
         SummaryListModel summaryList = form.FindSummaryList(itemId);
-        BaseModel page = summaryList.Items.First(i => i.Id == itemId);
+        BaseModel page = summaryList.Items.Single(i => i.Id == itemId);
         BaseModel previousPage = form.FindPageBefore(summaryList);
         page.CopyTo(previousPage);
         previousPage.Id = page.Id;

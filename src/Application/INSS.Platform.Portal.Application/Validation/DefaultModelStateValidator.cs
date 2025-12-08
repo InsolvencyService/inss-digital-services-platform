@@ -7,7 +7,6 @@ public sealed class DefaultModelStateValidator : IModelStateValidator<BaseModel>
 {
     public Task ValidateAsync(ModelStateDictionary modelState, BaseModel model)
     {
-        // Do nothing
         return Task.CompletedTask;
     }
 }

@@ -27,14 +27,12 @@ public static class FormCollectionExtensions
     
     private static object? ChangeType(object? value, Type conversionType)
     {
-        // Handle nullable types
         Type targetType = Nullable.GetUnderlyingType(conversionType) ?? conversionType;
 
-        // Null handling for nullable types
-        if (value is null || value == DBNull.Value)
+        if (value is null)
         {
             return conversionType.IsValueType && Nullable.GetUnderlyingType(conversionType) == null
-                ? Activator.CreateInstance(conversionType) // Default for value types
+                ? Activator.CreateInstance(conversionType)
                 : null;
         }
 
