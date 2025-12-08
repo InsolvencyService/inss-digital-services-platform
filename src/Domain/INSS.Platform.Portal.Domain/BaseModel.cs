@@ -26,13 +26,13 @@ public abstract class BaseModel
 
     public string Kind { get; init; }
 
-    public string Name { get; init; } = string.Empty;
+    public string Name { get; init; }
     
     public string PathName { get; init; }
     
     public string ViewName { get; init; }
     
-    public string PageUrl { get; set; } = string.Empty;
+    public string PageUrl { get; set; }
     
     public string PreviousPageUrl { get; set; }
     
