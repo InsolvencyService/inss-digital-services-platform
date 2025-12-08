@@ -83,7 +83,7 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
 
         _logger.LogInformation("User {User} successfully authenticated via {Provider}.", context.Principal?.Identity?.Name, provider.ToString());
 
-        UriBuilder uriBuilder = BuildRedirectUrlWithToken(context, accessToken);
+        UriBuilder uriBuilder = BuildRedirectUrlWithToken(context, accessToken, provider);
         context.Response.Redirect(uriBuilder.Uri.ToString());
         context.HandleResponse();
     }
@@ -162,11 +162,12 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
     /// Creates an INSS JWT by extracting the 'sub' claim from the provider-issued access token and optionally including a user ID.
     /// </summary>
     /// <param name="providerIssuedAccessToken">The access token issued by the external authentication provider. This token must contain a 'sub' claim.</param>
+    /// <param name="provider">The authentication provider that issued the original access token.</param>
     /// <param name="userid">The optional user ID to include in the generated JWT as the 'user_id' claim.</param>
     /// <returns>
     /// A signed JWT string containing the 'sub' claim (and 'user_id' if provided), issued by the INSS platform.
     /// </returns>
-    private string CreateInssJwtSecurityToken(string providerIssuedAccessToken, string? userid)
+    private string CreateInssJwtSecurityToken(string providerIssuedAccessToken, AuthenticationProvider provider, string? userid)
     {
         JwtSecurityTokenHandler handler = new();
         JwtSecurityToken providerToken = handler.ReadJwtToken(providerIssuedAccessToken);
@@ -182,6 +183,8 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
         {
             claims["user_id"] = userid;
         }
+
+        claims["auth_provider"] = provider.ToString();
 
         return CreateJwtSecurityToken(
             _options.Inss.Issuer,
@@ -239,10 +242,11 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
     /// </summary>
     /// <param name="context">The context containing information about the token validation event.</param>
     /// <param name="accessToken">The access token issued by the external authentication provider.</param>
+    /// <param name="provider">The authentication provider that issued the original access token.</param>
     /// <returns>
     /// A <see cref="UriBuilder"/> representing the redirect URL with the INSS JWT token included as a query parameter.
     /// </returns>
-    private UriBuilder BuildRedirectUrlWithToken(TokenValidatedContext context, string accessToken)
+    private UriBuilder BuildRedirectUrlWithToken(TokenValidatedContext context, string accessToken, AuthenticationProvider provider)
     {
         string? userId = null;
         context.Properties?.Items.TryGetValue(UserIdKey, out userId);
@@ -255,7 +259,7 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
             returnUrl = context.Request.Headers.Referer;
         }
 
-        string inssJwt = CreateInssJwtSecurityToken(accessToken, userId);
+        string inssJwt = CreateInssJwtSecurityToken(accessToken, provider, userId);
 
         UriBuilder uriBuilder = new(returnUrl!);
         NameValueCollection query = HttpUtility.ParseQueryString(uriBuilder.Query);
