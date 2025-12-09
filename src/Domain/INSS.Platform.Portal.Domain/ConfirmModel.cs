@@ -10,6 +10,8 @@ public class ConfirmModel : BaseModel
         Name = "Confirm";
     }
 
+    public required string Question { get; init; }
+    
     [Required(ErrorMessage = "Choose Yes or No to confirm")]
     public bool Confirmed { get; init; }
 }
