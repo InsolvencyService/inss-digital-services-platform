@@ -40,7 +40,12 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                     [
                         new FullNameModel(),
                         new AddressModel(),
-                        new SummaryListModel { PathName = "address-list", Name = "Address List"}
+                        new SummaryListModel
+                        {
+                            PathName = "address-list", 
+                            Name = "Address List", 
+                            RemoveQuestionText = "Are you sure yuo want to remove the address?"
+                        }
                     ]
                 }
             ]

@@ -10,6 +10,8 @@ public sealed class SummaryListModel : BaseModel
 
     public BaseModel[] Items { get; set; } = [];
 
+    public string RemoveQuestionText { get; set; }
+    
     public string GetChangeUrl(BaseModel item)
     {
         return $"{PageUrl}/change/?itemId={item.Id}";
