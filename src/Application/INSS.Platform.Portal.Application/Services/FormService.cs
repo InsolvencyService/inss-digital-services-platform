@@ -37,7 +37,7 @@ public sealed class FormService : IFormService
 
         if (model is ConfirmModel confirm)
         {
-            return await GetPostComfirmPageUrlAsync(form, confirm);
+            return await GetPostConfirmPageUrlAsync(form, confirm);
         }
 
         BaseModel currentModel = form.FindPage(model.PageUrl);
@@ -90,10 +90,15 @@ public sealed class FormService : IFormService
 
         SummaryListModel summaryList = form.FindSummaryList(itemId);
 
-        return new ConfirmModel { Id = itemId, PageUrl = summaryList.PageUrl };
+        return new ConfirmModel
+        {
+            Id = itemId, 
+            PageUrl = summaryList.PageUrl, 
+            Question = summaryList.RemoveQuestionText
+        };
     }
 
-    private async Task<string> GetPostComfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
+    private async Task<string> GetPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
     {
         SummaryListModel summaryList = form.FindSummaryList(confirm.Id);
             
