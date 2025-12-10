@@ -47,6 +47,22 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                             RemoveQuestionText = "Are you sure yuo want to remove the address?"
                         }
                     ]
+                },
+                new SectionModel
+                {
+                    Name = "Add Another Example",
+                    PathName = "add-another-example",
+                    Pages = [
+                        new AddAnotherModel
+                        {
+                            Name = "Test Add Another",
+                            PathName = "add-another",
+                            Pages = [
+                                new FullNameModel(),
+                                new AddressModel()
+                            ]
+                        }
+                    ]
                 }
             ]
         };

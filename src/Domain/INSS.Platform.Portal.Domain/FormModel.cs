@@ -34,6 +34,21 @@ public class FormModel : BaseModel
                 {
                     return page;
                 }
+
+                if (page is AddAnotherModel addAnother)
+                {
+                    foreach (BaseModel page2 in addAnother.Pages)
+                    {
+                        if (page2.PageUrl == pageUrl)
+                        {
+                            // if (addAnother.Items.Count > 0 && addAnother.Items[0].Length == addAnother.Pages.Length)
+                            // {
+                            //     return addAnother;
+                            // }
+                            return page2;
+                        }
+                    }
+                }
             }
         }
 
@@ -54,6 +69,118 @@ public class FormModel : BaseModel
         }
 
         throw new FormModelException($"Unable to find the summary list for the specified item {itemId}.");
+    }
+
+    public BaseModel FindPageById(string id)
+    {
+        foreach (SectionModel section in Sections)
+        {
+            foreach (BaseModel page in section.Pages)
+            {
+                if (page.Id == id)
+                {
+                    return page;
+                }
+
+                if (page is AddAnotherModel addAnother)
+                {
+                    foreach (BaseModel page2 in addAnother.Pages)
+                    {
+                        if (page2.Id == id)
+                        {
+                            return  page2;
+                        }
+                    }
+                }
+            }
+        }
+        
+        throw new FormModelException($"Unable to find the summary list for the specified item {id}.");
+    }
+    
+    public BaseModel FindPageById2(string id)
+    {
+        foreach (SectionModel section in Sections)
+        {
+            foreach (BaseModel page in section.Pages)
+            {
+                if (page is AddAnotherModel addAnother)
+                {
+                    foreach (BaseModel[] items in addAnother.Items)
+                    {
+                        foreach (BaseModel item in items)
+                        {
+                            if (item.Id == id)
+                            {
+                                return  item;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        throw new FormModelException($"Unable to find the summary list for the specified item {id}.");
+    }
+
+    /*public bool PageBelongsToAddAnother(BaseModel page)
+    {
+        foreach (SectionModel section in Sections)
+        {
+            foreach (BaseModel page2 in section.Pages)
+            {
+                if (page2 is AddAnotherModel addAnother)
+                {
+                    foreach (BaseModel page3 in addAnother.Pages)
+                    {
+                        if (page3.Id == page.Id)
+                        {
+                            return  true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }*/
+
+    public AddAnotherModel? FindAddAnother(BaseModel model)
+    {
+        foreach (SectionModel section in Sections)
+        {
+            foreach (BaseModel page in section.Pages)
+            {
+                if (page is AddAnotherModel addAnother)
+                {
+                    foreach (BaseModel page2 in addAnother.Pages)
+                    {
+                        if (page2.Id == model.Id)
+                        {
+                            return addAnother;
+                        }
+                    }
+
+                    foreach (BaseModel[] items in addAnother.Items)
+                    {
+                        foreach (BaseModel item in items)
+                        {
+                            if (item.Id == model.Id)
+                            {
+                                return addAnother;
+                            }
+                        }
+                    }
+                }
+                // if (page is AddAnotherModel summaryList && summaryList.Items.Any(i => i.Id == itemId))
+                // {
+                //     return summaryList;
+                // }
+            }
+        }
+
+        return null;
+        //throw new FormModelException($"Unable to find the summary list for the specified item {model.Id}.");
     }
     
     public BaseModel FindPageBefore(BaseModel currentPage)
@@ -109,6 +236,14 @@ public class FormModel : BaseModel
             foreach (BaseModel page in section.Pages)
             {
                 page.PageUrl = $"{section.PageUrl}/{page.PathName}";
+
+                if (page is AddAnotherModel addAnother)
+                {
+                    foreach (BaseModel page2 in addAnother.Pages)
+                    {
+                        page2.PageUrl = $"{page.PageUrl}/{page2.PathName}";
+                    }
+                }
             }
         }
     }
