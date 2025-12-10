@@ -50,7 +50,7 @@ public class FormServiceTests
         FormModel existingForm = CreateFormModel();
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
         string itemId = GetListItemId(existingForm);
-        ConfirmModel confirmModel = new() { Id = itemId };
+        ConfirmModel confirmModel = new() { Id = itemId, Question = "Confirm save?" };
 
         string pageUrl = await _service.SaveAsync(confirmModel);
 
