@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <UserSecretsId>cd874d62-20ef-47fd-98c8-ac5c17987f55</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\INSS.Platform.Portal.Web.Components\INSS.Platform.Portal.Web.Components.csproj" />
+    <ProjectReference Include="..\INSS.Platform.Shared.Web\INSS.Platform.Shared.Web.csproj" />
+  </ItemGroup>
+
+</Project>
