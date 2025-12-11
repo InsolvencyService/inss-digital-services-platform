@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace INSS.Platform.Shared.Web.Auth;
+namespace INSS.Platform.Shared.Web.Auth.Configuration;
 /// <summary>
 /// Specifies the available authentication providers.
 /// </summary>

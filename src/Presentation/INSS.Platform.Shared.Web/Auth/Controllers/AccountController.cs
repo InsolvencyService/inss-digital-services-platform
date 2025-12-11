@@ -1,13 +1,14 @@
-﻿using INSS.Platform.UserManagement.Web.Models;
-using INSS.Platform.UserManagement.Web.Services;
+﻿using INSS.Platform.Shared.Web.Auth.Configuration;
+using INSS.Platform.Shared.Web.Auth.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Specialized;
 using System.Security.Claims;
 
-namespace INSS.Platform.UserManagement.Web.Controllers;
+namespace INSS.Platform.Shared.Web.Auth.Controllers;
 
 /// <summary>
 /// Controller responsible for handling user account authentication actions.
@@ -104,7 +105,7 @@ public class AccountController : Controller
     /// </remarks>
     private string BuildRedirectUrl(string? returnUrl)
     {
-        string baseRedirectUrl = Url.Action("Index", "Account", null, Url.ActionContext.HttpContext.Request.Scheme)!;
+        string baseRedirectUrl = Url.Action("Index", "Account", null, Url.ActionContext.HttpContext.Request.Scheme);
 
         if (!string.IsNullOrEmpty(returnUrl))
         {

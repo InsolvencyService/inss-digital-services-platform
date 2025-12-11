@@ -43,7 +43,10 @@
         <li>Submit data to a canonical database</li>
     </ul>
 
-    <form asp-controller="Account" asp-action="Login" method="post">
+    <form asp-controller="Account" 
+            asp-action="Login" 
+            asp-route-returnUrl="@Url.Action("Index", "TaskList")"
+            method="post">
         <govuk-button is-start-button="true" type="submit">Sign In</govuk-button>
     </form>
 }
