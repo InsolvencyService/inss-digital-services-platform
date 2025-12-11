@@ -6,8 +6,11 @@
 
     <ItemGroup>
 	    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-	    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
 	    <PackageReference Include="GovUk.Frontend.AspNetCore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\INSS.Platform.Shared.Web\INSS.Platform.Shared.Web.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace INSS.Platform.UserManagement.Web.Services;
+namespace INSS.Platform.Shared.Web.Auth.Services;
 
 /// <summary>
 /// Provides methods for authentication-related operations.

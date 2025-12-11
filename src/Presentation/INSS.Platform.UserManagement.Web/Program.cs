@@ -1,13 +1,13 @@
 using GovUk.Frontend.AspNetCore;
-using INSS.Platform.UserManagement.Web;
+using INSS.Platform.Shared.Web.Auth.Configuration;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
-
 builder.Services.AddApplicationInsightsTelemetry();
 
-builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+IMvcBuilder mvcBuilder = builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthenticationConfiguration(builder.Configuration, mvcBuilder, builder.Environment);
 
 builder.Services.AddGovUkFrontend(options =>
 {
