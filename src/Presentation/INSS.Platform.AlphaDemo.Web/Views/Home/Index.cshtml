@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Html
+@inject IOptions<AuthOptions> _authOptions;
+
+@{
+    ViewData["Title"] = "Home";
+
+    var providerText = _authOptions.Value.AuthProvider switch
+    {
+        AuthenticationProvider.OneLogin =>
+            "<a class=\"govuk-link\" href=\"http://gov.uk/\" target=\"_blank\">GOV.UK</a> OneLogin",
+        AuthenticationProvider.Entra =>
+            "<a class=\"govuk-link\" href=\"https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra\" target=\"_blank\">Microsoft Entra ID</a>",
+        _ => string.Empty
+    };
+}
+
+<h1 class="govuk-heading-l">Welcome to the Insolvency Service<br/>demo site</h1>
+
+<govuk-warning-text icon-fallback-text="Warning">
+    This site is for demonstration purposes only.
+</govuk-warning-text>
+
+<p class="govuk-body">
+    The Insolvency Service are a government agency that helps to deliver
+    economic confidence by supporting those in financial distress, tackling
+    financial wrongdoing and maximising returns to creditors.
+</p>
+
+<p class="govuk-body">
+    The Insolvency Service is an executive agency, 
+    sponsored by the <a class="govuk-link" href="https://www.gov.uk/government/organisations/department-for-business-and-trade" target="_blank">Department for Business and Trade</a>.
+</p>
+
+@if (! (User?.Identity?.IsAuthenticated ?? false))
+{
+    <p class="govuk-body">
+        Sign in to your @Html.Raw(providerText) account to:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>View the demo task list</li>
+        <li>Experience a common user journey</li>
+        <li>Save draft data</li>
+        <li>Submit data to a canonical database</li>
+    </ul>
+
+    <form asp-controller="Account" 
+            asp-action="Login" 
+            asp-route-returnUrl="@Url.Action("Index", "TaskList")"
+            method="post">
+        <govuk-button is-start-button="true" type="submit">Sign In</govuk-button>
+    </form>
+}

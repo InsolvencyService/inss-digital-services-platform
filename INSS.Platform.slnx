@@ -14,6 +14,8 @@
     <Project Path="src/Infrastructure/INSS.Platform.UserManagement.Infrastructure/INSS.Platform.UserManagement.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/Presentation/">
+    <Project Path="src/Presentation/INSS.Platform.AlphaDemo.Web/INSS.Platform.AlphaDemo.Web.csproj" Id="6a0147b8-3459-4055-aad7-adbf6070fadf" />
+    <Project Path="src/Presentation/INSS.Platform.Shared.Web/INSS.Platform.Shared.Web.csproj" Id="768e00d9-ffb9-45be-b49a-4dcc89462b0a" />
     <Project Path="src/Presentation/INSS.Platform.Auth.API/INSS.Platform.Auth.API.csproj" />
     <Project Path="src/Presentation/INSS.Platform.Portal.Web.Components/INSS.Platform.Portal.Web.Components.csproj" />
     <Project Path="src/Presentation/INSS.Platform.Portal.Web/INSS.Platform.Portal.Web.csproj" />

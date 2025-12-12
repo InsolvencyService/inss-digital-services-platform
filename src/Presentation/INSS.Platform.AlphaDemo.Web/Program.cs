@@ -1,22 +1,19 @@
-using GovUk.Frontend.AspNetCore;
+using INSS.Platform.AlphaDemo.Web.Factories;
+using INSS.Platform.Portal.Application.Factories;
+using INSS.Platform.Portal.Web.Components.Extensions;
 using INSS.Platform.Shared.Web.Auth.Configuration;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApplicationInsightsTelemetry();
+builder.AddComponents();
+
+builder.Services.AddTransient<IFormModelFactory, WebAppFormModelFactory>();
 
 IMvcBuilder mvcBuilder = builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthenticationConfiguration(builder.Configuration, mvcBuilder, builder.Environment);
 
-builder.Services.AddGovUkFrontend(options =>
-{
-    options.Rebrand = true;
-});
-
 WebApplication app = builder.Build();
-
-app.UseGovUkFrontend();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -26,13 +23,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+app.UseComponents();
 
 app.Run();

@@ -63,6 +63,9 @@ dotnet_diagnostic.CA1848.severity = none
 dotnet_diagnostic.CA1304.severity = none
 dotnet_diagnostic.CA1311.severity = none
 
+# Allow the use of the reserve word 'Shared' in a namespace
+dotnet_diagnostic.CA1716.severity = none
+
 # if can be simplified
 dotnet_diagnostic.IDE0046.severity = suggestion
 

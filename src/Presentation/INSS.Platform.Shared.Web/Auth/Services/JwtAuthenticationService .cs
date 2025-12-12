@@ -1,11 +1,12 @@
-﻿using INSS.Platform.UserManagement.Web.Models;
+﻿using INSS.Platform.Shared.Web.Auth.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace INSS.Platform.UserManagement.Web.Services;
+namespace INSS.Platform.Shared.Web.Auth.Services;
 
 public class JwtAuthenticationService : IJwtAuthenticationService
 {
@@ -18,6 +19,7 @@ public class JwtAuthenticationService : IJwtAuthenticationService
         _authOptions = authenticationOptions.Value;
     }
 
+    /// <inheritdoc />
     public bool ValidateJwt(string jwt, out ClaimsPrincipal principal)
     {
         _logger.LogInformation("Validating JWT token.");
