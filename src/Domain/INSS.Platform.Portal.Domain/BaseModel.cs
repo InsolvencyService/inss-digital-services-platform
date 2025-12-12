@@ -100,11 +100,14 @@ public abstract class BaseModel
                 continue;
             }
 
-            if (typeof(IEnumerable<BaseModel>).IsAssignableFrom(property.PropertyType))
+            if (typeof(IEnumerable<BaseModel[]>).IsAssignableFrom(property.PropertyType))
             {
-                foreach (BaseModel page in (IEnumerable<BaseModel>)value)
+                foreach (BaseModel[] items in (IEnumerable<BaseModel[]>)value)
                 {
-                    displayValueList.AddRange(page.GetValues());
+                    foreach (BaseModel item in items)
+                    {
+                        displayValueList.AddRange(item.GetValues());
+                    }
                 }
 
                 continue;

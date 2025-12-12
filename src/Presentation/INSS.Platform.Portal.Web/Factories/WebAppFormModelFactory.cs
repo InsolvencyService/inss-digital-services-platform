@@ -58,11 +58,8 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                             Name = "Test Add Another",
                             PathName = "add-another",
                             Items = [[new FullNameModel(), new AddressModel()]]
-                            // Pages = [
-                            //     new FullNameModel(),
-                            //     new AddressModel()
-                            // ]
-                        }
+                        },
+                        new HomeValueModel()
                     ]
                 }
             ]

@@ -14,7 +14,7 @@ public class FormModel : BaseModel
 
     public bool CanSubmit => Sections.All(s => s.IsComplete);
     
-    public BaseModel FindPage(string pageUrl)
+    public BaseModel GetPageByUrl(string pageUrl)
     {
         if (pageUrl == PageUrl)
         {
@@ -55,7 +55,7 @@ public class FormModel : BaseModel
         throw new FormModelException($"Unable to find the page associated with {pageUrl}.");
     }
 
-    public SectionModel FindSection(string pageId)
+    public SectionModel GetSectionForPageId(string pageId)
     {
         foreach (SectionModel section in Sections)
         {
@@ -79,7 +79,7 @@ public class FormModel : BaseModel
         throw new FormModelException($"Unable to find the section for page {pageId}.");
     }
     
-    public BaseModel FindPageById(string id)
+    public BaseModel GetPageById(string id)
     {
         foreach (SectionModel section in Sections)
         {
@@ -152,7 +152,7 @@ public class FormModel : BaseModel
 
             for (int i = 0; i < section.Pages.Length; i++)
             {
-                if (section.Pages[i] is AddAnotherModel addAnother)
+                if (section.Pages[i] is AddAnotherModel addAnother && addAnother.PageUrl != pageUrl)
                 {
                     foreach (BaseModel[] items in addAnother.Items)
                     {
