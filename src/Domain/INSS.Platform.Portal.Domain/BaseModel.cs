@@ -12,6 +12,11 @@ public abstract class BaseModel
         BindingFlags.DeclaredOnly |
         BindingFlags.GetProperty |
         BindingFlags.SetProperty;
+    private const BindingFlags HierarchyTypeBinding =
+        BindingFlags.Instance |
+        BindingFlags.Public |
+        BindingFlags.GetProperty |
+        BindingFlags.SetProperty;
     
     protected BaseModel()
     {
@@ -39,6 +44,16 @@ public abstract class BaseModel
     public void CopyTo(BaseModel pageModel)
     {
         PropertyInfo[] properties = GetType().GetProperties(DerivedTypeBinding);
+
+        foreach (PropertyInfo property in properties)
+        {
+            property.SetValue(pageModel, property.GetValue(this));
+        }
+    }
+    
+    public void DeepCopyTo(BaseModel pageModel)
+    {
+        PropertyInfo[] properties = GetType().GetProperties(HierarchyTypeBinding);
 
         foreach (PropertyInfo property in properties)
         {

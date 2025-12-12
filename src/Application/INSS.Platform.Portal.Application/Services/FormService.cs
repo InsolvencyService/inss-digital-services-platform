@@ -1,5 +1,6 @@
 ﻿using INSS.Platform.Portal.Application.Factories;
 using INSS.Platform.Portal.Domain;
+using INSS.Platform.Portal.Domain.Exceptions;
 
 namespace INSS.Platform.Portal.Application.Services;
 
@@ -28,18 +29,7 @@ public sealed class FormService : IFormService
             form = await _formStateService.GetAsync();
         }
         
-        BaseModel page = form.FindPage(path);
-
-        // if (page is AddAnotherModel addAnother)
-        // {
-        //     addAnother.PageIndex ??= 0;
-        //
-        //     await _formStateService.SaveAsync(form);
-        //     
-        //     return addAnother.Pages[addAnother.PageIndex.Value];
-        // }
-
-        return page;
+        return form.FindPage(path);
     }
 
     public async Task<string> SaveAsync(BaseModel model)
@@ -48,16 +38,8 @@ public sealed class FormService : IFormService
 
         if (model is ConfirmModel confirm)
         {
-            return await GetPostConfirmPageUrlAsync2(form, confirm);
+            return await ProcessPostConfirmPageUrlAsync(form, confirm);
         }
-        
-        // Find out if the model belongs to the add another
-        
-        // If the model exists in the items then we are editing.
-        
-        // If it doesn't then we are adding
-        
-        // In all cases, reset the pages reference and then save form changes
         
         AddAnotherModel? addAnother = form.FindAddAnother(model);
 
@@ -67,14 +49,14 @@ public sealed class FormService : IFormService
 
             
             
-            BaseModel page2 = form.FindPageById(model.Id);
-            BaseModel nextPage = addAnother.GetNextPage(page2);
+            //BaseModel page2 = form.FindPageById(model.Id);
+            BaseModel nextPage = addAnother.GetNextPage(model.Id);
             
-            page2.Reset();
+            //page2.Reset();
             
             await this._formStateService.SaveAsync(form);
-            
-            return updated ? addAnother.PageUrl : nextPage.PageUrl;
+
+            return nextPage.PageUrl;//updated ? addAnother.PageUrl : nextPage.PageUrl;
         }
         
         
@@ -88,11 +70,9 @@ public sealed class FormService : IFormService
         switch (currentModel)
         {
             case SectionModel section:
-                section.IsComplete = true;
+                //section.IsComplete = true;
+                section.Progress = SectionProgressType.Completed;
                 break;
-            //case SummaryListModel:
-            //    // No action required
-            //    break;
             default:
                 model.CopyTo(currentModel);
                 break;
@@ -101,11 +81,6 @@ public sealed class FormService : IFormService
         BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
         page.PreviousPageUrl = model.PageUrl;
         
-        // if (page is SummaryListModel summaryList)
-        // {
-        //     UpdateSummaryListModel(summaryList, currentModel);
-        // }
-        
         await _formStateService.SaveAsync(form);
         
         page.PreviousPageUrl = model.PageUrl;
@@ -113,42 +88,83 @@ public sealed class FormService : IFormService
         return page is SectionModel ? page.PageUrl + "/summary" : page.PageUrl;
     }
 
+    public async Task<string> AddAsync(string itemId)
+    {
+        FormModel form = await _formStateService.GetAsync();
+
+        if (form.FindPageById2(itemId) is not AddAnotherModel addAnother)
+        {
+            throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
+        }
+
+        BaseModel firstPage = addAnother.CreateNewRow();
+
+        await this._formStateService.SaveAsync(form);
+        
+        return firstPage.PageUrl;
+    }
+    
     public async Task<string> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
         BaseModel page2 = form.FindPageById2(itemId);
         AddAnotherModel? addAnother = form.FindAddAnother(page2);
 
-        //BaseModel pageToEdit;
+        if (addAnother is null)
+        {
+            throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
+        }
+
+        addAnother.CurrentAction = AddAnotherActionMode.Edit;
+        addAnother.CurrentEditId = itemId;
         
-        foreach (BaseModel pageToEdit in addAnother!.Pages)
+        int index = -1;
+
+        foreach (BaseModel[] items in addAnother.Items)
+        {
+            index++;
+            bool found = false;
+            
+            foreach (BaseModel item in items)
+            {
+                if (item.Id == itemId)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found)
+            {
+                break;
+            }
+        }
+        
+        // for (int i = 0; i < addAnother.Items[index].Length; i++)
+        // {
+        //     addAnother.Items[index][i].CopyTo(addAnother.Pages[i]);
+        //     //addAnother.Items[index][i].CopyTo(addAnother.Pages[i]);
+        //     addAnother.Pages[i].Id = addAnother.Items[index][i].Id;
+        //     addAnother.Pages[i].PageUrl = addAnother.Items[index][i].PageUrl;
+        // }
+
+        return addAnother.Items[index][0].PageUrl;
+        
+        /*foreach (BaseModel pageToEdit in addAnother!.Pages)
         {
             if (pageToEdit.GetType() == page2.GetType())
             {
-                //pageToEdit = x;
                 page2.CopyTo(pageToEdit);
                 pageToEdit.Id = page2.Id;
                 pageToEdit.PreviousPageUrl = addAnother.PageUrl;
-                //pageToEdit.PageUrl = page2.PageUrl;
 
                 await _formStateService.SaveAsync(form);
                 
                 return pageToEdit.PageUrl;
             }
-        }
+        }*/
 
-        throw new InvalidOperationException("Todo");
-        //return pageToEdit.PageUrl;
-
-        // SummaryListModel summaryList = form.FindSummaryList(itemId);
-        // BaseModel page = summaryList.Items.Single(i => i.Id == itemId);
-        // BaseModel previousPage = form.FindPageBefore(summaryList);
-        // page.CopyTo(previousPage);
-        // previousPage.Id = page.Id;
-        //
-        // await _formStateService.SaveAsync(form);
-        //
-        // return previousPage.PageUrl;
+        //throw new InvalidOperationException("Todo");
     }
 
     public async Task<ConfirmModel> RemoveAsync(string itemId)
@@ -157,77 +173,90 @@ public sealed class FormService : IFormService
         BaseModel page2 = form.FindPageById2(itemId);
         AddAnotherModel? addAnother = form.FindAddAnother(page2);
 
-        foreach (BaseModel pageToRemove in addAnother!.Pages)
+        if (addAnother is null)
         {
-            if (pageToRemove.GetType() == page2.GetType())
+            throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
+        }
+        
+        addAnother.CurrentAction = AddAnotherActionMode.Remove;
+        
+        foreach (BaseModel[] items in addAnother.Items)
+        {
+            foreach (BaseModel item in items)
             {
-                return new ConfirmModel
+                if (item.Id == itemId)
                 {
-                    Id = itemId, 
-                    PageUrl = addAnother.PageUrl
-                };
+                    return new ConfirmModel
+                    {
+                        Id = itemId, 
+                        PageUrl = addAnother.PageUrl
+                    };    
+                }
             }
+            // if (pageToRemove.GetType() == page2.GetType())
+            // {
+            //     return new ConfirmModel
+            //     {
+            //         Id = itemId, 
+            //         PageUrl = addAnother.PageUrl
+            //     };
+            // }
         }
 
         throw new InvalidOperationException("Todo");
     }
 
-    private async Task<string> GetPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
-    {
-        SummaryListModel summaryList = form.FindSummaryList(confirm.Id);
-            
-        if (confirm.Confirmed)
-        {
-            summaryList.Items = summaryList.Items.Where(i => i.Id != confirm.Id).ToArray();
-            await _formStateService.SaveAsync(form);
-        }
-
-        if (summaryList.Items.Length == 0)
-        {
-            BaseModel previousPage = form.FindPageBefore(summaryList);
-            return previousPage.PageUrl;
-        }
-        
-        return summaryList.PageUrl;
-    }
-
-    private async Task<string> GetPostConfirmPageUrlAsync2(FormModel form, ConfirmModel confirm)
+    private async Task<string> ProcessPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
     {
         BaseModel page2 = form.FindPageById2(confirm.Id);
-        AddAnotherModel? addAnother = form.FindAddAnother(page2)!;
+        
+        AddAnotherModel? addAnother = form.FindAddAnother(page2);
             
+        if (addAnother is null)
+        {
+            throw new FormModelException($"Unable to find the add another model associated to item {confirm.Id}.");
+        }
+
+        BaseModel? nextPage = null;
+        
         if (confirm.Confirmed)
         {
             BaseModel[] list = addAnother.Items.First(i => i.Any(i2 => i2.Id == page2.Id));
-            addAnother.Items.Remove(list);
-            //addAnother.Items = summaryList.Items.Where(i => i.Id != confirm.Id).ToArray();
+            
+            if (addAnother.Items.Count > 1)
+            {
+                addAnother.Items.Remove(list);
+                nextPage = addAnother;
+                addAnother.CurrentAction = AddAnotherActionMode.Summary;
+                //addAnother.CurrentAction = AddAnotherActionMode.Summary;
+            }
+            else
+            {
+                foreach (BaseModel item in list)
+                {
+                    item.Reset();
+                }   
+            
+                nextPage = addAnother.Items[0][0];//.GetNextPage(confirm.Id);
+                addAnother.CurrentAction = AddAnotherActionMode.Edit;
+                addAnother.CurrentEditId = nextPage.Id;
+            }
+            
+            
+            
             await _formStateService.SaveAsync(form);
-        }
-
-        if (addAnother.Items.Count == 0)
-        {
-            return addAnother.GetFirstPage().PageUrl;
-        }
-        
-        return addAnother.PageUrl;
-    }
-    
-    private static void UpdateSummaryListModel(SummaryListModel summaryList, BaseModel currentModel)
-    {
-        BaseModel? currentItem = summaryList.Items.FirstOrDefault(p => p.Id == currentModel.Id);
-
-        if (currentItem is null)
-        {
-            // Add a copy
-            summaryList.Items = [.. summaryList.Items, currentModel.Clone()];
-            currentModel.Reset();
         }
         else
         {
-            // Replace
-            currentModel.CopyTo(currentItem);
-            currentModel.Reset();
+            nextPage = addAnother;
         }
+
+        // if (addAnother.Items.Count == 0)
+        // {
+        //     return addAnother.GetFirstPage().PageUrl;
+        // }
+
+        return nextPage.PageUrl;//addAnother.GetNextPage(confirm.Id).PageUrl;
     }
 
     private static bool UpdateAddAnotherModel(AddAnotherModel addAnother, BaseModel currentModel)
@@ -254,79 +283,32 @@ public sealed class FormService : IFormService
         if (existingModel is not null)
         {
             currentModel.CopyTo(existingModel);
-            //currentModel.Reset();
         }
         else
         {
             var y = addAnother.Items.LastOrDefault();
             
-            if (y is null || y.Length == addAnother.Pages.Length)
+            if (y is null) // || y.Length == addAnother.Pages.Length)
             {
                 addAnother.Items.Add([]);
             }
         
             int currentIndex = addAnother.Items.Count - 1;
-        
-            if (addAnother.Items[currentIndex].Length < addAnother.Pages.Length)
+
+            foreach (BaseModel item in addAnother.Items[currentIndex])
             {
-                addAnother.Items[currentIndex] = [.. addAnother.Items[currentIndex], currentModel.Clone()];
-                //currentModel.Reset();
-                //currentModel.Id = Guid.NewGuid().ToString("D");
+                if (item.GetType() == currentModel.GetType())
+                {
+                    currentModel.CopyTo(item);
+                    break;
+                }
             }
+            // if (addAnother.Items[currentIndex].Length < addAnother.Pages.Length)
+            // {
+            //     addAnother.Items[currentIndex] = [.. addAnother.Items[currentIndex], currentModel.Clone()];
+            // }
         }
 
         return existingModel is not null;
-
-
-        /*
-        foreach (BaseModel[] x in addAnother.Items)
-        {
-            foreach (BaseModel y in x)
-            {
-                if (y.Id == currentModel.Id)
-                {
-                    currentModel.CopyTo(y);
-                    currentModel.Reset();
-                    return;
-                }
-            }
-        }
-
-        if (addAnother.Items.Count == 0)
-        {
-            addAnother.Items = new List<BaseModel[]>([[currentModel.Clone()]]);
-
-            //addAnother.Items[0] = [.. addAnother.Items[0], currentModel.Clone()];
-            currentModel.Reset();
-            return;
-        }
-
-        int numPages = addAnother.Pages.Length;
-
-        for (int i = 0; i < addAnother.Items.Count; i++)
-        {
-            if (addAnother.Items[i].Length < numPages)
-            {
-                addAnother.Items[i] = [.. addAnother.Items[i], currentModel.Clone()];
-                break;
-            }
-        }
-        */
-        //addAnother.Items = [.. addAnother.Items, currentModel.Clone()];
-        //currentModel.Reset();
-        /*BaseModel? currentItem = addAnother.Items.FirstOrDefault(p => p.Id == currentModel.Id);
-
-        if (currentItem is null)
-        {
-            // Add a copy
-            addAnother.Items = [.. addAnother.Items, currentModel.Clone()];
-            currentModel.Reset();
-        }
-        else
-        {
-            // Replace
-            currentModel.CopyTo(currentItem);
-            currentModel.Reset();
-        }*/
     }
 }

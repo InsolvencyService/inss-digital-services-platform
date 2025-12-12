@@ -8,8 +8,10 @@ public class SectionModel : BaseModel
         Name = "Section";
     }
 
-    public bool IsComplete { get; set; }
+    //public bool IsComplete { get; set; }
 
+    public SectionProgressType Progress { get; set; }
+    
     public BaseModel[] Pages { get; init; } = [];
 
     public BaseModel GetFirstPage()
@@ -18,9 +20,16 @@ public class SectionModel : BaseModel
         
         if (firstPage is AddAnotherModel addAnother)
         {
-            firstPage = addAnother.Pages.First();
+            firstPage = addAnother.GetFirstPage();//.Pages.First();
         }
 
         return firstPage;
     }
+}
+
+public enum SectionProgressType
+{
+    NotStarted,
+    InProgress,
+    Completed
 }

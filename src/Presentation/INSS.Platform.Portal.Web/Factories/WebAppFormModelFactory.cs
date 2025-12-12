@@ -32,7 +32,7 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                         new HomeValueModel()
                     ]
                 },
-                new SectionModel
+                /*new SectionModel
                 {
                     Name = "About You",
                     PathName = "about-you",
@@ -47,7 +47,7 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                             RemoveQuestionText = "Are you sure yuo want to remove the address?"
                         }
                     ]
-                },
+                },*/
                 new SectionModel
                 {
                     Name = "Add Another Example",
@@ -57,10 +57,11 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                         {
                             Name = "Test Add Another",
                             PathName = "add-another",
-                            Pages = [
-                                new FullNameModel(),
-                                new AddressModel()
-                            ]
+                            Items = [[new FullNameModel(), new AddressModel()]]
+                            // Pages = [
+                            //     new FullNameModel(),
+                            //     new AddressModel()
+                            // ]
                         }
                     ]
                 }
