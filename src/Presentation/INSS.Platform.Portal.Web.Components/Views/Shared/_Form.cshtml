@@ -4,6 +4,6 @@
 <inss-task-list>
     @foreach(var section in Model.Sections)
     {
-        <inss-task-list-item name="@(section.Name)" is-complete="@(section.Progress == SectionProgressType.Completed)" url="@(section.GetFirstPage().PageUrl)" />
+        <inss-task-list-item name="@(section.Name)" is-complete="@(section.Progress == SectionProgressType.Completed)" url="@(section.Context.FirstPageUrl)" />
     }
 </inss-task-list>

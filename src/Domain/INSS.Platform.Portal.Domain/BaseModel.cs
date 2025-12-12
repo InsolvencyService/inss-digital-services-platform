@@ -24,7 +24,7 @@ public abstract class BaseModel
         Kind = GetType().Name;
         ViewName = $"_{GetType().Name.Replace("Model", "")}";
         PathName = "page";
-        PreviousPageUrl = "/tasks";
+        //PreviousPageUrl = "/tasks";
     }
     
     public string Id { get; set; }
@@ -39,7 +39,7 @@ public abstract class BaseModel
     
     public string PageUrl { get; set; }
     
-    public string PreviousPageUrl { get; set; }
+    //public string PreviousPageUrl { get; set; }
     
     public void CopyTo(BaseModel pageModel)
     {

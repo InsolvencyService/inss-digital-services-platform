@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Portal.Domain;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace INSS.Platform.Portal.Domain;
 
 public class SectionModel : BaseModel
 {
@@ -13,18 +15,21 @@ public class SectionModel : BaseModel
     public SectionProgressType Progress { get; set; }
     
     public BaseModel[] Pages { get; init; } = [];
-
-    public BaseModel GetFirstPage()
-    {
-        BaseModel firstPage = Pages.First();
-        
-        if (firstPage is AddAnotherModel addAnother)
-        {
-            firstPage = addAnother.GetFirstPage();//.Pages.First();
-        }
-
-        return firstPage;
-    }
+    
+    [ValidateNever]
+    public SectionContext Context { get; } = new();
+    
+    // public BaseModel GetFirstPage()
+    // {
+    //     BaseModel firstPage = Pages.First();
+    //     
+    //     if (firstPage is AddAnotherModel addAnother)
+    //     {
+    //         firstPage = addAnother.GetFirstPage();//.Pages.First();
+    //     }
+    //
+    //     return firstPage;
+    // }
 }
 
 public enum SectionProgressType
@@ -32,4 +37,11 @@ public enum SectionProgressType
     NotStarted,
     InProgress,
     Completed
+}
+
+public sealed class SectionContext
+{
+    public string FirstPageUrl { get; set; }
+    public string PreviousPageUrl { get; set; }
+    public string CurrentPageId { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using INSS.Platform.Portal.Application.Factories;
+﻿using System.Net.Sockets;
+using INSS.Platform.Portal.Application.Factories;
 using INSS.Platform.Portal.Domain;
 using INSS.Platform.Portal.Domain.Exceptions;
 
@@ -45,12 +46,12 @@ public sealed class FormService : IFormService
 
         if (addAnother is not null)
         {
-            bool updated = UpdateAddAnotherModel(addAnother, model);
+            UpdateAddAnotherModel(addAnother, model);
 
-            
+            BaseModel nextPage = form.GetNextPageAfter(model.PageUrl);
             
             //BaseModel page2 = form.FindPageById(model.Id);
-            BaseModel nextPage = addAnother.GetNextPage(model.Id);
+            //BaseModel nextPage = addAnother.GetNextPage(model.Id);
             
             //page2.Reset();
             
@@ -79,11 +80,9 @@ public sealed class FormService : IFormService
         }
 
         BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
-        page.PreviousPageUrl = model.PageUrl;
+        // TODO: page.PreviousPageUrl = model.PageUrl;
         
         await _formStateService.SaveAsync(form);
-        
-        page.PreviousPageUrl = model.PageUrl;
 
         return page is SectionModel ? page.PageUrl + "/summary" : page.PageUrl;
     }
@@ -99,6 +98,11 @@ public sealed class FormService : IFormService
 
         BaseModel firstPage = addAnother.CreateNewRow();
 
+        SectionModel section = form.FindSection(firstPage.Id);
+
+        section.Context.CurrentPageId = firstPage.Id;
+        section.Context.PreviousPageUrl = addAnother.PageUrl; // TODO: Is this right?
+        
         await this._formStateService.SaveAsync(form);
         
         return firstPage.PageUrl;
@@ -115,10 +119,16 @@ public sealed class FormService : IFormService
             throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
         }
 
-        addAnother.CurrentAction = AddAnotherActionMode.Edit;
-        addAnother.CurrentEditId = itemId;
+        SectionModel section = form.FindSection(page2.Id);
+
+        section.Context.CurrentPageId = page2.Id;
+        section.Context.PreviousPageUrl = addAnother.PageUrl;
+
+        return page2.PageUrl;
+        //addAnother.CurrentAction = AddAnotherActionMode.Edit;
+        //addAnother.CurrentEditId = itemId;
         
-        int index = -1;
+        /*int index = -1;
 
         foreach (BaseModel[] items in addAnother.Items)
         {
@@ -138,7 +148,7 @@ public sealed class FormService : IFormService
             {
                 break;
             }
-        }
+        }*/
         
         // for (int i = 0; i < addAnother.Items[index].Length; i++)
         // {
@@ -148,7 +158,7 @@ public sealed class FormService : IFormService
         //     addAnother.Pages[i].PageUrl = addAnother.Items[index][i].PageUrl;
         // }
 
-        return addAnother.Items[index][0].PageUrl;
+        //return addAnother.Items[index][0].PageUrl;
         
         /*foreach (BaseModel pageToEdit in addAnother!.Pages)
         {
@@ -178,7 +188,13 @@ public sealed class FormService : IFormService
             throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
         }
         
-        addAnother.CurrentAction = AddAnotherActionMode.Remove;
+        return new ConfirmModel
+        {
+            Id = itemId, 
+            PageUrl = addAnother.PageUrl
+        }; 
+        
+        /*addAnother.CurrentAction = AddAnotherActionMode.Remove;
         
         foreach (BaseModel[] items in addAnother.Items)
         {
@@ -203,7 +219,7 @@ public sealed class FormService : IFormService
             // }
         }
 
-        throw new InvalidOperationException("Todo");
+        throw new InvalidOperationException("Todo");*/
     }
 
     private async Task<string> ProcessPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
@@ -217,6 +233,8 @@ public sealed class FormService : IFormService
             throw new FormModelException($"Unable to find the add another model associated to item {confirm.Id}.");
         }
 
+        SectionModel section = form.FindSection(page2.Id);
+        
         BaseModel? nextPage = null;
         
         if (confirm.Confirmed)
@@ -227,7 +245,9 @@ public sealed class FormService : IFormService
             {
                 addAnother.Items.Remove(list);
                 nextPage = addAnother;
-                addAnother.CurrentAction = AddAnotherActionMode.Summary;
+
+                
+                //addAnother.CurrentAction = AddAnotherActionMode.Summary;
                 //addAnother.CurrentAction = AddAnotherActionMode.Summary;
             }
             else
@@ -238,19 +258,24 @@ public sealed class FormService : IFormService
                 }   
             
                 nextPage = addAnother.Items[0][0];//.GetNextPage(confirm.Id);
-                addAnother.CurrentAction = AddAnotherActionMode.Edit;
-                addAnother.CurrentEditId = nextPage.Id;
+                //section.Context.CurrentPageId = addAnother.Id;
+                //section.Context.PreviousPageUrl = addAnother.PageUrl;
+                //addAnother.CurrentAction = AddAnotherActionMode.Edit;
+                //addAnother.CurrentEditId = nextPage.Id;
             }
             
             
-            
-            await _formStateService.SaveAsync(form);
         }
         else
         {
             nextPage = addAnother;
         }
 
+        section.Context.CurrentPageId = nextPage.Id;
+        section.Context.PreviousPageUrl = nextPage.PageUrl; // TODO: Where does this go?
+            
+        await _formStateService.SaveAsync(form);
+        
         // if (addAnother.Items.Count == 0)
         // {
         //     return addAnother.GetFirstPage().PageUrl;
@@ -259,7 +284,7 @@ public sealed class FormService : IFormService
         return nextPage.PageUrl;//addAnother.GetNextPage(confirm.Id).PageUrl;
     }
 
-    private static bool UpdateAddAnotherModel(AddAnotherModel addAnother, BaseModel currentModel)
+    private static void UpdateAddAnotherModel(AddAnotherModel addAnother, BaseModel currentModel)
     {
         BaseModel? existingModel = null;
         
@@ -308,7 +333,5 @@ public sealed class FormService : IFormService
             //     addAnother.Items[currentIndex] = [.. addAnother.Items[currentIndex], currentModel.Clone()];
             // }
         }
-
-        return existingModel is not null;
     }
 }

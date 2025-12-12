@@ -16,7 +16,7 @@ public sealed class AddAnotherModel : BaseModel
 
     public string? CurrentEditId { get; set; }
     
-    public BaseModel GetNextPage(string id)
+    /*public BaseModel GetNextPage(string id)
     {
         if (CurrentAction == AddAnotherActionMode.Add)
         {
@@ -92,7 +92,7 @@ public sealed class AddAnotherModel : BaseModel
     {
         return Items[0][0];
         //return Pages.First();
-    }
+    }*/
     
     public string GetChangeUrl(BaseModel item)
     {
