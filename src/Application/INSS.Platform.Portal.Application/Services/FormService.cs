@@ -15,7 +15,7 @@ public sealed class FormService : IFormService
         _formModelFactory = formModelFactory;
     }
     
-    public async Task<BaseModel> GetAsync(string path)
+    public async Task<BaseModel> GetAsync()
     {
         FormModel form;
         

@@ -187,6 +187,8 @@ public class FormModel : BaseModel
                     }
                 }
             }
+
+            section.PageUrl = $"{section.PageUrl}/summary";
         }
     }
 }

@@ -23,7 +23,7 @@ public static class WebApplicationExtensions
         foreach (SectionModel section in form.Sections)
         {
             app.MapControllerRoute(name: $"{section.PathName}",
-                pattern: section.PageUrl + "/summary",
+                pattern: section.PageUrl,
                 defaults: new { controller = "Form", action = "Index" });
             
             app.MapControllerRoute(name: $"{section.PathName}-change",

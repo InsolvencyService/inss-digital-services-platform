@@ -19,7 +19,7 @@ public class FormController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        BaseModel model = await _formService.GetAsync(Request.Path.Value!);
+        BaseModel model = await _formService.GetAsync();
         return View(model);
     }
     
@@ -35,8 +35,7 @@ public class FormController : Controller
         }
 
         BaseModel nextPage = await _formService.SaveAsync(model);
-        string pageUrl = nextPage is SectionModel ? nextPage.PageUrl + "/summary" : nextPage.PageUrl;
-        return Redirect(pageUrl);
+        return Redirect(nextPage.PageUrl);
     }
     
     [HttpGet]
