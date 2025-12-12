@@ -8,7 +8,7 @@ public sealed class AddAnotherModel : BaseModel
         Name = "Add Another";
     }
     
-    public List<BaseModel[]> Items { get; set; } = [];
+    public ItemCollection Items { get; init; } = [];
     
     public string GetChangeUrl(BaseModel item)
     {
@@ -23,23 +23,5 @@ public sealed class AddAnotherModel : BaseModel
     public string GetAddAnotherUrl()
     {
         return $"{PageUrl}/add/?itemId={Id}";
-    }
-
-    public BaseModel CreateNewRow()
-    {
-        List<BaseModel> instances = [];
-
-        foreach (BaseModel item in Items[0])
-        {
-            BaseModel newItem = (BaseModel)Activator.CreateInstance(item.GetType())!;
-            item.DeepCopyTo(newItem);
-            newItem.Id = Guid.NewGuid().ToString("D");
-            newItem.Reset();
-            instances.Add(newItem);
-        }
-        
-        Items.Add(instances.ToArray());
-
-        return instances.First();
     }
 }

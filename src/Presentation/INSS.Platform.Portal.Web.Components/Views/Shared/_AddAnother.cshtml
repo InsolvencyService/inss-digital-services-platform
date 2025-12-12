@@ -1,16 +1,16 @@
 ﻿@using INSS.Platform.Portal.Domain
 @model INSS.Platform.Portal.Domain.AddAnotherModel
 
-@foreach (BaseModel[] items in Model.Items)
+@foreach (PageCollection pages in Model.Items)
 {
     <govuk-summary-card>
         <govuk-summary-card-title>@Model.Name</govuk-summary-card-title>
         <govuk-summary-card-actions>
-            <govuk-summary-card-action href="@(Model.GetChangeUrl(items.First()))" visually-hidden-text="@items.First().Name">Change</govuk-summary-card-action>
-            <govuk-summary-card-action href="@(Model.GetRemoveUrl(items.First()))" visually-hidden-text="@items.First().Name">Remove</govuk-summary-card-action>
+            <govuk-summary-card-action href="@(Model.GetChangeUrl(pages.First()))" visually-hidden-text="@pages.First().Name">Change</govuk-summary-card-action>
+            <govuk-summary-card-action href="@(Model.GetRemoveUrl(pages.First()))" visually-hidden-text="@pages.First().Name">Remove</govuk-summary-card-action>
         </govuk-summary-card-actions>
         <govuk-summary-list>
-            @foreach (BaseModel item in items)
+            @foreach (BaseModel item in pages)
             {
                 <govuk-summary-list-row>
                     <govuk-summary-list-row-key>@item.Name</govuk-summary-list-row-key>

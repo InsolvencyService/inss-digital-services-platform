@@ -10,7 +10,7 @@ public class SectionModel : BaseModel
 
     public bool IsComplete { get; set; }
     
-    public BaseModel[] Pages { get; init; } = [];
+    public PageCollection Pages { get; init; } = [];
 
     public BaseModel GetStartPage()
     {

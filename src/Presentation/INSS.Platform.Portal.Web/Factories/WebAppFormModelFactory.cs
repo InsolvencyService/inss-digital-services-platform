@@ -32,22 +32,6 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                         new HomeValueModel()
                     ]
                 },
-                /*new SectionModel
-                {
-                    Name = "About You",
-                    PathName = "about-you",
-                    Pages =
-                    [
-                        new FullNameModel(),
-                        new AddressModel(),
-                        new SummaryListModel
-                        {
-                            PathName = "address-list", 
-                            Name = "Address List", 
-                            RemoveQuestionText = "Are you sure yuo want to remove the address?"
-                        }
-                    ]
-                },*/
                 new SectionModel
                 {
                     Name = "Add Another Example",

@@ -24,12 +24,13 @@ public class FormServiceTests
     {
         _mockFormStateService.Setup(s => s.FormExistsAsync()).ReturnsAsync(false);
         FormModel newForm = CreateFormModel();
+        newForm.CurrentPageId = newForm.Sections[0].Pages[0].Id;
         _mockFormModelFactory.Setup(f => f.CreateAsync()).ReturnsAsync(newForm);
 
-        BaseModel result = await _service.GetAsync("/test-form");
+        BaseModel result = await _service.GetAsync();
 
         _mockFormStateService.Verify(s => s.SaveAsync(newForm), Times.Once);
-        Assert.Equal(newForm.FindPage("/test-form"), result);
+        Assert.Equal(newForm.FindPage(newForm.CurrentPageId), result);
     }
 
     [Fact]
@@ -37,24 +38,40 @@ public class FormServiceTests
     {
         _mockFormStateService.Setup(s => s.FormExistsAsync()).ReturnsAsync(true);
         FormModel existingForm = CreateFormModel();
+        existingForm.CurrentPageId = existingForm.Sections[0].Pages[0].Id;
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
 
-        BaseModel result = await _service.GetAsync("/test-form");
+        BaseModel result = await _service.GetAsync();
 
-        Assert.Equal(existingForm.FindPage("/test-form"), result);
+        _mockFormStateService.Verify(s => s.SaveAsync(existingForm), Times.Never);
+        Assert.Equal(existingForm.FindPage(existingForm.CurrentPageId), result);
+    }
+    
+    [Fact]
+    public async Task FormDoesExist_StartAsync_ReturnsPathForExistingForm()
+    {
+        _mockFormStateService.Setup(s => s.FormExistsAsync()).ReturnsAsync(true);
+        FormModel existingForm = CreateFormModel();
+        existingForm.CurrentPageId = existingForm.Sections[0].Pages[0].Id;
+        _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
+
+        BaseModel result = await _service.StartAsync("/test-form/your-details/summary/start");
+
+        _mockFormStateService.Verify(s => s.SaveAsync(existingForm), Times.Once);
+        Assert.Equal(existingForm.FindPage(existingForm.CurrentPageId), result);
     }
 
     [Fact]
-    public async Task ConfirmModel_SaveAsync_ReturnsSummaryListPageUrl()
+    public async Task ConfirmModel_SaveAsync_ReturnsAddAnotherPage()
     {
         FormModel existingForm = CreateFormModel();
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
         string itemId = GetListItemId(existingForm);
         ConfirmModel confirmModel = new() { Id = itemId, Question = "Confirm save?" };
 
-        string pageUrl = await _service.SaveAsync(confirmModel);
+        BaseModel page = await _service.SaveAsync(confirmModel);
 
-        Assert.Equal("/test-form/your-details/summary-list", pageUrl);
+        Assert.Equal("/test-form/your-details/your-family", page.PageUrl);
     }
 
     [Fact]
@@ -64,54 +81,57 @@ public class FormServiceTests
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
         SectionModel section = existingForm.Sections[0];
 
-        string pageUrl = await _service.SaveAsync(section);
+        await _service.SaveAsync(section);
 
         Assert.True(section.IsComplete);
     }
 
     [Fact]
-    public async Task SomeModel_SaveAsync_CopiesValuesToSource()
+    public async Task BankAccountModelChanges_SaveAsync_CopiesValuesToSource()
     {
         FormModel existingForm = CreateFormModel();
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
         BankAccountModel bankAccount = new()
         {
+            Id = existingForm.Sections[0].Pages[2].Id,
             PageUrl = "/test-form/your-details/bank-account",
             AccountNumber = "12345678",
             SortCode = "12-34-56"
         };
 
-        string pageUrl = await _service.SaveAsync(bankAccount);
+        await _service.SaveAsync(bankAccount);
 
-        BankAccountModel existingBankAccount = (BankAccountModel)existingForm.FindPage(bankAccount.PageUrl);
+        BankAccountModel existingBankAccount = (BankAccountModel)existingForm.FindPage(bankAccount.Id);
         Assert.Equal(bankAccount.AccountNumber, existingBankAccount.AccountNumber);
         Assert.Equal(bankAccount.SortCode, existingBankAccount.SortCode);
     }
 
     [Fact]
-    public async Task LastModel_SaveAsync_ReturnsSummaryPageUrl()
+    public async Task LastModel_SaveAsync_ReturnsSummary()
     {
         FormModel existingForm = CreateFormModel();
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
         BankAccountModel bankAccount = new()
         {
+            Id = existingForm.Sections[0].Pages[2].Id,
             PageUrl = "/test-form/your-details/bank-account",
             AccountNumber = "12345678",
             SortCode = "12-34-56"
         };
 
-        string pageUrl = await _service.SaveAsync(bankAccount);
+        BaseModel page = await _service.SaveAsync(bankAccount);
 
-        Assert.Equal("/test-form/your-details/summary", pageUrl);
+        Assert.IsType<SectionModel>(page);
     }
 
     [Fact]
-    public async Task NotTheLastModel_SaveAsync_ReturnsNextPageUrl()
+    public async Task NotTheLastModel_SaveAsync_ReturnsNextPage()
     {
         FormModel existingForm = CreateFormModel();
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
         AddressModel address = new()
         {
+            Id = existingForm.Sections[0].Pages[0].Id,
             PageUrl = "/test-form/your-details/address",
             AddressLine1 = "123 Test St", 
             AddressLine2 = "Testville", 
@@ -119,25 +139,25 @@ public class FormServiceTests
             Postcode = "TE5 7ST"
         };
 
-        string pageUrl = await _service.SaveAsync(address);
+        BaseModel page = await _service.SaveAsync(address);
 
-        Assert.Equal("/test-form/your-details/summary-list", pageUrl);
+        Assert.IsType<AddAnotherModel>(page);
     }
 
     [Fact]
-    public async Task ChangingItemInSummaryList_ChangeAsync_ReturnsPreviousPageUrl()
+    public async Task ChangingItem_ChangeAsync_ReturnsPageToChange()
     {
         FormModel existingForm = CreateFormModel();
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
         string itemId = GetListItemId(existingForm);
 
-        string previousPageUrl = await _service.ChangeAsync(itemId);
+        BaseModel pageToChange = await _service.ChangeAsync(itemId);
 
-        Assert.Equal("/test-form/your-details/address", previousPageUrl);
+        Assert.IsType<FullNameModel>(pageToChange);
     }
 
     [Fact]
-    public async Task RemovingItemInSummaryList_RemoveAsync_ReturnsConfirmModelWithId()
+    public async Task RemovingItem_RemoveAsync_ReturnsConfirmModelWithId()
     {
         FormModel existingForm = CreateFormModel();
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
@@ -162,7 +182,12 @@ public class FormServiceTests
                     Pages =
                     [
                         new AddressModel(),
-                        new SummaryListModel { Items = [new AddressModel {Id = Guid.NewGuid().ToString("D")}] },
+                        new AddAnotherModel
+                        {
+                            Name = "Your family",
+                            PathName = "your-family",
+                            Items = [[new FullNameModel(), new AddressModel()]]
+                        },
                         new BankAccountModel()
                     ]
                 }
@@ -176,7 +201,7 @@ public class FormServiceTests
 
     private static string GetListItemId(FormModel form)
     {
-        SummaryListModel summaryList = (SummaryListModel)form.Sections[0].Pages[1];
-        return summaryList.Items[0].Id;
+        AddAnotherModel addAnotherModel = (AddAnotherModel)form.Sections[0].Pages[1];
+        return addAnotherModel.Items[0][0].Id;
     }
 }
