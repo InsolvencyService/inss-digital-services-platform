@@ -30,6 +30,10 @@ public static class WebApplicationExtensions
                 pattern: section.PageUrl + "/change",
                 defaults: new { controller = "Form", action = "Change" });
             
+            app.MapControllerRoute(name: $"{section.PathName}-start",
+                pattern: section.PageUrl + "/start",
+                defaults: new { controller = "Form", action = "Start" });
+            
             foreach (BaseModel page in section.Pages)
             {
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}",

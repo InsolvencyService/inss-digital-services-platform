@@ -1,4 +1,5 @@
 ﻿using INSS.Platform.Portal.Domain.Exceptions;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace INSS.Platform.Portal.Domain;
 
@@ -13,6 +14,58 @@ public class FormModel : BaseModel
     public SectionModel[] Sections { get; init; } = [];
 
     public bool CanSubmit => Sections.All(s => s.IsComplete);
+
+    [ValidateNever]
+    public FormContext Context { get; } = new();
+
+    public BaseModel GetCurrentPage()
+    {
+        string pageId = Context.CurrentPageId;
+
+        if (Id == pageId)
+        {
+            return this;
+        }
+        
+        foreach (SectionModel section in Sections)
+        {
+            if (section.Id == pageId)
+            {
+                return section;
+            }
+            
+            foreach (BaseModel page in section.Pages)
+            {
+                if (page is AddAnotherModel addAnother)
+                {
+                    if (addAnother.Id == pageId)
+                    {
+                        return addAnother;
+                    }
+
+                    foreach (BaseModel[] items in addAnother.Items)
+                    {
+                        foreach (BaseModel item in items)
+                        {
+                            if (item.Id == pageId)
+                            {
+                                return item;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (page.Id == pageId)
+                    {
+                        return page;
+                    }
+                }
+            }
+        }
+
+        return this;
+    }
     
     public BaseModel GetPageByUrl(string pageUrl)
     {
@@ -24,14 +77,14 @@ public class FormModel : BaseModel
         foreach (SectionModel section in Sections)
         {
             if ((section.PageUrl == pageUrl || section.PageUrl + "/summary" == pageUrl) &&
-                section.Id == section.Context.CurrentPageId)
+                section.Id == Context.CurrentPageId)
             {
                 return section;
             }
 
             foreach (BaseModel page in section.Pages)
             {
-                if (page.PageUrl == pageUrl && page.Id == section.Context.CurrentPageId)
+                if (page.PageUrl == pageUrl && page.Id == Context.CurrentPageId)
                 {
                     return page;
                 }
@@ -42,7 +95,7 @@ public class FormModel : BaseModel
                     {
                         foreach (BaseModel item in items)
                         {
-                            if (item.PageUrl == pageUrl && item.Id == section.Context.CurrentPageId)
+                            if (item.PageUrl == pageUrl && item.Id == Context.CurrentPageId)
                             {
                                 return item;
                             }
@@ -54,66 +107,18 @@ public class FormModel : BaseModel
 
         throw new FormModelException($"Unable to find the page associated with {pageUrl}.");
     }
-
-    public SectionModel GetSectionForPageId(string pageId)
-    {
-        foreach (SectionModel section in Sections)
-        {
-            foreach (BaseModel page in section.Pages)
-            {
-                if (page.Id == pageId)
-                {
-                    return section;
-                }
-
-                if (page is AddAnotherModel addAnother)
-                {
-                    if (addAnother.Items.Any(items => items.Any(item => item.Id == pageId)))
-                    {
-                        return section;
-                    }
-                }
-            }
-        }
-        
-        throw new FormModelException($"Unable to find the section for page {pageId}.");
-    }
     
-    public BaseModel GetPageById(string id)
+    public SectionModel GetSectionByUrl(string pageUrl)
     {
         foreach (SectionModel section in Sections)
         {
-            foreach (BaseModel page in section.Pages)
+            if (section.PageUrl == pageUrl)
             {
-                if (page is AddAnotherModel addAnother)
-                {
-                    if (addAnother.Id == id)
-                    {
-                        return addAnother;
-                    }
-
-                    foreach (BaseModel[] items in addAnother.Items)
-                    {
-                        foreach (BaseModel item in items)
-                        {
-                            if (item.Id == id)
-                            {
-                                return item;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (page.Id == id)
-                    {
-                        return page;
-                    }
-                }
+                return section;
             }
         }
         
-        throw new FormModelException($"Unable to find the summary list for the specified item {id}.");
+        throw new FormModelException($"Unable to find the section for url {pageUrl}.");
     }
 
     public AddAnotherModel? FindAddAnother(BaseModel model)
@@ -141,34 +146,34 @@ public class FormModel : BaseModel
         return null;
     }
     
-    public BaseModel GetNextPageAfter(string pageUrl)
+    public BaseModel GetNextPageAfter(string pageId)
     {
         foreach (SectionModel section in Sections)
         {
-            if (section.PageUrl == pageUrl)
+            if (section.Id == pageId)
             {
                 return this;
             }
 
             for (int i = 0; i < section.Pages.Length; i++)
             {
-                if (section.Pages[i] is AddAnotherModel addAnother && addAnother.PageUrl != pageUrl)
+                if (section.Pages[i] is AddAnotherModel addAnother && addAnother.Id != pageId)
                 {
                     foreach (BaseModel[] items in addAnother.Items)
                     {
                         for (int j = 0; j < items.Length; j++)
                         {
-                            if (items[j].PageUrl == pageUrl && items[j].Id == section.Context.CurrentPageId)
+                            if (items[j].Id == pageId)
                             {
                                 if (j < items.Length - 1)
                                 {
-                                    section.Context.CurrentPageId = items[i + 1].Id;
-                                    section.Context.PreviousPageUrl = items[i].Id;
+                                    Context.CurrentPageId = items[i + 1].Id;
+                                    Context.PreviousPageUrl = items[i].Id;
                                     return items[i + 1];
                                 }
                                 
-                                section.Context.CurrentPageId = addAnother.Id;
-                                section.Context.PreviousPageUrl = addAnother.Id;
+                                Context.CurrentPageId = addAnother.Id;
+                                Context.PreviousPageUrl = addAnother.Id;
                                 return addAnother;
                             }
                         }
@@ -176,23 +181,26 @@ public class FormModel : BaseModel
                 }
                 else
                 {
-                    if (section.Pages[i].PageUrl == pageUrl &&  section.Pages[i].Id == section.Context.CurrentPageId)
+                    if (section.Pages[i].Id == pageId)
                     {
                         if (i < section.Pages.Length - 1)
                         {
-                            section.Context.CurrentPageId = section.Pages[i + 1].Id;
-                            section.Context.PreviousPageUrl = section.Pages[i].Id;
+                            Context.CurrentPageId = section.Pages[i + 1].Id;
+                            Context.PreviousPageUrl = section.Pages[i].Id;
                             return section.Pages[i + 1];
                         }
 
-                        section.Context.CurrentPageId = section.Id;
-                        section.Context.PreviousPageUrl = section.Pages[i].Id;
+                        Context.CurrentPageId = section.Id;
+                        Context.PreviousPageUrl = section.Pages[i].Id;
                         return section;
                     }
                 }
             }
         }
 
+        Context.CurrentPageId = Id;
+        Context.PreviousPageUrl = null;
+        
         return this;
     }
     
@@ -200,6 +208,8 @@ public class FormModel : BaseModel
     {
         PageUrl = $"/{PathName}";
 
+        Context.CurrentPageId = Id;
+        
         foreach (SectionModel section in Sections)
         {
             section.PageUrl = $"{PageUrl}/{section.PathName}";
@@ -224,9 +234,9 @@ public class FormModel : BaseModel
                 firstPage = addAnother2.Items[0][0];
             }
 
-            section.Context.FirstPageUrl = firstPage.PageUrl;
-            section.Context.CurrentPageId = firstPage.Id;
-            section.Context.PreviousPageUrl = PageUrl;
+            //section.Context.FirstPageUrl = firstPage.PageUrl;
+            //section.Context.CurrentPageId = firstPage.Id;
+            //section.Context.PreviousPageUrl = PageUrl;
         }
     }
 }

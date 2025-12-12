@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-
-namespace INSS.Platform.Portal.Domain;
+﻿namespace INSS.Platform.Portal.Domain;
 
 public class SectionModel : BaseModel
 {
@@ -13,12 +11,24 @@ public class SectionModel : BaseModel
     public bool IsComplete { get; set; }
     
     public BaseModel[] Pages { get; init; } = [];
-    
-    [ValidateNever]
-    public SectionContext Context { get; } = new();
+
+    public BaseModel GetStartPage()
+    {
+        if (Pages[0] is AddAnotherModel addAnother)
+        {
+            return addAnother.Items[0][0];
+        }
+
+        return Pages[0];
+    }
     
     public string GetChangeUrl(BaseModel item)
     {
         return $"{PageUrl}/change/?itemId={item.Id}";
+    }
+    
+    public string GetStartUrl()
+    {
+        return $"{PageUrl}/start";
     }
 }

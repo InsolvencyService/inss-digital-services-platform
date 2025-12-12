@@ -28,10 +28,21 @@ public sealed class FormService : IFormService
         {
             form = await _formStateService.GetAsync();
         }
-        
-        return form.GetPageByUrl(path);
+
+        return form.GetCurrentPage();
     }
 
+    public async Task<BaseModel> StartAsync(string path)
+    {
+        FormModel form = await _formStateService.GetAsync();
+        SectionModel section = form.GetSectionByUrl(path.Replace("/start", ""));
+        BaseModel startPage = section.GetStartPage();
+        form.Context.PreviousPageUrl = form.PageUrl;
+        form.Context.CurrentPageId = startPage.Id;
+        await this._formStateService.SaveAsync(form);
+        return startPage;
+    }
+    
     public async Task<string> SaveAsync(BaseModel model)
     {
         FormModel form = await _formStateService.GetAsync();
@@ -43,7 +54,7 @@ public sealed class FormService : IFormService
 
         if (model is AddAnotherModel)
         {
-            BaseModel nextPage = form.GetNextPageAfter(model.PageUrl);
+            BaseModel nextPage = form.GetNextPageAfter(model.Id);
             return nextPage.PageUrl;
         }
         
@@ -53,76 +64,67 @@ public sealed class FormService : IFormService
         {
             UpdateAddAnotherModel(addAnother, model);
 
-            BaseModel nextPage = form.GetNextPageAfter(model.PageUrl);
+            BaseModel nextPage = form.GetNextPageAfter(model.Id);
             
             await this._formStateService.SaveAsync(form);
 
             return nextPage.PageUrl;
         }
 
-        BaseModel currentModel = form.GetPageByUrl(model.PageUrl);
+        BaseModel currentModel = form.GetCurrentPage();
 
         switch (currentModel)
         {
             case SectionModel section:
                 section.IsComplete = true;
+                form.Context.CurrentPageId = form.Id;
+                form.Context.PreviousPageUrl = null;
                 break;
             default:
                 model.CopyTo(currentModel);
                 break;
         }
 
-        BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
+        BaseModel page = form.GetNextPageAfter(currentModel.Id);
         
         await _formStateService.SaveAsync(form);
 
         return page is SectionModel ? page.PageUrl + "/summary" : page.PageUrl;
     }
 
-    public async Task<string> AddAsync(string itemId)
+    public async Task<BaseModel> AddAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
+        form.Context.CurrentPageId = itemId;
 
-        if (form.GetPageById(itemId) is not AddAnotherModel addAnother)
+        if (form.GetCurrentPage() is not AddAnotherModel addAnother)
         {
             throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
         }
 
         BaseModel firstPage = addAnother.CreateNewRow();
-
-        SectionModel section = form.GetSectionForPageId(firstPage.Id);
-
-        section.Context.CurrentPageId = firstPage.Id;
-        section.Context.PreviousPageUrl = addAnother.PageUrl; // TODO: Is this right?
+        
+        form.Context.CurrentPageId = firstPage.Id;
+        form.Context.PreviousPageUrl = addAnother.PageUrl; // TODO: Is this right?
         
         await this._formStateService.SaveAsync(form);
         
-        return firstPage.PageUrl;
+        return firstPage;
     }
     
-    public async Task<string> ChangeAsync(string itemId)
+    public async Task<BaseModel> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        BaseModel page = form.GetPageById(itemId);
-        AddAnotherModel? addAnother = form.FindAddAnother(page);
-        SectionModel section = form.GetSectionForPageId(page.Id);
-        
-        if (addAnother is null)
-        {
-            section.Context.CurrentPageId = page.Id;
-            section.Context.PreviousPageUrl = section.PageUrl;
-            return page.PageUrl;
-        }
-        
-        section.Context.CurrentPageId = page.Id;
-        section.Context.PreviousPageUrl = addAnother.PageUrl;
-        return page.PageUrl;
+        form.Context.CurrentPageId = itemId;
+        await this._formStateService.SaveAsync(form);
+        return form.GetCurrentPage();
     }
 
     public async Task<ConfirmModel> RemoveAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        BaseModel page = form.GetPageById(itemId);
+        form.Context.CurrentPageId = itemId;
+        BaseModel page = form.GetCurrentPage();
         AddAnotherModel? addAnother = form.FindAddAnother(page);
 
         if (addAnother is null)
@@ -130,16 +132,14 @@ public sealed class FormService : IFormService
             throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
         }
         
-        return new ConfirmModel
-        {
-            Id = itemId, 
-            PageUrl = addAnother.PageUrl
-        };
+        await this._formStateService.SaveAsync(form);
+        
+        return new ConfirmModel { Id = page.Id, PageUrl = addAnother.PageUrl };
     }
 
     private async Task<string> ProcessPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
     {
-        BaseModel page = form.GetPageById(confirm.Id);
+        BaseModel page = form.GetCurrentPage();
         
         AddAnotherModel? addAnother = form.FindAddAnother(page);
             
@@ -147,14 +147,12 @@ public sealed class FormService : IFormService
         {
             throw new FormModelException($"Unable to find the add another model associated to item {confirm.Id}.");
         }
-
-        SectionModel section = form.GetSectionForPageId(page.Id);
         
         BaseModel? nextPage;
         
         if (confirm.Confirmed)
         {
-            BaseModel[] items = addAnother.Items.First(i => i.Any(i2 => i2.Id == page.Id));
+            BaseModel[] items = addAnother.Items.First(li => li.Any(i => i.Id == page.Id));
             
             if (addAnother.Items.Count > 1)
             {
@@ -176,8 +174,8 @@ public sealed class FormService : IFormService
             nextPage = addAnother;
         }
 
-        section.Context.CurrentPageId = nextPage.Id;
-        section.Context.PreviousPageUrl = nextPage.PageUrl; // TODO: Where does this go?
+        form.Context.CurrentPageId = nextPage.Id;
+        form.Context.PreviousPageUrl = nextPage.PageUrl; // TODO: Where does this go?
             
         await _formStateService.SaveAsync(form);
 

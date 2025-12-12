@@ -39,17 +39,24 @@ public class FormController : Controller
     }
     
     [HttpGet]
+    public async Task<IActionResult> Start()
+    {
+        BaseModel firstPage = await _formService.StartAsync(Request.Path.Value!);
+        return Redirect(firstPage.PageUrl);
+    }
+    
+    [HttpGet]
     public async Task<IActionResult> Add(string itemId)
     {
-        string pageUrl = await _formService.AddAsync(itemId);
-        return Redirect(pageUrl);
+        BaseModel page = await _formService.AddAsync(itemId);
+        return Redirect(page.PageUrl);
     }
     
     [HttpGet]
     public async Task<IActionResult> Change(string itemId)
     {
-        string pageUrl = await _formService.ChangeAsync(itemId);
-        return Redirect(pageUrl);
+        BaseModel page = await _formService.ChangeAsync(itemId);
+        return Redirect(page.PageUrl);
     }
     
     [HttpGet]
