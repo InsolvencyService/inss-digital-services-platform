@@ -43,7 +43,7 @@ public sealed class FormService : IFormService
         return startPage;
     }
     
-    public async Task<string> SaveAsync(BaseModel model)
+    public async Task<BaseModel> SaveAsync(BaseModel model)
     {
         FormModel form = await _formStateService.GetAsync();
 
@@ -54,21 +54,14 @@ public sealed class FormService : IFormService
 
         if (model is AddAnotherModel)
         {
-            BaseModel nextPage = form.GetNextPageAfter(model.Id);
-            return nextPage.PageUrl;
+            return form.GetNextPageAfter(model.Id);
         }
         
         AddAnotherModel? addAnother = form.FindAddAnother(model);
 
         if (addAnother is not null)
         {
-            UpdateAddAnotherModel(addAnother, model);
-
-            BaseModel nextPage = form.GetNextPageAfter(model.Id);
-            
-            await this._formStateService.SaveAsync(form);
-
-            return nextPage.PageUrl;
+            return await UpdateAddAnotherModelAsync(form, addAnother, model);
         }
 
         BaseModel currentModel = form.GetCurrentPage();
@@ -89,7 +82,7 @@ public sealed class FormService : IFormService
         
         await _formStateService.SaveAsync(form);
 
-        return page is SectionModel ? page.PageUrl + "/summary" : page.PageUrl;
+        return page;
     }
 
     public async Task<BaseModel> AddAsync(string itemId)
@@ -137,7 +130,7 @@ public sealed class FormService : IFormService
         return new ConfirmModel { Id = page.Id, PageUrl = addAnother.PageUrl };
     }
 
-    private async Task<string> ProcessPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
+    private async Task<BaseModel> ProcessPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
     {
         BaseModel page = form.GetCurrentPage();
         
@@ -179,53 +172,24 @@ public sealed class FormService : IFormService
             
         await _formStateService.SaveAsync(form);
 
-        return nextPage.PageUrl;
+        return nextPage;
     }
 
-    private static void UpdateAddAnotherModel(AddAnotherModel addAnother, BaseModel currentModel)
+    private async Task<BaseModel> UpdateAddAnotherModelAsync(FormModel form, AddAnotherModel addAnother, BaseModel currentModel)
     {
-        BaseModel? existingModel = null;
-        
-        foreach (BaseModel[] items in addAnother.Items)
+        foreach (BaseModel item in addAnother.Items.SelectMany(i => i))
         {
-            foreach (BaseModel item in items)
+            if (item.Id == currentModel.Id)
             {
-                if (item.Id == currentModel.Id)
-                {
-                    existingModel = item;
-                    break;
-                }
-            }
-
-            if (existingModel is not null)
-            {
+                currentModel.CopyTo(item);
                 break;
             }
         }
         
-        if (existingModel is not null)
-        {
-            currentModel.CopyTo(existingModel);
-        }
-        else
-        {
-            var lastItem = addAnother.Items.LastOrDefault();
+        BaseModel nextPage = form.GetNextPageAfter(currentModel.Id);
             
-            if (lastItem is null)
-            {
-                addAnother.Items.Add([]);
-            }
-        
-            int currentIndex = addAnother.Items.Count - 1;
+        await this._formStateService.SaveAsync(form);
 
-            foreach (BaseModel item in addAnother.Items[currentIndex])
-            {
-                if (item.GetType() == currentModel.GetType())
-                {
-                    currentModel.CopyTo(item);
-                    break;
-                }
-            }
-        }
+        return nextPage;
     }
 }

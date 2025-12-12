@@ -67,47 +67,6 @@ public class FormModel : BaseModel
         return this;
     }
     
-    public BaseModel GetPageByUrl(string pageUrl)
-    {
-        if (pageUrl == PageUrl)
-        {
-            return this;
-        }
-
-        foreach (SectionModel section in Sections)
-        {
-            if ((section.PageUrl == pageUrl || section.PageUrl + "/summary" == pageUrl) &&
-                section.Id == Context.CurrentPageId)
-            {
-                return section;
-            }
-
-            foreach (BaseModel page in section.Pages)
-            {
-                if (page.PageUrl == pageUrl && page.Id == Context.CurrentPageId)
-                {
-                    return page;
-                }
-
-                if (page is AddAnotherModel addAnother)
-                {
-                    foreach (BaseModel[] items in addAnother.Items)
-                    {
-                        foreach (BaseModel item in items)
-                        {
-                            if (item.PageUrl == pageUrl && item.Id == Context.CurrentPageId)
-                            {
-                                return item;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        throw new FormModelException($"Unable to find the page associated with {pageUrl}.");
-    }
-    
     public SectionModel GetSectionByUrl(string pageUrl)
     {
         foreach (SectionModel section in Sections)
@@ -206,6 +165,8 @@ public class FormModel : BaseModel
     
     public void Initialize()
     {
+        // TODO: Validate
+        
         PageUrl = $"/{PathName}";
 
         Context.CurrentPageId = Id;
@@ -226,17 +187,6 @@ public class FormModel : BaseModel
                     }
                 }
             }
-
-            BaseModel firstPage = section.Pages[0];
-
-            if (firstPage is AddAnotherModel addAnother2)
-            {
-                firstPage = addAnother2.Items[0][0];
-            }
-
-            //section.Context.FirstPageUrl = firstPage.PageUrl;
-            //section.Context.CurrentPageId = firstPage.Id;
-            //section.Context.PreviousPageUrl = PageUrl;
         }
     }
 }

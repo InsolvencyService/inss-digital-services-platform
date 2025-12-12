@@ -34,7 +34,8 @@ public class FormController : Controller
             return View("~/Views/Form/Index.cshtml", model);    
         }
 
-        string pageUrl = await _formService.SaveAsync(model);
+        BaseModel nextPage = await _formService.SaveAsync(model);
+        string pageUrl = nextPage is SectionModel ? nextPage.PageUrl + "/summary" : nextPage.PageUrl;
         return Redirect(pageUrl);
     }
     
