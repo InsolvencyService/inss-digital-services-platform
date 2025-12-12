@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using INSS.Platform.Portal.Application.Factories;
+﻿using INSS.Platform.Portal.Application.Factories;
 using INSS.Platform.Portal.Domain;
 using INSS.Platform.Portal.Domain.Exceptions;
 
@@ -50,29 +49,17 @@ public sealed class FormService : IFormService
 
             BaseModel nextPage = form.GetNextPageAfter(model.PageUrl);
             
-            //BaseModel page2 = form.FindPageById(model.Id);
-            //BaseModel nextPage = addAnother.GetNextPage(model.Id);
-            
-            //page2.Reset();
-            
             await this._formStateService.SaveAsync(form);
 
-            return nextPage.PageUrl;//updated ? addAnother.PageUrl : nextPage.PageUrl;
+            return nextPage.PageUrl;
         }
-        
-        
-        
-        
-        
-        
 
         BaseModel currentModel = form.FindPage(model.PageUrl);
 
         switch (currentModel)
         {
             case SectionModel section:
-                //section.IsComplete = true;
-                section.Progress = SectionProgressType.Completed;
+                section.IsComplete = true;
                 break;
             default:
                 model.CopyTo(currentModel);
@@ -80,7 +67,6 @@ public sealed class FormService : IFormService
         }
 
         BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
-        // TODO: page.PreviousPageUrl = model.PageUrl;
         
         await _formStateService.SaveAsync(form);
 
@@ -91,7 +77,7 @@ public sealed class FormService : IFormService
     {
         FormModel form = await _formStateService.GetAsync();
 
-        if (form.FindPageById2(itemId) is not AddAnotherModel addAnother)
+        if (form.FindPageById(itemId) is not AddAnotherModel addAnother)
         {
             throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
         }
@@ -111,15 +97,20 @@ public sealed class FormService : IFormService
     public async Task<string> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        BaseModel page2 = form.FindPageById2(itemId);
+        BaseModel page2 = form.FindPageById(itemId);
         AddAnotherModel? addAnother = form.FindAddAnother(page2);
-
+        SectionModel section = form.FindSection(page2.Id);
+        
         if (addAnother is null)
         {
-            throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
+            section.Context.CurrentPageId = page2.Id;
+            section.Context.PreviousPageUrl = section.PageUrl;
+
+            return page2.PageUrl;
+            //throw new FormModelException($"Unable to find the add another model associated to item {itemId}.");
         }
 
-        SectionModel section = form.FindSection(page2.Id);
+        
 
         section.Context.CurrentPageId = page2.Id;
         section.Context.PreviousPageUrl = addAnother.PageUrl;
@@ -180,7 +171,7 @@ public sealed class FormService : IFormService
     public async Task<ConfirmModel> RemoveAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        BaseModel page2 = form.FindPageById2(itemId);
+        BaseModel page2 = form.FindPageById(itemId);
         AddAnotherModel? addAnother = form.FindAddAnother(page2);
 
         if (addAnother is null)
@@ -224,7 +215,7 @@ public sealed class FormService : IFormService
 
     private async Task<string> ProcessPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
     {
-        BaseModel page2 = form.FindPageById2(confirm.Id);
+        BaseModel page2 = form.FindPageById(confirm.Id);
         
         AddAnotherModel? addAnother = form.FindAddAnother(page2);
             

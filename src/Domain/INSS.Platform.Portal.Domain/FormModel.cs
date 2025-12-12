@@ -12,7 +12,7 @@ public class FormModel : BaseModel
 
     public SectionModel[] Sections { get; init; } = [];
 
-    public bool CanSubmit => Sections.All(s => s.Progress == SectionProgressType.Completed);
+    public bool CanSubmit => Sections.All(s => s.IsComplete);
     
     public BaseModel FindPage(string pageUrl)
     {
@@ -48,41 +48,6 @@ public class FormModel : BaseModel
                             }
                         }
                     }
-                    
-                    /*if (addAnother.CurrentAction == AddAnotherActionMode.Add)
-                    {
-                        foreach (BaseModel item in addAnother.Items.Last())
-                        {
-                            if (item.PageUrl == pageUrl)
-                            {
-                                return item;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (BaseModel[] items in addAnother.Items)
-                        {
-                            foreach (BaseModel item in items)
-                            {
-                                if (item.PageUrl == pageUrl && addAnother.CurrentEditId == item.Id)
-                                {
-                                    return item;
-                                }
-                            }
-                        }
-                    }*/
-                    // foreach (BaseModel page2 in addAnother.Items)
-                    // {
-                    //     if (page2.PageUrl == pageUrl)
-                    //     {
-                    //         // if (addAnother.Items.Count > 0 && addAnother.Items[0].Length == addAnother.Pages.Length)
-                    //         // {
-                    //         //     return addAnother;
-                    //         // }
-                    //         return page2;
-                    //     }
-                    // }
                 }
             }
         }
@@ -114,45 +79,7 @@ public class FormModel : BaseModel
         throw new FormModelException($"Unable to find the section for page {pageId}.");
     }
     
-    /*public BaseModel FindPageById(string id)
-    {
-        foreach (SectionModel section in Sections)
-        {
-            foreach (BaseModel page in section.Pages)
-            {
-                if (page.Id == id)
-                {
-                    return page;
-                }
-
-                if (page is AddAnotherModel addAnother)
-                {
-                    foreach (BaseModel[] items in addAnother.Items)
-                    {
-                        foreach (BaseModel item in items)
-                        {
-                            if (item.Id == id)
-                            {
-                                return item;
-                            }
-                        }
-                    }
-                    
-                    // foreach (BaseModel page2 in addAnother.Pages)
-                    // {
-                    //     if (page2.Id == id)
-                    //     {
-                    //         return  page2;
-                    //     }
-                    // }
-                }
-            }
-        }
-        
-        throw new FormModelException($"Unable to find the summary list for the specified item {id}.");
-    }*/
-    
-    public BaseModel FindPageById2(string id)
+    public BaseModel FindPageById(string id)
     {
         foreach (SectionModel section in Sections)
         {
@@ -164,16 +91,23 @@ public class FormModel : BaseModel
                     {
                         return addAnother;
                     }
-                    
+
                     foreach (BaseModel[] items in addAnother.Items)
                     {
                         foreach (BaseModel item in items)
                         {
                             if (item.Id == id)
                             {
-                                return  item;
+                                return item;
                             }
                         }
+                    }
+                }
+                else
+                {
+                    if (page.Id == id)
+                    {
+                        return page;
                     }
                 }
             }
@@ -190,14 +124,6 @@ public class FormModel : BaseModel
             {
                 if (page is AddAnotherModel addAnother)
                 {
-                    // foreach (BaseModel page2 in addAnother.Pages)
-                    // {
-                    //     if (page2.Id == model.Id)
-                    //     {
-                    //         return addAnother;
-                    //     }
-                    // }
-
                     foreach (BaseModel[] items in addAnother.Items)
                     {
                         foreach (BaseModel item in items)
@@ -213,22 +139,6 @@ public class FormModel : BaseModel
         }
 
         return null;
-    }
-    
-    public BaseModel FindPageBefore(BaseModel currentPage)
-    {
-        foreach (SectionModel section in Sections)
-        {
-            for (int i = 0; i < section.Pages.Length; i++)
-            {
-                if (section.Pages[i].Id == currentPage.Id && i > 0)
-                {
-                    return section.Pages[i - 1];
-                }
-            }
-        }
-
-        throw new FormModelException($"Unable to find the page before {currentPage.PageUrl}.");
     }
     
     public BaseModel GetNextPageAfter(string pageUrl)
@@ -300,8 +210,7 @@ public class FormModel : BaseModel
 
                 if (page is AddAnotherModel addAnother)
                 {
-                    foreach (BaseModel page2 in addAnother.Items
-                                 [0]) // TODO: Assumption that only one row will exist at this stage
+                    foreach (BaseModel page2 in addAnother.Items[0]) // TODO: Assumption that only one row will exist at this stage
                     {
                         page2.PageUrl = $"{page.PageUrl}/{page2.PathName}";
                     }
@@ -315,7 +224,7 @@ public class FormModel : BaseModel
                 firstPage = addAnother2.Items[0][0];
             }
 
-            section.Context!.FirstPageUrl = firstPage.PageUrl;
+            section.Context.FirstPageUrl = firstPage.PageUrl;
             section.Context.CurrentPageId = firstPage.Id;
             section.Context.PreviousPageUrl = PageUrl;
         }

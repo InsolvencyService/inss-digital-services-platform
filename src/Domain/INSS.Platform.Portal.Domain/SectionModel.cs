@@ -10,38 +10,15 @@ public class SectionModel : BaseModel
         Name = "Section";
     }
 
-    //public bool IsComplete { get; set; }
-
-    public SectionProgressType Progress { get; set; }
+    public bool IsComplete { get; set; }
     
     public BaseModel[] Pages { get; init; } = [];
     
     [ValidateNever]
     public SectionContext Context { get; } = new();
     
-    // public BaseModel GetFirstPage()
-    // {
-    //     BaseModel firstPage = Pages.First();
-    //     
-    //     if (firstPage is AddAnotherModel addAnother)
-    //     {
-    //         firstPage = addAnother.GetFirstPage();//.Pages.First();
-    //     }
-    //
-    //     return firstPage;
-    // }
-}
-
-public enum SectionProgressType
-{
-    NotStarted,
-    InProgress,
-    Completed
-}
-
-public sealed class SectionContext
-{
-    public string FirstPageUrl { get; set; }
-    public string PreviousPageUrl { get; set; }
-    public string CurrentPageId { get; set; }
+    public string GetChangeUrl(BaseModel item)
+    {
+        return $"{PageUrl}/change/?itemId={item.Id}";
+    }
 }
