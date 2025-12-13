@@ -14,7 +14,7 @@ public sealed class FormService : IFormService
         _formModelFactory = formModelFactory;
     }
     
-    public async Task<BaseModel> GetAsync()
+    public async Task<BaseModel> GetAsync(string path)
     {
         FormModel form;
         
@@ -54,13 +54,20 @@ public sealed class FormService : IFormService
         
         BaseModel currentPage = form.GetCurrentPageFor(model);
         
-        if (currentPage is SectionModel section)
+        switch (currentPage)
         {
-            section.IsComplete = true;
-        }
-        else if (currentPage is not AddAnotherModel)
-        {
-            model.CopyTo(currentPage);    
+            case SectionModel section:
+                section.IsComplete = true;
+                break;
+            default:
+            {
+                if (currentPage is not AddAnotherModel)
+                {
+                    model.CopyTo(currentPage);    
+                }
+
+                break;
+            }
         }
         
         BaseModel page = form.FindNextPageAfter(currentPage);

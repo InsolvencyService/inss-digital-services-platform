@@ -59,14 +59,6 @@ public static class WebApplicationExtensions
                         app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}",
                             pattern: subPage.PageUrl,
                             defaults: new { controller = "Form", action = "Index" });
-                
-                        // app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-change",
-                        //     pattern: subPage.PageUrl + "/change",
-                        //     defaults: new { controller = "Form", action = "Change" });
-                        //
-                        // app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-remove",
-                        //     pattern: subPage.PageUrl + "/remove",
-                        //     defaults: new { controller = "Form", action = "Remove" });
                     }
                 }
             }

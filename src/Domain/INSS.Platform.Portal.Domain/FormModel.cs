@@ -59,8 +59,6 @@ public class FormModel : BaseModel
     
     public void Initialize()
     {
-        // TODO: Validate
-        
         PageUrl = $"/{PathName}";
 
         CurrentPageId = Id;
@@ -75,9 +73,9 @@ public class FormModel : BaseModel
 
                 if (page is AddAnotherModel addAnother)
                 {
-                    foreach (BaseModel page2 in addAnother.Items[0]) // TODO: Assumption that only one row will exist at this stage
+                    foreach (BaseModel itemPage in addAnother.Items[0])
                     {
-                        page2.PageUrl = $"{page.PageUrl}/{page2.PathName}";
+                        itemPage.PageUrl = $"{page.PageUrl}/{itemPage.PathName}";
                     }
                 }
             }

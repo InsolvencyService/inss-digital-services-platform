@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Http" />
     </ItemGroup>
     
@@ -8,10 +9,4 @@
       <ProjectReference Include="..\..\Domain\INSS.Platform.Portal.Domain\INSS.Platform.Portal.Domain.csproj" />
     </ItemGroup>
     
-    <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Mvc.Abstractions">
-        <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\10.0.0\Microsoft.AspNetCore.Mvc.Abstractions.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>

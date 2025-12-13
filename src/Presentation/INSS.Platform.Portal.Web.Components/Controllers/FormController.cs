@@ -19,7 +19,7 @@ public class FormController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        BaseModel model = await _formService.GetAsync();
+        BaseModel model = await _formService.GetAsync(Request.Path.Value!);
         return View(model);
     }
     
