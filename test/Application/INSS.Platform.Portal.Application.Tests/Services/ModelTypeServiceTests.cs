@@ -31,9 +31,9 @@ public class ModelTypeServiceTests
     {
         ModelTypeService service = new(typeof(AddressModel).Assembly);
 
-        IEnumerable<Type> modelTypes = service.GetModelTypes();
+        IEnumerable<Type> modelTypes = service.GetModelTypes().ToList();
 
-        // Assert some as this list will grow and we don't want to have to update this test every time a new model is added
+        // Assert some as this list will grow, and we don't want to have to update this test every time a new model is added
         Assert.Contains(typeof(AddressModel), modelTypes);
         Assert.Contains(typeof(BankAccountModel), modelTypes);
         Assert.Contains(typeof(FullNameModel), modelTypes);

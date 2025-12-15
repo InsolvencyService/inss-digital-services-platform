@@ -28,6 +28,22 @@ public class BaseModelTests
     }
 
     [Fact]
+    public void FromSource_DeepCopyTo_CopiesAllSourceProperties()
+    {
+        FullNameModel source = new() {FullName = "Marge Simpson", PathName = "test"};
+        FullNameModel target = new() {FullName = "Homer Simpson", PathName = "old"};
+
+        source.DeepCopyTo(target);
+
+        Assert.Equal(source.FullName, target.FullName);
+        Assert.Equal(source.Id, target.Id);
+        Assert.Equal(source.PathName, target.PathName);
+        Assert.Equal(source.PageUrl, target.PageUrl);
+        Assert.Equal(source.Kind, target.Kind);
+        Assert.Equal(source.ViewName, target.ViewName);
+    }
+    
+    [Fact]
     public void SourceFullName_Clone_ReturnsNewFullNameInstance()
     {
         FullNameModel fullName = new() {FullName = "Marge Simpson"};

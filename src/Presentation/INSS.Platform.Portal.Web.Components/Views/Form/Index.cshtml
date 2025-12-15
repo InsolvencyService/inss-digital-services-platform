@@ -6,10 +6,10 @@
 @using INSS.Platform.Portal.Domain
 @model INSS.Platform.Portal.Domain.BaseModel
 
-@if (Model is not (FormModel or ConfirmModel))
+@*@if (Model is not (FormModel or ConfirmModel))
 {
     <govuk-back-link href="@Model.PreviousPageUrl"/>
-}
+}*@
 
 @if (Model is FormModel formWithTitle && formWithTitle.Title is not null)
 {

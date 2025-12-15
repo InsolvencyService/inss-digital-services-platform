@@ -27,111 +27,82 @@ public sealed class FormService : IFormService
         {
             form = await _formStateService.GetAsync();
         }
-        
-        return form.FindPage(path);
+
+        return form.FindPage(form.CurrentPageId);
     }
 
-    public async Task<string> SaveAsync(BaseModel model)
+    public async Task<BaseModel> StartAsync(string path)
+    {
+        FormModel form = await _formStateService.GetAsync();
+        SectionModel section = form.Sections.GetSectionByUrl(path.Replace("/start", ""));
+        BaseModel startPage = section.GetStartPage();
+        form.CurrentPageId = startPage.Id;
+        await this._formStateService.SaveAsync(form);
+        return startPage;
+    }
+    
+    public async Task<BaseModel> SaveAsync(BaseModel model)
     {
         FormModel form = await _formStateService.GetAsync();
 
         if (model is ConfirmModel confirm)
         {
-            return await GetPostConfirmPageUrlAsync(form, confirm);
+            BaseModel nextPage = confirm.HandleConfirmation(form);
+            await _formStateService.SaveAsync(form);
+            return nextPage;
         }
-
-        BaseModel currentModel = form.FindPage(model.PageUrl);
-
-        switch (currentModel)
+        
+        BaseModel currentPage = form.GetCurrentPageFor(model);
+        
+        switch (currentPage)
         {
             case SectionModel section:
                 section.IsComplete = true;
                 break;
-            case SummaryListModel:
-                // No action required
-                break;
             default:
-                model.CopyTo(currentModel);
-                break;
-        }
+            {
+                if (currentPage is not AddAnotherModel)
+                {
+                    model.CopyTo(currentPage);    
+                }
 
-        BaseModel page = form.GetNextPageAfter(currentModel.PageUrl);
-        page.PreviousPageUrl = model.PageUrl;
-        
-        if (page is SummaryListModel summaryList)
-        {
-            UpdateSummaryListModel(summaryList, currentModel);
+                break;
+            }
         }
+        
+        BaseModel page = form.FindNextPageAfter(currentPage);
+
+        form.CurrentPageId = page.Id;
         
         await _formStateService.SaveAsync(form);
-        
-        page.PreviousPageUrl = model.PageUrl;
 
-        return page is SectionModel ? page.PageUrl + "/summary" : page.PageUrl;
+        return page;
     }
 
-    public async Task<string> ChangeAsync(string itemId)
+    public async Task<BaseModel> AddAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        SummaryListModel summaryList = form.FindSummaryList(itemId);
-        BaseModel page = summaryList.Items.Single(i => i.Id == itemId);
-        BaseModel previousPage = form.FindPageBefore(summaryList);
-        page.CopyTo(previousPage);
-        previousPage.Id = page.Id;
-
-        await _formStateService.SaveAsync(form);
-        
-        return previousPage.PageUrl;
+        AddAnotherModel addAnother = form.GetAddAnother(itemId);
+        BaseModel firstPage = addAnother.Items.CreateNewRow();
+        form.CurrentPageId = firstPage.Id;
+        await this._formStateService.SaveAsync(form);
+        return firstPage;
+    }
+    
+    public async Task<BaseModel> ChangeAsync(string itemId)
+    {
+        FormModel form = await _formStateService.GetAsync();
+        await this._formStateService.SaveAsync(form);
+        form.CurrentPageId = itemId;
+        return form.FindPage(itemId);
     }
 
     public async Task<ConfirmModel> RemoveAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-
-        SummaryListModel summaryList = form.FindSummaryList(itemId);
-
-        return new ConfirmModel
-        {
-            Id = itemId, 
-            PageUrl = summaryList.PageUrl, 
-            Question = summaryList.RemoveQuestionText
-        };
-    }
-
-    private async Task<string> GetPostConfirmPageUrlAsync(FormModel form, ConfirmModel confirm)
-    {
-        SummaryListModel summaryList = form.FindSummaryList(confirm.Id);
-            
-        if (confirm.Confirmed)
-        {
-            summaryList.Items = summaryList.Items.Where(i => i.Id != confirm.Id).ToArray();
-            await _formStateService.SaveAsync(form);
-        }
-
-        if (summaryList.Items.Length == 0)
-        {
-            BaseModel previousPage = form.FindPageBefore(summaryList);
-            return previousPage.PageUrl;
-        }
-        
-        return summaryList.PageUrl;
-    }
-
-    private static void UpdateSummaryListModel(SummaryListModel summaryList, BaseModel currentModel)
-    {
-        BaseModel? currentItem = summaryList.Items.FirstOrDefault(p => p.Id == currentModel.Id);
-
-        if (currentItem is null)
-        {
-            // Add a copy
-            summaryList.Items = [.. summaryList.Items, currentModel.Clone()];
-            currentModel.Reset();
-        }
-        else
-        {
-            // Replace
-            currentModel.CopyTo(currentItem);
-            currentModel.Reset();
-        }
+        BaseModel page = form.FindPage(itemId);
+        AddAnotherModel addAnother = form.Sections.GetAddAnotherFor(page);
+        await this._formStateService.SaveAsync(form);
+        return new ConfirmModel { Id = page.Id, PageUrl = addAnother.PageUrl };
     }
 }

@@ -23,8 +23,16 @@ public static class WebApplicationExtensions
         foreach (SectionModel section in form.Sections)
         {
             app.MapControllerRoute(name: $"{section.PathName}",
-                pattern: section.PageUrl + "/summary",
+                pattern: section.PageUrl,
                 defaults: new { controller = "Form", action = "Index" });
+            
+            app.MapControllerRoute(name: $"{section.PathName}-change",
+                pattern: section.PageUrl + "/change",
+                defaults: new { controller = "Form", action = "Change" });
+            
+            app.MapControllerRoute(name: $"{section.PathName}-start",
+                pattern: section.PageUrl + "/start",
+                defaults: new { controller = "Form", action = "Start" });
             
             foreach (BaseModel page in section.Pages)
             {
@@ -39,6 +47,20 @@ public static class WebApplicationExtensions
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-remove",
                     pattern: page.PageUrl + "/remove",
                     defaults: new { controller = "Form", action = "Remove" });
+                
+                app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-add",
+                    pattern: page.PageUrl + "/add",
+                    defaults: new { controller = "Form", action = "Add" });
+
+                if (page is AddAnotherModel addAnother && addAnother.Items.Count > 0)
+                {
+                    foreach (BaseModel subPage in addAnother.Items[0])
+                    {
+                        app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}",
+                            pattern: subPage.PageUrl,
+                            defaults: new { controller = "Form", action = "Index" });
+                    }
+                }
             }
         }
    

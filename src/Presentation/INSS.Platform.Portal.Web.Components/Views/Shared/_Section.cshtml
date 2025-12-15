@@ -22,7 +22,7 @@
                 }
             </govuk-summary-list-row-value>
             <govuk-summary-list-row-actions>
-                <govuk-summary-list-row-action href="@(page.PageUrl)" visually-hidden-text="@Model.Name">Change</govuk-summary-list-row-action>
+                <govuk-summary-list-row-action href="@(Model.GetChangeUrl(page))" visually-hidden-text="@Model.Name">Change</govuk-summary-list-row-action>
             </govuk-summary-list-row-actions>
         </govuk-summary-list-row>
     }
