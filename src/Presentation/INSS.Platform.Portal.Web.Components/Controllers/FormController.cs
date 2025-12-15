@@ -19,9 +19,9 @@ public class FormController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        (BaseModel, NavigationItem?) model = await _formService.GetAsync(Request.Path.Value!);
-        ViewData["PreviousPageUrl"] = model.Item2?.PageUrl;
-        return View(model.Item1);
+        (BaseModel Model, NavigationItem? Navigation) model = await _formService.GetAsync(Request.Path.Value!);
+        ViewData["PreviousPageUrl"] = model.Navigation?.PageUrl;
+        return View(model.Model);
     }
     
     [HttpPost]

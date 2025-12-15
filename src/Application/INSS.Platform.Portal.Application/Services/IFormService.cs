@@ -4,7 +4,7 @@ namespace INSS.Platform.Portal.Application.Services;
 
 public interface IFormService
 {
-    Task<(BaseModel, NavigationItem?)> GetAsync(string path);
+    Task<(BaseModel Model, NavigationItem? Navigation)> GetAsync(string path);
     Task<BaseModel> StartAsync(string path);
     Task<BaseModel> SaveAsync(BaseModel model);
     Task<BaseModel> AddAsync(string itemId);

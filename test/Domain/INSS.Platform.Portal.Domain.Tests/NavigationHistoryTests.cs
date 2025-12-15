@@ -101,4 +101,28 @@ public class NavigationHistoryTests
         
         Assert.Equal(0, history.Count);
     }
+    
+    [Fact]
+    public void PathNotLastItem_IsLastEntry_ReturnsFalse()
+    {
+        NavigationHistory history = new();
+        history.Push(new NavigationItem("1234", "/form/section/page1"));
+        history.Push(new NavigationItem("1234", "/form/section/page2"));
+        
+        bool isLastEntry = history.IsLastEntry("/form/section/page1");
+        
+        Assert.False(isLastEntry);
+    }
+    
+    [Fact]
+    public void PathIsLastItem_IsLastEntry_ReturnsTrue()
+    {
+        NavigationHistory history = new();
+        history.Push(new NavigationItem("1234", "/form/section/page1"));
+        history.Push(new NavigationItem("1234", "/form/section/page2"));
+        
+        bool isLastEntry = history.IsLastEntry("/form/section/page2");
+        
+        Assert.True(isLastEntry);
+    }
 }
