@@ -27,10 +27,10 @@ public class FormServiceTests
         newForm.CurrentPageId = newForm.Sections[0].Pages[0].Id;
         _mockFormModelFactory.Setup(f => f.CreateAsync()).ReturnsAsync(newForm);
 
-        BaseModel result = await _service.GetAsync("/test-form");
+        (BaseModel, NavigationItem?) result = await _service.GetAsync("/test-form");
 
         _mockFormStateService.Verify(s => s.SaveAsync(newForm), Times.Once);
-        Assert.Equal(newForm.FindPage(newForm.CurrentPageId), result);
+        Assert.Equal(newForm.FindPage(newForm.CurrentPageId), result.Item1);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class FormServiceTests
         existingForm.CurrentPageId = existingForm.Sections[0].Pages[0].Id;
         _mockFormStateService.Setup(f => f.GetAsync()).ReturnsAsync(existingForm);
 
-        BaseModel result = await _service.GetAsync("/test-form");
+        (BaseModel, NavigationItem?) result = await _service.GetAsync("/test-form");
 
         _mockFormStateService.Verify(s => s.SaveAsync(existingForm), Times.Never);
-        Assert.Equal(existingForm.FindPage(existingForm.CurrentPageId), result);
+        Assert.Equal(existingForm.FindPage(existingForm.CurrentPageId), result.Item1);
     }
     
     [Fact]

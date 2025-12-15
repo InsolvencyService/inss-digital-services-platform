@@ -14,7 +14,7 @@ public sealed class FormService : IFormService
         _formModelFactory = formModelFactory;
     }
     
-    public async Task<BaseModel> GetAsync(string path)
+    public async Task<(BaseModel, NavigationItem?)> GetAsync(string path)
     {
         FormModel form;
         
@@ -28,7 +28,17 @@ public sealed class FormService : IFormService
             form = await _formStateService.GetAsync();
         }
 
-        return form.FindPage(form.CurrentPageId);
+        if (form.History.IsLastEntry(path))
+        {
+            NavigationItem item = form.History.Pop()!;
+            form.CurrentPageId = item.PageId;
+        }
+        
+        BaseModel page = form.FindPage(form.CurrentPageId);
+
+        await this._formStateService.SaveAsync(form);
+        
+        return (page, form.History.Peek());
     }
 
     public async Task<BaseModel> StartAsync(string path)
@@ -37,6 +47,8 @@ public sealed class FormService : IFormService
         SectionModel section = form.Sections.GetSectionByUrl(path.Replace("/start", ""));
         BaseModel startPage = section.GetStartPage();
         form.CurrentPageId = startPage.Id;
+        form.History.Clear();
+        form.History.Push(new NavigationItem(form.Id, form.PageUrl));
         await this._formStateService.SaveAsync(form);
         return startPage;
     }
@@ -73,7 +85,16 @@ public sealed class FormService : IFormService
         BaseModel page = form.FindNextPageAfter(currentPage);
 
         form.CurrentPageId = page.Id;
-        
+
+        if (currentPage is SectionModel)
+        {
+            form.History.Clear();
+        }
+        else
+        {
+            form.History.Push(new NavigationItem(currentPage.Id, currentPage.PageUrl));
+        }
+
         await _formStateService.SaveAsync(form);
 
         return page;
