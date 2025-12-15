@@ -92,8 +92,9 @@ public abstract class BaseModel
     {
         List<string> displayValueList = [];
 
-        PropertyInfo[] props = GetType().GetProperties(DerivedTypeBinding);
-        
+        IEnumerable<PropertyInfo> props = GetType().GetProperties(DerivedTypeBinding)
+            .Where(p => p.GetCustomAttribute<Attributes.ExcludeFromSummaryAttribute>() is null);
+
         foreach (PropertyInfo property in props)
         {
             object? value = property.GetValue(this, null);

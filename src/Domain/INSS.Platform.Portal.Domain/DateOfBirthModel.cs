@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using INSS.Platform.Portal.Domain.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace INSS.Platform.Portal.Domain;
 
@@ -10,10 +11,13 @@ public sealed class DateOfBirthModel : BaseModel, IValidatableObject
         Name = "Date of Birth";
     }
 
+    [ExcludeFromSummary]
     public int? Day { get; set; }
 
+    [ExcludeFromSummary]
     public int? Month { get; set; }
 
+    [ExcludeFromSummary]
     public int? Year { get; set; }
 
     public DateOnly? DateOfBirth
