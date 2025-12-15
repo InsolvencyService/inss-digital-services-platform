@@ -52,9 +52,9 @@ public static class WebApplicationExtensions
                     pattern: page.PageUrl + "/add",
                     defaults: new { controller = "Form", action = "Add" });
 
-                if (page is AddAnotherModel addAnother)
+                if (page is AddAnotherModel addAnother && addAnother.Items.Count > 0)
                 {
-                    foreach (BaseModel subPage in addAnother.Items[0]) // TODO: Assumption
+                    foreach (BaseModel subPage in addAnother.Items[0])
                     {
                         app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}",
                             pattern: subPage.PageUrl,

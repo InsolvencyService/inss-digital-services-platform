@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Portal.Domain;
+﻿using INSS.Platform.Portal.Domain.Exceptions;
+
+namespace INSS.Platform.Portal.Domain;
 
 public class SectionModel : BaseModel
 {
@@ -14,6 +16,11 @@ public class SectionModel : BaseModel
 
     public BaseModel GetStartPage()
     {
+        if (Pages.Count == 0)
+        {
+            throw new FormModelException("There are no pages defined.");
+        }
+        
         if (Pages[0] is AddAnotherModel addAnother)
         {
             return addAnother.Items[0][0];

@@ -71,7 +71,7 @@ public class FormModel : BaseModel
             {
                 page.PageUrl = $"{section.PageUrl}/{page.PathName}";
 
-                if (page is AddAnotherModel addAnother)
+                if (page is AddAnotherModel addAnother && addAnother.Items.Count > 0)
                 {
                     foreach (BaseModel itemPage in addAnother.Items[0])
                     {
