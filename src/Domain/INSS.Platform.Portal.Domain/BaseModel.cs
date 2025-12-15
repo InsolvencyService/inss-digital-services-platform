@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using INSS.Platform.Portal.Domain.Attributes;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 
@@ -93,7 +94,7 @@ public abstract class BaseModel
         List<string> displayValueList = [];
 
         IEnumerable<PropertyInfo> props = GetType().GetProperties(DerivedTypeBinding)
-            .Where(p => p.GetCustomAttribute<Attributes.ExcludeFromSummaryAttribute>() is null);
+            .Where(p => p.GetCustomAttribute<ExcludeFromSummaryAttribute>() is null);
 
         foreach (PropertyInfo property in props)
         {

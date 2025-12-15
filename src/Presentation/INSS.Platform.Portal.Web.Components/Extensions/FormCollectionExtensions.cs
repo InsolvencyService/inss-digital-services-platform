@@ -36,7 +36,7 @@ public static class FormCollectionExtensions
                 : null;
         }
 
-        if (value is string s && string.IsNullOrWhiteSpace(s))
+        if (value is string stringValue && string.IsNullOrWhiteSpace(stringValue))
         {
             if (conversionType == typeof(string))
             {

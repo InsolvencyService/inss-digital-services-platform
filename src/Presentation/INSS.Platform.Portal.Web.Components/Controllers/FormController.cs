@@ -1,10 +1,12 @@
 ﻿using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Application.Validation;
 using INSS.Platform.Portal.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.Portal.Web.Components.Controllers;
 
+[Authorize]
 public class FormController : Controller
 {
     private readonly IFormService _formService;

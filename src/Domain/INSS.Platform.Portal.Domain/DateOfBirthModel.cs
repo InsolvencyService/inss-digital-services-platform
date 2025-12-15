@@ -26,14 +26,13 @@ public sealed class DateOfBirthModel : BaseModel, IValidatableObject
         {
             if (Day.HasValue && Month.HasValue && Year.HasValue)
             {
-                try
+                string dateString = $"{Year.Value:D4}-{Month.Value:D2}-{Day.Value:D2}";
+                if (DateOnly.TryParse(dateString, out DateOnly date))
                 {
-                    return new DateOnly(Year.Value, Month.Value, Day.Value);
+                    return date;
                 }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return null;
-                }
+
+                return null;
             }
 
             return null;
