@@ -42,7 +42,10 @@ public abstract class BaseModel
 
         foreach (PropertyInfo property in properties)
         {
-            property.SetValue(pageModel, property.GetValue(this));
+            if (property.CanWrite)
+            {
+                property.SetValue(pageModel, property.GetValue(this));
+            }
         }
     }
     

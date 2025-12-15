@@ -36,6 +36,17 @@ public static class FormCollectionExtensions
                 : null;
         }
 
+        if (value is string s && string.IsNullOrWhiteSpace(s))
+        {
+            if (conversionType == typeof(string))
+            {
+                return string.Empty;    
+            }
+            return conversionType.IsValueType && Nullable.GetUnderlyingType(conversionType) == null
+                ? Activator.CreateInstance(conversionType)
+                : null;
+        }
+
         return Convert.ChangeType(value, targetType, Thread.CurrentThread.CurrentCulture);
     }
 }

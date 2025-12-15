@@ -16,7 +16,7 @@ public class TaskListTagHelper : TagHelper
         output.TagName = "ul";
         output.Attributes.SetAttribute("class", "govuk-task-list");
 
-        var childContent = await output.GetChildContentAsync();
+        TagHelperContent childContent = await output.GetChildContentAsync();
         output.Content.SetHtmlContent(childContent);
     }
 }
