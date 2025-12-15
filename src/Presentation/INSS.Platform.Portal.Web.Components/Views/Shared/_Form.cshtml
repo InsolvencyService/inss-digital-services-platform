@@ -3,6 +3,6 @@
 <inss-task-list>
     @foreach(var section in Model.Sections)
     {
-        <inss-task-list-item name="@(section.Name)" is-complete="@(section.IsComplete)" url="@(section.Pages.First().PageUrl)" />
+        <inss-task-list-item name="@(section.Name)" is-complete="@(section.IsComplete)" url="@(section.GetStartUrl())" />
     }
 </inss-task-list>

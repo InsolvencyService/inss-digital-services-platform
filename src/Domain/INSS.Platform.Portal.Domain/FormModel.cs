@@ -10,97 +10,58 @@ public class FormModel : BaseModel
         Name = "Tasks";
     }
 
-    public SectionModel[] Sections { get; init; } = [];
+    public SectionModelCollection Sections { get; init; } = [];
 
     public bool CanSubmit => Sections.All(s => s.IsComplete);
-    
-    public BaseModel FindPage(string pageUrl)
+
+    public string CurrentPageId { get; set; }
+
+    public BaseModel GetCurrentPageFor(BaseModel model)
     {
-        if (pageUrl == PageUrl)
+        if (Id == model.Id && PageUrl == model.PageUrl)
         {
             return this;
         }
 
-        foreach (SectionModel section in Sections)
-        {
-            if (section.PageUrl == pageUrl || section.PageUrl + "/summary" == pageUrl)
-            {
-                return section;
-            }
+        BaseModel? page = Sections.GetCurrentPageFor(model);
 
-            foreach (BaseModel page in section.Pages)
-            {
-                if (page.PageUrl == pageUrl)
-                {
-                    return page;
-                }
-            }
-        }
-
-        throw new FormModelException($"Unable to find the page associated with {pageUrl}.");
-    }
-
-    public SummaryListModel FindSummaryList(string itemId)
-    {
-        foreach (SectionModel section in Sections)
-        {
-            foreach (BaseModel page in section.Pages)
-            {
-                if (page is SummaryListModel summaryList && summaryList.Items.Any(i => i.Id == itemId))
-                {
-                    return summaryList;
-                }
-            }
-        }
-
-        throw new FormModelException($"Unable to find the summary list for the specified item {itemId}.");
+        return page ?? this;
     }
     
-    public BaseModel FindPageBefore(BaseModel currentPage)
+    public BaseModel FindPage(string pageId)
     {
-        foreach (SectionModel section in Sections)
+        if (Id == pageId)
         {
-            for (int i = 0; i < section.Pages.Length; i++)
-            {
-                if (section.Pages[i].Id == currentPage.Id && i > 0)
-                {
-                    return section.Pages[i - 1];
-                }
-            }
+            return this;
         }
+        
+        BaseModel? page = Sections.FindPage(pageId);
 
-        throw new FormModelException($"Unable to find the page before {currentPage.PageUrl}.");
+        return page ?? this;
+    }
+
+    public AddAnotherModel GetAddAnother(string id)
+    {
+        if (FindPage(id) is not AddAnotherModel addAnother)
+        {
+            throw new FormModelException($"Unable to find the add another model associated to item {id}.");
+        }
+        
+        return  addAnother;
     }
     
-    public BaseModel GetNextPageAfter(string pageUrl)
+    public BaseModel FindNextPageAfter(BaseModel model)
     {
-        foreach (SectionModel section in Sections)
-        {
-            if (section.PageUrl == pageUrl)
-            {
-                return this;
-            }
-
-            for (int i = 0; i < section.Pages.Length; i++)
-            {
-                if (section.Pages[i].PageUrl == pageUrl)
-                {
-                    if (i < section.Pages.Length - 1)
-                    {
-                        return section.Pages[i + 1];
-                    }
-
-                    return section;
-                }
-            }
-        }
-
-        return this;
+        BaseModel? nextPage = Sections.FindNextPageAfter(model);
+        
+        return nextPage ?? this;
     }
     
     public void Initialize()
     {
         PageUrl = $"/{PathName}";
+
+        CurrentPageId = Id;
         
         foreach (SectionModel section in Sections)
         {
@@ -109,7 +70,17 @@ public class FormModel : BaseModel
             foreach (BaseModel page in section.Pages)
             {
                 page.PageUrl = $"{section.PageUrl}/{page.PathName}";
+
+                if (page is AddAnotherModel addAnother && addAnother.Items.Count > 0)
+                {
+                    foreach (BaseModel itemPage in addAnother.Items[0])
+                    {
+                        itemPage.PageUrl = $"{page.PageUrl}/{itemPage.PathName}";
+                    }
+                }
             }
+
+            section.PageUrl = $"{section.PageUrl}/summary";
         }
     }
 }

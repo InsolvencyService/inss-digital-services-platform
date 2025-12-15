@@ -8,6 +8,7 @@ public class TaskListItemTagHelper : TagHelper
 {
     public string Name { get; set; } = string.Empty;
     public bool IsComplete { get; set; }
+    
     public string Url { get; set; } = string.Empty;
 
     public override void Process(TagHelperContext context, TagHelperOutput output)

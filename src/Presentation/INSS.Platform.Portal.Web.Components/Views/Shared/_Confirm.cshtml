@@ -3,7 +3,7 @@
 <govuk-radios for="@Model.Confirmed" orientation="Vertical">
     <govuk-radios-fieldset>
         <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
-            @Model.Question
+            @(Model.Question ?? "Confirm Remove?")
         </govuk-radios-fieldset-legend>
         <govuk-radios-hint>
             Select one option

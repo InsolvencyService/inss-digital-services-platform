@@ -28,9 +28,9 @@ public class FormSerializationServiceTests
         Assert.Equal(form.Id, deserializedForm.Id);
         Assert.Equal(form.PathName, deserializedForm.PathName);
         Assert.Equal(form.PageUrl, deserializedForm.PageUrl);
-        Assert.Equal(form.Sections.Length, deserializedForm.Sections.Length); 
+        Assert.Equal(form.Sections.Count, deserializedForm.Sections.Count); 
         AssertSectionsEqual(form.Sections[0], deserializedForm.Sections[0]);
-        Assert.Equal(form.Sections[0].Pages.Length, deserializedForm.Sections[0].Pages.Length);
+        Assert.Equal(form.Sections[0].Pages.Count, deserializedForm.Sections[0].Pages.Count);
         AssertAddressModelsEqual((AddressModel)form.Sections[0].Pages[0], (AddressModel)deserializedForm.Sections[0].Pages[0]);
         AssertBankAccountModelsEqual((BankAccountModel)form.Sections[0].Pages[1], (BankAccountModel)deserializedForm.Sections[0].Pages[1]);
     }
@@ -41,7 +41,7 @@ public class FormSerializationServiceTests
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.PathName, actual.PathName);
         Assert.Equal(expected.PageUrl, actual.PageUrl);
-        Assert.Equal(expected.Pages.Length, actual.Pages.Length);
+        Assert.Equal(expected.Pages.Count, actual.Pages.Count);
     }
 
     private static void AssertAddressModelsEqual(AddressModel expected, AddressModel actual)

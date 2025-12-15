@@ -8,5 +8,5 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Domain\INSS.Platform.Portal.Domain\INSS.Platform.Portal.Domain.csproj" />
     </ItemGroup>
-
+    
 </Project>

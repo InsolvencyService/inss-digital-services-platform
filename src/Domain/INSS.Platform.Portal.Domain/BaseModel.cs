@@ -12,6 +12,11 @@ public abstract class BaseModel
         BindingFlags.DeclaredOnly |
         BindingFlags.GetProperty |
         BindingFlags.SetProperty;
+    private const BindingFlags HierarchyTypeBinding =
+        BindingFlags.Instance |
+        BindingFlags.Public |
+        BindingFlags.GetProperty |
+        BindingFlags.SetProperty;
     
     protected BaseModel()
     {
@@ -19,7 +24,6 @@ public abstract class BaseModel
         Kind = GetType().Name;
         ViewName = $"_{GetType().Name.Replace("Model", "")}";
         PathName = "page";
-        PreviousPageUrl = "/tasks";
     }
     
     public string Id { get; set; }
@@ -34,11 +38,19 @@ public abstract class BaseModel
     
     public string PageUrl { get; set; }
     
-    public string PreviousPageUrl { get; set; }
-    
     public void CopyTo(BaseModel pageModel)
     {
         PropertyInfo[] properties = GetType().GetProperties(DerivedTypeBinding);
+
+        foreach (PropertyInfo property in properties)
+        {
+            property.SetValue(pageModel, property.GetValue(this));
+        }
+    }
+    
+    public void DeepCopyTo(BaseModel pageModel)
+    {
+        PropertyInfo[] properties = GetType().GetProperties(HierarchyTypeBinding);
 
         foreach (PropertyInfo property in properties)
         {
@@ -88,11 +100,14 @@ public abstract class BaseModel
                 continue;
             }
 
-            if (typeof(IEnumerable<BaseModel>).IsAssignableFrom(property.PropertyType))
+            if (typeof(IEnumerable<PageCollection>).IsAssignableFrom(property.PropertyType))
             {
-                foreach (BaseModel page in (IEnumerable<BaseModel>)value)
+                foreach (PageCollection pages in (IEnumerable<PageCollection>)value)
                 {
-                    displayValueList.AddRange(page.GetValues());
+                    foreach (BaseModel page in pages)
+                    {
+                        displayValueList.AddRange(page.GetValues());
+                    }
                 }
 
                 continue;
