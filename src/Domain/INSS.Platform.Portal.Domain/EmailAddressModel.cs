@@ -12,6 +12,5 @@ public sealed class EmailAddressModel : BaseModel
 
     [Required(ErrorMessage = "Enter your email address")]
     [EmailAddress(ErrorMessage = "Enter a valid email address")]
-    [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Enter a valid email address")]
     public string EmailAddress { get; init; } = string.Empty;
 }
