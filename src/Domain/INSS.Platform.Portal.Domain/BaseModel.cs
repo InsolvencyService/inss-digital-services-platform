@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using INSS.Platform.Portal.Domain.Attributes;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 
@@ -44,7 +45,10 @@ public abstract class BaseModel
 
         foreach (PropertyInfo property in properties)
         {
-            property.SetValue(pageModel, property.GetValue(this));
+            if (property.CanWrite)
+            {
+                property.SetValue(pageModel, property.GetValue(this));
+            }
         }
     }
     
@@ -89,8 +93,9 @@ public abstract class BaseModel
     {
         List<string> displayValueList = [];
 
-        PropertyInfo[] props = GetType().GetProperties(DerivedTypeBinding);
-        
+        IEnumerable<PropertyInfo> props = GetType().GetProperties(DerivedTypeBinding)
+            .Where(p => p.GetCustomAttribute<ExcludeFromSummaryAttribute>() is null);
+
         foreach (PropertyInfo property in props)
         {
             object? value = property.GetValue(this, null);

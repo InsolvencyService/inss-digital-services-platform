@@ -10,6 +10,7 @@ public class FormModel : BaseModel
         Name = "Tasks";
     }
 
+    public string Title { get; init; }
     public SectionModelCollection Sections { get; init; } = [];
 
     public bool CanSubmit => Sections.All(s => s.IsComplete);

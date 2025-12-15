@@ -23,7 +23,44 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
     /// </remarks>
     public Task<FormModel> CreateAsync()
     {
-        FormModel form = new();
+        FormModel form = new()
+        {
+            Title = "Demo task list",
+            Sections =
+            [
+                new SectionModel
+                {
+                    Name = "About you",
+                    PathName = "about-you",
+                    Pages =
+                    [
+                        new FullNameModel(),
+                        new DateOfBirthModel(),
+                        new AddressModel(),
+                        new TelephoneNumberModel(),
+                        new EmailAddressModel()
+                    ]
+                },
+                new SectionModel
+                {
+                    Name = "Income",
+                    PathName = "income",
+                    Pages =
+                    [
+                        new FullNameModel(),
+                    ]
+                },
+                new SectionModel
+                {
+                    Name = "Bank validation",
+                    PathName = "bank-validation",
+                    Pages =
+                    [
+                        new BankAccountModel(),
+                    ]
+                }
+            ]
+        };
 
         form.Initialize();
 

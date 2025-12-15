@@ -11,6 +11,11 @@
     <govuk-back-link href="@Model.PreviousPageUrl"/>
 }*@
 
+@if (Model is FormModel { Title: not null } formWithTitle)
+{
+    <h1 class="govuk-heading-l">@formWithTitle.Title</h1>
+}
+
 @using (@Html.BeginForm("Index", "Form", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
