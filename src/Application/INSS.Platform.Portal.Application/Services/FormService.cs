@@ -113,8 +113,10 @@ public sealed class FormService : IFormService
     public async Task<BaseModel> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        await _formStateService.SaveAsync(form);
+        BaseModel currentPage = form.FindPage(form.CurrentPageId);
+        form.History.Push(new NavigationItem(currentPage.Id, currentPage.PageUrl));
         form.CurrentPageId = itemId;
+        await _formStateService.SaveAsync(form);
         return form.FindPage(itemId);
     }
 
