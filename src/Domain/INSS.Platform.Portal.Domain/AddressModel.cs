@@ -10,7 +10,7 @@ public sealed class AddressModel : BaseModel
     public AddressModel()
     {
         PathName = "address";
-        Name = "Address";
+        Title = "Address";
     }
     
     [Required(ErrorMessage = "Enter address line 1")]

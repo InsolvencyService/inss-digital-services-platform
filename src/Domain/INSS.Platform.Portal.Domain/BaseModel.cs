@@ -31,7 +31,7 @@ public abstract class BaseModel
 
     public string Kind { get; init; }
 
-    public string Name { get; init; }
+    public string Title { get; init; }
     
     public string PathName { get; init; }
     

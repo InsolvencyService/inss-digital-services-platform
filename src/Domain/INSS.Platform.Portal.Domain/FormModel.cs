@@ -7,10 +7,9 @@ public class FormModel : BaseModel
     public FormModel()
     {
         PathName = "tasks";
-        Name = "Tasks";
+        Title = "Tasks";
     }
 
-    public string Title { get; init; }
     public SectionModelCollection Sections { get; init; } = [];
 
     public bool CanSubmit => Sections.All(s => s.IsComplete);

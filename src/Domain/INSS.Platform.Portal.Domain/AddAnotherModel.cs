@@ -5,7 +5,7 @@ public sealed class AddAnotherModel : BaseModel
     public AddAnotherModel()
     {
         PathName = "add-another";
-        Name = "Add Another";
+        Title = "Add Another";
     }
     
     public ItemCollection Items { get; init; } = [];

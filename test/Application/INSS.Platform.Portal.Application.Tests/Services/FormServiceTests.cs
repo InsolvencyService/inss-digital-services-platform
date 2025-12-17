@@ -177,14 +177,14 @@ public class FormServiceTests
             [
                 new SectionModel
                 {
-                    Name = "Your Details",
+                    Title = "Your Details",
                     PathName = "your-details",
                     Pages =
                     [
                         new AddressModel(),
                         new AddAnotherModel
                         {
-                            Name = "Your family",
+                            Title = "Your family",
                             PathName = "your-family",
                             Items = [[new FullNameModel(), new AddressModel()]]
                         },
