@@ -16,7 +16,7 @@ public sealed class BaseModelBinder : IModelBinder
     
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        string? modelKind = bindingContext.ValueProvider.GetValue("Kind").FirstValue 
+        string modelKind = bindingContext.ValueProvider.GetValue("Kind").FirstValue 
             ?? throw new InvalidOperationException("Unable to retrieve the Kind from the form.");
 
         Type modelType = _modelTypeService.GetModelType(modelKind);

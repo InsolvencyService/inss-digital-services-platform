@@ -10,6 +10,12 @@ public sealed class AddAnotherModel : BaseModel
     
     public ItemCollection Items { get; init; } = [];
     
+    public bool AddAnotherItem { get; set; }
+    
+    public string? QuestionText { get; init; }
+    
+    public string? QuestionHint { get; init; }
+
     public string GetChangeUrl(BaseModel item)
     {
         return $"{PageUrl}/change/?itemId={item.Id}";
@@ -18,10 +24,5 @@ public sealed class AddAnotherModel : BaseModel
     public string GetRemoveUrl(BaseModel item)
     {
         return $"{PageUrl}/remove/?itemId={item.Id}";
-    }
-
-    public string GetAddAnotherUrl()
-    {
-        return $"{PageUrl}/add/?itemId={Id}";
     }
 }
