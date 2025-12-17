@@ -30,4 +30,19 @@ public static class EnumExtensions
         DescriptionAttribute? attribute = field.GetCustomAttribute<DescriptionAttribute>();
         return attribute?.Description ?? value.ToString();
     }
+
+    /// <summary>
+    /// Returns all values of the enum type and their descriptions.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
+    /// <returns>
+    /// An <see cref="IEnumerable{T}"/> of key-value pairs where the key is the enum value and the value is its description.
+    /// </returns>
+    public static IEnumerable<KeyValuePair<TEnum, string>> GetValuesAndDescriptions<TEnum>() where TEnum : struct, Enum
+    {
+        foreach (TEnum value in Enum.GetValues<TEnum>())
+        {
+            yield return new KeyValuePair<TEnum, string>(value, ((Enum)(object)value).Description());
+        }
+    }
 }

@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Application\INSS.Platform.Portal.Application\INSS.Platform.Portal.Application.csproj" />
       <ProjectReference Include="..\..\Infrastructure\INSS.Platform.Portal.Infrastructure\INSS.Platform.Portal.Infrastructure.csproj" />
+      <ProjectReference Include="..\INSS.Platform.Shared.Web\INSS.Platform.Shared.Web.csproj" />
     </ItemGroup>
     
     <ItemGroup>

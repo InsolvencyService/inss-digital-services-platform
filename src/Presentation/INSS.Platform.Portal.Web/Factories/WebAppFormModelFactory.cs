@@ -14,7 +14,7 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
             [
                 new SectionModel
                 {
-                    Name = "Your Details",
+                    Title = "Your Details",
                     PathName = "your-details",
                     Pages =
                     [
@@ -24,7 +24,7 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                 },
                 new SectionModel
                 {
-                    Name = "Assets",
+                    Title = "Assets",
                     PathName = "assets",
                     Pages =
                     [
@@ -34,12 +34,12 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                 },
                 new SectionModel
                 {
-                    Name = "Add Another Example",
+                    Title = "Add Another Example",
                     PathName = "add-another-example",
                     Pages = [
                         new AddAnotherModel
                         {
-                            Name = "Test Add Another",
+                            Title = "Test Add Another",
                             PathName = "add-another",
                             Items = [[new FullNameModel(), new AddressModel()]]
                         },
