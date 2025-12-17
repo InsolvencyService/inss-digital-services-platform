@@ -164,7 +164,7 @@ public class FormModelTests
             [
                 new SectionModel
                 {
-                    Name = "Your Details",
+                    Title = "Your Details",
                     PathName = "your-details",
                     Pages =
                     [
@@ -174,7 +174,7 @@ public class FormModelTests
                 },
                 new SectionModel
                 {
-                    Name = "Assets",
+                    Title = "Assets",
                     PathName = "assets",
                     Pages =
                     [
@@ -183,13 +183,13 @@ public class FormModelTests
                 },
                 new SectionModel
                 {
-                    Name = "About You",
+                    Title = "About You",
                     PathName = "about-you",
                     Pages =
                     [
                         new AddAnotherModel
                         {
-                            Name = "You and your family",
+                            Title = "You and your family",
                             PathName = "you-and-your-family",
                             Items = [[new FullNameModel(), new AddressModel()]]
                         }

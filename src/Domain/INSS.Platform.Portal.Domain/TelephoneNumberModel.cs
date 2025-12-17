@@ -7,7 +7,7 @@ public sealed class TelephoneNumberModel : BaseModel
     public TelephoneNumberModel()
     {
         PathName = "telephone-number";
-        Name = "UK phone number";
+        Title = "UK phone number";
     }
 
     [Phone(ErrorMessage = "Enter a valid telephone number")]

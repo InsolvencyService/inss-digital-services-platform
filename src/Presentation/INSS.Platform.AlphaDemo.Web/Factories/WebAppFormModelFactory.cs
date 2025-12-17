@@ -30,7 +30,7 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
             [
                 new SectionModel
                 {
-                    Name = "About you",
+                    Title = "About you",
                     PathName = "about-you",
                     Pages =
                     [
@@ -43,16 +43,31 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                 },
                 new SectionModel
                 {
-                    Name = "Income",
+                    Title = "Income",
                     PathName = "income",
                     Pages =
                     [
-                        new FullNameModel(),
+                        new SourceOfIncomeModel(),
+                        new GrossIncomeModel(),
+                        new PaymentFrequencyModel(),
+                        new IncomeProviderModel(),
+                        new AddAnotherModel
+                        { 
+                            Items = 
+                            [
+                                [
+                                    new SourceOfIncomeModel(), 
+                                    new GrossIncomeModel(), 
+                                    new PaymentFrequencyModel(), 
+                                    new IncomeProviderModel()
+                                ]
+                            ] 
+                        }
                     ]
                 },
                 new SectionModel
                 {
-                    Name = "Bank validation",
+                    Title = "Bank validation",
                     PathName = "bank-validation",
                     Pages =
                     [

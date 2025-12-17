@@ -8,7 +8,7 @@ public sealed class DateOfBirthModel : BaseModel, IValidatableObject
     public DateOfBirthModel()
     {
         PathName = "date-of-birth";
-        Name = "Date of Birth";
+        Title = "Date of Birth";
     }
 
     [ExcludeFromSummary]

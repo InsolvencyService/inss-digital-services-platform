@@ -47,6 +47,11 @@ public static class FormCollectionExtensions
                 : null;
         }
 
+        if (targetType.IsEnum && value is string enumString)
+        {
+            return Enum.Parse(targetType, enumString, ignoreCase: true);
+        }
+
         return Convert.ChangeType(value, targetType, Thread.CurrentThread.CurrentCulture);
     }
 }

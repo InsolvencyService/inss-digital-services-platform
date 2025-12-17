@@ -7,7 +7,7 @@ public sealed class EmailAddressModel : BaseModel
     public EmailAddressModel()
     {
         PathName = "email-address";
-        Name = "Email Address";
+        Title = "Email Address";
     }
 
     [Required(ErrorMessage = "Enter your email address")]

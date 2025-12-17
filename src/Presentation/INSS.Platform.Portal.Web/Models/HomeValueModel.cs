@@ -8,7 +8,7 @@ public class HomeValueModel : BaseModel
     public HomeValueModel()
     {
         PathName = "home-value";
-        Name = "Home Valuation";
+        Title = "Home Valuation";
     }
     
     [Required(ErrorMessage = "Enter your home value")]
