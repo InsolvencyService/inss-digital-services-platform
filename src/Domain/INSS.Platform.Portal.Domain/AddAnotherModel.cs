@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Portal.Domain;
+﻿using INSS.Platform.Portal.Domain.Attributes;
+
+namespace INSS.Platform.Portal.Domain;
 
 public sealed class AddAnotherModel : BaseModel
 {
@@ -12,8 +14,10 @@ public sealed class AddAnotherModel : BaseModel
     
     public bool AddAnotherItem { get; set; }
     
+    [ExcludeFromSummary]
     public string? QuestionText { get; init; }
     
+    [ExcludeFromSummary]
     public string? QuestionHint { get; init; }
 
     public string GetChangeUrl(BaseModel item)
