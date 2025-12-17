@@ -47,10 +47,6 @@ public static class WebApplicationExtensions
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-remove",
                     pattern: page.PageUrl + "/remove",
                     defaults: new { controller = "Form", action = "Remove" });
-                
-                app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-add",
-                    pattern: page.PageUrl + "/add",
-                    defaults: new { controller = "Form", action = "Add" });
 
                 if (page is AddAnotherModel addAnother && addAnother.Items.Count > 0)
                 {

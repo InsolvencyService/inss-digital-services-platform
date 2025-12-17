@@ -41,6 +41,8 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
                         {
                             Title = "Test Add Another",
                             PathName = "add-another",
+                            QuestionText = "Do you need to add another?",
+                            QuestionHint = "You must add all your...",
                             Items = [[new FullNameModel(), new AddressModel()]]
                         },
                         new HomeValueModel()

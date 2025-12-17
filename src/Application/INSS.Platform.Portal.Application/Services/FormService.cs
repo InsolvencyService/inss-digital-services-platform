@@ -45,13 +45,24 @@ public sealed class FormService : IFormService
     {
         FormModel form = await _formStateService.GetAsync();
 
-        if (model is ConfirmModel confirm)
+        switch (model)
         {
-            BaseModel nextPage = confirm.HandleConfirmation(form);
-            await _formStateService.SaveAsync(form);
-            return nextPage;
+            case ConfirmModel confirm:
+            {
+                BaseModel nextPage = confirm.HandleConfirmation(form);
+                await _formStateService.SaveAsync(form);
+                return nextPage;
+            }
+            case AddAnotherModel { AddAnotherItem: true } addAnother:
+            {
+                AddAnotherModel currentAddAnother = form.GetAddAnother(addAnother.Id);
+                BaseModel firstPage = currentAddAnother.Items.CreateNewRow();
+                form.CurrentPageId = firstPage.Id;
+                await _formStateService.SaveAsync(form);
+                return firstPage;
+            }
         }
-        
+
         BaseModel currentPage = form.GetCurrentPageFor(model);
         
         switch (currentPage)
@@ -79,16 +90,6 @@ public sealed class FormService : IFormService
         return page;
     }
 
-    public async Task<BaseModel> AddAsync(string itemId)
-    {
-        FormModel form = await _formStateService.GetAsync();
-        AddAnotherModel addAnother = form.GetAddAnother(itemId);
-        BaseModel firstPage = addAnother.Items.CreateNewRow();
-        form.CurrentPageId = firstPage.Id;
-        await this._formStateService.SaveAsync(form);
-        return firstPage;
-    }
-    
     public async Task<BaseModel> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
