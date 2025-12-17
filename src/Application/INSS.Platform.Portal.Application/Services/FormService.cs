@@ -55,8 +55,8 @@ public sealed class FormService : IFormService
             }
             case AddAnotherModel { AddAnotherItem: true } addAnother:
             {
-                AddAnotherModel addAnother2 = form.GetAddAnother(addAnother.Id);
-                BaseModel firstPage = addAnother2.Items.CreateNewRow();
+                AddAnotherModel currentAddAnother = form.GetAddAnother(addAnother.Id);
+                BaseModel firstPage = currentAddAnother.Items.CreateNewRow();
                 form.CurrentPageId = firstPage.Id;
                 await _formStateService.SaveAsync(form);
                 return firstPage;
