@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using INSS.Platform.Portal.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace INSS.Platform.Portal.Domain;
 

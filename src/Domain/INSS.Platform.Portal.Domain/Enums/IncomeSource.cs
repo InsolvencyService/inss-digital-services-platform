@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace INSS.Platform.Portal.Domain;
+namespace INSS.Platform.Portal.Domain.Enums;
 
 public enum IncomeSource
 {
@@ -11,13 +11,4 @@ public enum IncomeSource
 
     [Description("Dividends and investments")]
     Dividends,
-}
-
-public enum  PaymentFrequency
-{
-    Hourly,
-    Daily,
-    Weekly,
-    Monthly,
-    Annually
 }
