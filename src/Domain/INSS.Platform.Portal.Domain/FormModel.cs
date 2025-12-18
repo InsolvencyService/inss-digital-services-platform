@@ -16,6 +16,8 @@ public class FormModel : BaseModel
 
     public string CurrentPageId { get; set; }
 
+    public NavigationHistory History { get; } = new();
+    
     public BaseModel GetCurrentPageFor(BaseModel model)
     {
         if (Id == model.Id && PageUrl == model.PageUrl)

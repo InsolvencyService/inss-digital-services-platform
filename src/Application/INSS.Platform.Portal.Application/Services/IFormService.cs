@@ -9,4 +9,5 @@ public interface IFormService
     Task<BaseModel> SaveAsync(BaseModel model);
     Task<BaseModel> ChangeAsync(string itemId);
     Task<ConfirmModel> RemoveAsync(string itemId);
+    Task<string> GoBackAsync();
 }
