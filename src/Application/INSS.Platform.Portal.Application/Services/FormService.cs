@@ -34,6 +34,7 @@ public sealed class FormService : IFormService
     public async Task<BaseModel> StartAsync(string path)
     {
         FormModel form = await _formStateService.GetAsync();
+        form.History.Push(new NavigationItem(form.Id, form.PageUrl));
         SectionModel section = form.Sections.GetSectionByUrl(path.Replace("/start", ""));
         BaseModel startPage = section.GetStartPage();
         form.CurrentPageId = startPage.Id;
@@ -61,17 +62,20 @@ public sealed class FormService : IFormService
                 await _formStateService.SaveAsync(form);
                 return firstPage;
             }
+            default:
+            break;
         }
 
         BaseModel currentPage = form.GetCurrentPageFor(model);
         
         switch (currentPage)
         {
-            case SectionModel section:
+            case SectionModel section:                                                                                                                                                                                
                 section.IsComplete = true;
+                form.History.Clear();
                 break;
             default:
-            {
+            {            
                 if (currentPage is not AddAnotherModel)
                 {
                     model.CopyTo(currentPage);    
@@ -85,14 +89,35 @@ public sealed class FormService : IFormService
 
         form.CurrentPageId = page.Id;
         
+        if (currentPage is not SectionModel)
+        {
+            form.History.Push(new NavigationItem(currentPage.Id, currentPage.PageUrl));
+        }
+
         await _formStateService.SaveAsync(form);
 
         return page;
     }
 
+    public async Task<string> GoBackAsync()
+    {
+        FormModel form = await _formStateService.GetAsync();
+        NavigationItem? navigationItem = form.History.Pop();
+
+        if (navigationItem is not null)
+        {
+            form.CurrentPageId = navigationItem.PageId;
+            await _formStateService.SaveAsync(form);
+        }
+
+        return navigationItem?.PageUrl ?? form.PageUrl;
+    }
+
     public async Task<BaseModel> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
+        BaseModel currentPage = form.FindPage(form.CurrentPageId);
+        form.History.Push(new NavigationItem(currentPage.Id, currentPage.PageUrl));
         await this._formStateService.SaveAsync(form);
         form.CurrentPageId = itemId;
         return form.FindPage(itemId);
@@ -101,6 +126,8 @@ public sealed class FormService : IFormService
     public async Task<ConfirmModel> RemoveAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
+        BaseModel currentPage = form.FindPage(form.CurrentPageId);
+        form.History.Push(new NavigationItem(currentPage.Id, currentPage.PageUrl));
         BaseModel page = form.FindPage(itemId);
         AddAnotherModel addAnother = form.Sections.GetAddAnotherFor(page);
         await this._formStateService.SaveAsync(form);

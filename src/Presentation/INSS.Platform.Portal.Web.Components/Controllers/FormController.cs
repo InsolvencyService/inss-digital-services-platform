@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.Portal.Web.Components.Controllers;
 
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class FormController : Controller
 {
     private readonly IFormService _formService;
@@ -19,9 +20,9 @@ public class FormController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        (BaseModel Model, NavigationItem? Navigation) model = await _formService.GetAsync(Request.Path.Value!);
-        ViewData["PreviousPageUrl"] = model.Navigation?.PageUrl;
-        return View(model.Model);
+        BaseModel model = await _formService.GetAsync(Request.Path.Value!);
+        //ViewData["PreviousPageUrl"] = model.Navigation?.PageUrl;
+        return View(model);
     }
     
     [HttpPost]
@@ -60,6 +61,13 @@ public class FormController : Controller
         return View("~/Views/Form/Index.cshtml", model);
     }
     
+    [HttpGet]
+    public async Task<IActionResult> Back()
+    {
+        string pageUrl = await _formService.GoBackAsync();
+        return Redirect(pageUrl);
+    }
+
     private IModelStateValidator GetModelValidator(BaseModel page)
     {
         Type validatorType = typeof(IModelStateValidator<>).MakeGenericType(page.GetType());
