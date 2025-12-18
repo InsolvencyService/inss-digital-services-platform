@@ -21,7 +21,6 @@ public class FormController : Controller
     public async Task<IActionResult> Index()
     {
         BaseModel model = await _formService.GetAsync(Request.Path.Value!);
-        //ViewData["PreviousPageUrl"] = model.Navigation?.PageUrl;
         return View(model);
     }
     
