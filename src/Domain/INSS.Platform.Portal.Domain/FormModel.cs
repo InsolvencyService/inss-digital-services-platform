@@ -7,7 +7,7 @@ public class FormModel : BaseModel
     public FormModel()
     {
         PathName = "tasks";
-        Name = "Tasks";
+        Title = "Tasks";
     }
 
     public SectionModelCollection Sections { get; init; } = [];

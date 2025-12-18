@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Todo Page";
+    ViewData["Title"] = Model.Title;
 }
 @addTagHelper GovUk.Frontend.AspNetCore.TagHelpers.*, GovUk.Frontend.AspNetCore
 @addTagHelper INSS.Platform.Portal.Web.Components.TagHelpers.*, INSS.Platform.Portal.Web.Components
@@ -9,6 +9,11 @@
 @if (ViewData["PreviousPageUrl"] is not null)
 {
     <govuk-back-link href="@ViewData["PreviousPageUrl"]"/>
+}
+
+@if (Model is FormModel { Title: not null } formWithTitle)
+{
+    <h1 class="govuk-heading-l">@formWithTitle.Title</h1>
 }
 
 @using (@Html.BeginForm("Index", "Form", FormMethod.Post))

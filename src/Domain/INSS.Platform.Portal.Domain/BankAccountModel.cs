@@ -7,7 +7,7 @@ public sealed class BankAccountModel : BaseModel
     public BankAccountModel()
     {
         PathName = "bank-account";
-        Name = "Bank Account";
+        Title = "Bank Account";
     }
     
     [Required(ErrorMessage = "You must enter an account number")]

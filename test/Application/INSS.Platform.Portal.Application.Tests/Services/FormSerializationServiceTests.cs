@@ -38,7 +38,7 @@ public class FormSerializationServiceTests
     private static void AssertSectionsEqual(SectionModel expected, SectionModel actual)
     {
         Assert.Equal(expected.Id, actual.Id);
-        Assert.Equal(expected.Name, actual.Name);
+        Assert.Equal(expected.Title, actual.Title);
         Assert.Equal(expected.PathName, actual.PathName);
         Assert.Equal(expected.PageUrl, actual.PageUrl);
         Assert.Equal(expected.Pages.Count, actual.Pages.Count);
@@ -73,7 +73,7 @@ public class FormSerializationServiceTests
             [
                 new SectionModel
                 {
-                    Name = "Your Details",
+                    Title = "Your Details",
                     PathName = "your-details",
                     Pages =
                     [

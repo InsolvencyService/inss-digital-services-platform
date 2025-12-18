@@ -7,7 +7,7 @@ public class SectionModel : BaseModel
     public SectionModel()
     {
         PathName = "section";
-        Name = "Section";
+        Title = "Section";
     }
 
     public bool IsComplete { get; set; }

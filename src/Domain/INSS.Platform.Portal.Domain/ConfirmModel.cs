@@ -7,7 +7,7 @@ public class ConfirmModel : BaseModel
     public ConfirmModel()
     {
         PathName = "confirm";
-        Name = "Confirm";
+        Title = "Confirm";
     }
 
     public string? Question { get; init; }

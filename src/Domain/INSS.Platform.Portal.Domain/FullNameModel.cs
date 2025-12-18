@@ -7,7 +7,7 @@ public sealed class FullNameModel : BaseModel
     public FullNameModel()
     {
         PathName = "full-name";
-        Name = "Fullname";
+        Title = "Fullname";
     }
     
     [Required(ErrorMessage = "Enter your full name")]

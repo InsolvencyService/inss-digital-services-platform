@@ -47,13 +47,6 @@ public class FormController : Controller
     }
     
     [HttpGet]
-    public async Task<IActionResult> Add(string itemId)
-    {
-        BaseModel page = await _formService.AddAsync(itemId);
-        return Redirect(page.PageUrl);
-    }
-    
-    [HttpGet]
     public async Task<IActionResult> Change(string itemId)
     {
         BaseModel page = await _formService.ChangeAsync(itemId);

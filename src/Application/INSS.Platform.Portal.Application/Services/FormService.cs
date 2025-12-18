@@ -14,7 +14,7 @@ public sealed class FormService : IFormService
         _formModelFactory = formModelFactory;
     }
     
-    public async Task<(BaseModel Model, NavigationItem? Navigation)> GetAsync(string path)
+    public async Task<BaseModel> GetAsync(string path)
     {
         FormModel form;
         
@@ -28,17 +28,7 @@ public sealed class FormService : IFormService
             form = await _formStateService.GetAsync();
         }
 
-        if (form.History.IsLastEntry(path))
-        {
-            NavigationItem item = form.History.Pop()!;
-            form.CurrentPageId = item.PageId;
-        }
-        
-        BaseModel page = form.FindPage(form.CurrentPageId);
-
-        await _formStateService.SaveAsync(form);
-        
-        return (page, form.History.Peek());
+        return form.FindPage(form.CurrentPageId);
     }
 
     public async Task<BaseModel> StartAsync(string path)
@@ -47,9 +37,7 @@ public sealed class FormService : IFormService
         SectionModel section = form.Sections.GetSectionByUrl(path.Replace("/start", ""));
         BaseModel startPage = section.GetStartPage();
         form.CurrentPageId = startPage.Id;
-        form.History.Clear();
-        form.History.Push(new NavigationItem(form.Id, form.PageUrl));
-        await _formStateService.SaveAsync(form);
+        await this._formStateService.SaveAsync(form);
         return startPage;
     }
     
@@ -57,13 +45,24 @@ public sealed class FormService : IFormService
     {
         FormModel form = await _formStateService.GetAsync();
 
-        if (model is ConfirmModel confirm)
+        switch (model)
         {
-            BaseModel nextPage = confirm.HandleConfirmation(form);
-            await _formStateService.SaveAsync(form);
-            return nextPage;
+            case ConfirmModel confirm:
+            {
+                BaseModel nextPage = confirm.HandleConfirmation(form);
+                await _formStateService.SaveAsync(form);
+                return nextPage;
+            }
+            case AddAnotherModel { AddAnotherItem: true } addAnother:
+            {
+                AddAnotherModel currentAddAnother = form.GetAddAnother(addAnother.Id);
+                BaseModel firstPage = currentAddAnother.Items.CreateNewRow();
+                form.CurrentPageId = firstPage.Id;
+                await _formStateService.SaveAsync(form);
+                return firstPage;
+            }
         }
-        
+
         BaseModel currentPage = form.GetCurrentPageFor(model);
         
         switch (currentPage)
@@ -85,38 +84,17 @@ public sealed class FormService : IFormService
         BaseModel page = form.FindNextPageAfter(currentPage);
 
         form.CurrentPageId = page.Id;
-
-        if (currentPage is SectionModel)
-        {
-            form.History.Clear();
-        }
-        else
-        {
-            form.History.Push(new NavigationItem(currentPage.Id, currentPage.PageUrl));
-        }
-
+        
         await _formStateService.SaveAsync(form);
 
         return page;
     }
 
-    public async Task<BaseModel> AddAsync(string itemId)
-    {
-        FormModel form = await _formStateService.GetAsync();
-        AddAnotherModel addAnother = form.GetAddAnother(itemId);
-        BaseModel firstPage = addAnother.Items.CreateNewRow();
-        form.CurrentPageId = firstPage.Id;
-        await _formStateService.SaveAsync(form);
-        return firstPage;
-    }
-    
     public async Task<BaseModel> ChangeAsync(string itemId)
     {
         FormModel form = await _formStateService.GetAsync();
-        BaseModel currentPage = form.FindPage(form.CurrentPageId);
-        form.History.Push(new NavigationItem(currentPage.Id, currentPage.PageUrl));
+        await this._formStateService.SaveAsync(form);
         form.CurrentPageId = itemId;
-        await _formStateService.SaveAsync(form);
         return form.FindPage(itemId);
     }
 
@@ -125,7 +103,7 @@ public sealed class FormService : IFormService
         FormModel form = await _formStateService.GetAsync();
         BaseModel page = form.FindPage(itemId);
         AddAnotherModel addAnother = form.Sections.GetAddAnotherFor(page);
-        await _formStateService.SaveAsync(form);
+        await this._formStateService.SaveAsync(form);
         return new ConfirmModel { Id = page.Id, PageUrl = addAnother.PageUrl };
     }
 }
