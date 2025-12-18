@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Application\INSS.Platform.Canonical.Application\INSS.Platform.Canonical.Application.csproj" />
+		<ProjectReference Include="..\..\Domain\INSS.Platform.Canonical.Domain\INSS.Platform.Canonical.Domain.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\INSS.Platform.Canonical.Infrastructure\INSS.Platform.Canonical.Infrastructure.csproj" />
+	</ItemGroup>
+</Project>
