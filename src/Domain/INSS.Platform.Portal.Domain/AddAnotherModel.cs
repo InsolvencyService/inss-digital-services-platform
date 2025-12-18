@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Portal.Domain;
+﻿using INSS.Platform.Portal.Domain.Attributes;
+
+namespace INSS.Platform.Portal.Domain;
 
 public sealed class AddAnotherModel : BaseModel
 {
@@ -10,6 +12,14 @@ public sealed class AddAnotherModel : BaseModel
     
     public ItemCollection Items { get; init; } = [];
     
+    public bool AddAnotherItem { get; set; }
+    
+    [ExcludeFromSummary]
+    public string? QuestionText { get; init; }
+    
+    [ExcludeFromSummary]
+    public string? QuestionHint { get; init; }
+
     public string GetChangeUrl(BaseModel item)
     {
         return $"{PageUrl}/change/?itemId={item.Id}";
@@ -18,10 +28,5 @@ public sealed class AddAnotherModel : BaseModel
     public string GetRemoveUrl(BaseModel item)
     {
         return $"{PageUrl}/remove/?itemId={item.Id}";
-    }
-
-    public string GetAddAnotherUrl()
-    {
-        return $"{PageUrl}/add/?itemId={Id}";
     }
 }

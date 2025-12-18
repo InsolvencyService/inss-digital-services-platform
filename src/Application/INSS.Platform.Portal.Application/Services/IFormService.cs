@@ -7,7 +7,7 @@ public interface IFormService
     Task<BaseModel> GetAsync(string path);
     Task<BaseModel> StartAsync(string path);
     Task<BaseModel> SaveAsync(BaseModel model);
-    Task<BaseModel> AddAsync(string itemId);
     Task<BaseModel> ChangeAsync(string itemId);
     Task<ConfirmModel> RemoveAsync(string itemId);
+    Task<string> GoBackAsync();
 }

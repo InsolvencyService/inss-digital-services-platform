@@ -17,8 +17,12 @@ public static class WebApplicationExtensions
         FormModel form = modelDataFactory.CreateAsync().Result;
 
         app.MapControllerRoute(name: form.PathName,
-            pattern: $"{form.PathName}",
+            pattern: form.PathName,
             defaults: new { controller = "Form", action = "Index" });
+
+        app.MapControllerRoute(name: form.PathName + "/back",
+            pattern: $"{form.PathName}/back",
+            defaults: new { controller = "Form", action = "Back" });
         
         foreach (SectionModel section in form.Sections)
         {
@@ -27,12 +31,16 @@ public static class WebApplicationExtensions
                 defaults: new { controller = "Form", action = "Index" });
             
             app.MapControllerRoute(name: $"{section.PathName}-change",
-                pattern: section.PageUrl + "/change",
+                pattern: $"{section.PageUrl}/change",
                 defaults: new { controller = "Form", action = "Change" });
             
             app.MapControllerRoute(name: $"{section.PathName}-start",
-                pattern: section.PageUrl + "/start",
+                pattern: $"{section.PageUrl}/start",
                 defaults: new { controller = "Form", action = "Start" });
+
+            app.MapControllerRoute(name: $"{section.PathName}-back",
+                pattern: $"{section.PageUrl}/back",
+                defaults: new { controller = "Form", action = "Back" });
             
             foreach (BaseModel page in section.Pages)
             {
@@ -41,16 +49,16 @@ public static class WebApplicationExtensions
                     defaults: new { controller = "Form", action = "Index" });
                 
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-change",
-                    pattern: page.PageUrl + "/change",
+                    pattern: $"{page.PageUrl}/change",
                     defaults: new { controller = "Form", action = "Change" });
                 
                 app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-remove",
-                    pattern: page.PageUrl + "/remove",
+                    pattern: $"{page.PageUrl}/remove",
                     defaults: new { controller = "Form", action = "Remove" });
-                
-                app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-add",
-                    pattern: page.PageUrl + "/add",
-                    defaults: new { controller = "Form", action = "Add" });
+
+                app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-back",
+                    pattern: $"{page.PageUrl}/back",
+                    defaults: new { controller = "Form", action = "Back" });
 
                 if (page is AddAnotherModel addAnother && addAnother.Items.Count > 0)
                 {
@@ -59,6 +67,10 @@ public static class WebApplicationExtensions
                         app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}",
                             pattern: subPage.PageUrl,
                             defaults: new { controller = "Form", action = "Index" });
+
+                        app.MapControllerRoute(name: $"{section.PathName}-{page.PathName}-back",
+                            pattern: $"{subPage.PageUrl}/back",
+                            defaults: new { controller = "Form", action = "Back" });
                     }
                 }
             }
