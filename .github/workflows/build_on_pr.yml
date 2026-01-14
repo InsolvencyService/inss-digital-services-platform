@@ -20,7 +20,7 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore INSS.Platform.sln
+      run: dotnet restore INSS.Platform.slnx
 
     - name: Build solution
       run: dotnet build INSS.Platform.sln --no-restore --configuration Release
