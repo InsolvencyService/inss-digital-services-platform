@@ -1,0 +1,22 @@
+﻿@model INSS.Platform.Portal.Domain.Forms.AboutYouModel
+
+@{
+    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    string modelProperty = "Summary";
+
+    ViewDataDictionary viewData = new(ViewData)
+    {
+        { "ModelController", modelName }
+    };
+}
+
+<form asp-controller="@modelName"
+      asp-action="@($"{modelProperty}Complete")"
+      method="post">
+
+    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model, viewData)
+
+    <govuk-button type="submit">Save & Continue</govuk-button>
+</form>
+
+

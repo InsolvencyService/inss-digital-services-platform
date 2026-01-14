@@ -22,6 +22,19 @@ internal static class Auditing
     }
 
     /// <summary>
+    /// Copies the creation and modification audit information from one <see cref="BaseEntity"/> to another.
+    /// </summary>
+    /// <param name="fromEntity">The source entity to copy audit information from.</param>
+    /// <param name="toEntity">The target entity to copy audit information to.</param>
+    internal static void CloneCreatedInfo(BaseEntity fromEntity, BaseEntity toEntity)
+    {
+        toEntity.Created = fromEntity.Created;
+        toEntity.CreatedBy = fromEntity.CreatedBy;
+        toEntity.Modified = fromEntity.Modified;
+        toEntity.ModifiedBy = fromEntity.ModifiedBy;
+    }
+
+    /// <summary>
     /// Sets the modification audit information on the specified <see cref="BaseEntity"/>.
     /// </summary>
     /// <param name="entity">The entity to set modification information for.</param>
@@ -30,6 +43,17 @@ internal static class Auditing
     {
         entity.Modified ??= DateTime.UtcNow;
         entity.ModifiedBy = string.IsNullOrWhiteSpace(entity.ModifiedBy) ? GetCurrentUserName(controllerContext) : entity.ModifiedBy;
+    }
+
+    /// <summary>
+    /// Copies the modification audit information from one <see cref="BaseEntity"/> to another.
+    /// </summary>
+    /// <param name="fromEntity">The source entity to copy modification information from.</param>
+    /// <param name="toEntity">The target entity to copy modification information to.</param>
+    internal static void CloneModifiedInfo(BaseEntity fromEntity, BaseEntity toEntity)
+    {
+        toEntity.Modified = fromEntity.Modified;
+        toEntity.ModifiedBy = fromEntity.ModifiedBy;
     }
 
     /// <summary>

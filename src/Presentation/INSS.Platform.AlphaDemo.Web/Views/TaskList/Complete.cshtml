@@ -1,0 +1,20 @@
+﻿@model string
+
+<div class="govuk-panel govuk-panel--confirmation">
+    <h1 class="govuk-panel__title">
+        Application complete
+    </h1>
+    <div class="govuk-panel__body">
+        Your reference number<br><strong>@Model</strong>
+    </div>
+</div>
+<p class="govuk-body">
+    Thank you for completing your application. We will process your information and be in touch if we need to
+    contact you.
+</p>
+
+<br />
+
+<p class="govuk-body">
+    You can <a class="govuk-link" href="/TaskList/Index?status=new">submit another application</a> or <a class="govuk-link" href="/Home/Index">return to the home page.</a>
+</p>

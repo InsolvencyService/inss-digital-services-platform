@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Canonical.Domain;
+﻿using System.Text.Json.Serialization;
+
+namespace INSS.Platform.Canonical.Domain;
 
 /// <summary>
 /// Represents an address associated with a user.
@@ -38,5 +40,6 @@ public class Address : BaseEntity
     /// <summary>
     /// Gets or sets the user entity associated with this address.
     /// </summary>
+    [JsonIgnore]
     public virtual User? User { get; set; }
 }

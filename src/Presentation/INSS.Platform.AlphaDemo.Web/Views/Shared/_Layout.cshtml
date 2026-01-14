@@ -5,7 +5,7 @@
 
     bool _isSignedIn = User.Identity?.IsAuthenticated is true;
     bool activeHome = ViewContext.RouteData.Values["controller"]?.ToString() == "home";
-    bool activeTaskList = ViewContext.RouteData.Values["controller"]?.ToString() == "tasks";
+    bool activeTaskList = ViewContext.RouteData.Values["controller"]?.ToString() == "tasklist";
 }
 
 @section Header {
@@ -107,7 +107,7 @@
         {
             <govuk-service-navigation-nav>
                 <govuk-service-navigation-nav-item href="/home" active="@activeHome">Home</govuk-service-navigation-nav-item>
-                <govuk-service-navigation-nav-item href="/tasks" active="@activeTaskList">Task list</govuk-service-navigation-nav-item>
+                <govuk-service-navigation-nav-item href="/tasklist" active="@activeTaskList">Task list</govuk-service-navigation-nav-item>
             </govuk-service-navigation-nav>
         }
     </govuk-service-navigation>

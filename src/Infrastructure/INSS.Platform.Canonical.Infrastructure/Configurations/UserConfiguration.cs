@@ -21,7 +21,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(user => user.Id);
 
         builder.Property(user => user.DateOfBirth)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion(
+                v => v.ToDateTime(TimeOnly.MinValue),
+                v => DateOnly.FromDateTime(v)
+             );
 
         builder.Property(user => user.TelephoneNumber)
             .IsRequired()

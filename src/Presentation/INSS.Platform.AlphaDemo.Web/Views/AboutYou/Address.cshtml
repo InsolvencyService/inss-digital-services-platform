@@ -1,0 +1,17 @@
+﻿@model INSS.Platform.Portal.Domain.Forms.AboutYouModel
+
+@{
+    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    string modelProperty = nameof(Model.Address);
+}
+
+<form asp-controller="@modelName"
+      asp-action="@modelProperty"
+      method="post">
+
+    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model)
+
+    <govuk-button type="submit">Continue</govuk-button>
+</form>
+
+

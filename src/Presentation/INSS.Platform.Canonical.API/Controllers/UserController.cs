@@ -81,6 +81,20 @@ public class UserController : ControllerBase
         _logger.LogInformation("Create an user with ID {UserId}", user.Id);
 
         Helpers.Auditing.SetCreatedInfo(user, ControllerContext);
+        foreach(Address address in user.Addresses)
+        {
+            Helpers.Auditing.CloneCreatedInfo(user, address);
+        }
+
+        foreach (BankDetails bankDetails in user.BankDetails)
+        {
+            Helpers.Auditing.CloneCreatedInfo(user, bankDetails);
+        }
+
+        foreach(Income income in user.Incomes)
+        {
+            Helpers.Auditing.CloneCreatedInfo(user, income);
+        }
 
         OperationResult<User> result = await _userRepository.AddAsync(user, cancellationToken);
 
@@ -101,6 +115,21 @@ public class UserController : ControllerBase
         _logger.LogInformation("Update an user with ID {UserId}", user.Id);
 
         Helpers.Auditing.SetModifiedInfo(user, ControllerContext);
+
+        foreach (Address address in user.Addresses)
+        {
+            Helpers.Auditing.CloneModifiedInfo(user, address);
+        }
+
+        foreach (BankDetails bankDetails in user.BankDetails)
+        {
+            Helpers.Auditing.CloneModifiedInfo(user, bankDetails);
+        }
+
+        foreach (Income income in user.Incomes)
+        {
+            Helpers.Auditing.CloneModifiedInfo(user, income);
+        }
 
         OperationResult<User> result = await _userRepository.UpdateAsync(user, cancellationToken);
 

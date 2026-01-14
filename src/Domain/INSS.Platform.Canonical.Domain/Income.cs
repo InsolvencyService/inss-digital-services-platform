@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Canonical.Domain;
+﻿using System.Text.Json.Serialization;
+
+namespace INSS.Platform.Canonical.Domain;
 
 /// <summary>
 /// Represents an income record associated with a user.
@@ -33,5 +35,6 @@ public class Income : BaseEntity
     /// <summary>
     /// Gets or sets the user entity associated with this income.
     /// </summary>
+    [JsonIgnore]
     public virtual User? User { get; set; }
 }

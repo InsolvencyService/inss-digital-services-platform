@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Canonical.Domain;
+﻿using System.Text.Json.Serialization;
+
+namespace INSS.Platform.Canonical.Domain;
 
 /// <summary>
 /// Represents the bank details associated with a user.
@@ -33,5 +35,6 @@ public class BankDetails : BaseEntity
     /// <summary>
     /// Gets or sets the user associated with these bank details.
     /// </summary>
+    [JsonIgnore]
     public virtual User? User { get; set; }
 }
