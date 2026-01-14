@@ -23,12 +23,12 @@ jobs:
       run: dotnet restore INSS.Platform.slnx
 
     - name: Build solution
-      run: dotnet build INSS.Platform.sln --no-restore --configuration Release
+      run: dotnet build INSS.Platform.slnx --no-restore --configuration Release
 
     - name: List projects in solution
       run: |
-        Write-Host "=== Projects in INSS.Platform.sln ==="
-        dotnet sln INSS.Platform.sln list
+        Write-Host "=== Projects in INSS.Platform.slnx ==="
+        dotnet sln INSS.Platform.slnx list
         Write-Host "`n=== Looking for test projects in file system ==="
         $testProjects = @()
         Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object {
@@ -40,7 +40,7 @@ jobs:
         }
         if ($testProjects.Count -gt 0) {
           Write-Host "`n=== Checking if test projects are in solution ==="
-          $solutionProjects = dotnet sln INSS.Platform.sln list
+          $solutionProjects = dotnet sln INSS.Platform.slnx list
           foreach ($testProject in $testProjects) {
             $relativePath = $testProject.Replace((Get-Location).Path + "\", "").Trim()
             $inSolution = $false
@@ -61,7 +61,7 @@ jobs:
     - name: Run tests with coverage (verbose)
       run: |
         Write-Host "Running tests with detailed output..."
-        dotnet test INSS.Platform.sln --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults --verbosity normal
+        dotnet test INSS.Platform.slnx --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults --verbosity normal
         Write-Host "Test execution completed"
 
     - name: Check for coverage files
