@@ -1,0 +1,36 @@
+﻿@model INSS.Platform.Portal.Domain.Forms.BankDetailsModel
+@{
+    var controller = ViewData["ModelController"] as string;
+    if (string.IsNullOrEmpty(controller))
+    {
+        throw new InvalidOperationException("ModelController must be supplied in ViewData for BankDetails/_Summary."); 
+    }
+}
+
+<govuk-summary-list>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Sort Code
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.SortCode)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="/@controller/SortCode" visually-hidden-text="@Model.SortCode">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Account Number
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.AccountNumber)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="/@controller/AccountNumber" visually-hidden-text="@Model.AccountNumber">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+</govuk-summary-list>

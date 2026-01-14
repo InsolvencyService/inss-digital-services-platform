@@ -1,0 +1,20 @@
+﻿@model INSS.Platform.Portal.Domain.Forms.AboutYouModel
+
+<govuk-date-input id="DateOfBirth" name-prefix="" for="@Model.DateOfBirth">
+    <govuk-date-input-fieldset>
+        <govuk-date-input-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+            What is your Date of birth?
+        </govuk-date-input-fieldset-legend>
+        <govuk-date-input-hint>
+            For example, 27 3 2001
+        </govuk-date-input-hint>
+
+        <govuk-date-input-day value="@Model.Day" />
+        <govuk-date-input-month value="@Model.Month" />
+        <govuk-date-input-year value="@Model.Year" />
+
+    </govuk-date-input-fieldset>
+</govuk-date-input>
+
+<inss-error-message asp-for="@Model.DateOfBirth" />
+

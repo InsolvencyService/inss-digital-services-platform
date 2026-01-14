@@ -1,0 +1,19 @@
+﻿@model INSS.Platform.AlphaDemo.Web.Models.TaskListViewModel
+
+<h1 class="govuk-heading-l">Form Builder - Task List</h1>
+
+<inss-task-list>
+    <inss-task-list-item name="About You" is-complete="@Model.AboutYouCompleted" url="/AboutYou/Index" />
+    <inss-task-list-item name="Income" is-complete="false" url="/Income/Index" />
+    <inss-task-list-item name="Bank Details" is-complete="@Model.BankDetailsCompleted" url="/BankDetails/Index" />
+</inss-task-list>
+
+<form asp-action="SubmitForms" method="post">
+    <govuk-button type="submit" disabled="!Model.AllTasksCompleted">Submit forms</govuk-button>
+</form>
+
+@if (Model.SubmissionError)
+{
+    <govuk-error-message>Submission failure!  Try again later.</govuk-error-message>
+}
+

@@ -1,0 +1,8 @@
+﻿@model INSS.Platform.Portal.Domain.Forms.BankDetailsModel
+
+<govuk-input for="@Model.SortCode" input-class="govuk-input--width-10" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your sort code?</govuk-input-label>
+    <govuk-input-hint>Enter your sort code</govuk-input-hint>
+</govuk-input>
+
+<inss-error-message asp-for="@Model.SortCode"/>

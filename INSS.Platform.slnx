@@ -2,23 +2,27 @@
   <Folder Name="/src/" />
   <Folder Name="/src/Application/">
     <Project Path="src/Application/INSS.Platform.Auth.Application/INSS.Platform.Auth.Application.csproj" />
+    <Project Path="src/Application/INSS.Platform.Canonical.Application/INSS.Platform.Canonical.Application.csproj" Id="d5451b80-7404-40e5-b6ec-e3a08633653c" />
     <Project Path="src/Application/INSS.Platform.Portal.Application/INSS.Platform.Portal.Application.csproj" />
     <Project Path="src/Application/INSS.Platform.UserManagement.Application/INSS.Platform.UserManagement.Application.csproj" />
   </Folder>
   <Folder Name="/src/Domain/">
+    <Project Path="src/Domain/INSS.Platform.Canonical.Domain/INSS.Platform.Canonical.Domain.csproj" Id="a7e0bd03-d4b3-450b-b844-3ebd277a210e" />
     <Project Path="src/Domain/INSS.Platform.Portal.Domain/INSS.Platform.Portal.Domain.csproj" />
     <Project Path="src/Domain/INSS.Platform.UserManagement.Domain/INSS.Platform.UserManagement.Domain.csproj" />
   </Folder>
   <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/INSS.Platform.Canonical.Infrastructure/INSS.Platform.Canonical.Infrastructure.csproj" Id="3ed0292c-8dcb-41ac-a467-8f6a6a1d60d9" />
     <Project Path="src/Infrastructure/INSS.Platform.Portal.Infrastructure/INSS.Platform.Portal.Infrastructure.csproj" />
     <Project Path="src/Infrastructure/INSS.Platform.UserManagement.Infrastructure/INSS.Platform.UserManagement.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/Presentation/">
     <Project Path="src/Presentation/INSS.Platform.AlphaDemo.Web/INSS.Platform.AlphaDemo.Web.csproj" Id="6a0147b8-3459-4055-aad7-adbf6070fadf" />
-    <Project Path="src/Presentation/INSS.Platform.Shared.Web/INSS.Platform.Shared.Web.csproj" Id="768e00d9-ffb9-45be-b49a-4dcc89462b0a" />
     <Project Path="src/Presentation/INSS.Platform.Auth.API/INSS.Platform.Auth.API.csproj" />
+    <Project Path="src/Presentation/INSS.Platform.Canonical.API/INSS.Platform.Canonical.API.csproj" Id="3c17331f-f02c-4747-80c1-4f865b41f50f" />
     <Project Path="src/Presentation/INSS.Platform.Portal.Web.Components/INSS.Platform.Portal.Web.Components.csproj" />
     <Project Path="src/Presentation/INSS.Platform.Portal.Web/INSS.Platform.Portal.Web.csproj" />
+    <Project Path="src/Presentation/INSS.Platform.Shared.Web/INSS.Platform.Shared.Web.csproj" Id="768e00d9-ffb9-45be-b49a-4dcc89462b0a" />
     <Project Path="src/Presentation/INSS.Platform.UserManagement.API/INSS.Platform.UserManagement.API.csproj" />
     <Project Path="src/Presentation/INSS.Platform.UserManagement.Web/INSS.Platform.UserManagement.Web.csproj" />
   </Folder>

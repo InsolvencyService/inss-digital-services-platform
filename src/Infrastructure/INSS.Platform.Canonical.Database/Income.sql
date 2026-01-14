@@ -1,0 +1,32 @@
+﻿CREATE TABLE [dbo].[Income]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[InstanceId] UNIQUEIDENTIFIER NOT NULL,
+	[UserId] UNIQUEIDENTIFIER NOT NULL,
+	[SourceOfIncome] NVARCHAR(50) NOT NULL,
+	[GrossIncome] DECIMAL(15,2) NOT NULL,
+	[PaymentFrequency] NVARCHAR(20) NOT NULL,
+	[IncomeProvider] NVARCHAR(255) NOT NULL,
+	[Created] DATETIME2 NOT NULL,
+	[CreatedBy] NVARCHAR(255) NOT NULL,
+	[Modified] DATETIME2 NULL,
+	[ModifiedBy] NVARCHAR(255) NULL,
+	CONSTRAINT [PK_Income] PRIMARY KEY CLUSTERED 
+	(
+		[Id]
+	) 
+)
+GO
+
+ALTER TABLE [dbo].[Income] ADD CONSTRAINT [FK_Income_User] FOREIGN KEY([UserId])
+REFERENCES [dbo].[User] ([Id])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Income] CHECK CONSTRAINT [FK_Income_User]
+GO
+
+ALTER TABLE [dbo].[Income]
+ADD CONSTRAINT [DF_Income_Created] DEFAULT (GETUTCDATE()) FOR [Created];
+GO
+
