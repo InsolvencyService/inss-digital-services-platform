@@ -1,8 +1,8 @@
-﻿@model AboutYouModel
+﻿@model IncomeModel
 
 @{
     string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
-    string modelProperty = nameof(Model.FullName);
+    string modelProperty = nameof(Model.IncomeProvider);
 }
 
 <form asp-controller="@modelName"

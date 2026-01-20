@@ -1,4 +1,4 @@
-﻿@model INSS.Platform.Portal.Domain.Forms.AboutYouModel
+﻿@model AboutYouModel
 
 @{
     string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
@@ -11,7 +11,7 @@
 
     @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model)
 
-    <govuk-button type="submit">Continue</govuk-button>
+    <govuk-button type="submit">Next</govuk-button>
 </form>
 
 

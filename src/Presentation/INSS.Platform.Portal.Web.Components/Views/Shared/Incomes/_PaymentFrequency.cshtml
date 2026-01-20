@@ -1,0 +1,19 @@
+﻿@model IncomeModel
+
+<govuk-radios for="@Model.PaymentFrequency" orientation="Vertical">
+    <govuk-radios-fieldset>
+        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+            What is the payment frequency?
+        </govuk-radios-fieldset-legend>
+        <govuk-radios-hint>
+            Select one option
+        </govuk-radios-hint>
+
+        @foreach (var option in EnumExtensions.GetValuesAndDescriptions<PaymentFrequency>())
+        {
+            <govuk-radios-item value="@option.Key">@option.Value</govuk-radios-item>
+        }
+
+    </govuk-radios-fieldset>
+</govuk-radios>
+<inss-error-message asp-for="@Model.PaymentFrequency" />

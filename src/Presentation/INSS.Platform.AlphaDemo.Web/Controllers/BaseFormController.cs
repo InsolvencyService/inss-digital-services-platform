@@ -3,72 +3,85 @@ using INSS.Platform.AlphaDemo.Web.Services;
 using INSS.Platform.Portal.Domain.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Text.Json;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
 /// <summary>
-/// Provides a base class for form-based Razor Page models, enabling session management, form data handling, and
-/// integration with form metadata and API services.
+/// Abstract base controller for handling form operations with caching and validation support.
 /// </summary>
-/// <remarks>This class is designed to simplify the implementation of form-based workflows in Razor Pages by
-/// providing common functionality such as session-based form state management, metadata handling, and API integration.
-/// Derived classes can use the provided methods and properties to manage form data and implement custom
-/// behavior.</remarks>
-/// <typeparam name="TForm">The type of the form associated with the page model. Must inherit from <see cref="FormBase"/> and have a
-/// parameterless constructor.</typeparam>
+/// <typeparam name="TForm">The type of form, must inherit from <see cref="FormBase"/> and have a parameterless constructor.</typeparam>
 public abstract class BaseFormController<TForm> : Controller where TForm : FormBase, new()
 {
-    /// <summary>
-    /// Gets or sets the session key used to identify the current session.
-    /// </summary>
-    protected string SessionKey { get; set; } = string.Empty;
+    private readonly IFormCacheClient _formCache;
+    private readonly string _cacheKey;
 
     /// <summary>
-    /// Gets or sets the form data associated with the current request.
+    /// Initializes a new instance of the <see cref="BaseFormController{TForm}"/> class.
     /// </summary>
-    public required TForm Form { get; set; }
-
-    /// <summary>
-    /// Loads the form data from the current session and deserializes it into the <see cref="Form"/> property.
-    /// </summary>
-    /// <remarks>
-    /// If no session data is found or the session data is empty, a new instance of <typeparamref
-    /// name="TForm"/> is created and assigned to the <see cref="Form"/> property.
-    /// </remarks>
-    protected void LoadFormFromSession()
+    /// <param name="formCache">The form cache client used for persisting form data.</param>
+    protected BaseFormController(IFormCacheClient formCache)
     {
-        Form = FormSessionHelper.LoadFormFromSession<TForm>(HttpContext, SessionKey)!;
+        _formCache = formCache;
+        _cacheKey = _formCache.GetFormCacheKey<TForm>();
     }
 
     /// <summary>
-    /// Saves the specified form to the current session.
+    /// Marks the current form as complete and updates the cache.
     /// </summary>
-    /// <remarks>The form is serialized to JSON and stored in the session using a predefined session key.
-    /// </remarks>
-    /// <param name="form">The form object to be saved.</param>
-    protected void SaveFormToSession(TForm form)
+    protected virtual void SetFormAsComplete()
     {
-        Form = form;
-        HttpContext.Session.SetString(SessionKey, JsonSerializer.Serialize(Form));
+        TForm form = _formCache.GetFormFromCache<TForm>(_cacheKey)!;
+        form.IsComplete = true;
+        _formCache.SetFormToCache(_cacheKey, form);
     }
 
-    protected void FormIsComplete()
+    /// <summary>
+    /// Returns a view with the persisted form model from the cache.
+    /// </summary>
+    /// <returns>An <see cref="IActionResult"/> containing the form model.</returns>
+    protected virtual IActionResult ViewWithPersistedModel()
     {
-        LoadFormFromSession();
-        Form.IsComplete = true;
-        SaveFormToSession(Form);
+        TForm form = _formCache.GetFormFromCache<TForm>(_cacheKey)!;
+        return View(form);
     }
 
-    protected IActionResult PopulatedView()
+    /// <summary>
+    /// Validates a section of the form and redirects to the next action if valid, otherwise returns the view with the current model.
+    /// </summary>
+    /// <param name="model">The form model to validate.</param>
+    /// <param name="modelState">The model state dictionary for validation.</param>
+    /// <param name="property">The property name to validate.</param>
+    /// <param name="value">The value to validate and persist.</param>
+    /// <param name="nextAction">The name of the next action to redirect to if validation succeeds.</param>
+    /// <returns>
+    /// An <see cref="IActionResult"/> that either returns the view with the model if validation fails,
+    /// or redirects to the next action if validation succeeds.
+    /// </returns>
+    protected virtual async Task<IActionResult> ValidateAndRedirectToNextSectionAsync(
+        FormBase model, ModelStateDictionary modelState, string property, object? value, string nextAction)
     {
-        LoadFormFromSession();
-        return View(Form);
+        if (!ValidateSection(modelState, property, value))
+        {
+            return View(model);
+        }
+
+        TForm form = _formCache.GetFormFromCache<TForm>(_cacheKey)!;
+        PropertyHelpers.SetPropertyValueByName(form, property, value);
+        _formCache.SetFormToCache(_cacheKey, form);
+
+        return RedirectToAction(nextAction);
     }
 
-    protected async Task<IActionResult> Next(FormBase model, ModelStateDictionary modelState, string property, object? value, string nextAction)
+    /// <summary>
+    /// Validates a specific section or property of the form model.
+    /// </summary>
+    /// <param name="modelState">The model state dictionary for validation.</param>
+    /// <param name="property">The property name to validate.</param>
+    /// <param name="value">The value to validate. If complex, validates all properties.</param>
+    /// <returns><c>true</c> if the model state is valid; otherwise, <c>false</c>.</returns>
+    protected static bool ValidateSection(ModelStateDictionary modelState, string property, object? value)
     {
-        if (value != null && IsComplexObject(value))
+        if (value != null && TypeHelpers.IsComplexObject(value))
         {
             ModelStateHelpers.OnlyValidateObjectProperties(modelState, value);
         }
@@ -77,38 +90,6 @@ public abstract class BaseFormController<TForm> : Controller where TForm : FormB
             ModelStateHelpers.OnlyValidateProperty(modelState, property);
         }
 
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
-
-        LoadFormFromSession();
-
-        ModelStateHelpers.SetPropertyValueByName(Form, property, value);
-
-        SaveFormToSession(Form);
-
-        return RedirectToAction(nextAction);
-    }
-
-
-    private static bool IsComplexObject(object value)
-    {
-        Type type = value.GetType();
-
-        // Use TypeCode to efficiently check for String, Decimal, DateTime, Enums, and most Primitives
-        if (Type.GetTypeCode(type) != TypeCode.Object)
-        {
-            return false;
-        }
-
-        // Check for remaining simple types (IntPtr/UIntPtr via IsPrimitive, and specific structs/classes)
-        return !type.IsPrimitive &&
-               type != typeof(Guid) &&
-               type != typeof(TimeSpan) &&
-               type != typeof(DateTimeOffset) &&
-               type != typeof(DateOnly) &&
-               type != typeof(TimeOnly) &&
-               type != typeof(Uri);
+        return modelState.IsValid;
     }
 }

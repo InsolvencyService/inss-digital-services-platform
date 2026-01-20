@@ -1,0 +1,26 @@
+﻿@model ListConfirmationModel
+
+<form asp-action="ConfirmRemoveItem" method="post">
+
+    <input type="hidden" name="@(nameof(Model.Question))" value="@Model.Question" />
+    <input type="hidden" name="@(nameof(Model.ItemIndex))" value="@Model.ItemIndex" />
+
+    <govuk-radios for="@Model.Confirm">
+        <govuk-radios-fieldset>
+            <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                @Model.Question
+            </govuk-radios-fieldset-legend>
+
+            @foreach (var option in EnumExtensions.GetValuesAndDescriptions<Confirmation>())
+            {
+                <govuk-radios-item value="@option.Key">@option.Value</govuk-radios-item>
+            }
+
+        </govuk-radios-fieldset>
+    </govuk-radios>
+
+    <inss-error-message asp-for="@Model.Confirm" />
+
+    <br />
+    <govuk-button type="submit">Continue</govuk-button>
+</form>
