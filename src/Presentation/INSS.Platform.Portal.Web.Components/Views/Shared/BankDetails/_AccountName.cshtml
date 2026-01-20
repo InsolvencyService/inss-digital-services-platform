@@ -1,0 +1,8 @@
+﻿@model BankDetailsModel
+
+<govuk-input for="@Model.AccountName" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your account name?</govuk-input-label>
+    <govuk-input-hint>Enter your account name</govuk-input-hint>
+</govuk-input>
+
+<inss-error-message asp-for="@Model.AccountName"/>

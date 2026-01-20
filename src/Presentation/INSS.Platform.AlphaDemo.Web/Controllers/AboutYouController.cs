@@ -1,14 +1,13 @@
-﻿using INSS.Platform.Portal.Domain.Forms;
+﻿using INSS.Platform.AlphaDemo.Web.Services;
+using INSS.Platform.Portal.Domain.Forms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
 public class AboutYouController : BaseFormController<AboutYouModel> 
 {
-    public AboutYouController()
-    {
-        SessionKey = nameof(AboutYouModel);
-    }
+    public AboutYouController(IFormCacheClient formCacheClient)
+        : base(formCacheClient) { }
 
     public IActionResult Index()
     {
@@ -17,71 +16,71 @@ public class AboutYouController : BaseFormController<AboutYouModel>
 
     public IActionResult FullName()
     {
-        LoadFormFromSession();
-        return PopulatedView();
+        return ViewWithPersistedModel();
     }
 
     [HttpPost]
     public async Task<IActionResult> FullName(AboutYouModel model)
     {
-        return await Next(model, ModelState, nameof(model.FullName), model.FullName, nameof(DateOfBirth));
+        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.FullName), model.FullName, nameof(DateOfBirth));
     }
 
     public IActionResult DateOfBirth()
     {
-        return PopulatedView();
+        return ViewWithPersistedModel();
     }
 
     [HttpPost]
     public async Task <IActionResult> DateOfBirth(AboutYouModel model)
     {
-        return await Next(model, ModelState, nameof(model.DateOfBirth), model.DateOfBirth, nameof(Address));
+        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.DateOfBirth), model.DateOfBirth, nameof(Address));
     }
 
     public IActionResult Address()
     {
-        return PopulatedView();
+        return ViewWithPersistedModel();
     }
 
     [HttpPost]
     public async Task<IActionResult> Address(AboutYouModel model)
     {
-        return await Next(model, ModelState, nameof(model.Address), model.Address, nameof(TelephoneNumber));
+        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.Address), model.Address, nameof(TelephoneNumber));
     }
 
     public IActionResult TelephoneNumber()
     {
-        return PopulatedView();
+        return ViewWithPersistedModel();
     }
 
     [HttpPost]
     public async Task<IActionResult> TelephoneNumber(AboutYouModel model)
     {
-        return await Next(model, ModelState, nameof(model.TelephoneNumber), model.TelephoneNumber, nameof(EmailAddress));
+        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.TelephoneNumber), model.TelephoneNumber, nameof(EmailAddress));
 
     }
 
     public IActionResult EmailAddress()
     {
-        return PopulatedView();
+        return ViewWithPersistedModel();
     }
 
     [HttpPost]
     public async Task<IActionResult> EmailAddress(AboutYouModel model)
     {
-        return await Next(model, ModelState, nameof(model.EmailAddress), model.EmailAddress, nameof(Summary));
+        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.EmailAddress), model.EmailAddress, nameof(Summary));
     }
 
     public IActionResult Summary()
     {
-        return PopulatedView();
+        return ViewWithPersistedModel();
     }
 
     [HttpPost]
     public async Task<IActionResult> SummaryComplete()
     {
-        FormIsComplete();
-        return Redirect("/TaskList");
+        SetFormAsComplete();
+
+        return RedirectToAction("Index", "TaskList");
     }
 }
 

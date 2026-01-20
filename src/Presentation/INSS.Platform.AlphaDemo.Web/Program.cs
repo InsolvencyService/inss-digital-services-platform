@@ -16,10 +16,13 @@ builder.Services.AddSession();
 
 builder.Services.AddAuthenticationConfiguration(builder.Configuration, mvcBuilder, builder.Environment);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IFormApiClient, FormApiClient>();
 
+builder.Services.AddScoped<IFormCacheClient, FormCacheClient>();
 
 WebApplication app = builder.Build();
 

@@ -1,4 +1,4 @@
-﻿@model INSS.Platform.Portal.Domain.Forms.BankDetailsModel
+﻿@model BankDetailsModel
 @{
     var controller = ViewData["ModelController"] as string;
     if (string.IsNullOrEmpty(controller))
@@ -11,7 +11,19 @@
 
     <govuk-summary-list-row>
         <govuk-summary-list-row-key>
-            Sort Code
+            Account name
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.AccountName)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="/@controller/AccountName" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Sort code
         </govuk-summary-list-row-key>
         <govuk-summary-list-row-value>
             <p class="govuk-body">@(Model.SortCode)</p>
@@ -23,7 +35,7 @@
 
     <govuk-summary-list-row>
         <govuk-summary-list-row-key>
-            Account Number
+            Account number
         </govuk-summary-list-row-key>
         <govuk-summary-list-row-value>
             <p class="govuk-body">@(Model.AccountNumber)</p>

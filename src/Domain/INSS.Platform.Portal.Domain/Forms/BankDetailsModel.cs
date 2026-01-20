@@ -4,6 +4,9 @@ namespace INSS.Platform.Portal.Domain.Forms;
 
 public class BankDetailsModel : FormBase
 {
+    [Required(ErrorMessage = "Enter your account name")]
+    public string AccountName { get; set; }
+
     [Required(ErrorMessage = "Enter your account number")]
     public string AccountNumber { get; init; }
 

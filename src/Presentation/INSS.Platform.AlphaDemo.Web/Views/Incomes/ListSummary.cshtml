@@ -1,0 +1,31 @@
+﻿@model List<IncomeModel>
+
+<h1 class="govuk-heading-l">
+    Individual's Income
+</h1>
+
+<h1 class="govuk-heading-l">
+    @($"You have added {@Model.Count} income{(@Model.Count > 1 ? "s" : "")}")
+</h1>
+
+@foreach (var income in @Model.Select((item, index) => new { Index = index, Item = item }))
+{
+    <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">
+                @income.Item.SourceOfIncome?.Description()
+            </h2>
+        </div>
+        <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+                <inss-summary-list-item text="Gross Income" value="&pound;@(income.Item.GrossIncome?.ToString("N2"))" bold-text="true" on-change-url="@Url.Action("Change", new { itemIndex = income.Index, fieldName = "GrossIncome" })" />
+                <inss-summary-list-item text="Payment Frequency" value="@income.Item.PaymentFrequency?.Description()" bold-text="true" on-change-url="@Url.Action("Change", new { itemIndex = income.Index, fieldName = "PaymentFrequency" })" />
+                <inss-summary-list-item text="Income Provider" value="@income.Item.IncomeProvider" bold-text="true" on-change-url="@Url.Action("Change", new { itemIndex = income.Index, fieldName = "IncomeProvider" })" />
+            </dl>
+        </div>
+    </div>
+}
+
+<form asp-action="SummaryComplete" method="post">
+    <govuk-button type="submit">Save & Continue</govuk-button>
+</form>

@@ -4,13 +4,15 @@
 
 <inss-task-list>
     <inss-task-list-item name="About You" is-complete="@Model.AboutYouCompleted" url="/AboutYou/Index" />
-    <inss-task-list-item name="Income" is-complete="false" url="/Income/Index" />
+    <inss-task-list-item name="Incomes" is-complete="@Model.IncomesCompleted" url="/Incomes/Index" />
     <inss-task-list-item name="Bank Details" is-complete="@Model.BankDetailsCompleted" url="/BankDetails/Index" />
 </inss-task-list>
 
 <form asp-action="SubmitForms" method="post">
     <govuk-button type="submit" disabled="!Model.AllTasksCompleted">Submit forms</govuk-button>
 </form>
+
+<a class="govuk-link" href="/TaskList/Index?status=new">Reset application</a>
 
 @if (Model.SubmissionError)
 {

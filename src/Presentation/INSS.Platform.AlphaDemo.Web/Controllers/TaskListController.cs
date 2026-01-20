@@ -1,5 +1,4 @@
-﻿using INSS.Platform.AlphaDemo.Web.Helpers;
-using INSS.Platform.AlphaDemo.Web.Models;
+﻿using INSS.Platform.AlphaDemo.Web.Models;
 using INSS.Platform.AlphaDemo.Web.Services;
 using INSS.Platform.Canonical.Domain;
 using INSS.Platform.Portal.Domain.Forms;
@@ -10,16 +9,19 @@ namespace INSS.Platform.AlphaDemo.Web.Controllers;
 public class TaskListController : Controller
 {
     private readonly IFormApiClient _formApiClient;
+    private readonly IFormCacheClient _formCacheClient;
 
-    public TaskListController(IFormApiClient formApiClient)
+    public TaskListController(IFormApiClient formApiClient, IFormCacheClient formCacheClient)
     {
         _formApiClient = formApiClient;
+        _formCacheClient = formCacheClient;
     }
 
     public IActionResult Index(string? status, bool submissionError = false)
     {
         AboutYouModel? aboutYou = null;
         BankDetailsModel? bankDetails = null;
+        List<IncomeModel>? incomes = null;
 
         if (status is not null and "new")
         {
@@ -27,14 +29,16 @@ public class TaskListController : Controller
         }
         else
         {
-            aboutYou = FormSessionHelper.LoadFormFromSession<AboutYouModel>(HttpContext, nameof(AboutYouModel));
-            bankDetails = FormSessionHelper.LoadFormFromSession<BankDetailsModel>(HttpContext, nameof(BankDetailsModel));
+            aboutYou = _formCacheClient.GetFormFromCache<AboutYouModel>(_formCacheClient.GetFormCacheKey<AboutYouModel>());
+            bankDetails = _formCacheClient.GetFormFromCache<BankDetailsModel>(_formCacheClient.GetFormCacheKey<BankDetailsModel>());
+            incomes = _formCacheClient.GetFormListFromCache<IncomeModel>(_formCacheClient.GetFormCacheKey<IncomeModel>());
         }
 
         TaskListViewModel model = new ()
         {
             AboutYouCompleted = IsFormComplete(aboutYou),
             BankDetailsCompleted = IsFormComplete(bankDetails),
+            IncomesCompleted = incomes is not null && incomes.Count > 0 && incomes.All(IsFormComplete),
             SubmissionError = submissionError
         };
 
@@ -70,8 +74,9 @@ public class TaskListController : Controller
 
     private async Task<bool> PostFormDataAsync(Guid instanceId)
     {
-        AboutYouModel aboutYou = FormSessionHelper.LoadFormFromSession<AboutYouModel>(HttpContext, nameof(AboutYouModel))!;
-        BankDetailsModel bankDetails = FormSessionHelper.LoadFormFromSession<BankDetailsModel>(HttpContext, nameof(BankDetailsModel))!;
+        AboutYouModel aboutYou = _formCacheClient.GetFormFromCache<AboutYouModel>(_formCacheClient.GetFormCacheKey<AboutYouModel>())!;
+        BankDetailsModel bankDetails = _formCacheClient.GetFormFromCache<BankDetailsModel>(_formCacheClient.GetFormCacheKey<BankDetailsModel>())!;
+        List<IncomeModel> incomes = _formCacheClient.GetFormListFromCache<IncomeModel>(_formCacheClient.GetFormCacheKey<IncomeModel>())!;
 
         User userData = new()
         {
@@ -102,6 +107,19 @@ public class TaskListController : Controller
             AccountNumber = bankDetails.AccountNumber,
             SortCode = bankDetails.SortCode.Replace("-", string.Empty)
         });
+
+        foreach (IncomeModel income in incomes)
+        {
+            userData.Incomes.Add(new Income
+            {
+                InstanceId = instanceId,
+                Id = income.Id,
+                SourceOfIncome = income.SourceOfIncome.ToString() ?? string.Empty,
+                GrossIncome = income.GrossIncome.GetValueOrDefault(),
+                PaymentFrequency = income.PaymentFrequency.ToString() ?? string.Empty,
+                IncomeProvider = income.IncomeProvider
+            });
+        }
 
         return await _formApiClient.PostFormUserDataAsync(userData);
     }

@@ -5,6 +5,8 @@ public class TaskListViewModel
     public bool AboutYouCompleted { get; set; }
 
     public bool BankDetailsCompleted { get; set; }
+    
+    public bool IncomesCompleted { get; set; }
 
     public bool AllTasksCompleted => AboutYouCompleted && BankDetailsCompleted;
 
