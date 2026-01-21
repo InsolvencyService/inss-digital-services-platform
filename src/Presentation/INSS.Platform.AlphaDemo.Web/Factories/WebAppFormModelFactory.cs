@@ -25,56 +25,9 @@ public sealed class WebAppFormModelFactory : IFormModelFactory
     {
         FormModel form = new()
         {
-            Title = "Demo task list",
+            Title = "",
             Sections =
-            [
-                new SectionModel
-                {
-                    Title = "About you",
-                    PathName = "about-you",
-                    Pages =
-                    [
-                        new FullNameModel(),
-                        new DateOfBirthModel(),
-                        new AddressModel(),
-                        new TelephoneNumberModel(),
-                        new EmailAddressModel()
-                    ]
-                },
-                new SectionModel
-                {
-                    Title = "Income",
-                    PathName = "income",
-                    Pages =
-                    [
-                        new SourceOfIncomeModel(),
-                        new GrossIncomeModel(),
-                        new PaymentFrequencyModel(),
-                        new IncomeProviderModel(),
-                        new AddAnotherModel
-                        { 
-                            Items = 
-                            [
-                                [
-                                    new SourceOfIncomeModel(), 
-                                    new GrossIncomeModel(), 
-                                    new PaymentFrequencyModel(), 
-                                    new IncomeProviderModel()
-                                ]
-                            ] 
-                        }
-                    ]
-                },
-                new SectionModel
-                {
-                    Title = "Bank validation",
-                    PathName = "bank-validation",
-                    Pages =
-                    [
-                        new BankAccountModel(),
-                    ]
-                }
-            ]
+            []
         };
 
         form.Initialize();

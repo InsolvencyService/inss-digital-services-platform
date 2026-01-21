@@ -1,4 +1,6 @@
 ﻿using INSS.Platform.AlphaDemo.Web.Services;
+using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Portal.Application.Models;
 using INSS.Platform.Portal.Domain.Forms;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,46 +8,54 @@ namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
 public class BankDetailsController : BaseFormController<BankDetailsModel>
 {
-    public BankDetailsController(IFormCacheClient formCacheClient)
-        : base(formCacheClient) { }
+    private readonly IBankClient _bankClient;
+
+    public BankDetailsController(IFormCacheClient formCacheClient, IBankClient bankClient)
+        : base(formCacheClient) 
+    {
+        _bankClient = bankClient;
+    }
 
     public IActionResult Index()
     {
-        return RedirectToAction(nameof(AccountName));
-    }
-
-    public IActionResult AccountName()
-    {
         return ViewWithPersistedModel();
     }
 
     [HttpPost]
-    public async Task<IActionResult> AccountName(BankDetailsModel model)
+    public async Task<IActionResult> Index(BankDetailsModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.AccountName), model.AccountName, nameof(SortCode));
-    }
+        if(!ModelState.IsValid)
+        {
+            return View(model);
+        }
 
-    public IActionResult SortCode()
-    {
-        return ViewWithPersistedModel();
-    }
+        BankAccountVerificationResponse verificationResponse = await _bankClient.VerifyBankDetailsAsync(
+            new BankAccountVerificationRequest
+            {
+                CustomerName = model.AccountName,
+                BankAccount = model.AccountNumber,
+                SortCode = model.SortCode,
+                AccountType = AccountType.Personal
+            });
 
-    [HttpPost]
-    public async Task<IActionResult> SortCode(BankDetailsModel model)
-    {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.SortCode), model.SortCode, nameof(AccountNumber));
-    }
+        if (!verificationResponse.Result)
+        {
+            switch (verificationResponse.ReasonCode)
+            {
+                case "ANNM":
+                case "MBAM":
+                    ModelState.AddModelError(nameof(model.AccountName), "The account name provided is not the same as the name held on the Account");
+                    break;
+                case "NOROUTE":
+                    ModelState.AddModelError(nameof(model.SortCode), "The sort code is not valid.");
+                    break;
+                default:
+                    ModelState.AddModelError(nameof(model.AccountNumber), "The account details are not valid.");
+                    break;
+            }
+        }
 
-    public IActionResult AccountNumber()
-    {
-        return ViewWithPersistedModel();
-    }
-
-
-    [HttpPost]
-    public async Task<IActionResult> AccountNumber(BankDetailsModel model)
-    {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.AccountNumber), model.AccountNumber, nameof(Summary));
+        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(Summary));
     }
 
     public IActionResult Summary()

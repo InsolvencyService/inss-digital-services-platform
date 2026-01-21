@@ -24,7 +24,8 @@ public class BankAccountModelStateValidatorTests
     public async Task InvalidMode_ValidateAsync_NoModelErrors()
     {
         BankAccountModel bankAccountModel = new() { AccountNumber = "12345678", SortCode = "12-34-56"};
-        _mockBankClient.Setup(client => client.BankAccountExistsAsync("12345678", "12-34-56")).ReturnsAsync(false);
+        _mockBankClient.Setup(client => client.VerifyBankDetailsAsync(new Models.BankAccountVerificationRequest() { BankAccount = "12345678", SortCode = "12-34-56" }))
+            .ReturnsAsync(new Models.BankAccountVerificationResponse() { Result = false });
 
         await _validator.ValidateAsync(_modelState, bankAccountModel);
 
@@ -35,7 +36,9 @@ public class BankAccountModelStateValidatorTests
     public async Task ValidModel_ValidateAsync_NoModelErrors()
     {
         BankAccountModel bankAccountModel = new() { AccountNumber = "12345678", SortCode = "12-34-56"};
-        _mockBankClient.Setup(client => client.BankAccountExistsAsync("12345678", "12-34-56")).ReturnsAsync(true);
+
+        _mockBankClient.Setup(client => client.VerifyBankDetailsAsync(new Models.BankAccountVerificationRequest() { BankAccount = "12345678", SortCode = "12-34-56" }))
+            .ReturnsAsync(new Models.BankAccountVerificationResponse() { Result = false });
 
         await _validator.ValidateAsync(_modelState, bankAccountModel);
 

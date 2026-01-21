@@ -1,0 +1,10 @@
+﻿@model BankDetailsModel
+
+<form asp-action="Index" method="post">
+
+    @await Html.PartialAsync($"_BankDetails", Model)
+
+    <govuk-button type="submit">Next</govuk-button>
+</form>
+
+

@@ -7,6 +7,7 @@ namespace INSS.Platform.Portal.Web.Components.TagHelpers;
 public class TaskListItemTagHelper : TagHelper
 {
     public string Name { get; set; } = string.Empty;
+
     public bool IsComplete { get; set; }
     
     public string Url { get; set; } = string.Empty;

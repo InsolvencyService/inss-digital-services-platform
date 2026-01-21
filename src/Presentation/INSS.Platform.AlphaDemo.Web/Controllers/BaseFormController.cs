@@ -73,6 +73,30 @@ public abstract class BaseFormController<TForm> : Controller where TForm : FormB
     }
 
     /// <summary>
+    /// Validates the provided form model and, if valid, persists it to the cache and redirects to the specified next action.
+    /// If the model state is invalid, returns the view with the current model for user correction.
+    /// </summary>
+    /// <param name="model">The form model to validate and persist.</param>
+    /// <param name="modelState">The model state dictionary containing validation state.</param>
+    /// <param name="nextAction">The name of the next action to redirect to if validation succeeds.</param>
+    /// <returns>
+    /// An <see cref="IActionResult"/> that either returns the view with the model if validation fails,
+    /// or redirects to the next action if validation succeeds.
+    /// </returns>
+        protected virtual async Task<IActionResult> ValidateAndRedirectToNextSectionAsync(
+            TForm model, ModelStateDictionary modelState, string nextAction)
+        {
+            if (!modelState.IsValid)
+            {
+                return View(model);
+            }
+
+            _formCache.SetFormToCache(_cacheKey, model);
+
+            return RedirectToAction(nextAction);
+        }
+
+    /// <summary>
     /// Validates a specific section or property of the form model.
     /// </summary>
     /// <param name="modelState">The model state dictionary for validation.</param>
