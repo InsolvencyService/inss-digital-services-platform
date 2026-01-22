@@ -8,6 +8,8 @@
     @($"You have added {@Model.Count} income{(@Model.Count > 1 ? "s" : "")}")
 </h1>
 
+<inss-previous-button previous-url="@Url.Action("List")" />
+
 @foreach (var income in @Model.Select((item, index) => new { Index = index, Item = item }))
 {
     <div class="govuk-summary-card">

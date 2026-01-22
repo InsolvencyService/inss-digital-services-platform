@@ -45,8 +45,8 @@ public sealed class PayPointBankClient : IBankClient
         _httpClient = httpClientFactory.CreateClient();
         _logger = logger;
 
-        _apiUrl = configuration["PayPoint:Api-Url"] ?? throw new ArgumentNullException(nameof(configuration), "PayPoint:Api-Url configuration is missing.");
-        _apiKey = configuration["PayPoint:Api-Key"] ?? throw new ArgumentNullException(nameof(configuration), "PayPoint:Api-Key configuration is missing.");
+        _apiUrl = configuration["PayPoint:ApiUrl"] ?? throw new ArgumentNullException(nameof(configuration), "PayPoint:ApiUrl configuration is missing.");
+        _apiKey = configuration["PayPoint:ApiKey"] ?? throw new ArgumentNullException(nameof(configuration), "PayPoint:ApiKey configuration is missing.");
     }
 
     /// <inheritdoc />
@@ -73,10 +73,7 @@ public sealed class PayPointBankClient : IBankClient
                 throw new HttpRequestException($"Error posting user data to {_apiUrl}. Response: {responseContent}", null, responseMessage.StatusCode);
             }
 
-            string jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-            BankAccountVerificationResponse? verificationResponse = JsonSerializer.Deserialize<BankAccountVerificationResponse>(jsonResponse, _serializerOptions);
-
-            return verificationResponse ?? new BankAccountVerificationResponse();
+            return await MapVerificationResponse(responseMessage);
         }
         catch (HttpRequestException ex)
         {
@@ -96,5 +93,36 @@ public sealed class PayPointBankClient : IBankClient
         }
 
         return new BankAccountVerificationResponse() { ResultText = RequestErrorMessage };
+    }
+
+    private async Task<BankAccountVerificationResponse> MapVerificationResponse(HttpResponseMessage responseMessage)
+    {
+        string jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+
+        BankAccountVerificationResponse response = JsonSerializer.Deserialize<BankAccountVerificationResponse>(jsonResponse, _serializerOptions) 
+            ?? throw new JsonException("Deserialization returned null.");
+        
+        if(! response.Result)
+        {
+            response.ResultText = response.ReasonCode switch
+            {
+                "ANNM" or "MBAM" or "BAMM" or "PAMM" => "The name does not match the account.",
+                "BANM" => "The name matches, but the account is a business account.",
+                "PANM" => "The name matches, but the account is a personal account.",
+                "AC01" => "The account number and sort code are not correct. Update and try again.",
+                "ACNS" => "We can’t check this account type.",
+                "OPTO" => "We can’t check this account because the account holder has opted out of the bank account validation service.",
+                "SCNS" => "Sort code not found.  Unable to check the name.",
+                "SECMISS" => "Secondary reference missing.",
+                "FOURHUN" => "Unable to check the name. Try again later.",
+                "HTTPERR" => "HTTP error occured. Unable to check the name. Try again later.",
+                "CASS" => "The account has been switched to another bank account provider.",
+                "TOOMANY" => "We’re receiving too many requests. Try again later.",
+                "NOROUTE" => "We can’t process this request right now. Try again later.",
+                _ => response.ResultText,
+            };
+        }
+        
+        return response;
     }
 }

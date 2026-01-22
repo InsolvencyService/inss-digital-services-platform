@@ -30,7 +30,7 @@ public class FormApiClient : IFormApiClient
         _httpClient = httpClientFactory.CreateClient();
         _logger = logger;
 
-        _apiUrl = configuration["CanonicalApi-Url"] ?? throw new ArgumentNullException(nameof(configuration), "CanonicalApi-Url configuration is missing.");
+        _apiUrl = configuration["CanonicalApiUrl"] ?? throw new ArgumentNullException(nameof(configuration), "CanonicalApiUrl configuration is missing.");
     }
 
     /// <inheritdoc />

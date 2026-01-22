@@ -12,7 +12,7 @@ public class BankDetailsModel : FormBase
     [RegularExpression(@"^(\d{2}[- ]?\d{2}[- ]?\d{2})$", ErrorMessage = "Enter a valid sort code like 309430")]
     public string SortCode
     {
-        get => field.Replace("-", string.Empty).Replace(" ", string.Empty);
+        get => field?.Replace("-", string.Empty).Replace(" ", string.Empty) ?? string.Empty;
         set;
     } = string.Empty;
 

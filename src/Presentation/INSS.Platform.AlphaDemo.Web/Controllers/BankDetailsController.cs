@@ -11,7 +11,7 @@ public class BankDetailsController : BaseFormController<BankDetailsModel>
     private readonly IBankClient _bankClient;
 
     public BankDetailsController(IFormCacheClient formCacheClient, IBankClient bankClient)
-        : base(formCacheClient) 
+        : base(formCacheClient)
     {
         _bankClient = bankClient;
     }
@@ -24,7 +24,7 @@ public class BankDetailsController : BaseFormController<BankDetailsModel>
     [HttpPost]
     public async Task<IActionResult> Index(BankDetailsModel model)
     {
-        if(!ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
             return View(model);
         }
@@ -42,15 +42,15 @@ public class BankDetailsController : BaseFormController<BankDetailsModel>
         {
             switch (verificationResponse.ReasonCode)
             {
-                case "ANNM":
-                case "MBAM":
-                    ModelState.AddModelError(nameof(model.AccountName), "The account name provided is not the same as the name held on the Account");
-                    break;
                 case "NOROUTE":
-                    ModelState.AddModelError(nameof(model.SortCode), "The sort code is not valid.");
+                case "SCNS":
+                    ModelState.AddModelError(nameof(model.SortCode), verificationResponse.ResultText);
+                    break;
+                case "AC01":
+                    ModelState.AddModelError(nameof(model.AccountNumber), verificationResponse.ResultText);
                     break;
                 default:
-                    ModelState.AddModelError(nameof(model.AccountNumber), "The account details are not valid.");
+                    ModelState.AddModelError(nameof(model.AccountName), verificationResponse.ResultText);
                     break;
             }
         }
