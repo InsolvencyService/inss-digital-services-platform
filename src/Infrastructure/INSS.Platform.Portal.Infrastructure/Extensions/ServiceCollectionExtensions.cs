@@ -12,7 +12,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IFormStateService, TestFormStateService>();
         services.AddSingleton<IUserSessionResolver, TestUserSessionResolver>();
-        services.AddSingleton<IBankClient, MockBankClient>();
+
+        services.AddHttpClient();
+        services.AddScoped<IBankClient, PayPointBankClient>();
+
         return services;
     }
 }

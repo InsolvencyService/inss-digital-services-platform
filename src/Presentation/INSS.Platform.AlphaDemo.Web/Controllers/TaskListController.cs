@@ -103,9 +103,10 @@ public class TaskListController : Controller
         {
             InstanceId = instanceId,
             Id = aboutYou.Id,
-            AccountName = "Me",
+            AccountName = bankDetails.AccountName,
+            SortCode = bankDetails.SortCode,
             AccountNumber = bankDetails.AccountNumber,
-            SortCode = bankDetails.SortCode.Replace("-", string.Empty)
+            BuildingSocietyRollNumber = bankDetails.BuildingSocietyRollNumber
         });
 
         foreach (IncomeModel income in incomes)

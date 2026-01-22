@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace INSS.Platform.Portal.Web.Components.TagHelpers;
 
@@ -20,7 +20,7 @@ public class ErrorMessageTagHelper : TagHelper
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         if (ViewContext.ViewData.ModelState.ErrorCount > 0 &&
-            ViewContext.ViewData.ModelState.TryGetValue(For.Name, out var value) &&
+            ViewContext.ViewData.ModelState.TryGetValue(For.Name, out ModelStateEntry? value) &&
             value.Errors.Count > 0)
         {           
             output.TagName = "p";

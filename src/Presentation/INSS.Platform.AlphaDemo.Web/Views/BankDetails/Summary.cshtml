@@ -1,22 +1,61 @@
 ﻿@model BankDetailsModel
 
-@{
-    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
-    string modelProperty = "Summary";
+<inss-previous-button previous-url="@Url.Action("Index")" />
 
-    ViewDataDictionary viewData = new (ViewData)
+<govuk-summary-list>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Account name
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.AccountName)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Account number
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.AccountNumber)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Sort code
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.SortCode)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+    @if (!string.IsNullOrEmpty(Model.BuildingSocietyRollNumber))
     {
-        { "ModelController", modelName }
-    };
-}
+        <govuk-summary-list-row>
+            <govuk-summary-list-row-key>
+                Building society roll number
+            </govuk-summary-list-row-key>
+            <govuk-summary-list-row-value>
+                <p class="govuk-body">@(Model.BuildingSocietyRollNumber)</p>
+            </govuk-summary-list-row-value>
+            <govuk-summary-list-row-actions>
+                <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+            </govuk-summary-list-row-actions>
+        </govuk-summary-list-row>
+    }
+</govuk-summary-list>
 
-<form asp-controller="@modelName"
-      asp-action="@($"{modelProperty}Complete")"
-      method="post">
-
-    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model, viewData)
-
+<form asp-action="SummaryComplete" method="post">
     <govuk-button type="submit">Save & Continue</govuk-button>
 </form>
-
-

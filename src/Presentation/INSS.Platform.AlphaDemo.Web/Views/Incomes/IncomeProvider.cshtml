@@ -5,6 +5,8 @@
     string modelProperty = nameof(Model.IncomeProvider);
 }
 
+<inss-previous-button previous-url="@Url.Action("PaymentFrequency")" />
+
 <form asp-controller="@modelName"
       asp-action="@modelProperty"
       method="post">

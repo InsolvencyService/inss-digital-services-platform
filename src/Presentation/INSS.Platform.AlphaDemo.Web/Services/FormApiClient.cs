@@ -9,7 +9,6 @@ public class FormApiClient : IFormApiClient
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<FormApiClient> _logger;
-    private readonly IConfiguration _configuration;
     private readonly string _apiUrl;
 
     private readonly JsonSerializerOptions _serializerOptions = new()
@@ -26,13 +25,12 @@ public class FormApiClient : IFormApiClient
     /// <param name="configuration">The application configuration settings.</param>
     /// <param name="logger">The <see cref="ILogger{TCategoryName}"/> instance used for logging diagnostic messages. This parameter
     /// cannot be <see langword="null"/>.</param>
-    public FormApiClient(HttpClient httpClient, IConfiguration configuration, ILogger<FormApiClient> logger)
+    public FormApiClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<FormApiClient> logger)
     {
-        _configuration = configuration;
-        _httpClient = httpClient;
+        _httpClient = httpClientFactory.CreateClient();
         _logger = logger;
 
-        _apiUrl = _configuration["CanonicalApi-Url"] ?? throw new ArgumentNullException(nameof(configuration), "CanonicalApi-Url configuration is missing.");
+        _apiUrl = configuration["CanonicalApi-Url"] ?? throw new ArgumentNullException(nameof(configuration), "CanonicalApi-Url configuration is missing.");
     }
 
     /// <inheritdoc />
@@ -56,8 +54,7 @@ public class FormApiClient : IFormApiClient
             if (!response.IsSuccessStatusCode)
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
-                _logger.LogError("Failed to post user data to {ApiUrl}. StatusCode: {StatusCode}. Response: {ResponseContent}", userDataApiUrl, response.StatusCode, responseContent);
-                return false;
+                throw new HttpRequestException($"Error posting user data to {_apiUrl}. Response: {responseContent}", null, response.StatusCode);
             }
 
             return true;

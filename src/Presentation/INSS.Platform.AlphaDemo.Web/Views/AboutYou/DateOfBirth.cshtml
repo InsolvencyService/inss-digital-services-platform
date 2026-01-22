@@ -4,6 +4,7 @@
     string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
     string modelProperty = nameof(Model.DateOfBirth);
 }
+<inss-previous-button previous-url="@Url.Action("FullName")" />
 
 <form asp-controller="@modelName"
       asp-action="@modelProperty"

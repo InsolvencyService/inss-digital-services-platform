@@ -1,22 +1,71 @@
 ﻿@model AboutYouModel
 
-@{
-    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
-    string modelProperty = "Summary";
+<inss-previous-button previous-url="@Url.Action("EmailAddress")" />
 
-    ViewDataDictionary viewData = new(ViewData)
-    {
-        { "ModelController", modelName }
-    };
-}
+<govuk-summary-list>
 
-<form asp-controller="@modelName"
-      asp-action="@($"{modelProperty}Complete")"
-      method="post">
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Full name
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.FullName)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.FullName))" visually-hidden-text="@Model.FullName">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
 
-    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model, viewData)
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Date of birth
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.DateOfBirth)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.DateOfBirth))" visually-hidden-text="@Model.DateOfBirth">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
 
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Address
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.Address.ToString())</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.Address))" visually-hidden-text="@Model.Address">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Telephone number
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.TelephoneNumber)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.TelephoneNumber))" visually-hidden-text="@Model.TelephoneNumber">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+    <govuk-summary-list-row>
+        <govuk-summary-list-row-key>
+            Email address
+        </govuk-summary-list-row-key>
+        <govuk-summary-list-row-value>
+            <p class="govuk-body">@(Model.EmailAddress)</p>
+        </govuk-summary-list-row-value>
+        <govuk-summary-list-row-actions>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.EmailAddress))" visually-hidden-text="@Model.EmailAddress">Change</govuk-summary-list-row-action>
+        </govuk-summary-list-row-actions>
+    </govuk-summary-list-row>
+
+</govuk-summary-list>
+
+<form asp-action="SummaryComplete" method="post">
     <govuk-button type="submit">Save & Continue</govuk-button>
 </form>
-
-
