@@ -1,0 +1,31 @@
+﻿@model UserAddressModel
+
+<govuk-fieldset>
+    <govuk-fieldset-legend class="govuk-fieldset__legend govuk-fieldset__legend--l">What is your address?</govuk-fieldset-legend>
+
+    <govuk-input for="@Model.AddressLine1" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+        <govuk-input-label is-page-heading="false" class="govuk-label">Address Line 1</govuk-input-label>
+    </govuk-input>
+    <inss-error-message asp-for="@Model.AddressLine1" />
+
+    <govuk-input for="@Model.AddressLine2" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+        <govuk-input-label is-page-heading="false" class="govuk-label">Address line 2 (optional)</govuk-input-label>
+    </govuk-input>
+    <inss-error-message asp-for="@Model.AddressLine2" />
+
+    <govuk-input for="@Model.TownCity" input-class="govuk-input--width-20" inputmode="text" spellcheck="false">
+        <govuk-input-label is-page-heading="false" class="govuk-label">Town or city</govuk-input-label>
+    </govuk-input>
+    <inss-error-message asp-for="@Model.TownCity" />
+
+    <govuk-input for="@Model.County" input-class="govuk-input--width-20" inputmode="text" spellcheck="false">
+        <govuk-input-label is-page-heading="false" class="govuk-label">County (optional)</govuk-input-label>
+    </govuk-input>
+    <inss-error-message asp-for="@Model.County" />
+
+    <govuk-input for="@Model.Postcode" input-class="govuk-input--width-10" inputmode="text" spellcheck="false">
+        <govuk-input-label is-page-heading="false" class="govuk-label">Postcode</govuk-input-label>
+    </govuk-input>
+    <inss-error-message asp-for="@Model.Postcode" />
+
+</govuk-fieldset>

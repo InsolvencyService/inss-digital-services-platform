@@ -1,6 +1,6 @@
 ﻿@model BankDetailsModel
 
-<inss-previous-button previous-url="@Url.Action("Index")" />
+<inss-previous-button previous-url="@Url.Action(nameof(BankDetailsController.Index))" />
 
 <govuk-summary-list>
 
@@ -12,7 +12,7 @@
             <p class="govuk-body">@(Model.AccountName)</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(BankDetailsController.Index))" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 
@@ -24,7 +24,7 @@
             <p class="govuk-body">@(Model.AccountNumber)</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(BankDetailsController.Index))" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 
@@ -36,7 +36,7 @@
             <p class="govuk-body">@(Model.SortCode)</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(BankDetailsController.Index))" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 
@@ -50,7 +50,7 @@
                 <p class="govuk-body">@(Model.BuildingSocietyRollNumber)</p>
             </govuk-summary-list-row-value>
             <govuk-summary-list-row-actions>
-                <govuk-summary-list-row-action href="@Url.Action("Index")" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
+                <govuk-summary-list-row-action href="@Url.Action(nameof(BankDetailsController.Index))" visually-hidden-text="@Model.AccountName">Change</govuk-summary-list-row-action>
             </govuk-summary-list-row-actions>
         </govuk-summary-list-row>
     }

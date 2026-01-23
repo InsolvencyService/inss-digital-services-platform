@@ -1,16 +1,21 @@
-using INSS.Platform.AlphaDemo.Web.Factories;
-using INSS.Platform.AlphaDemo.Web.Services;
-using INSS.Platform.Portal.Application.Factories;
-using INSS.Platform.Portal.Web.Components.Extensions;
+using GovUk.Frontend.AspNetCore;
+using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Infrastructure.Extensions;
+using INSS.Platform.Portal.Web.Components.Register;
 using INSS.Platform.Shared.Web.Auth.Configuration;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.AddComponents();
+builder.Services.AddGovUkFrontend(options => options.Rebrand = true);
+builder.Services.AddInfrastructure();
 
-builder.Services.AddTransient<IFormModelFactory, WebAppFormModelFactory>();
-
-IMvcBuilder mvcBuilder = builder.Services.AddControllersWithViews();
+IMvcBuilder mvcBuilder = builder.Services.AddControllersWithViews()
+    // Register the views in the /Views/Shared folder in the shared components assembly.
+    .AddApplicationPart(typeof(ClientRegistration).Assembly) 
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+    });
 
 builder.Services.AddSession();
 
@@ -42,6 +47,11 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.UseComponents();
+app.UseGovUkFrontend();
+
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();

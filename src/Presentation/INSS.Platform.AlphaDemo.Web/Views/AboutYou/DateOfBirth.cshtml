@@ -1,18 +1,17 @@
 ﻿@model AboutYouModel
 
 @{
-    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
-    string modelProperty = nameof(Model.DateOfBirth);
+    string action = nameof(AboutYouController.DateOfBirth);
 }
-<inss-previous-button previous-url="@Url.Action("FullName")" />
 
-<form asp-controller="@modelName"
-      asp-action="@modelProperty"
-      method="post">
+<inss-previous-button previous-url="@Url.Action(nameof(AboutYouController.UserFullName))" />
 
-    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model)
+<form asp-action="@action" method="post">
+
+    @await Html.PartialAsync($"_{action}", Model.DateOfBirth)
 
     <govuk-button type="submit">Next</govuk-button>
+
 </form>
 
 

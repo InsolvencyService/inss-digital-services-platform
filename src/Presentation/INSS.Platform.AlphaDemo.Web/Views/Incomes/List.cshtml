@@ -1,5 +1,5 @@
 ﻿@model ListModel
 
-@await Html.PartialAsync("_List", Model)
+@await Html.PartialAsync($"_{nameof(IncomesController.List)}", Model)
 
 

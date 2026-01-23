@@ -1,7 +1,8 @@
-﻿using INSS.Platform.AlphaDemo.Web.Services;
-using INSS.Platform.Portal.Application.Clients;
+﻿using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Application.Models;
-using INSS.Platform.Portal.Domain.Forms;
+using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Domain;
+using INSS.Platform.Portal.Web.Components.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;
@@ -55,7 +56,7 @@ public class BankDetailsController : BaseFormController<BankDetailsModel>
             }
         }
 
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(Summary));
+        return await ValidateAndRedirectToNextSectionAsync(model, nameof(Summary));
     }
 
     public IActionResult Summary()
