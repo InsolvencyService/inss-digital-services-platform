@@ -1,7 +1,9 @@
 ﻿using INSS.Platform.Canonical.Domain;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace INSS.Platform.AlphaDemo.Web.Services;
+namespace INSS.Platform.Portal.Application.Services;
 
 
 /// <inheritdoc />

@@ -1,6 +1,6 @@
 ﻿using INSS.Platform.Portal.Domain;
 
-namespace INSS.Platform.AlphaDemo.Web.Services;
+namespace INSS.Platform.Portal.Application.Services;
 
 /// <summary>
 /// Provides methods for caching and retrieving form data and form lists.

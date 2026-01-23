@@ -1,14 +1,12 @@
-using INSS.Platform.AlphaDemo.Web.Helpers;
-using INSS.Platform.AlphaDemo.Web.Services;
+using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Domain;
 using INSS.Platform.Portal.Domain.Enums;
 using INSS.Platform.Shared.Web.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Reflection;
 
-namespace INSS.Platform.AlphaDemo.Web.Controllers;
+namespace INSS.Platform.Portal.Web.Components.Controllers;
 
 /// <summary>
 /// Abstract base controller for managing a list of form items.
@@ -19,21 +17,22 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
 {
     private readonly IFormCacheClient _formCache;
     private readonly string _cacheKey;
-    private readonly string _itemName;
+    private readonly string _listItemDescription;
     private readonly string _itemListTextPropertyName;
+    private List<TFormItem> _formItems;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BaseFormListController{TFormItem}"/> class.
     /// </summary>
     /// <param name="formCache">The form cache client.</param>
-    /// <param name="itemName">The display name for the item type.</param>
+    /// <param name="listItemDescription">The display name for the item type.</param>
     /// <param name="listTextPropertyName">The property name to use for displaying items in the list.</param>
-    protected BaseFormListController(IFormCacheClient formCache, string itemName, string listTextPropertyName)
+    protected BaseFormListController(IFormCacheClient formCache, string listItemDescription, string listTextPropertyName)
         : base(formCache)
     {
         _formCache = formCache;
         _cacheKey = _formCache.GetFormCacheKey<TFormItem>();
-        _itemName = itemName;
+        _listItemDescription = listItemDescription;
         _itemListTextPropertyName = listTextPropertyName;
     }
 
@@ -45,11 +44,11 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
     {
         base.OnActionExecuting(context);
 
-        List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
-        if (formItems.Count == 0)
+        _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+        if (_formItems.Count == 0)
         {
-            formItems.Add(new TFormItem());
-            _formCache.SetFormListToCache(_cacheKey, formItems);
+            _formItems.Add(new TFormItem());
+            _formCache.SetFormListToCache(_cacheKey, _formItems);
             _formCache.SetCurrentFormListIndex(_cacheKey, 0);
         }
     }
@@ -69,9 +68,9 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
     /// <returns>The summary view with the list of form items.</returns>
     public IActionResult ListSummary()
     {
-        List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+        _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
 
-        return View(model: formItems);
+        return View(model: _formItems);
     }
 
     /// <summary>
@@ -89,10 +88,10 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
 
         if(model.Confirm == Confirmation.Yes)
         {
-            List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
-            formItems.Add(new TFormItem());
-            _formCache.SetFormListToCache(_cacheKey, formItems);
-            _formCache.SetCurrentFormListIndex(_cacheKey, formItems.Count - 1);
+            _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+            _formItems.Add(new TFormItem());
+            _formCache.SetFormListToCache(_cacheKey, _formItems);
+            _formCache.SetCurrentFormListIndex(_cacheKey, _formItems.Count - 1);
 
             return RedirectToAction(nameof(Index));
         }
@@ -111,7 +110,7 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
     {
         _formCache.SetCurrentFormListIndex(_cacheKey, itemIndex);
 
-        return RedirectToAction(string.IsNullOrWhiteSpace(fieldName) ? "Index" : fieldName);
+        return RedirectToAction(string.IsNullOrWhiteSpace(fieldName) ? nameof(Index) : fieldName);
     }
 
     /// <summary>
@@ -122,18 +121,17 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
     [Route("Remove/{itemIndex}")]
     public IActionResult Remove(int itemIndex)
     {
-        List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
-        if(formItems.Count > 0)
+        _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+        if(_formItems.Count > 0)
         {
-            formItems.RemoveAt(itemIndex);
+            _formItems.RemoveAt(itemIndex);
 
-            _formCache.SetFormListToCache(_cacheKey, formItems);
+            _formCache.SetFormListToCache(_cacheKey, _formItems);
         }
 
-        if(formItems.Count > 0)
+        if(_formItems.Count > 0)
         {
-            _formCache.SetCurrentFormListIndex(_cacheKey, formItems.Count-1);
-
+            _formCache.SetCurrentFormListIndex(_cacheKey, _formItems.Count-1);
             return View(nameof(List), PopulateListModel());
         }
 
@@ -182,39 +180,42 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
     }
 
     /// <summary>
-    /// Returns the view with the currently persisted model item.
+    /// Returns the view with the currently persisted list item.
     /// </summary>
     /// <returns>The view for the current form item.</returns>
     protected override IActionResult ViewWithPersistedModel()
     {
-        List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+        _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
         int itemIndex = _formCache.GetCurrentFormListIndex(_cacheKey);
 
-        return View(formItems[itemIndex]);
+        return View(_formItems[itemIndex]);
     }
 
     /// <summary>
-    /// Validates the model and redirects to the next section if valid.
+    /// Validates the specified property value for the current form item and redirects to the next section if valid.
+    /// Updates the property value, checks model state, persists the updated list, and redirects accordingly.
     /// </summary>
-    /// <param name="model">The form model.</param>
-    /// <param name="modelState">The model state dictionary.</param>
-    /// <param name="property">The property being validated.</param>
-    /// <param name="value">The value to set.</param>
-    /// <param name="nextAction">The next action to redirect to.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the action result.</returns>
+    /// <param name="property">The name of the property to validate and update.</param>
+    /// <param name="value">The value to set for the specified property.</param>
+    /// <param name="nextAction">The name of the action to redirect to if validation succeeds.</param>
+    /// <returns>
+    /// An <see cref="IActionResult"/> that either returns the view with the current form item if validation fails,
+    /// or redirects to the specified next action if validation succeeds.
+    /// </returns>
     protected override async Task<IActionResult> ValidateAndRedirectToNextSectionAsync(
-        FormBase model, ModelStateDictionary modelState, string property, object? value, string nextAction)
+        string property, object? value, string nextAction)
     {
-        if (!ValidateSection(modelState, property, value))
-        {
-            return View(model);
-        }
-
-        List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+        _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
         int itemIndex = _formCache.GetCurrentFormListIndex(_cacheKey);
 
-        PropertyHelpers.SetPropertyValueByName(formItems[itemIndex], property, value);
-        _formCache.SetFormListToCache(_cacheKey, formItems);
+        SetPropertyValueByName(_formItems[itemIndex], property, value);
+
+        if (!ModelState.IsValid)
+        {
+            return View(_formItems[itemIndex]);
+        }
+
+        _formCache.SetFormListToCache(_cacheKey, _formItems);
 
         return RedirectToAction(nextAction);
     }
@@ -224,26 +225,26 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
     /// </summary>
     protected override void SetFormAsComplete()
     {
-        List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
-        foreach (TFormItem item in formItems)
+        _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+        foreach (TFormItem item in _formItems)
         {
             item.IsComplete = true;
         }
-        _formCache.SetFormListToCache(_cacheKey, formItems);
+        _formCache.SetFormListToCache(_cacheKey, _formItems);
     }
 
     /// <summary>
-    /// Populates the list model for display in the list view.
+    /// Populates the list model for displaying items in the list view.
     /// </summary>
     /// <returns>A <see cref="ListModel"/> containing item names and display values.</returns>
     private ListModel PopulateListModel()
     {
-        List<TFormItem> formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
+        _formItems = _formCache.GetFormListFromCache<TFormItem>(_cacheKey);
 
         return new ListModel
         {
-            ItemName = _itemName,
-            Items = GetPropertyValuesAsStrings(formItems, typeof(TFormItem), _itemListTextPropertyName)
+            ItemName = _listItemDescription,
+            Items = GetPropertyValuesAsStrings(_formItems, typeof(TFormItem), _itemListTextPropertyName)
         };
     }
 

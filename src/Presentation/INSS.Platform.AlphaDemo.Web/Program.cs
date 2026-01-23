@@ -1,6 +1,6 @@
 using INSS.Platform.AlphaDemo.Web.Factories;
-using INSS.Platform.AlphaDemo.Web.Services;
 using INSS.Platform.Portal.Application.Factories;
+using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Web.Components.Extensions;
 using INSS.Platform.Portal.Web.Components.Register;
 using INSS.Platform.Shared.Web.Auth.Configuration;
