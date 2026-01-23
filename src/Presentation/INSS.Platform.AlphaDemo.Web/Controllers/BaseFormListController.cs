@@ -248,12 +248,14 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
     }
 
     /// <summary>
-    /// Gets the string representations of a property for each item in the list.
+    /// Retrieves the string representations of a specified property for each item in the form items list.
+    /// Handles properties that may implement <see cref="IHasValue{T}"/> and if so returns the Value property.
+    /// Also handles enums, returning their descriptions if available.
     /// </summary>
-    /// <param name="formItems">The list of form items.</param>
-    /// <param name="derivedType">The type of the form item.</param>
-    /// <param name="propertyName">The property name to extract values from.</param>
-    /// <returns>A list of string representations of the property values.</returns>
+    /// <param name="formItems">The list of form items to extract property values from.</param>
+    /// <param name="derivedType">The type of the form item, used to reflect the property.</param>
+    /// <param name="propertyName">The name of the property to extract from each item.</param>
+    /// <returns>A list of string representations of the specified property for each form item.</returns>
     private static List<string> GetPropertyValuesAsStrings(List<TFormItem> formItems, Type derivedType, string propertyName)
     {
         return [.. formItems
@@ -261,9 +263,30 @@ public abstract class BaseFormListController<TFormItem> : BaseFormController<TFo
             {
                 PropertyInfo? property = derivedType.GetProperty(propertyName);
                 object? value = property?.GetValue(item);
-                if (value is Enum enumValue)
+
+                if (value != null)
                 {
-                    return enumValue.Description();
+                    Type? hasValueInterface = value.GetType()
+                        .GetInterfaces()
+                        .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHasValue<>));
+
+                    if (hasValueInterface != null)
+                    {
+                        PropertyInfo? valueProperty = hasValueInterface.GetProperty("Value");
+                        object? innerValue = valueProperty?.GetValue(value);
+
+                        if (innerValue is Enum enumInner)
+                        {
+                            return enumInner.Description();
+                        }
+
+                        return innerValue?.ToString() ?? string.Empty;
+                    }
+
+                    if (value is Enum enumValue)
+                    {
+                        return enumValue.Description();
+                    }
                 }
 
                 return value?.ToString() ?? string.Empty;

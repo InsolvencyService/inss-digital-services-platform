@@ -1,4 +1,5 @@
-﻿using INSS.Platform.AlphaDemo.Web.Services;
+﻿using INSS.Platform.AlphaDemo.Web.Models;
+using INSS.Platform.AlphaDemo.Web.Services;
 using INSS.Platform.Portal.Domain.Forms;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,8 @@ namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
 public class AboutYouController : BaseFormController<AboutYouModel> 
 {
+    private readonly AboutYouModel _aboutYouModel = new ();
+
     public AboutYouController(IFormCacheClient formCacheClient)
         : base(formCacheClient) { }
 
@@ -20,9 +23,10 @@ public class AboutYouController : BaseFormController<AboutYouModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> FullName(AboutYouModel model)
+    public async Task<IActionResult> FullName(FullNameModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.FullName), model.FullName, nameof(DateOfBirth));
+        _aboutYouModel.FullName = model;
+        return await ValidateAndRedirectToNextSectionAsync(_aboutYouModel, ModelState, nameof(_aboutYouModel.FullName), _aboutYouModel.FullName, nameof(DateOfBirth));
     }
 
     public IActionResult DateOfBirth()
@@ -31,20 +35,22 @@ public class AboutYouController : BaseFormController<AboutYouModel>
     }
 
     [HttpPost]
-    public async Task <IActionResult> DateOfBirth(AboutYouModel model)
+    public async Task <IActionResult> DateOfBirth(DateOfBirthModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.DateOfBirth), model.DateOfBirth, nameof(Address));
+        _aboutYouModel.DateOfBirth = model;
+        return await ValidateAndRedirectToNextSectionAsync(_aboutYouModel, ModelState, nameof(_aboutYouModel.DateOfBirth), _aboutYouModel.DateOfBirth, nameof(UserAddress));
     }
 
-    public IActionResult Address()
+    public IActionResult UserAddress()
     {
         return ViewWithPersistedModel();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Address(AboutYouModel model)
+    public async Task<IActionResult> UserAddress(AddressModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.Address), model.Address, nameof(TelephoneNumber));
+        _aboutYouModel.Address = model;
+        return await ValidateAndRedirectToNextSectionAsync(_aboutYouModel, ModelState, nameof(_aboutYouModel.Address), _aboutYouModel.Address, nameof(TelephoneNumber));
     }
 
     public IActionResult TelephoneNumber()
@@ -53,9 +59,10 @@ public class AboutYouController : BaseFormController<AboutYouModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> TelephoneNumber(AboutYouModel model)
+    public async Task<IActionResult> TelephoneNumber(TelephoneNumberModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.TelephoneNumber), model.TelephoneNumber, nameof(EmailAddress));
+        _aboutYouModel.TelephoneNumber = model;
+        return await ValidateAndRedirectToNextSectionAsync(_aboutYouModel, ModelState, nameof(_aboutYouModel.TelephoneNumber), _aboutYouModel.TelephoneNumber, nameof(EmailAddress));
 
     }
 
@@ -65,9 +72,10 @@ public class AboutYouController : BaseFormController<AboutYouModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> EmailAddress(AboutYouModel model)
+    public async Task<IActionResult> EmailAddress(EmailAddressModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.EmailAddress), model.EmailAddress, nameof(Summary));
+        _aboutYouModel.EmailAddress = model;
+        return await ValidateAndRedirectToNextSectionAsync(_aboutYouModel, ModelState, nameof(_aboutYouModel.EmailAddress), _aboutYouModel.EmailAddress, nameof(Summary));
     }
 
     public IActionResult Summary()

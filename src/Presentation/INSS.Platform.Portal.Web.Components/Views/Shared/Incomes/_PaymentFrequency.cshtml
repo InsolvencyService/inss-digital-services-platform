@@ -1,6 +1,6 @@
-﻿@model IncomeModel
+﻿@model PaymentFrequencyModel
 
-<govuk-radios for="@Model.PaymentFrequency" orientation="Vertical">
+<govuk-radios for="@Model.Value" orientation="Vertical">
     <govuk-radios-fieldset>
         <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
             What is the payment frequency?
@@ -16,4 +16,4 @@
 
     </govuk-radios-fieldset>
 </govuk-radios>
-<inss-error-message asp-for="@Model.PaymentFrequency" />
+<inss-error-message asp-for="@Model.Value" />

@@ -1,7 +1,6 @@
-﻿
-@model IncomeModel
+﻿@model SourceOfIncomeModel
 
-<govuk-radios for="@Model.SourceOfIncome" orientation="Vertical">
+<govuk-radios for="@Model.Value" orientation="Vertical">
     <govuk-radios-fieldset>
         <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
             What is the source of income?
@@ -17,4 +16,4 @@
 
     </govuk-radios-fieldset>
 </govuk-radios>
-<inss-error-message asp-for="@Model.SourceOfIncome" />
+<inss-error-message asp-for="@Model.Value" />

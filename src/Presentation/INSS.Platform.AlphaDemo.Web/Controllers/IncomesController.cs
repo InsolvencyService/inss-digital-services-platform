@@ -1,4 +1,5 @@
-﻿using INSS.Platform.AlphaDemo.Web.Services;
+﻿using INSS.Platform.AlphaDemo.Web.Models;
+using INSS.Platform.AlphaDemo.Web.Services;
 using INSS.Platform.Portal.Domain.Forms;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,8 @@ namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
 public class IncomesController : BaseFormListController<IncomeModel> 
 {
+    private readonly IncomeModel _incomeModel = new();
+
     public IncomesController(IFormCacheClient formCacheClient)
         : base(formCacheClient, "income", nameof(SourceOfIncome)) { }
 
@@ -20,9 +23,10 @@ public class IncomesController : BaseFormListController<IncomeModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> SourceOfIncome(IncomeModel model)
+    public async Task<IActionResult> SourceOfIncome(SourceOfIncomeModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.SourceOfIncome), model.SourceOfIncome, nameof(GrossIncome));
+        _incomeModel.SourceOfIncome = model;
+        return await ValidateAndRedirectToNextSectionAsync(_incomeModel, ModelState, nameof(_incomeModel.SourceOfIncome), _incomeModel.SourceOfIncome, nameof(GrossIncome));
     }
 
     public IActionResult GrossIncome()
@@ -31,9 +35,10 @@ public class IncomesController : BaseFormListController<IncomeModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> GrossIncome(IncomeModel model)
+    public async Task<IActionResult> GrossIncome(GrossIncomeModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.GrossIncome), model.GrossIncome, nameof(PaymentFrequency));
+        _incomeModel.GrossIncome = model;
+        return await ValidateAndRedirectToNextSectionAsync(_incomeModel, ModelState, nameof(_incomeModel.GrossIncome), _incomeModel.GrossIncome, nameof(PaymentFrequency));
     }
 
     public IActionResult PaymentFrequency()
@@ -42,9 +47,10 @@ public class IncomesController : BaseFormListController<IncomeModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> PaymentFrequency(IncomeModel model)
+    public async Task<IActionResult> PaymentFrequency(PaymentFrequencyModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.PaymentFrequency), model.PaymentFrequency, nameof(IncomeProvider));
+        _incomeModel.PaymentFrequency = model;
+        return await ValidateAndRedirectToNextSectionAsync(_incomeModel, ModelState, nameof(_incomeModel.PaymentFrequency), _incomeModel.PaymentFrequency, nameof(IncomeProvider));
     }
 
     public IActionResult IncomeProvider()
@@ -53,9 +59,10 @@ public class IncomesController : BaseFormListController<IncomeModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> IncomeProvider(IncomeModel model)
+    public async Task<IActionResult> IncomeProvider(IncomeProviderModel model)
     {
-        return await ValidateAndRedirectToNextSectionAsync(model, ModelState, nameof(model.IncomeProvider), model.IncomeProvider, nameof(List));
+        _incomeModel.IncomeProvider = model;
+        return await ValidateAndRedirectToNextSectionAsync(_incomeModel, ModelState, nameof(_incomeModel.IncomeProvider), _incomeModel.IncomeProvider, nameof(List));
     }
 
     [HttpPost]

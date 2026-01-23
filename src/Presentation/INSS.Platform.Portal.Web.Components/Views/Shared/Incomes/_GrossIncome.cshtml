@@ -1,8 +1,8 @@
-﻿@model IncomeModel
+﻿@model GrossIncomeModel
 
-<govuk-input for="@Model.GrossIncome" input-class="govuk-input--width-10" inputmode="numeric">
+<govuk-input for="@Model.Value" input-class="govuk-input--width-10" inputmode="numeric">
     <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your gross income?</govuk-input-label>
     <govuk-input-hint>Enter value in pounds</govuk-input-hint>
     <govuk-input-prefix>&pound;</govuk-input-prefix>
 </govuk-input>
-<inss-error-message asp-for="@Model.GrossIncome" />
+<inss-error-message asp-for="@Model.Value" />

@@ -1,4 +1,4 @@
 ﻿
 @model ListConfirmationModel
 
-@await Html.PartialAsync("_ConfirmRemove", Model)
+@await Html.PartialAsync($"_{nameof(IncomesController.ConfirmRemove)}", Model)

@@ -1,7 +1,8 @@
-﻿@model AboutYouModel
+﻿@model INSS.Platform.Portal.Domain.Forms.FullNameModel
 
-<govuk-input for="@Model.FullName" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+<govuk-input for="@Model.Value" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
     <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your full name?</govuk-input-label>
     <govuk-input-hint>Enter your first name, middle name (if applicable), and last name</govuk-input-hint>
 </govuk-input>
-<inss-error-message asp-for="@Model.FullName"/>
+
+<inss-error-message asp-for="@Model.Value" />

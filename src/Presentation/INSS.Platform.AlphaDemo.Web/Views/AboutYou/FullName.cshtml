@@ -1,17 +1,15 @@
 ﻿@model AboutYouModel
 
 @{
-    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
-    string modelProperty = nameof(Model.FullName);
+    string action = nameof(AboutYouController.FullName);
 }
 
-<form asp-controller="@modelName"
-      asp-action="@modelProperty"
-      method="post">
+<form asp-action="@action" method="post">
 
-    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model)
+    @await Html.PartialAsync($"AboutYou/_{action}", Model.FullName)
 
     <govuk-button type="submit">Next</govuk-button>
+
 </form>
 
 

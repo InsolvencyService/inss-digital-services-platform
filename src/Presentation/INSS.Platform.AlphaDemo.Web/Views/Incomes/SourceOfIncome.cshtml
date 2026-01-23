@@ -1,17 +1,15 @@
 ﻿@model IncomeModel
 
 @{
-    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
-    string modelProperty = nameof(Model.SourceOfIncome);
+    string action = nameof(IncomesController.SourceOfIncome);
 }
 
-<form asp-controller="@modelName"
-      asp-action="@modelProperty"
-      method="post">
+<form asp-action="@action" method="post">
 
-    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model)
+    @await Html.PartialAsync($"Incomes/_{action}", Model.SourceOfIncome)
 
     <govuk-button type="submit">Next</govuk-button>
+
 </form>
 
 

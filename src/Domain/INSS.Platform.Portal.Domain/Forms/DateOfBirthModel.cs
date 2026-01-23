@@ -4,37 +4,33 @@ using System.ComponentModel.DataAnnotations;
 namespace INSS.Platform.Portal.Domain.Forms;
 
 /// <summary>
-/// Represents the view model for collecting personal information about a user.
-/// This model is used to capture basic personal details in the About You form.
+/// Represents a model for capturing and validating a user's date of birth.
 /// </summary>
-public sealed class AboutYouModel : FormBase, IValidatableObject
+public sealed class DateOfBirthModel : IHasValue<DateOnly?>, IValidatableObject
 {
-    [Required(ErrorMessage = "Enter your full name")]
-    [RegularExpression("^[A-Za-z\\s\\-']+$", ErrorMessage = "Full name can only contain letters, spaces, hyphens and apostrophes")]
-    public string FullName { get; init; }
-
-    [Phone(ErrorMessage = "Enter a valid telephone number")]
-    [Required(ErrorMessage = "Enter your telephone number")]
-    [RegularExpression(@"^[+0-9\s\-()]{6,20}$", ErrorMessage = "Telephone number must be between 6 and 20 characters and can only contain numbers, spaces, hyphens, brackets and an optional + for country code")]
-    public string TelephoneNumber { get; init; } = string.Empty;
-
-    [Required(ErrorMessage = "Enter your email address")]
-    [EmailAddress(ErrorMessage = "Enter a valid email address")]
-    public string EmailAddress { get; init; } = string.Empty;
-
-    public AddressModel Address { get; set; } = new AddressModel();
-
+    /// <summary>
+    /// Gets or sets the day component of the date of birth.
+    /// </summary>
     [ExcludeFromSummary]
     public int? Day { get; set; }
 
+    /// <summary>
+    /// Gets or sets the month component of the date of birth.
+    /// </summary>
     [ExcludeFromSummary]
     public int? Month { get; set; }
 
+    /// <summary>
+    /// Gets or sets the year component of the date of birth.
+    /// </summary>
     [ExcludeFromSummary]
     public int? Year { get; set; }
 
+    /// <summary>
+    /// Gets or sets the full date of birth as a <see cref="DateOnly"/> value.
+    /// </summary>
     [Required(ErrorMessage = "Enter your date of birth")]
-    public DateOnly? DateOfBirth
+    public DateOnly? Value
     {
         get
         {
@@ -59,22 +55,29 @@ public sealed class AboutYouModel : FormBase, IValidatableObject
         }
     }
 
+    /// <summary>
+    /// Validates the date of birth value.
+    /// </summary>
+    /// <param name="validationContext">The context information about the validation operation.</param>
+    /// <returns>
+    /// A collection of <see cref="ValidationResult"/> objects that describe any validation failures.
+    /// </returns>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (DateOfBirth is null)
+        if (Value is null)
         {
             yield return new ValidationResult(
                 "Enter a valid date of birth",
-                [nameof(DateOfBirth)]);
+                [nameof(Value)]);
             yield break;
         }
 
         DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
-        if (DateOfBirth.Value >= today)
+        if (Value >= today)
         {
             yield return new ValidationResult(
                 "Date of birth must be in the past",
-                [nameof(DateOfBirth)]);
+                [nameof(Value)]);
         }
     }
 }

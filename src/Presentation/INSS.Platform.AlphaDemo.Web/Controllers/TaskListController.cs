@@ -82,10 +82,10 @@ public class TaskListController : Controller
         {
             InstanceId = instanceId,
             Id = aboutYou.Id,
-            FullName = aboutYou.FullName,
-            DateOfBirth = aboutYou.DateOfBirth.GetValueOrDefault(),
-            EmailAddress = aboutYou.EmailAddress,
-            TelephoneNumber = aboutYou.TelephoneNumber,
+            FullName = aboutYou.FullName.Value,
+            DateOfBirth = aboutYou.DateOfBirth.Value.GetValueOrDefault(),
+            EmailAddress = aboutYou.EmailAddress.Value,
+            TelephoneNumber = aboutYou.TelephoneNumber.Value,
         };
 
         userData.Addresses.Add(new Address
@@ -115,10 +115,10 @@ public class TaskListController : Controller
             {
                 InstanceId = instanceId,
                 Id = income.Id,
-                SourceOfIncome = income.SourceOfIncome.ToString() ?? string.Empty,
-                GrossIncome = income.GrossIncome.GetValueOrDefault(),
-                PaymentFrequency = income.PaymentFrequency.ToString() ?? string.Empty,
-                IncomeProvider = income.IncomeProvider
+                SourceOfIncome = income.SourceOfIncome.Value.ToString() ?? string.Empty,
+                GrossIncome = income.GrossIncome.Value.GetValueOrDefault(),
+                PaymentFrequency = income.PaymentFrequency.Value.ToString() ?? string.Empty,
+                IncomeProvider = income.IncomeProvider.Value ?? string.Empty
             });
         }
 

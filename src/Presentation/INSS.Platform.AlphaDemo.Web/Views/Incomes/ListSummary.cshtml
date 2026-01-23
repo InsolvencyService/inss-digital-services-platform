@@ -8,21 +8,21 @@
     @($"You have added {@Model.Count} income{(@Model.Count > 1 ? "s" : "")}")
 </h1>
 
-<inss-previous-button previous-url="@Url.Action("List")" />
+<inss-previous-button previous-url="@Url.Action(nameof(IncomesController.List))" />
 
 @foreach (var income in @Model.Select((item, index) => new { Index = index, Item = item }))
 {
     <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
             <h2 class="govuk-summary-card__title">
-                @income.Item.SourceOfIncome?.Description()
+                @income.Item.SourceOfIncome.Value?.Description()
             </h2>
         </div>
         <div class="govuk-summary-card__content">
             <dl class="govuk-summary-list">
-                <inss-summary-list-item text="Gross Income" value="&pound;@(income.Item.GrossIncome?.ToString("N2"))" bold-text="true" on-change-url="@Url.Action("Change", new { itemIndex = income.Index, fieldName = "GrossIncome" })" />
-                <inss-summary-list-item text="Payment Frequency" value="@income.Item.PaymentFrequency?.Description()" bold-text="true" on-change-url="@Url.Action("Change", new { itemIndex = income.Index, fieldName = "PaymentFrequency" })" />
-                <inss-summary-list-item text="Income Provider" value="@income.Item.IncomeProvider" bold-text="true" on-change-url="@Url.Action("Change", new { itemIndex = income.Index, fieldName = "IncomeProvider" })" />
+                <inss-summary-list-item text="Gross Income" value="&pound;@(income.Item.GrossIncome.Value?.ToString("N2"))" bold-text="true" on-change-url="@Url.Action(nameof(IncomesController.Change), new { itemIndex = income.Index, fieldName = nameof(IncomesController.GrossIncome) })" />
+                <inss-summary-list-item text="Payment Frequency" value="@income.Item.PaymentFrequency.Value?.Description()" bold-text="true" on-change-url="@Url.Action(nameof(IncomesController.Change), new { itemIndex = income.Index, fieldName = nameof(IncomesController.PaymentFrequency) })" />
+                <inss-summary-list-item text="Income Provider" value="@income.Item.IncomeProvider.Value" bold-text="true" on-change-url="@Url.Action(nameof(IncomesController.Change), new { itemIndex = income.Index, fieldName = nameof(IncomesController.IncomeProvider) })" />
             </dl>
         </div>
     </div>

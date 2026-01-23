@@ -1,6 +1,6 @@
-﻿@model AboutYouModel
+﻿@model DateOfBirthModel
 
-<govuk-date-input id="DateOfBirth" name-prefix="" for="@Model.DateOfBirth">
+<govuk-date-input id="DateOfBirth" name-prefix="" for="@Model.Value">
     <govuk-date-input-fieldset>
         <govuk-date-input-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
             What is your Date of birth?
@@ -16,5 +16,5 @@
     </govuk-date-input-fieldset>
 </govuk-date-input>
 
-<inss-error-message asp-for="@Model.DateOfBirth" />
+<inss-error-message asp-for="@Model.Value" />
 

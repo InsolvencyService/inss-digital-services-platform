@@ -1,0 +1,17 @@
+﻿@model AboutYouModel
+
+@{
+    string action = nameof(AboutYouController.UserAddress);
+}
+
+<inss-previous-button previous-url="@Url.Action(nameof(AboutYouController.DateOfBirth))" />
+
+<form asp-action="@action" method="post">
+
+    @await Html.PartialAsync("AboutYou/_UserAddress", Model.Address)
+
+    <govuk-button type="submit">Next</govuk-button>
+
+</form>
+
+

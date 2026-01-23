@@ -1,19 +1,17 @@
 ﻿@model IncomeModel
 
 @{
-    string modelName = @ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
-    string modelProperty = nameof(Model.GrossIncome);
+    string action = nameof(IncomesController.GrossIncome);
 }
 
-<inss-previous-button previous-url="@Url.Action("SourceOfIncome")" />
+<inss-previous-button previous-url="@Url.Action(nameof(IncomesController.SourceOfIncome))" />
 
-<form asp-controller="@modelName"
-      asp-action="@modelProperty"
-      method="post">
+<form asp-action="@action" method="post">
 
-    @await Html.PartialAsync($"{modelName}/_{modelProperty}", Model)
+    @await Html.PartialAsync($"Incomes/_{action}", Model.GrossIncome)
 
     <govuk-button type="submit">Next</govuk-button>
+
 </form>
 
 
