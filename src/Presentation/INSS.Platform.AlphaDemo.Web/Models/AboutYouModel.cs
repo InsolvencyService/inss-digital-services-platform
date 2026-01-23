@@ -11,7 +11,7 @@ public sealed class AboutYouModel : FormBase
     /// <summary>
     /// Gets or sets the user's full name.
     /// </summary>
-    public FullNameModel FullName { get; set; }
+    public UserFullNameModel FullName { get; set; }
 
     /// <summary>
     /// Gets or sets the user's telephone number.
@@ -26,7 +26,7 @@ public sealed class AboutYouModel : FormBase
     /// <summary>
     /// Gets or sets the user's address.
     /// </summary>
-    public AddressModel Address { get; set; } = new AddressModel();
+    public UserAddressModel Address { get; set; } = new UserAddressModel();
 
     /// <summary>
     /// Gets or sets the user's date of birth.

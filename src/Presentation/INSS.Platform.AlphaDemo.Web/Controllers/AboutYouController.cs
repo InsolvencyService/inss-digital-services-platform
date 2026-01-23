@@ -14,16 +14,16 @@ public class AboutYouController : BaseFormController<AboutYouModel>
 
     public IActionResult Index()
     {
-        return RedirectToAction(nameof(FullName));
+        return RedirectToAction(nameof(UserFullName));
     }
 
-    public IActionResult FullName()
+    public IActionResult UserFullName()
     {
         return ViewWithPersistedModel();
     }
 
     [HttpPost]
-    public async Task<IActionResult> FullName(FullNameModel model)
+    public async Task<IActionResult> UserFullName(UserFullNameModel model)
     {
         _aboutYouModel.FullName = model;
         return await ValidateAndRedirectToNextSectionAsync(_aboutYouModel, ModelState, nameof(_aboutYouModel.FullName), _aboutYouModel.FullName, nameof(DateOfBirth));
@@ -47,7 +47,7 @@ public class AboutYouController : BaseFormController<AboutYouModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> UserAddress(AddressModel model)
+    public async Task<IActionResult> UserAddress(UserAddressModel model)
     {
         _aboutYouModel.Address = model;
         return await ValidateAndRedirectToNextSectionAsync(_aboutYouModel, ModelState, nameof(_aboutYouModel.Address), _aboutYouModel.Address, nameof(TelephoneNumber));

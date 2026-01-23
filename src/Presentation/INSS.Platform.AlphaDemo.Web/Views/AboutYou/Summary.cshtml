@@ -13,7 +13,7 @@
             <p class="govuk-body">@(Model.FullName.Value)</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.FullName))" visually-hidden-text="@Model.FullName.Value">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(AboutYouController.UserFullName))" visually-hidden-text="@Model.FullName.Value">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 
@@ -25,7 +25,7 @@
             <p class="govuk-body">@(Model.DateOfBirth.Value?.ToString("dd MMMM yyyy", CultureInfo.CurrentUICulture))</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.DateOfBirth))" visually-hidden-text="@Model.DateOfBirth.Value?.ToString("dd MMMM yyyy", CultureInfo.CurrentUICulture)">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(AboutYouController.DateOfBirth))" visually-hidden-text="@Model.DateOfBirth.Value?.ToString("dd MMMM yyyy", CultureInfo.CurrentUICulture)">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 
@@ -37,7 +37,7 @@
             <p class="govuk-body">@(Model.Address.ToString())</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.Address))" visually-hidden-text="@Model.Address.ToString()">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(AboutYouController.UserAddress))" visually-hidden-text="@Model.Address.ToString()">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 
@@ -49,7 +49,7 @@
             <p class="govuk-body">@(Model.TelephoneNumber.Value)</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.TelephoneNumber))" visually-hidden-text="@Model.TelephoneNumber.Value">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(AboutYouController.TelephoneNumber))" visually-hidden-text="@Model.TelephoneNumber.Value">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 
@@ -61,7 +61,7 @@
             <p class="govuk-body">@(Model.EmailAddress.Value)</p>
         </govuk-summary-list-row-value>
         <govuk-summary-list-row-actions>
-            <govuk-summary-list-row-action href="@Url.Action(nameof(Model.EmailAddress))" visually-hidden-text="@Model.EmailAddress.Value">Change</govuk-summary-list-row-action>
+            <govuk-summary-list-row-action href="@Url.Action(nameof(AboutYouController.EmailAddress))" visually-hidden-text="@Model.EmailAddress.Value">Change</govuk-summary-list-row-action>
         </govuk-summary-list-row-actions>
     </govuk-summary-list-row>
 

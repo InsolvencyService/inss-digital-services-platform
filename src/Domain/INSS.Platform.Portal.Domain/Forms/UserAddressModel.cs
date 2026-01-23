@@ -5,7 +5,7 @@ namespace INSS.Platform.Portal.Domain.Forms;
 /// <summary>
 /// Represents a postal address, including validation for UK postcodes.
 /// </summary>
-public sealed class AddressModel
+public sealed class UserAddressModel
 {
     /// <summary>
     /// Regular expression pattern for validating UK postcodes, including special cases and all valid formats.

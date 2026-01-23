@@ -5,7 +5,7 @@ namespace INSS.Platform.Portal.Domain.Forms;
 /// <summary>
 /// Represents a model for capturing a user's full name with validation.
 /// </summary>
-public sealed class FullNameModel : IHasValue<string>
+public sealed class UserFullNameModel : IHasValue<string>
 {
     /// <summary>
     /// Gets the user's full name.
