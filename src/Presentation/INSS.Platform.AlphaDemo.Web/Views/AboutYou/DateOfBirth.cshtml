@@ -8,7 +8,7 @@
 
 <form asp-action="@action" method="post">
 
-    @await Html.PartialAsync($"AboutYou/_{action}", Model.DateOfBirth)
+    @await Html.PartialAsync($"_{action}", Model.DateOfBirth)
 
     <govuk-button type="submit">Next</govuk-button>
 

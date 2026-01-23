@@ -8,7 +8,7 @@
 
 <form asp-action="@action" method="post">
 
-    @await Html.PartialAsync($"Incomes/_{action}", Model.PaymentFrequency)
+    @await Html.PartialAsync($"_{action}", Model.PaymentFrequency)
 
     <govuk-button type="submit">Next</govuk-button>
 
