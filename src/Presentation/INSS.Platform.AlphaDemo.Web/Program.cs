@@ -1,15 +1,13 @@
-using INSS.Platform.AlphaDemo.Web.Factories;
-using INSS.Platform.Portal.Application.Factories;
+using GovUk.Frontend.AspNetCore;
 using INSS.Platform.Portal.Application.Services;
-using INSS.Platform.Portal.Web.Components.Extensions;
+using INSS.Platform.Portal.Infrastructure.Extensions;
 using INSS.Platform.Portal.Web.Components.Register;
 using INSS.Platform.Shared.Web.Auth.Configuration;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.AddComponents();
-
-builder.Services.AddTransient<IFormModelFactory, WebAppFormModelFactory>();
+builder.Services.AddGovUkFrontend(options => options.Rebrand = true);
+builder.Services.AddInfrastructure();
 
 IMvcBuilder mvcBuilder = builder.Services.AddControllersWithViews()
     // Register the views in the /Views/Shared folder in the shared components assembly.
@@ -49,6 +47,11 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.UseComponents();
+app.UseGovUkFrontend();
+
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();
