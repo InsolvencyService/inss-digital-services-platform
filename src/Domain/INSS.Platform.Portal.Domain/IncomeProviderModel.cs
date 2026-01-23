@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace INSS.Platform.Portal.Domain.Forms;
+namespace INSS.Platform.Portal.Domain;
 
 /// <summary>
 /// Represents a model for capturing the name of an income provider.

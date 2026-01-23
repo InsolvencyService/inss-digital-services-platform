@@ -1,7 +1,7 @@
 ﻿using INSS.Platform.Portal.Domain.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace INSS.Platform.Portal.Domain.Forms;
+namespace INSS.Platform.Portal.Domain;
 
 /// <summary>
 /// Represents the bank details form model, including account name, sort code, account number, and optional building society roll number.

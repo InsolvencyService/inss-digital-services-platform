@@ -1,7 +1,7 @@
 using INSS.Platform.AlphaDemo.Web.Helpers;
 using INSS.Platform.AlphaDemo.Web.Services;
+using INSS.Platform.Portal.Domain;
 using INSS.Platform.Portal.Domain.Enums;
-using INSS.Platform.Portal.Domain.Forms;
 using INSS.Platform.Shared.Web.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

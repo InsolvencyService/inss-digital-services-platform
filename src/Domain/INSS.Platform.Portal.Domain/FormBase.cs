@@ -1,4 +1,4 @@
-﻿namespace INSS.Platform.Portal.Domain.Forms;
+﻿namespace INSS.Platform.Portal.Domain;
 
 /// <summary>
 /// Provides a base class for form models, including common properties such as instance identifier and user.

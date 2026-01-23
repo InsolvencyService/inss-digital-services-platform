@@ -1,7 +1,7 @@
 ﻿using INSS.Platform.AlphaDemo.Web.Services;
 using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Application.Models;
-using INSS.Platform.Portal.Domain.Forms;
+using INSS.Platform.Portal.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;

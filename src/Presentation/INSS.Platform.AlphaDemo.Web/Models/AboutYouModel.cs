@@ -1,4 +1,4 @@
-﻿using INSS.Platform.Portal.Domain.Forms;
+﻿using INSS.Platform.Portal.Domain;
 
 namespace INSS.Platform.AlphaDemo.Web.Models;
 

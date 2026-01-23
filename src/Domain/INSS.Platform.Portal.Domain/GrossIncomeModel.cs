@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace INSS.Platform.Portal.Domain.Forms;
+namespace INSS.Platform.Portal.Domain;
 
 /// <summary>
 /// Represents a model for capturing gross income input with validation.

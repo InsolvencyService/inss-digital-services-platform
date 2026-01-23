@@ -1,6 +1,6 @@
 using INSS.Platform.AlphaDemo.Web.Helpers;
 using INSS.Platform.AlphaDemo.Web.Services;
-using INSS.Platform.Portal.Domain.Forms;
+using INSS.Platform.Portal.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

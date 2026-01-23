@@ -1,7 +1,7 @@
 ﻿using INSS.Platform.Portal.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace INSS.Platform.Portal.Domain.Forms;
+namespace INSS.Platform.Portal.Domain;
 
 /// <summary>
 /// Represents a model for capturing the source of income in a form.

@@ -1,4 +1,4 @@
-﻿using INSS.Platform.Portal.Domain.Forms;
+﻿using INSS.Platform.Portal.Domain;
 using System.Globalization;
 using System.Text.Json;
 
