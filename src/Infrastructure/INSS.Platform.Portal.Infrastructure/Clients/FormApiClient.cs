@@ -1,9 +1,10 @@
 ﻿using INSS.Platform.Canonical.Domain;
+using INSS.Platform.Portal.Application.Clients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace INSS.Platform.Portal.Application.Services;
+namespace INSS.Platform.Portal.Infrastructure.Clients;
 
 
 /// <inheritdoc />

@@ -1,4 +1,7 @@
-﻿
-@model ListConfirmationModel
+﻿@model ListConfirmationModel
+
+@{
+    ViewData["Title"] = "Alpha Demo - Income";
+}
 
 @await Html.PartialAsync($"_{nameof(IncomesController.ConfirmRemove)}", Model)

@@ -1,4 +1,5 @@
-﻿using INSS.Platform.Shared.Web.Auth.Configuration;
+﻿using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Shared.Web.Auth.Configuration;
 using INSS.Platform.Shared.Web.Auth.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -18,6 +19,7 @@ public class AccountController : Controller
     private readonly ILogger<AccountController> _logger;
     private readonly AuthOptions _authenticationOptions;
     private readonly IJwtAuthenticationService _jwtAuthentication;
+    private readonly IEventTrackerClient _eventTracker;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -25,11 +27,15 @@ public class AccountController : Controller
     /// <param name="logger">The logger instance.</param>
     /// <param name="authenticationOptions">The authentication options.</param>
     /// <param name="jwtAuthentication">The JWT authentication service.</param>
-    public AccountController(ILogger<AccountController> logger, IOptions<AuthOptions> authenticationOptions, IJwtAuthenticationService jwtAuthentication)
+    public AccountController(ILogger<AccountController> logger, 
+        IOptions<AuthOptions> authenticationOptions, 
+        IJwtAuthenticationService jwtAuthentication, 
+        IEventTrackerClient eventTracker)
     {
         _logger = logger;
         _authenticationOptions = authenticationOptions.Value;
         _jwtAuthentication = jwtAuthentication;
+        _eventTracker = eventTracker;
     }
 
     /// <summary>
@@ -51,6 +57,14 @@ public class AccountController : Controller
         if (!string.IsNullOrWhiteSpace(token) && _jwtAuthentication.ValidateJwt(token, out ClaimsPrincipal principal))
         {
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            await _eventTracker.TrackEventAsync("custom_event", "UserSignedIn", new Dictionary<string, object>
+            {
+                { "UserId", principal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown" },
+                { "SignInTime", DateTime.UtcNow },
+                { "AuthProvider", principal.FindFirst("auth_provider")?.Value ?? "Unknown" }
+            });
+
 
             if (!string.IsNullOrEmpty(redirectUrl))
             {
@@ -80,11 +94,17 @@ public class AccountController : Controller
     /// Signs out the current user and redirects to the authentication provider's sign-out endpoint.
     /// </summary>
     /// <returns>An <see cref="IActionResult"/> that redirects to the sign-out endpoint.</returns>
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout(string? authProvider = null)
     {
         _logger.LogInformation("User initiated logout.");
 
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        await _eventTracker.TrackEventAsync("custom_event", "UserSignedOut", new Dictionary<string, object>
+            {
+                { "SignOutTime", DateTime.UtcNow },
+                { "AuthProvider", authProvider ?? "Unknown" }
+            });
 
         string signOutUrl = $"{_authenticationOptions.BaseApiUrl}/authentication/{_authenticationOptions.AuthProvider}/signout";
 

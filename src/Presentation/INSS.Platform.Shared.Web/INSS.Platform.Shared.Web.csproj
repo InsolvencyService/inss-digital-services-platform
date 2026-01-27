@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\INSS.Platform.Auth.Application\INSS.Platform.Auth.Application.csproj" />
+    <ProjectReference Include="..\..\Application\INSS.Platform.Portal.Application\INSS.Platform.Portal.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\INSS.Platform.Portal.Infrastructure\INSS.Platform.Portal.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Domain;
 using INSS.Platform.Portal.Domain.Enums;
 using INSS.Platform.Shared.Web.Utilities;
