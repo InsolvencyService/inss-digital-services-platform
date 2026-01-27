@@ -1,5 +1,5 @@
 ﻿using INSS.Platform.AlphaDemo.Web.Models;
-using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Domain;
 using INSS.Platform.Portal.Web.Components.Controllers;
 using Microsoft.AspNetCore.Mvc;

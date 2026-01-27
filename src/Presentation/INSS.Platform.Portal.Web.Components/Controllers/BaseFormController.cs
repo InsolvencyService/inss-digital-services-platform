@@ -1,4 +1,4 @@
-using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;

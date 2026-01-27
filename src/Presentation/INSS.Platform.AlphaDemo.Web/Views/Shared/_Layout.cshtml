@@ -1,14 +1,24 @@
 ﻿@inject IOptions<AuthOptions> _authOptions;
+@inject IConfiguration _configuration;
 
 @{
     Layout = "_GovUkPageTemplate";
 
     bool _isSignedIn = User.Identity?.IsAuthenticated is true;
-    bool activeHome = ViewContext.RouteData.Values["controller"]?.ToString() == "home";
-    bool activeTaskList = ViewContext.RouteData.Values["controller"]?.ToString() == "tasklist";
+    bool activeHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Home";
+    bool activeTaskList = ViewContext.RouteData.Values["controller"]?.ToString() == "TaskList";
 }
 
 @section Header {
+    @if (bool.Parse(_configuration["Rybbit:Enabled"] ?? "false"))
+    {
+        <script src="/js/rybbit-events.js"></script>
+        <script 
+            src="@($"{_configuration["Rybbit:BaseUrl"]}/api/script.js")"
+            data-site-id="@_configuration["Rybbit:SiteId"]">
+        </script>
+    }
+
     <link href="/css/service-header.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/site.css" />
 
@@ -87,6 +97,7 @@
                         {
                             <li class="rebranded-one-login-header__nav__list-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <input type="hidden" name="authProvider" value="@_authOptions.Value.AuthProvider" />
                                     <button type="submit" class="rebranded-one-login-header__nav__link">
                                         <span class="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">
                                             Sign out
@@ -106,8 +117,8 @@
         @if (_isSignedIn)
         {
             <govuk-service-navigation-nav>
-                <govuk-service-navigation-nav-item href="/home" active="@activeHome">Home</govuk-service-navigation-nav-item>
-                <govuk-service-navigation-nav-item href="/tasklist" active="@activeTaskList">Task list</govuk-service-navigation-nav-item>
+                <govuk-service-navigation-nav-item href="/Home" active="@activeHome">Home</govuk-service-navigation-nav-item>
+                <govuk-service-navigation-nav-item href="/TaskList" active="@activeTaskList">Task list</govuk-service-navigation-nav-item>
             </govuk-service-navigation-nav>
         }
     </govuk-service-navigation>
@@ -126,9 +137,10 @@
     <govuk-footer>
         <govuk-footer-meta>
             <govuk-footer-meta-items>
-                <govuk-footer-meta-item href="#">Contact us</govuk-footer-meta-item>
-                <govuk-footer-meta-item href="#">Report an issue</govuk-footer-meta-item>
-                <govuk-footer-meta-item href="#">Site map</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="/Home/ContactUs">Contact us</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="/Home/ReportIssue">Report an issue</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="/Home/SiteMap">Site map</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="/Home/Privacy">Privacy policy</govuk-footer-meta-item>
             </govuk-footer-meta-items>
         </govuk-footer-meta>
     </govuk-footer>

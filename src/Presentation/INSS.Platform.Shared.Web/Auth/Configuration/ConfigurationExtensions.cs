@@ -1,4 +1,6 @@
-﻿using INSS.Platform.Shared.Web.Auth.Controllers;
+﻿using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Portal.Infrastructure.Clients;
+using INSS.Platform.Shared.Web.Auth.Controllers;
 using INSS.Platform.Shared.Web.Auth.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -62,6 +64,7 @@ public static class ConfigurationExtensions
             .ValidateOnStart();
 
         services.AddScoped<IJwtAuthenticationService, JwtAuthenticationService>();
+        services.AddScoped<IEventTrackerClient, RybbitEventTrackerClient>();
 
         return services;
     }

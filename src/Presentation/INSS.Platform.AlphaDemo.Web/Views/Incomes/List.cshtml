@@ -1,5 +1,9 @@
 ﻿@model ListModel
 
+@{
+    ViewData["Title"] = "Alpha Demo - Income";
+}
+
 @await Html.PartialAsync($"_{nameof(IncomesController.List)}", Model)
 
 

@@ -1,9 +1,10 @@
-﻿using INSS.Platform.Portal.Domain;
+﻿using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Portal.Domain;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
 using System.Text.Json;
 
-namespace INSS.Platform.Portal.Application.Services;
+namespace INSS.Platform.Portal.Infrastructure.Clients;
 
 /// <summary>
 /// Provides methods for caching and retrieving form data in the session.

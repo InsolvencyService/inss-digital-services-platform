@@ -1,5 +1,9 @@
 ﻿@model BankDetailsModel
 
+@{
+    ViewData["Title"] = "Alpha Demo - Bank details";
+}
+
 <form asp-action="Index" method="post">
 
     @await Html.PartialAsync($"_BankDetails", Model)

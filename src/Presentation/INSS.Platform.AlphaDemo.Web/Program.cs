@@ -1,5 +1,6 @@
 using GovUk.Frontend.AspNetCore;
-using INSS.Platform.Portal.Application.Services;
+using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Portal.Infrastructure.Clients;
 using INSS.Platform.Portal.Infrastructure.Extensions;
 using INSS.Platform.Portal.Web.Components.Register;
 using INSS.Platform.Shared.Web.Auth.Configuration;
@@ -28,6 +29,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<IFormApiClient, FormApiClient>();
 
 builder.Services.AddScoped<IFormCacheClient, FormCacheClient>();
+
+builder.Services.AddScoped<IEventTrackerClient, RybbitEventTrackerClient>();
 
 WebApplication app = builder.Build();
 

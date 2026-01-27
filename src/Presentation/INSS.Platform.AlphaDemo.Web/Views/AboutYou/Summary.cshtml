@@ -1,6 +1,10 @@
 ﻿@using System.Globalization
 @model AboutYouModel
 
+@{
+    ViewData["Title"] = "Alpha Demo - About you";
+}
+
 <inss-previous-button previous-url="@Url.Action(nameof(AboutYouController.EmailAddress))" />
 
 <govuk-summary-list>

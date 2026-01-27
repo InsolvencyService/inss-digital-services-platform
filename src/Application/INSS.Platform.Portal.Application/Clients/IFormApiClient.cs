@@ -1,6 +1,6 @@
 ﻿using INSS.Platform.Canonical.Domain;
 
-namespace INSS.Platform.Portal.Application.Services;
+namespace INSS.Platform.Portal.Application.Clients;
 
 /// <summary>
 /// Defines a contract for an API client that can post user data to a specified API endpoint.
