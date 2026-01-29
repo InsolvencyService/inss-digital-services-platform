@@ -16,9 +16,9 @@ public class AboutYouController : BaseFormController<AboutYouModel>
         return RedirectToAction(nameof(UserFullName));
     }
 
-    public IActionResult UserFullName()
+    public async Task<IActionResult> UserFullName()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -27,9 +27,9 @@ public class AboutYouController : BaseFormController<AboutYouModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(AboutYouModel.FullName), model, nameof(DateOfBirth));
     }
 
-    public IActionResult DateOfBirth()
+    public async Task<IActionResult> DateOfBirth()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -38,9 +38,9 @@ public class AboutYouController : BaseFormController<AboutYouModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(AboutYouModel.DateOfBirth), model, nameof(UserAddress));
     }
 
-    public IActionResult UserAddress()
+    public async Task<IActionResult> UserAddress()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -49,9 +49,9 @@ public class AboutYouController : BaseFormController<AboutYouModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(AboutYouModel.Address), model, nameof(TelephoneNumber));
     }
 
-    public IActionResult TelephoneNumber()
+    public async Task<IActionResult> TelephoneNumber()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -60,9 +60,9 @@ public class AboutYouController : BaseFormController<AboutYouModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(AboutYouModel.TelephoneNumber), model, nameof(EmailAddress));
     }
 
-    public IActionResult EmailAddress()
+    public async Task<IActionResult> EmailAddress()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -71,15 +71,15 @@ public class AboutYouController : BaseFormController<AboutYouModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(AboutYouModel.EmailAddress), model, nameof(Summary));
     }
 
-    public IActionResult Summary()
+    public async Task<IActionResult> Summary()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
     public async Task<IActionResult> SummaryComplete()
     {
-        SetFormAsComplete();
+        await SetFormAsCompleteAsync();
 
         return RedirectToAction("Index", "TaskList");
     }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using INSS.Platform.Portal.Domain.Abstract;
+using System.ComponentModel.DataAnnotations;
 
 namespace INSS.Platform.Portal.Domain;
 

@@ -1,4 +1,4 @@
-﻿using INSS.Platform.Portal.Domain;
+﻿using INSS.Platform.Portal.Domain.Abstract;
 
 namespace INSS.Platform.Portal.Application.Clients;
 
@@ -11,61 +11,48 @@ public interface IFormCacheClient
     /// Retrieves a form of type <typeparamref name="TForm"/> from the cache using the specified cache key.
     /// </summary>
     /// <typeparam name="TForm">The type of the form, derived from <see cref="FormBase"/>.</typeparam>
-    /// <param name="cacheKey">The cache key used to retrieve the form.</param>
     /// <returns>The form instance if found; otherwise, <c>null</c>.</returns>
-    TForm? GetFormFromCache<TForm>(string cacheKey) where TForm : FormBase, new();
+    Task<TForm> GetFormFromCacheAsync<TForm>() where TForm : FormBase, new();
 
     /// <summary>
-    /// Retrieves a list of forms of type <typeparamref name="TForm"/> from the cache using the specified cache key.
+    /// Retrieves a form list of type <typeparamref name="TFormList"/> from the cache.
     /// </summary>
-    /// <typeparam name="TForm">The type of the forms, derived from <see cref="FormBase"/>.</typeparam>
-    /// <param name="cacheKey">The cache key used to retrieve the form list.</param>
-    /// <returns>A list of forms if found; otherwise, an empty list.</returns>
-    List<TForm> GetFormListFromCache<TForm>(string cacheKey) where TForm : FormBase, new();
+    /// <typeparam name="TFormList">The type of the form list, derived from <see cref="FormBase"/>.</typeparam>
+    /// <returns>The form list instance if found; otherwise, <c>null</c>.</returns>
+    Task<TFormList> GetFormListFromCacheAsync<TFormList>() where TFormList : FormBase, new();
 
     /// <summary>
-    /// Gets the current index of the form list from the cache using the specified cache key.
+    /// Gets the current index of the form list from the cache.
     /// </summary>
-    /// <param name="cacheKey">The cache key used to retrieve the current index.</param>
     /// <returns>The current index of the form list.</returns>
-    int GetCurrentFormListIndex(string cacheKey);
+    Task<int> GetCurrentFormListIndexAsync();
 
     /// <summary>
-    /// Stores a form of type <typeparamref name="TForm"/> in the cache using the specified cache key.
+    /// Stores a form of type <typeparamref name="TForm"/> in the cache.
     /// </summary>
     /// <typeparam name="TForm">The type of the form, derived from <see cref="FormBase"/>.</typeparam>
-    /// <param name="cacheKey">The cache key used to store the form.</param>
     /// <param name="form">The form instance to store.</param>
-    /// <returns>The stored form instance.</returns>
-    TForm SetFormToCache<TForm>(string cacheKey, TForm form) where TForm : FormBase;
+    /// <returns>A task representing the asynchronous operation, with a boolean result indicating success or failure.</returns>
+    Task<bool> SaveFormToCacheAsync<TForm>(TForm form) where TForm : FormBase;
 
     /// <summary>
-    /// Stores a list of forms of type <typeparamref name="TForm"/> in the cache using the specified cache key.
+    /// Stores a form list of type <typeparamref name="TFormList"/> in the cache.
     /// </summary>
-    /// <typeparam name="TForm">The type of the forms, derived from <see cref="FormBase"/>.</typeparam>
-    /// <param name="cacheKey">The cache key used to store the form list.</param>
-    /// <param name="forms">The collection of forms to store.</param>
-    /// <returns>The stored list of forms.</returns>
-    List<TForm> SetFormListToCache<TForm>(string cacheKey, IEnumerable<TForm> forms) where TForm : FormBase;
+    /// <typeparam name="TFormList">The type of the form list, derived from <see cref="FormBase"/>.</typeparam>
+    /// <param name="fromList">The form list instance to store.</param>
+    /// <returns>
+    /// A task representing the asynchronous operation, with a boolean result indicating success or failure.
+    /// </returns>
+    Task<bool> SaveFormListToCacheAsync<TFormList>(TFormList fromList) where TFormList : FormBase;
 
     /// <summary>
-    /// Sets the current index of the form list in the cache using the specified cache key.
+    /// Sets the current index of the form list in the cache.
     /// </summary>
-    /// <param name="cacheKey">The cache key used to store the current index.</param>
     /// <param name="currentIndex">The index to set as the current index.</param>
-    void SetCurrentFormListIndex(string cacheKey, int currentIndex);
+    Task SetCurrentFormListIndexAsync(int currentIndex);
 
     /// <summary>
-    /// Increments the current index of the form list in the cache using the specified cache key.
+    /// Increments the current index of the form list in the cache.
     /// </summary>
-    /// <param name="cacheKey">The cache key used to increment the current index.</param>
-    void IncrementCurrentFormListIndex(string cacheKey);
-
-    /// <summary>
-    /// Generates a cache key for a form of type <typeparamref name="TForm"/>, optionally using a suffix.
-    /// </summary>
-    /// <typeparam name="TForm">The type of the form, derived from <see cref="FormBase"/>.</typeparam>
-    /// <param name="cacheKeySuffix">An optional suffix to append to the cache key.</param>
-    /// <returns>The generated cache key string.</returns>
-    string GetFormCacheKey<TForm>(string cacheKeySuffix = "") where TForm : FormBase;
+    Task IncrementCurrentFormListIndexAsync();
 }

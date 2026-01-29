@@ -3,6 +3,8 @@ using INSS.Platform.Canonical.Domain;
 using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Domain;
 using Microsoft.AspNetCore.Mvc;
+using INSS.Platform.Shared.Web.Utilities;
+using INSS.Platform.Portal.Domain.Abstract;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
@@ -17,11 +19,11 @@ public class TaskListController : Controller
         _formCacheClient = formCacheClient;
     }
 
-    public IActionResult Index(string? status, bool submissionError = false)
+    public async Task<IActionResult> Index(string? status, bool submissionError = false)
     {
         AboutYouModel? aboutYou = null;
         BankDetailsModel? bankDetails = null;
-        List<IncomeModel>? incomes = null;
+        IncomeListModel? incomeList = null;
 
         if (status is not null and "new")
         {
@@ -29,16 +31,16 @@ public class TaskListController : Controller
         }
         else
         {
-            aboutYou = _formCacheClient.GetFormFromCache<AboutYouModel>(_formCacheClient.GetFormCacheKey<AboutYouModel>());
-            bankDetails = _formCacheClient.GetFormFromCache<BankDetailsModel>(_formCacheClient.GetFormCacheKey<BankDetailsModel>());
-            incomes = _formCacheClient.GetFormListFromCache<IncomeModel>(_formCacheClient.GetFormCacheKey<IncomeModel>());
+            aboutYou = await _formCacheClient.GetFormFromCacheAsync<AboutYouModel>();
+            bankDetails = await _formCacheClient.GetFormFromCacheAsync<BankDetailsModel>();
+            incomeList = await _formCacheClient.GetFormListFromCacheAsync<IncomeListModel>();
         }
 
         TaskListViewModel model = new ()
         {
             AboutYouCompleted = IsFormComplete(aboutYou),
             BankDetailsCompleted = IsFormComplete(bankDetails),
-            IncomesCompleted = incomes is not null && incomes.Count > 0 && incomes.All(IsFormComplete),
+            IncomesCompleted = IsFormComplete(incomeList),
             SubmissionError = submissionError
         };
 
@@ -74,9 +76,10 @@ public class TaskListController : Controller
 
     private async Task<bool> PostFormDataAsync(Guid instanceId)
     {
-        AboutYouModel aboutYou = _formCacheClient.GetFormFromCache<AboutYouModel>(_formCacheClient.GetFormCacheKey<AboutYouModel>())!;
-        BankDetailsModel bankDetails = _formCacheClient.GetFormFromCache<BankDetailsModel>(_formCacheClient.GetFormCacheKey<BankDetailsModel>())!;
-        List<IncomeModel> incomes = _formCacheClient.GetFormListFromCache<IncomeModel>(_formCacheClient.GetFormCacheKey<IncomeModel>())!;
+        AboutYouModel aboutYou = await _formCacheClient.GetFormFromCacheAsync<AboutYouModel>();
+        BankDetailsModel bankDetails = await _formCacheClient.GetFormFromCacheAsync<BankDetailsModel>();
+        IncomeListModel incomeList = await _formCacheClient.GetFormListFromCacheAsync<IncomeListModel>();
+        string currentUser = User.Identity?.Name ?? "Claim not set";
 
         User userData = new()
         {
@@ -86,6 +89,7 @@ public class TaskListController : Controller
             DateOfBirth = aboutYou.DateOfBirth.Value.GetValueOrDefault(),
             EmailAddress = aboutYou.EmailAddress.Value,
             TelephoneNumber = aboutYou.TelephoneNumber.Value,
+            CreatedBy = currentUser,
         };
 
         userData.Addresses.Add(new Address
@@ -96,7 +100,8 @@ public class TaskListController : Controller
             AddressLine2 = aboutYou.Address.AddressLine2,
             TownCity = aboutYou.Address.TownCity,
             County = aboutYou.Address.County,
-            Postcode = aboutYou.Address.Postcode
+            Postcode = aboutYou.Address.Postcode,
+            CreatedBy = currentUser
         });
 
         userData.BankDetails.Add(new BankDetails
@@ -106,19 +111,21 @@ public class TaskListController : Controller
             AccountName = bankDetails.AccountName,
             SortCode = bankDetails.SortCode,
             AccountNumber = bankDetails.AccountNumber,
-            BuildingSocietyRollNumber = bankDetails.BuildingSocietyRollNumber
+            BuildingSocietyRollNumber = bankDetails.BuildingSocietyRollNumber,
+            CreatedBy = currentUser
         });
 
-        foreach (IncomeModel income in incomes)
+        foreach (IncomeModel income in incomeList.Items)
         {
             userData.Incomes.Add(new Income
             {
                 InstanceId = instanceId,
                 Id = income.Id,
-                SourceOfIncome = income.SourceOfIncome.Value.ToString() ?? string.Empty,
+                SourceOfIncome = income.SourceOfIncome.Value?.Description() ?? string.Empty,
                 GrossIncome = income.GrossIncome.Value.GetValueOrDefault(),
-                PaymentFrequency = income.PaymentFrequency.Value.ToString() ?? string.Empty,
-                IncomeProvider = income.IncomeProvider.Value ?? string.Empty
+                PaymentFrequency = income.PaymentFrequency.Value?.Description() ?? string.Empty,
+                IncomeProvider = income.IncomeProvider.Value ?? string.Empty,
+                CreatedBy = currentUser
             });
         }
 

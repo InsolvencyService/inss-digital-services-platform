@@ -16,9 +16,9 @@ public class BankDetailsController : BaseFormController<BankDetailsModel>
         _bankClient = bankClient;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -58,15 +58,15 @@ public class BankDetailsController : BaseFormController<BankDetailsModel>
         return await ValidateAndRedirectToNextSectionAsync(model, nameof(Summary));
     }
 
-    public IActionResult Summary()
+    public async Task<IActionResult> Summary()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
     public async Task<IActionResult> SummaryComplete()
     {
-        SetFormAsComplete();
+        await SetFormAsCompleteAsync();
 
         return RedirectToAction("Index", "TaskList");
     }

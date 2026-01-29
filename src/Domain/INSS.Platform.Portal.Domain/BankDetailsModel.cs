@@ -1,4 +1,5 @@
-﻿using INSS.Platform.Portal.Domain.Validation;
+﻿using INSS.Platform.Portal.Domain.Abstract;
+using INSS.Platform.Portal.Domain.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace INSS.Platform.Portal.Domain;

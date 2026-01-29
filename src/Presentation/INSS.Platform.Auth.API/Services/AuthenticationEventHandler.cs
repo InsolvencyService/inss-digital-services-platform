@@ -76,6 +76,17 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
             return;
         }
 
+        // Example of fetching user info from the userinfo endpoint if needed to extract additional claims e.g. email, telephone etc if specified in Scopes.
+        //string userInfoEndpoint = "https://oidc.integration.account.gov.uk/userinfo";
+        //using HttpClient httpClient = new ();
+        //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        //HttpResponseMessage response = await httpClient.GetAsync(userInfoEndpoint);
+        //if (response.IsSuccessStatusCode)
+        //{
+        //    string userInfo = await response.Content.ReadAsStringAsync();
+        //    // Parse userInfo JSON and extract "email"
+        //}
+
         await context.HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             context.Principal!,
