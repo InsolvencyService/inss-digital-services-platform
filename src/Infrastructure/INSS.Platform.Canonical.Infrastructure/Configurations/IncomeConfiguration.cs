@@ -27,7 +27,8 @@ public class IncomeConfiguration : IEntityTypeConfiguration<Income>
             .HasMaxLength(50);
 
         builder.Property(income => income.GrossIncome)
-            .IsRequired();
+            .IsRequired()
+            .HasPrecision(15, 2);
         
         builder.Property(income => income.PaymentFrequency)
             .IsRequired()
