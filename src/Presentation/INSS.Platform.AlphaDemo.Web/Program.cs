@@ -4,6 +4,7 @@ using INSS.Platform.Portal.Infrastructure.Clients;
 using INSS.Platform.Portal.Infrastructure.Extensions;
 using INSS.Platform.Portal.Web.Components.Register;
 using INSS.Platform.Shared.Web.Auth.Configuration;
+using INSS.Platform.Shared.Web.Cache.Configuration;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -18,17 +19,13 @@ IMvcBuilder mvcBuilder = builder.Services.AddControllersWithViews()
         options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
     });
 
-builder.Services.AddSession();
+builder.Services.AddCacheConfiguration(builder.Environment);
 
 builder.Services.AddAuthenticationConfiguration(builder.Configuration, mvcBuilder, builder.Environment);
-
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IFormApiClient, FormApiClient>();
-
-builder.Services.AddScoped<IFormCacheClient, FormCacheClient>();
 
 builder.Services.AddScoped<IEventTrackerClient, RybbitEventTrackerClient>();
 
@@ -43,10 +40,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseSession();
+app.UseCacheConfiguration();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthenticationConfiguration();
 
 app.MapStaticAssets();
 

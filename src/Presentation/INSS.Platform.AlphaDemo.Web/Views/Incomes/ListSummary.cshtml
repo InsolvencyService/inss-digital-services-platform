@@ -1,4 +1,4 @@
-﻿@model List<IncomeModel>
+﻿@model IncomeListModel
 
 @{
     ViewData["Title"] = "Alpha Demo - Income";
@@ -9,12 +9,12 @@
 </h1>
 
 <h1 class="govuk-heading-l">
-    @($"You have added {@Model.Count} income{(@Model.Count > 1 ? "s" : "")}")
+    @($"You have added {@Model.Items.Count} income{(@Model.Items.Count > 1 ? "s" : "")}")
 </h1>
 
 <inss-previous-button previous-url="@Url.Action(nameof(IncomesController.List))" />
 
-@foreach (var income in @Model.Select((item, index) => new { Index = index, Item = item }))
+@foreach (var income in @Model.Items.Select((item, index) => new { Index = index, Item = item }))
 {
     @* Note the data-* attributes that are picked up as custom events and sent to the analytics provider *@
     <div id="analytics-form-pre-save" data-income-source="@income.Item.SourceOfIncome.Value" data-income-gross="@income.Item.GrossIncome.Value" data-income-frequency="@income.Item.PaymentFrequency.Value" />

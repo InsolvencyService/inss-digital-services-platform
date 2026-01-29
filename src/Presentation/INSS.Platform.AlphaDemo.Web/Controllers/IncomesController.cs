@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
-public class IncomesController : BaseFormListController<IncomeModel> 
+public class IncomesController : BaseFormListController<IncomeListModel, IncomeModel> 
 {
     public IncomesController(IFormCacheClient formCacheClient)
         : base(formCacheClient, "income", nameof(SourceOfIncome)) { }
@@ -16,9 +16,9 @@ public class IncomesController : BaseFormListController<IncomeModel>
         return RedirectToAction(nameof(SourceOfIncome));
     }
 
-    public IActionResult SourceOfIncome()
+    public async Task<IActionResult> SourceOfIncome()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -27,9 +27,9 @@ public class IncomesController : BaseFormListController<IncomeModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(SourceOfIncome), model, nameof(GrossIncome));
     }
 
-    public IActionResult GrossIncome()
+    public async Task<IActionResult> GrossIncome()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -38,9 +38,9 @@ public class IncomesController : BaseFormListController<IncomeModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(GrossIncome), model, nameof(PaymentFrequency));
     }
 
-    public IActionResult PaymentFrequency()
+    public async Task<IActionResult> PaymentFrequency()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -49,9 +49,9 @@ public class IncomesController : BaseFormListController<IncomeModel>
         return await ValidateAndRedirectToNextSectionAsync(nameof(PaymentFrequency), model, nameof(IncomeProvider));
     }
 
-    public IActionResult IncomeProvider()
+    public async Task<IActionResult> IncomeProvider()
     {
-        return ViewWithPersistedModel();
+        return await ViewWithPersistedModelAsync();
     }
 
     [HttpPost]
@@ -63,7 +63,7 @@ public class IncomesController : BaseFormListController<IncomeModel>
     [HttpPost]
     public async Task<IActionResult> SummaryComplete()
     {
-        SetFormAsComplete();
+        await SetFormAsCompleteAsync();
 
         return RedirectToAction("Index", "TaskList");
     }

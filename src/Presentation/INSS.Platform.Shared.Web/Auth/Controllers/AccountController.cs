@@ -125,7 +125,8 @@ public class AccountController : Controller
     /// </remarks>
     private string BuildRedirectUrl(string? returnUrl)
     {
-        string baseRedirectUrl = Url.Action("Index", "Account", null, Url.ActionContext.HttpContext.Request.Scheme);
+        string baseRedirectUrl = Url.Action("Index", "Account", null, Url.ActionContext.HttpContext.Request.Scheme) 
+            ?? $"{Url.ActionContext.HttpContext.Request.Scheme}://{Url.ActionContext.HttpContext.Request.Host}/Account";
 
         if (!string.IsNullOrEmpty(returnUrl))
         {

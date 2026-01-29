@@ -1,4 +1,4 @@
-namespace INSS.Platform.Portal.Domain;
+namespace INSS.Platform.Portal.Domain.Abstract;
 
 /// <summary>
 /// Defines a contract for objects that expose a value of type <typeparamref name="T"/>.
