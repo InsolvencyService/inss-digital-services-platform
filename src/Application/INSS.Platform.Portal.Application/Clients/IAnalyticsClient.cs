@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides functionality for tracking analytics events within the INSS Forms application.
 /// </summary>
-public interface IEventTrackerClient
+public interface IAnalyticsClient
 {
     /// <summary>
     /// Asynchronously tracks an analytics event with the specified type, name, and properties.

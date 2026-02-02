@@ -1,7 +1,9 @@
 ﻿using INSS.Platform.Cache.Application.Repositories;
+using INSS.Platform.Cache.Infrastructure.Configuration;
 using INSS.Platform.Portal.Domain.Abstract;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -29,14 +31,15 @@ public class CacheRepository : ICacheRepository
     /// is properly configured and has access to the target database and container.</remarks>
     /// <param name="logger">The logger used to log diagnostic and operational information.</param>
     /// <param name="cosmosClient">The Cosmos DB client used to interact with the database.</param>
-    public CacheRepository(ILogger<CacheRepository> logger, CosmosClient cosmosClient)
+    /// <param name="options">The configuration options for Cosmos DB connection settings.</param>
+    public CacheRepository(ILogger<CacheRepository> logger, CosmosClient cosmosClient, IOptions<CosmosCacheOptions> options)
     {
         _logger = logger;
 
         _settings.Converters.Add(new StringEnumConverter());
 
-        Database database = cosmosClient.GetDatabase("PlatformCache");
-        _container = database.GetContainer("Form");
+        Database database = cosmosClient.GetDatabase(options.Value.Database);
+        _container = database.GetContainer(options.Value.Container);
     }
 
     /// <inheritdoc />

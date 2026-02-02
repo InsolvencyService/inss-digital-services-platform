@@ -1,8 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Session" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+	</ItemGroup>
+	
     <ItemGroup>
       <ProjectReference Include="..\..\Application\INSS.Platform.Cache.Application\INSS.Platform.Cache.Application.csproj" />
       <ProjectReference Include="..\..\Application\INSS.Platform.Portal.Application\INSS.Platform.Portal.Application.csproj" />
-    </ItemGroup>
+	  <ProjectReference Include="..\..\Infrastructure\INSS.Platform.Cache.Infrastructure\INSS.Platform.Cache.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

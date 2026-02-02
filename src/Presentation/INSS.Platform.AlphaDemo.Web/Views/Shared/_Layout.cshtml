@@ -1,5 +1,5 @@
 ﻿@inject IOptions<AuthOptions> _authOptions;
-@inject IConfiguration _configuration;
+@inject IOptions<AnalyticsOptions> _analyticsOptions;
 
 @{
     Layout = "_GovUkPageTemplate";
@@ -10,12 +10,12 @@
 }
 
 @section Header {
-    @if (bool.Parse(_configuration["Rybbit:Enabled"] ?? "false"))
+    @if (_analyticsOptions.Value.Enabled)
     {
         <script src="/js/rybbit-events.js"></script>
         <script 
-            src="@($"{_configuration["Rybbit:BaseUrl"]}/api/script.js")"
-            data-site-id="@_configuration["Rybbit:SiteId"]">
+            src="@($"{_analyticsOptions.Value.BaseUrl}/api/script.js")"
+            data-site-id="@_analyticsOptions.Value.SiteId">
         </script>
     }
 

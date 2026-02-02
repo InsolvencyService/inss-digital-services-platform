@@ -1,18 +1,19 @@
 ﻿using INSS.Platform.Canonical.Domain;
 using INSS.Platform.Portal.Application.Clients;
-using Microsoft.Extensions.Configuration;
+using INSS.Platform.Portal.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace INSS.Platform.Portal.Infrastructure.Clients;
 
 
 /// <inheritdoc />
-public class FormApiClient : IFormApiClient
+public class CanonicalDataClient : ICanonicalDataClient
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<FormApiClient> _logger;
-    private readonly string _apiUrl;
+    private readonly ILogger<CanonicalDataClient> _logger;
+    private readonly CanonicalDataOptions _options;
 
     private readonly JsonSerializerOptions _serializerOptions = new()
     {
@@ -21,30 +22,28 @@ public class FormApiClient : IFormApiClient
     };
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FormApiClient"/> class with the specified HTTP client and
+    /// Initializes a new instance of the <see cref="CanonicalDataClient"/> class with the specified HTTP client and
     /// logger.
     /// </summary>
     /// <param name="httpClient">The <see cref="HttpClient"/> instance used to send HTTP requests to the API.</param>
-    /// <param name="configuration">The application configuration settings.</param>
-    /// <param name="logger">The <see cref="ILogger{TCategoryName}"/> instance used for logging diagnostic messages. This parameter
-    /// cannot be <see langword="null"/>.</param>
-    public FormApiClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<FormApiClient> logger)
+    /// <param name="logger">The <see cref="ILogger{TCategoryName}"/> instance used for logging diagnostic messages. This parameter cannot be <see langword="null"/>.</param>
+    /// <param name="options">The options for configuring the Canonical API client.</param>
+    public CanonicalDataClient(IHttpClientFactory httpClientFactory, ILogger<CanonicalDataClient> logger, IOptions<CanonicalDataOptions> options)
     {
         _httpClient = httpClientFactory.CreateClient();
         _logger = logger;
-
-        _apiUrl = configuration["CanonicalApiUrl"] ?? throw new ArgumentNullException(nameof(configuration), "CanonicalApiUrl configuration is missing.");
+        _options = options.Value;
     }
 
     /// <inheritdoc />
-    public async Task<bool> PostFormUserDataAsync(User userData)
+    public async Task<bool> PostUserDataAsync(User userData)
     {
         if (userData == null)
         {
             return false;
         }
 
-        string userDataApiUrl = $"{_apiUrl}/user";
+        string userDataApiUrl = $"{_options.BaseApiUrl}/user";
         string json = string.Empty;
         try
         {
@@ -57,7 +56,7 @@ public class FormApiClient : IFormApiClient
             if (!response.IsSuccessStatusCode)
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException($"Error posting user data to {_apiUrl}. Response: {responseContent}", null, response.StatusCode);
+                throw new HttpRequestException($"Error posting user data to {_options.BaseApiUrl}. Response: {responseContent}", null, response.StatusCode);
             }
 
             return true;
