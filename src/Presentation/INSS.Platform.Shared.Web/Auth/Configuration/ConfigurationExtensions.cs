@@ -64,7 +64,7 @@ public static class ConfigurationExtensions
             .ValidateOnStart();
 
         services.AddScoped<IJwtAuthenticationService, JwtAuthenticationService>();
-        services.AddScoped<IEventTrackerClient, RybbitEventTrackerClient>();
+        services.AddScoped<IAnalyticsClient, RybbitAnalyticsClient>();
 
         return services;
     }

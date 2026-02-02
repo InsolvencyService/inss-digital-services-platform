@@ -10,12 +10,12 @@ namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
 public class TaskListController : Controller
 {
-    private readonly IFormApiClient _formApiClient;
+    private readonly ICanonicalDataClient _canonicalDataClient;
     private readonly IFormCacheClient _formCacheClient;
 
-    public TaskListController(IFormApiClient formApiClient, IFormCacheClient formCacheClient)
+    public TaskListController(ICanonicalDataClient canonicalDataClientClient, IFormCacheClient formCacheClient)
     {
-        _formApiClient = formApiClient;
+        _canonicalDataClient = canonicalDataClientClient;
         _formCacheClient = formCacheClient;
     }
 
@@ -129,6 +129,6 @@ public class TaskListController : Controller
             });
         }
 
-        return await _formApiClient.PostFormUserDataAsync(userData);
+        return await _canonicalDataClient.PostUserDataAsync(userData);
     }
 }

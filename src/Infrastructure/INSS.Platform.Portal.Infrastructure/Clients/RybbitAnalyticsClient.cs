@@ -1,42 +1,37 @@
 ﻿using INSS.Platform.Portal.Application.Clients;
-using Microsoft.Extensions.Configuration;
+using INSS.Platform.Portal.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
 
 namespace INSS.Platform.Portal.Infrastructure.Clients;
 
 /// <inheritdoc/>
-public class RybbitEventTrackerClient : IEventTrackerClient
+public class RybbitAnalyticsClient : IAnalyticsClient
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<FormApiClient> _logger;
-    private readonly string _apiUrl;
-    private readonly string _siteId;
-    private readonly bool _enabled;
+    private readonly ILogger<CanonicalDataClient> _logger;
+    private readonly AnalyticsOptions _options;
 
-
-    public RybbitEventTrackerClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<FormApiClient> logger)
+    public RybbitAnalyticsClient(IHttpClientFactory httpClientFactory, ILogger<CanonicalDataClient> logger, IOptions<AnalyticsOptions> options)
     {
         _httpClient = httpClientFactory.CreateClient();
         _logger = logger;
-
-        _apiUrl = configuration["Rybbit:BaseUrl"] ?? throw new ArgumentNullException(nameof(configuration), "Rybbit:BaseUrl configuration is missing.");
-        _siteId = configuration["Rybbit:SiteId"] ?? throw new ArgumentNullException(nameof(configuration), "Rybbit:SiteId configuration is missing.");
-        _enabled = bool.Parse(configuration["Rybbit:Enabled"] ?? "false");
+        _options = options.Value;
     }
 
     /// <inheritdoc/>
     public async Task TrackEventAsync(string eventType, string eventName, Dictionary<string, object> properties)
     {
-        if (!_enabled)
+        if (!_options.Enabled)
         {
             return;
         }
 
         Dictionary<string, object> eventData = new()
         {
-            ["site_id"] = _siteId,
+            ["site_id"] = _options.SiteId,
             ["type"] = eventType,
             ["event_name"] = eventName,
             ["properties"] = JsonSerializer.Serialize(properties)
@@ -49,7 +44,7 @@ public class RybbitEventTrackerClient : IEventTrackerClient
 
             using StringContent content = new(json, Encoding.UTF8, "application/json");
 
-            using HttpResponseMessage response = await _httpClient.PostAsync($"{_apiUrl}/api/track", content);
+            using HttpResponseMessage response = await _httpClient.PostAsync($"{_options.BaseUrl}/api/track", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -59,19 +54,19 @@ public class RybbitEventTrackerClient : IEventTrackerClient
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "HTTP request failed calling: {ApiUrl}", _apiUrl);
+            _logger.LogError(ex, "HTTP request failed calling: {ApiUrl}", _options.BaseUrl);
         }
         catch (TaskCanceledException)
         {
-            _logger.LogError("Request timed out or was canceled calling: {ApiUrl}", _apiUrl);
+            _logger.LogError("Request timed out or was canceled calling: {ApiUrl}", _options.BaseUrl);
         }
         catch (JsonException ex)
         {
-            _logger.LogError(ex, "Deserialization failed for JSON: {Json} while posting to {ApiUrl}", json, _apiUrl);
+            _logger.LogError(ex, "Deserialization failed for JSON: {Json} while posting to {ApiUrl}", json, _options.BaseUrl);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while posting form data to {ApiUrl}", _apiUrl);
+            _logger.LogError(ex, "An error occurred while posting form data to {ApiUrl}", _options.BaseUrl);
         }
     }
 }

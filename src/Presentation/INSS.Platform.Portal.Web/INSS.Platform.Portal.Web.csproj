@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-    
-    <ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<ItemGroup>
       <ProjectReference Include="..\..\Application\INSS.Platform.Portal.Application\INSS.Platform.Portal.Application.csproj" />
       <ProjectReference Include="..\INSS.Platform.Portal.Web.Components\INSS.Platform.Portal.Web.Components.csproj" />
     </ItemGroup>

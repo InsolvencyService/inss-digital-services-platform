@@ -1,7 +1,8 @@
 ﻿using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Application.Models;
-using Microsoft.Extensions.Configuration;
+using INSS.Platform.Portal.Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -16,12 +17,11 @@ namespace INSS.Platform.Portal.Infrastructure.Clients;
 /// during requests. Instances of this class are intended to be used for verifying bank account information in scenarios
 /// where integration with the PayPoint service is required.
 /// </remarks>
-public sealed class PayPointBankClient : IBankClient
+public sealed class PayPointBankValidationClient : IBankClient
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<PayPointBankClient> _logger;
-    private readonly string _apiUrl;
-    private readonly string _apiKey;
+    private readonly ILogger<PayPointBankValidationClient> _logger;
+    private readonly BankValidationOptions _options;
     private const string RequestErrorMessage = "An error occurred while verifying bank details. Try again later.";  
     
     private readonly JsonSerializerOptions _serializerOptions = new()
@@ -32,21 +32,19 @@ public sealed class PayPointBankClient : IBankClient
     };
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PayPointBankClient"/> class.
+    /// Initializes a new instance of the <see cref="PayPointBankValidationClient"/> class.
     /// </summary>
     /// <param name="httpClientFactory">The HTTP client factory used to create <see cref="HttpClient"/> instances.</param>
-    /// <param name="configuration">The application configuration containing PayPoint API settings.</param>
     /// <param name="logger">The logger instance for logging errors and information.</param>
+    /// <param name="options">The options containing PayPoint API configuration.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if the required PayPoint API URL or API key configuration is missing.
     /// </exception>
-    public PayPointBankClient(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<PayPointBankClient> logger)
+    public PayPointBankValidationClient(IHttpClientFactory httpClientFactory, ILogger<PayPointBankValidationClient> logger, IOptions<BankValidationOptions> options)
     {
         _httpClient = httpClientFactory.CreateClient();
         _logger = logger;
-
-        _apiUrl = configuration["PayPoint:ApiUrl"] ?? throw new ArgumentNullException(nameof(configuration), "PayPoint:ApiUrl configuration is missing.");
-        _apiKey = configuration["PayPoint:ApiKey"] ?? throw new ArgumentNullException(nameof(configuration), "PayPoint:ApiKey configuration is missing.");
+        _options = options.Value;
     }
 
     /// <inheritdoc />
@@ -59,37 +57,37 @@ public sealed class PayPointBankClient : IBankClient
 
             StringContent content = new(json, System.Text.Encoding.UTF8, "application/json");
 
-            HttpRequestMessage requestMessage = new (HttpMethod.Post, _apiUrl)
+            HttpRequestMessage requestMessage = new (HttpMethod.Post, _options.BaseApiUrl)
             {
                 Content = content
             };
             
-            requestMessage.Headers.Add("Ocp-Apim-Subscription-Key", _apiKey);
+            requestMessage.Headers.Add("Ocp-Apim-Subscription-Key", _options.ApiKey);
 
             HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
             if (!responseMessage.IsSuccessStatusCode)
             {
                 string responseContent = await responseMessage.Content.ReadAsStringAsync();
-                throw new HttpRequestException($"Error posting user data to {_apiUrl}. Response: {responseContent}", null, responseMessage.StatusCode);
+                throw new HttpRequestException($"Error posting user data to {_options.BaseApiUrl}. Response: {responseContent}", null, responseMessage.StatusCode);
             }
 
             return await MapVerificationResponse(responseMessage);
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "HTTP request failed calling: {ApiUrl}", _apiUrl);
+            _logger.LogError(ex, "HTTP request failed calling: {ApiUrl}", _options.BaseApiUrl);
         }
         catch (TaskCanceledException)
         {
-            _logger.LogError("Request timed out or was canceled calling: {ApiUrl}", _apiUrl);
+            _logger.LogError("Request timed out or was canceled calling: {ApiUrl}", _options.BaseApiUrl);
         }
         catch (JsonException ex)
         {
-            _logger.LogError(ex, "Deserialization failed for JSON: {Json} while posting to {ApiUrl}", json, _apiUrl);
+            _logger.LogError(ex, "Deserialization failed for JSON: {Json} while posting to {ApiUrl}", json, _options.BaseApiUrl);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while posting form data to {ApiUrl}", _apiUrl);
+            _logger.LogError(ex, "An error occurred while posting form data to {ApiUrl}", _options.BaseApiUrl);
         }
 
         return new BankAccountVerificationResponse() { ResultText = RequestErrorMessage };

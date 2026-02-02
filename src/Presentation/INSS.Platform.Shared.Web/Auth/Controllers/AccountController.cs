@@ -19,7 +19,7 @@ public class AccountController : Controller
     private readonly ILogger<AccountController> _logger;
     private readonly AuthOptions _authenticationOptions;
     private readonly IJwtAuthenticationService _jwtAuthentication;
-    private readonly IEventTrackerClient _eventTracker;
+    private readonly IAnalyticsClient _eventTracker;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -30,7 +30,7 @@ public class AccountController : Controller
     public AccountController(ILogger<AccountController> logger, 
         IOptions<AuthOptions> authenticationOptions, 
         IJwtAuthenticationService jwtAuthentication, 
-        IEventTrackerClient eventTracker)
+        IAnalyticsClient eventTracker)
     {
         _logger = logger;
         _authenticationOptions = authenticationOptions.Value;
