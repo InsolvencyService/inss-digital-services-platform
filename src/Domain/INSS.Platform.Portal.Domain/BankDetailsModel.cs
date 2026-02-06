@@ -16,6 +16,7 @@ public class BankDetailsModel : FormBase
     /// This field is required.
     /// </remarks>
     [Required(ErrorMessage = "Enter the name on the account")]
+    [MaxLength(255, ErrorMessage = "Account name cannot exceed 255 characters")]
     public string AccountName { get; set; }
 
     /// <summary>

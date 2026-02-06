@@ -16,5 +16,6 @@ public sealed class UserFullNameModel : IHasValue<string>
     /// </remarks>
     [Required(ErrorMessage = "Enter your full name")]
     [RegularExpression("^[A-Za-z\\s\\-']+$", ErrorMessage = "Full name can only contain letters, spaces, hyphens and apostrophes")]
+    [MaxLength(255, ErrorMessage = "Full name cannot exceed 255 characters")]
     public string Value { get; init; } = string.Empty;
 }
