@@ -20,6 +20,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasKey(user => user.Id);
 
+        builder.Property(user => user.FullName)
+            .IsRequired()
+            .HasMaxLength(255);
+
         builder.Property(user => user.DateOfBirth)
             .IsRequired()
             .HasConversion(

@@ -16,5 +16,6 @@ public sealed class EmailAddressModel : IHasValue<string>
     /// </remarks>
     [Required(ErrorMessage = "Enter your email address")]
     [EmailAddress(ErrorMessage = "Enter a valid email address")]
+    [MaxLength(255, ErrorMessage = "Email address cannot exceed 255 characters")]
     public string Value { get; init; } = string.Empty;
 }

@@ -36,10 +36,13 @@
     <Project Path="test/Domain/INSS.Platform.Portal.Domain.Tests/INSS.Platform.Portal.Domain.Tests.csproj" />
   </Folder>
   <Folder Name="/test/Infrastructure/">
+    <Project Path="test/Infrastructure/INSS.Platform.Cache.Infrastructure.Tests/INSS.Platform.Cache.Infrastructure.Tests.csproj" Id="701e5690-a733-4532-8fd0-09133926b534" />
+    <Project Path="test/Infrastructure/INSS.Platform.Canonical.Infrastructure.Tests/INSS.Platform.Canonical.Infrastructure.Tests.csproj" Id="eb1f03cb-11c9-4f14-a182-840cf570b418" />
     <Project Path="test/Infrastructure/INSS.Platform.UserManagement.Infrastructure.Tests/INSS.Platform.UserManagement.Infrastructure.Tests.csproj" />
   </Folder>
   <Folder Name="/test/Presentation/">
     <Project Path="test/Presentation/INSS.Platform.Auth.API.Tests/INSS.Platform.Auth.API.Tests.csproj" />
+    <Project Path="test/Presentation/INSS.Platform.Canonical.API.Tests/INSS.Platform.Canonical.API.Tests.csproj" Id="8a4c2780-5c7e-4c73-be08-f46c2a977b06" />
     <Project Path="test/Presentation/INSS.Platform.UserManagement.API.Tests/INSS.Platform.UserManagement.API.Tests.csproj" />
   </Folder>
 </Solution>

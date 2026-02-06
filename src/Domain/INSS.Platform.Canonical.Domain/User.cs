@@ -14,12 +14,12 @@ public class User : BaseEntity
     /// Gets or sets the user's date of birth.
     /// </summary>
     public DateOnly DateOfBirth { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the user's telephone number.
     /// </summary>
     public string TelephoneNumber { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the user's email address.
     /// </summary>
