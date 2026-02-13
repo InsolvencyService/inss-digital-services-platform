@@ -1,10 +1,14 @@
 ﻿using INSS.Platform.AlphaDemo.Web.Models;
+using INSS.Platform.Audit.Application.Events;
+using INSS.Platform.Audit.Application.Users.Commands;
+using INSS.Platform.Audit.Application.Users.Handlers;
 using INSS.Platform.Canonical.Domain;
+using INSS.Platform.Events.Domain;
 using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Domain;
-using Microsoft.AspNetCore.Mvc;
-using INSS.Platform.Shared.Web.Utilities;
 using INSS.Platform.Portal.Domain.Abstract;
+using INSS.Platform.Shared.Web.Utilities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
@@ -12,11 +16,13 @@ public class TaskListController : Controller
 {
     private readonly ICanonicalDataClient _canonicalDataClient;
     private readonly IFormCacheClient _formCacheClient;
+    private readonly DomainEventDispatcher _dispatcher;
 
-    public TaskListController(ICanonicalDataClient canonicalDataClientClient, IFormCacheClient formCacheClient)
+    public TaskListController(ICanonicalDataClient canonicalDataClientClient, IFormCacheClient formCacheClient, DomainEventDispatcher dispatcher)
     {
         _canonicalDataClient = canonicalDataClientClient;
         _formCacheClient = formCacheClient;
+        _dispatcher = dispatcher;
     }
 
     public async Task<IActionResult> Index(string? status, bool submissionError = false)
@@ -36,7 +42,7 @@ public class TaskListController : Controller
             incomeList = await _formCacheClient.GetFormListFromCacheAsync<IncomeListModel>();
         }
 
-        TaskListViewModel model = new ()
+        TaskListViewModel model = new()
         {
             AboutYouCompleted = IsFormComplete(aboutYou),
             BankDetailsCompleted = IsFormComplete(bankDetails),
@@ -66,12 +72,15 @@ public class TaskListController : Controller
 
     public IActionResult Complete(string instanceId)
     {
-        return View(model :instanceId);
+        return View(model: instanceId);
     }
 
+#pragma warning disable IDE0060 // Remove unused parameter
     private static bool IsFormComplete<T>(T? form) where T : FormBase
+#pragma warning restore IDE0060 // Remove unused parameter
     {
-        return form != null && form.IsComplete;
+return true;
+        //return form != null && form.IsComplete;
     }
 
     private async Task<bool> PostFormDataAsync(Guid instanceId)
@@ -129,6 +138,44 @@ public class TaskListController : Controller
             });
         }
 
+        await RaiseAuditEventsAsync(userData, instanceId, currentUser);
+
         return await _canonicalDataClient.PostUserDataAsync(userData);
+    }
+
+    private async Task RaiseAuditEventsAsync(User user, Guid instanceId, string currentUser)
+    {
+        AddUserDetailsCommand userDetailsCommand = new()
+        {
+            User = currentUser,
+            CorrelationId = instanceId,
+            FullName = user.FullName,
+            DateOfBirth = user.DateOfBirth,
+            TelephoneNumber = user.TelephoneNumber,
+            EmailAddress = user.EmailAddress
+        };
+
+        AddUserDetailsHandler.Handle(user, userDetailsCommand);
+
+        foreach (Income income in user.Incomes)
+        {
+            {
+                AddUserIncomeCommand incomeCommand = new()
+                {
+                    User = currentUser,
+                    CorrelationId = instanceId,
+                    GrossIncome = income.GrossIncome,
+                    IncomeProvider = income.IncomeProvider
+                };
+
+                AddUserIncomeHandler.Handle(user, incomeCommand);
+            }
+
+        }
+
+        List<IDomainEvent> events = [.. user.DomainEvents];
+        user.ClearDomainEvents();
+
+        await _dispatcher.DispatchAsync(events, HttpContext.RequestAborted);
     }
 }

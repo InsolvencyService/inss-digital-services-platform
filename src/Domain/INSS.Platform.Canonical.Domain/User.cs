@@ -1,4 +1,6 @@
-﻿namespace INSS.Platform.Canonical.Domain;
+﻿using INSS.Platform.Events.Domain;
+
+namespace INSS.Platform.Canonical.Domain;
 
 /// <summary>
 /// Represents a user entity within the canonical domain.
@@ -39,4 +41,32 @@ public class User : BaseEntity
     /// Gets or sets the collection of bank details associated with the user.
     /// </summary>
     public virtual ICollection<BankDetails> BankDetails { get; set; } = new List<BankDetails>();
+
+    public void UserDetailsAdded(string actor, Guid correlationId, string fullName, DateOnly dateOfBirth, string telephoneNumber, string emailAddress)
+    {
+        UserDetailsAddedEvent userDetailsAddedEvent = new (
+            actor: actor,
+            aggregateRootId: Id,
+            correlationId: correlationId,
+            fullName: fullName,
+            dateOfBirth: dateOfBirth,
+            telephoneNumber: telephoneNumber,
+            emailAddress: emailAddress
+        );
+
+        AddDomainEvent(userDetailsAddedEvent);
+    }
+
+    public void UserIncomeAdded(string actor, Guid correlationId, decimal grossIncome, string incomeProvider)
+    {
+        UserIncomeAddedEvent userIncomeAddedEvent = new (
+            actor: actor,
+            aggregateRootId: Id,
+            correlationId: correlationId,
+            incomeProvider: incomeProvider,
+            grossIncome : grossIncome
+        );
+
+        AddDomainEvent(userIncomeAddedEvent);
+    }
 }

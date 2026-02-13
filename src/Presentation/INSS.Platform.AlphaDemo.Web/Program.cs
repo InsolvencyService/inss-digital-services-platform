@@ -15,13 +15,15 @@ IMvcBuilder mvcBuilder = builder.Services.AddControllersWithViews()
         options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
     });
 
-builder.Services.AddAuthenticationConfiguration(builder.Configuration, mvcBuilder, builder.Environment);
 
 builder.Services.AddHttpClient();
+builder.Services.AddAuthenticationConfiguration(builder.Configuration, mvcBuilder, builder.Environment);
 builder.Services.AddBankValidationInfrastructure(builder.Configuration);
 builder.Services.AddCanonicalDataInfrastructure(builder.Configuration);
 builder.Services.AddAnalyticsInfrastructure(builder.Configuration);
 builder.Services.AddCosmosCacheInfrastructure(builder.Environment, builder.Configuration);
+builder.Services.AddAuditInfrastructure(builder.Configuration);
+
 
 WebApplication app = builder.Build();
 

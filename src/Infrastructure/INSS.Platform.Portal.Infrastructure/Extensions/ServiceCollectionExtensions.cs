@@ -1,11 +1,17 @@
-﻿using INSS.Platform.Cache.Application.Repositories;
+﻿using INSS.Platform.Audit.Application.Events;
+using INSS.Platform.Audit.Application.Options;
+using INSS.Platform.Audit.Application.Users.Handlers;
+using INSS.Platform.Audit.Domain;
+using INSS.Platform.Audit.Infrastructure;
+using INSS.Platform.Cache.Application.Repositories;
 using INSS.Platform.Cache.Infrastructure.Configuration;
 using INSS.Platform.Cache.Infrastructure.Repositories;
+using INSS.Platform.Events.Domain;
 using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Portal.Application.Options;
 using INSS.Platform.Portal.Application.Resolvers;
 using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Infrastructure.Clients;
-using INSS.Platform.Portal.Infrastructure.Configuration;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,6 +79,21 @@ public static class ServiceCollectionExtensions
 
         services.AddOptions<AnalyticsOptions>()
             .Bind(configuration.GetSection("Analytics"))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuditInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<DomainEventDispatcher>();
+        services.AddScoped<IAuditService, EventGridAuditService>();
+        services.AddScoped<IDomainEventHandler<UserDetailsAddedEvent>, UserDetailsAddedHandler>();
+        services.AddScoped<IDomainEventHandler<UserIncomeAddedEvent>, UserIncomeAddedHandler>();
+
+        services.AddOptions<AuditOptions>()
+            .Bind(configuration.GetSection("Audit"))
             .ValidateDataAnnotations()
             .ValidateOnStart();
 

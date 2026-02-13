@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/" />
   <Folder Name="/src/Application/">
+    <Project Path="src/Application/INSS.Platform.Audit.Application/INSS.Platform.Audit.Application.csproj" />
     <Project Path="src/Application/INSS.Platform.Auth.Application/INSS.Platform.Auth.Application.csproj" />
     <Project Path="src/Application/INSS.Platform.Cache.Application/INSS.Platform.Cache.Application.csproj" Id="ab0ff9cc-7947-4fe0-b647-e1fc968eca19" />
     <Project Path="src/Application/INSS.Platform.Canonical.Application/INSS.Platform.Canonical.Application.csproj" Id="d5451b80-7404-40e5-b6ec-e3a08633653c" />
@@ -8,11 +9,14 @@
     <Project Path="src/Application/INSS.Platform.UserManagement.Application/INSS.Platform.UserManagement.Application.csproj" />
   </Folder>
   <Folder Name="/src/Domain/">
+    <Project Path="src/Domain/INSS.Platform.Audit.Domain/INSS.Platform.Audit.Domain.csproj" Id="2046827e-fd61-473a-b117-c5f7a4f9a22b" />
     <Project Path="src/Domain/INSS.Platform.Canonical.Domain/INSS.Platform.Canonical.Domain.csproj" Id="a7e0bd03-d4b3-450b-b844-3ebd277a210e" />
+    <Project Path="src/Domain/INSS.Platform.Events.Domain/INSS.Platform.Events.Domain.csproj" Id="bcd587b6-2273-45e5-9e8a-d8d47247046b" />
     <Project Path="src/Domain/INSS.Platform.Portal.Domain/INSS.Platform.Portal.Domain.csproj" />
     <Project Path="src/Domain/INSS.Platform.UserManagement.Domain/INSS.Platform.UserManagement.Domain.csproj" />
   </Folder>
   <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/INSS.Platform.Audit.Infrastructure/INSS.Platform.Audit.Infrastructure.csproj" Id="18ce57a5-adc2-427e-8ac3-722bd8f15e5e" />
     <Project Path="src/Infrastructure/INSS.Platform.Cache.Infrastructure/INSS.Platform.Cache.Infrastructure.csproj" Id="e09756a3-0b6f-453f-80b8-615d59c981a3" />
     <Project Path="src/Infrastructure/INSS.Platform.Canonical.Infrastructure/INSS.Platform.Canonical.Infrastructure.csproj" Id="3ed0292c-8dcb-41ac-a467-8f6a6a1d60d9" />
     <Project Path="src/Infrastructure/INSS.Platform.Portal.Infrastructure/INSS.Platform.Portal.Infrastructure.csproj" />
@@ -20,6 +24,7 @@
   </Folder>
   <Folder Name="/src/Presentation/">
     <Project Path="src/Presentation/INSS.Platform.AlphaDemo.Web/INSS.Platform.AlphaDemo.Web.csproj" Id="6a0147b8-3459-4055-aad7-adbf6070fadf" />
+    <Project Path="src/Presentation/INSS.Platform.Audit.Functions/INSS.Platform.Audit.Functions.csproj" Id="4d0efcde-395f-4d62-83a6-6710c2998f42" />
     <Project Path="src/Presentation/INSS.Platform.Auth.API/INSS.Platform.Auth.API.csproj" />
     <Project Path="src/Presentation/INSS.Platform.Canonical.API/INSS.Platform.Canonical.API.csproj" Id="3c17331f-f02c-4747-80c1-4f865b41f50f" />
     <Project Path="src/Presentation/INSS.Platform.Portal.Web.Components/INSS.Platform.Portal.Web.Components.csproj" />

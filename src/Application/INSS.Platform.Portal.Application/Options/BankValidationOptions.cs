@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace INSS.Platform.Portal.Infrastructure.Configuration;
+namespace INSS.Platform.Portal.Application.Options;
 
 /// <summary>
 /// Represents configuration options for the Bank validation API client.

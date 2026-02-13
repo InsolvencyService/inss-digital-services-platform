@@ -1,6 +1,6 @@
 ﻿using INSS.Platform.Canonical.Domain;
 using INSS.Platform.Portal.Application.Clients;
-using INSS.Platform.Portal.Infrastructure.Configuration;
+using INSS.Platform.Portal.Application.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Json;

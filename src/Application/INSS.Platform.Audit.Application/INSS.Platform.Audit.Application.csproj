@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\INSS.Platform.Audit.Domain\INSS.Platform.Audit.Domain.csproj" />
+    <ProjectReference Include="..\..\Domain\INSS.Platform.Canonical.Domain\INSS.Platform.Canonical.Domain.csproj" />
+  </ItemGroup>
+</Project>
