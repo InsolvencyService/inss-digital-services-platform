@@ -4,9 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 namespace INSS.Platform.Audit.Application.Events;
 
 /// <summary>
-/// Dispatches domain events to their corresponding handlers.
+/// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+/// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+/// In a properly defined application the events would be documented and also adhere to a defined contract.
 /// </summary>
-public class DomainEventDispatcher
+public class DomainEventDispatcher : IDomainEventDispatcher
 {
     private readonly IServiceProvider _services;
 
@@ -23,9 +25,9 @@ public class DomainEventDispatcher
     /// Dispatches the specified domain events asynchronously to their registered handlers.
     /// </summary>
     /// <param name="events">The collection of domain events to dispatch.</param>
-    /// <param name="ct">A cancellation token to observe while waiting for the tasks to complete.</param>
+    /// <param name="cancellationToken">A cancellation token to observe while waiting for the tasks to complete.</param>
     /// <returns>A task that represents the asynchronous dispatch operation.</returns>
-    public async Task DispatchAsync(IEnumerable<IDomainEvent> events, CancellationToken ct)
+    public async Task DispatchAsync(IEnumerable<IDomainEvent> events, CancellationToken cancellationToken)
     {
         foreach (IDomainEvent evt in events)
         {
@@ -36,7 +38,8 @@ public class DomainEventDispatcher
             {
                 Task task = (Task)handlerType
                     .GetMethod("Handle")!
-                    .Invoke(handler, [evt, ct])!;
+                    .Invoke(handler, [evt, cancellationToken])!;
+
                 await task;
             }
         }

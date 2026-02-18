@@ -9,38 +9,38 @@ namespace INSS.Platform.Audit.Application.Users.Handlers;
 /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
 /// In a properly defined application the events would be documented and also adhere to a defined contract.
 /// </summary>
-public class UserIncomeAddedHandler : IDomainEventHandler<UserIncomeAddedEvent>
+public class UserBankDetailsAddedHandler :  IDomainEventHandler<UserBankDetailsAddedEvent>
 {
     private readonly IAuditService _auditService;
 
-    public UserIncomeAddedHandler(IAuditService auditService)
+    public UserBankDetailsAddedHandler(IAuditService auditService)
     {
         _auditService = auditService;
     }
 
     /// <summary>
-    /// Handles the <see cref="UserIncomeAddedEvent"/> by creating an audit entry and recording it using the <see cref="IAuditService"/>.
+    /// Handles the <see cref="UserBankDetailsAddedEvent"/> by creating an audit entry and recording it using the <see cref="IAuditService"/>.
     /// </summary>
-    /// <param name="domainEvent">The event containing details of the user income addition.</param>
+    /// <param name="domainEvent">The event containing details of the bank whose details were added.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task Handle(UserIncomeAddedEvent domainEvent, CancellationToken cancellationToken)
+    public async Task Handle(UserBankDetailsAddedEvent domainEvent, CancellationToken cancellationToken)
     {
         AuditEntry auditEntry = new(
-            EventType: nameof(UserIncomeAddedEvent),
+            EventType: nameof(UserBankDetailsAddedEvent),
             TimestampUtc: DateTime.UtcNow,
-            Description: $"User income added: {domainEvent.IncomeProvider}",
+            Description: $"User bank details added: {domainEvent.AccountName}",
             Metadata: new
             {
                 domainEvent.CorrelationId,
                 domainEvent.Actor,
                 domainEvent.AggregateRootId,
                 domainEvent.OccurredOnUtc,
-                domainEvent.IncomeProvider,
-                domainEvent.GrossIncome,
+                domainEvent.AccountName,
+                domainEvent.SortCode
             }
         );
-
+        
         await _auditService.RecordAsync(auditEntry, cancellationToken);
     }
 }

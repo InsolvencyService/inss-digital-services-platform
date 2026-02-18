@@ -3,8 +3,13 @@
 namespace INSS.Platform.Audit.Application.Events;
 
 /// <summary>
-/// Defines a handler for domain events of type <typeparamref name="TEvent"/>.
+/// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+/// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+/// In a properly defined application the events would be documented and also adhere to a defined contract.
 /// </summary>
+/// <remarks>
+/// Defines a handler for domain events of type <typeparamref name="TEvent"/>.
+/// </remarks>
 /// <typeparam name="TEvent">
 /// The type of domain event to handle. Must implement <see cref="IDomainEvent"/>.
 /// </typeparam>

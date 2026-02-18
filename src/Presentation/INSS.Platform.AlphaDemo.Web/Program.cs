@@ -1,4 +1,5 @@
 using GovUk.Frontend.AspNetCore;
+using INSS.Platform.Audit.Infrastructure.Extensions;
 using INSS.Platform.Portal.Infrastructure.Extensions;
 using INSS.Platform.Portal.Web.Components.Register;
 using INSS.Platform.Shared.Web.Auth.Configuration;

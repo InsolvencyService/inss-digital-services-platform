@@ -42,6 +42,11 @@ public class User : BaseEntity
     /// </summary>
     public virtual ICollection<BankDetails> BankDetails { get; set; } = new List<BankDetails>();
 
+    /// <summary>
+    /// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+    /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+    /// In a properly defined application the events would be documented and also adhere to a defined contract.
+    /// </summary>
     public void UserDetailsAdded(string actor, Guid correlationId, string fullName, DateOnly dateOfBirth, string telephoneNumber, string emailAddress)
     {
         UserDetailsAddedEvent userDetailsAddedEvent = new (
@@ -57,6 +62,11 @@ public class User : BaseEntity
         AddDomainEvent(userDetailsAddedEvent);
     }
 
+    /// <summary>
+    /// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+    /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+    /// In a properly defined application the events would be documented and also adhere to a defined contract.
+    /// </summary>
     public void UserIncomeAdded(string actor, Guid correlationId, decimal grossIncome, string incomeProvider)
     {
         UserIncomeAddedEvent userIncomeAddedEvent = new (
@@ -68,5 +78,23 @@ public class User : BaseEntity
         );
 
         AddDomainEvent(userIncomeAddedEvent);
+    }
+
+    /// <summary>
+    /// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+    /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+    /// In a properly defined application the events would be documented and also adhere to a defined contract.
+    /// </summary>
+    public void UserBankDetailsAdded(string actor, Guid correlationId, string accountName, string sortCode)
+    {
+        UserBankDetailsAddedEvent bankDetailsAddedEvent = new(
+            actor: actor,
+            aggregateRootId: Id,
+            correlationId: correlationId,
+            accountName: accountName,
+            sortCode: sortCode
+        );
+
+        AddDomainEvent(bankDetailsAddedEvent);
     }
 }

@@ -8,22 +8,20 @@ namespace INSS.Platform.Audit.Application.Users.Handlers;
 /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
 /// In a properly defined application the events would be documented and also adhere to a defined contract.
 /// </summary>
-public class AddUserDetailsHandler
+public class AddUserBankDetailsHandler
 {
     /// <summary>
-    /// Handles the addition of user details by invoking the <c>UserDetailsAdded</c> method on the specified <see cref="User"/>.
+    /// Handles the addition of bank details by invoking the <c>UserBankdDetailsAdded</c> method on the specified <see cref="User"/>.
     /// </summary>
     /// <param name="user">The user entity to update with new details.</param>
-    /// <param name="command">The command containing the user details to add.</param>
-    public static void Handle(User user, AddUserDetailsCommand command)
+    /// <param name="command">The command containing the bank details to add.</param>
+    public static void Handle(User user, AddUserBankDetailsCommand command)
     {
-        user.UserDetailsAdded(
+        user.UserBankDetailsAdded(
             command.User,
             command.CorrelationId,
-            command.FullName,
-            command.DateOfBirth,
-            command.TelephoneNumber,
-            command.EmailAddress
+            command.AccountName,
+            command.SortCode
         );
     }
 }

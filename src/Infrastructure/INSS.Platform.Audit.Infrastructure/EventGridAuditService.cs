@@ -12,8 +12,13 @@ using Polly.Retry;
 namespace INSS.Platform.Audit.Infrastructure;
 
 /// <summary>
-/// Provides an implementation of <see cref="IAuditService"/> that publishes audit events to Azure Event Grid.
+/// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+/// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+/// In a properly defined application the events would be documented and also adhere to a defined contract.
 /// </summary>
+/// <remarks>
+/// Provides an implementation of <see cref="IAuditService"/> that publishes audit events to Azure Event Grid.
+/// </remarks>
 public sealed class EventGridAuditService : IAuditService
 {
     /// <summary>

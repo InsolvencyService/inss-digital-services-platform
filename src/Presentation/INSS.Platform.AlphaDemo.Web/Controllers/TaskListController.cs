@@ -16,9 +16,9 @@ public class TaskListController : Controller
 {
     private readonly ICanonicalDataClient _canonicalDataClient;
     private readonly IFormCacheClient _formCacheClient;
-    private readonly DomainEventDispatcher _dispatcher;
+    private readonly IDomainEventDispatcher _dispatcher;
 
-    public TaskListController(ICanonicalDataClient canonicalDataClientClient, IFormCacheClient formCacheClient, DomainEventDispatcher dispatcher)
+    public TaskListController(ICanonicalDataClient canonicalDataClientClient, IFormCacheClient formCacheClient, IDomainEventDispatcher dispatcher)
     {
         _canonicalDataClient = canonicalDataClientClient;
         _formCacheClient = formCacheClient;
@@ -138,39 +138,35 @@ return true;
             });
         }
 
-        await RaiseAuditEventsAsync(userData, instanceId, currentUser);
+        bool success = await _canonicalDataClient.PostUserDataAsync(userData);
+ 
+        if (success)
+        {
+            // Demonstrate raising an event from the application layer, in a real application this would likely be raised from the domain layer, for example as part of a domain service that handles the orchestration of the user creation.
+            await RaiseAuditEventsAsync(userData, instanceId, currentUser);
+        }
 
-        return await _canonicalDataClient.PostUserDataAsync(userData);
+        return success;
     }
 
+    /// <summary>
+    /// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+    /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+    /// In a properly defined application the events would be documented and also adhere to a defined contract.
+    /// </summary>
     private async Task RaiseAuditEventsAsync(User user, Guid instanceId, string currentUser)
     {
-        AddUserDetailsCommand userDetailsCommand = new()
+        foreach (BankDetails bankDetails in user.BankDetails)
         {
-            User = currentUser,
-            CorrelationId = instanceId,
-            FullName = user.FullName,
-            DateOfBirth = user.DateOfBirth,
-            TelephoneNumber = user.TelephoneNumber,
-            EmailAddress = user.EmailAddress
-        };
-
-        AddUserDetailsHandler.Handle(user, userDetailsCommand);
-
-        foreach (Income income in user.Incomes)
-        {
+            AddUserBankDetailsCommand userBankDetailsCommand = new()
             {
-                AddUserIncomeCommand incomeCommand = new()
-                {
-                    User = currentUser,
-                    CorrelationId = instanceId,
-                    GrossIncome = income.GrossIncome,
-                    IncomeProvider = income.IncomeProvider
-                };
+                User = currentUser,
+                CorrelationId = instanceId,
+                AccountName = bankDetails.AccountName,
+                SortCode = bankDetails.SortCode
+            };
 
-                AddUserIncomeHandler.Handle(user, incomeCommand);
-            }
-
+            AddUserBankDetailsHandler.Handle(user, userBankDetailsCommand);
         }
 
         List<IDomainEvent> events = [.. user.DomainEvents];

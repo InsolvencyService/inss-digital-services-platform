@@ -1,8 +1,14 @@
 ﻿namespace INSS.Platform.Events.Domain;
 
+
 /// <summary>
-/// Represents a domain event that is raised when a user's income is added.
+/// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+/// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+/// In a properly defined application the events would be documented and also adhere to a defined contract.
 /// </summary>
+/// <remarks>
+/// Represents a domain event that is raised when a user's income is added.
+/// </remarks>
 public sealed record UserIncomeAddedEvent : DomainEvent
 {
     /// <summary>

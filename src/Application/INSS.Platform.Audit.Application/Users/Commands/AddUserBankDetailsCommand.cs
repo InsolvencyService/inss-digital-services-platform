@@ -5,7 +5,7 @@
 /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
 /// In a properly defined application the events would be documented and also adhere to a defined contract.
 /// </summary>
-public class AddUserIncomeCommand
+public class AddUserBankDetailsCommand
 {
     /// <summary>
     /// Gets the correlation identifier for tracking the command.
@@ -13,17 +13,17 @@ public class AddUserIncomeCommand
     public Guid CorrelationId { get; init; }
 
     /// <summary>
-    /// Gets the user identifier or username.
+    /// Gets the username or user identifier.
     /// </summary>
     public string User { get; init; }
 
     /// <summary>
-    /// Gets the name of the income provider.
+    /// Gets the bank account name.
     /// </summary>
-    public string IncomeProvider { get; init; }
+    public string AccountName { get; init; }
 
     /// <summary>
-    /// Gets the gross income amount.
+    /// Gets the bank sort code.
     /// </summary>
-    public decimal GrossIncome { get; init; }
+    public string SortCode { get; init; }
 }
