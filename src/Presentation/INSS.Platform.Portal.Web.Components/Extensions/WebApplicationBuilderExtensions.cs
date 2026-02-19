@@ -1,12 +1,12 @@
-﻿using System.Globalization;
-using System.Reflection;
-using GovUk.Frontend.AspNetCore;
+﻿using GovUk.Frontend.AspNetCore;
 using INSS.Platform.Portal.Application.Extensions;
 using INSS.Platform.Portal.Infrastructure.Extensions;
 using INSS.Platform.Portal.Web.Components.Binding;
 using INSS.Platform.Portal.Web.Components.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
+using System.Reflection;
 
 namespace INSS.Platform.Portal.Web.Components.Extensions;
 

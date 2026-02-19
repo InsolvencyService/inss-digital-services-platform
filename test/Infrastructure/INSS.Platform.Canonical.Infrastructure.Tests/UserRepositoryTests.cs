@@ -1,5 +1,6 @@
 using FluentAssertions;
 using FluentAssertions.Execution;
+using INSS.Platform.Audit.Application.Events;
 using INSS.Platform.Canonical.Application.Results;
 using INSS.Platform.Canonical.Domain;
 using INSS.Platform.Canonical.Infrastructure.Repositories;
@@ -12,6 +13,9 @@ namespace INSS.Platform.Canonical.Infrastructure.Tests;
 
 public class UserRepositoryTests
 {
+    private readonly Mock<ILogger<UserRepository>> _loggerMock = new();
+    private readonly Mock<IDomainEventDispatcher> _dispatcherMock = new();
+
     [Fact]
     public async Task GetByIdAsync_ReturnsUser_WhenUserExists()
     {
@@ -20,8 +24,8 @@ public class UserRepositoryTests
         User user = TestHelper.GenerateUser();
         dbContext.User.Add(user);
         dbContext.SaveChanges();
-        Mock<ILogger<UserRepository>> loggerMock = new ();
-        UserRepository repository = new (loggerMock.Object, dbContext);
+
+        UserRepository repository = new (_loggerMock.Object, dbContext, _dispatcherMock.Object);
 
         // Act
         OperationResult<User> result = await repository.GetByIdAsync(user.Id, CancellationToken.None);
@@ -42,8 +46,7 @@ public class UserRepositoryTests
     {
         // Arrange
         CanonicalDbContext dbContext = TestHelper.CreateDbContext();
-        Mock<ILogger<UserRepository>> loggerMock = new ();
-        UserRepository repository = new (loggerMock.Object, dbContext);
+        UserRepository repository = new(_loggerMock.Object, dbContext, _dispatcherMock.Object);
         Guid userId = Guid.NewGuid();
 
         // Act
@@ -65,8 +68,7 @@ public class UserRepositoryTests
         // Arrange
         Mock<CanonicalDbContext> dbContextMock = new(new DbContextOptions<CanonicalDbContext>());
         dbContextMock.Setup(db => db.User).Throws(TestHelper.CreateSqlException("database error"));
-        Mock<ILogger<UserRepository>> loggerMock = new();
-        UserRepository repository = new(loggerMock.Object, dbContextMock.Object);
+        UserRepository repository = new(_loggerMock.Object, dbContextMock.Object, _dispatcherMock.Object);
         Guid userId = Guid.NewGuid();
 
         // Act

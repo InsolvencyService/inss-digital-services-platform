@@ -1,10 +1,14 @@
 ﻿using INSS.Platform.AlphaDemo.Web.Models;
+using INSS.Platform.Audit.Application.Events;
+using INSS.Platform.Audit.Application.Users.Commands;
+using INSS.Platform.Audit.Application.Users.Handlers;
 using INSS.Platform.Canonical.Domain;
+using INSS.Platform.Events.Domain;
 using INSS.Platform.Portal.Application.Clients;
 using INSS.Platform.Portal.Domain;
-using Microsoft.AspNetCore.Mvc;
-using INSS.Platform.Shared.Web.Utilities;
 using INSS.Platform.Portal.Domain.Abstract;
+using INSS.Platform.Shared.Web.Utilities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.AlphaDemo.Web.Controllers;
 
@@ -12,11 +16,13 @@ public class TaskListController : Controller
 {
     private readonly ICanonicalDataClient _canonicalDataClient;
     private readonly IFormCacheClient _formCacheClient;
+    private readonly IDomainEventDispatcher _dispatcher;
 
-    public TaskListController(ICanonicalDataClient canonicalDataClientClient, IFormCacheClient formCacheClient)
+    public TaskListController(ICanonicalDataClient canonicalDataClientClient, IFormCacheClient formCacheClient, IDomainEventDispatcher dispatcher)
     {
         _canonicalDataClient = canonicalDataClientClient;
         _formCacheClient = formCacheClient;
+        _dispatcher = dispatcher;
     }
 
     public async Task<IActionResult> Index(string? status, bool submissionError = false)
@@ -36,7 +42,7 @@ public class TaskListController : Controller
             incomeList = await _formCacheClient.GetFormListFromCacheAsync<IncomeListModel>();
         }
 
-        TaskListViewModel model = new ()
+        TaskListViewModel model = new()
         {
             AboutYouCompleted = IsFormComplete(aboutYou),
             BankDetailsCompleted = IsFormComplete(bankDetails),
@@ -66,7 +72,7 @@ public class TaskListController : Controller
 
     public IActionResult Complete(string instanceId)
     {
-        return View(model :instanceId);
+        return View(model: instanceId);
     }
 
     private static bool IsFormComplete<T>(T? form) where T : FormBase
@@ -129,6 +135,40 @@ public class TaskListController : Controller
             });
         }
 
-        return await _canonicalDataClient.PostUserDataAsync(userData);
+        bool success = await _canonicalDataClient.PostUserDataAsync(userData);
+ 
+        if (success)
+        {
+            // Demonstrate raising an event from the application layer, in a real application this would likely be raised from the domain layer, for example as part of a domain service that handles the orchestration of the user creation.
+            await RaiseAuditEventsAsync(userData, instanceId, currentUser);
+        }
+
+        return success;
+    }
+
+    /// <summary>
+    /// Audit Example: This snippet forms part of the example code that demonstrates how to raise domain events for auditing purposes.
+    /// This is a simplified example and does not form part of a specification, at time of writing there isn't a specification.  
+    /// In a properly defined application the events would be documented and also adhere to a defined contract.
+    /// </summary>
+    private async Task RaiseAuditEventsAsync(User user, Guid instanceId, string currentUser)
+    {
+        foreach (BankDetails bankDetails in user.BankDetails)
+        {
+            AddUserBankDetailsCommand userBankDetailsCommand = new()
+            {
+                User = currentUser,
+                CorrelationId = instanceId,
+                AccountName = bankDetails.AccountName,
+                SortCode = bankDetails.SortCode
+            };
+
+            AddUserBankDetailsHandler.Handle(user, userBankDetailsCommand);
+        }
+
+        List<IDomainEvent> events = [.. user.DomainEvents];
+        user.ClearDomainEvents();
+
+        await _dispatcher.DispatchAsync(events, HttpContext.RequestAborted);
     }
 }

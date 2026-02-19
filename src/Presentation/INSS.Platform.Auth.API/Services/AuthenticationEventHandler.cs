@@ -87,6 +87,9 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
         //    // Parse userInfo JSON and extract "email"
         //}
 
+        // NOTE: We need to provide our own /userinfo endpoint to this API, but this cannont be done until the UserManagement/Party model design has been finalized.
+        // Wayne asked that the feature be put on hold until then.
+
         await context.HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             context.Principal!,
@@ -190,8 +193,14 @@ public class AuthenticationEventHandler : IAuthenticationEventHandler
             claims["sub"] = subClaim.Value;
         }
 
+        // NOTE: The user name/identifier claim value will be retrieved from UserMangement by cross referencing the ProviderUserId.  
+        // Once the UserMangement design has been finalised and implemented, the relevant user details can be retrieved and added as claims.
+
+
         if (!string.IsNullOrEmpty(userid))
         {
+            // This user_id claim will be used by the client applications to identify the user upon initial registration (it should originate in the registration email link).
+            // The ProviderUserId i.e. the User Id returned from the Provider(not this userId) will be used within UserManagement (Party Model) to link the provider user to the internal user profile.
             claims["user_id"] = userid;
         }
 

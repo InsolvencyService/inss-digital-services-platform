@@ -1,5 +1,6 @@
 
 using INSS.Platform.Canonical.API;
+using INSS.Platform.Audit.Infrastructure.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddCanonicalDb(builder.Configuration);
 builder.Services.AddRepositories();
+builder.Services.AddAuditInfrastructure(builder.Configuration);
 
 WebApplication app = builder.Build();
 

@@ -2,6 +2,7 @@
 
 namespace INSS.Platform.Portal.Application.Services;
 
+[Obsolete("This interface is deprecated and will be removed. See 'FormService.cs'")]
 public interface IFormService
 {
     Task<BaseModel> GetAsync(string path);

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Messaging.EventGrid" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+	<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
+	<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Polly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\INSS.Platform.Audit.Application\INSS.Platform.Audit.Application.csproj" />
+    <ProjectReference Include="..\..\Domain\INSS.Platform.Audit.Domain\INSS.Platform.Audit.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

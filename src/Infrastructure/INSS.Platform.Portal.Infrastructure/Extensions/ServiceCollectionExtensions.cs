@@ -2,10 +2,10 @@
 using INSS.Platform.Cache.Infrastructure.Configuration;
 using INSS.Platform.Cache.Infrastructure.Repositories;
 using INSS.Platform.Portal.Application.Clients;
+using INSS.Platform.Portal.Application.Options;
 using INSS.Platform.Portal.Application.Resolvers;
 using INSS.Platform.Portal.Application.Services;
 using INSS.Platform.Portal.Infrastructure.Clients;
-using INSS.Platform.Portal.Infrastructure.Configuration;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
