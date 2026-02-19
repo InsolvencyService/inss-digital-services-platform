@@ -30,17 +30,7 @@ public class UserDetailsAddedHandler :  IDomainEventHandler<UserDetailsAddedEven
             EventType: nameof(UserDetailsAddedEvent),
             TimestampUtc: DateTime.UtcNow,
             Description: $"User details added: {domainEvent.FullName}",
-            Metadata: new
-            {
-                domainEvent.CorrelationId,
-                domainEvent.Actor,
-                domainEvent.AggregateRootId,
-                domainEvent.OccurredOnUtc,
-                domainEvent.FullName,
-                domainEvent.DateOfBirth,
-                domainEvent.TelephoneNumber,
-                domainEvent.EmailAddress
-            }
+            Metadata: domainEvent
         );
         
         await _auditService.RecordAsync(auditEntry, cancellationToken);

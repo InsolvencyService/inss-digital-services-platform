@@ -35,6 +35,7 @@
   </Folder>
   <Folder Name="/test/" />
   <Folder Name="/test/Application/">
+    <Project Path="test/Application/INSS.Platform.Audit.Application.Tests/INSS.Platform.Audit.Application.Tests.csproj" Id="8ca54b99-40e2-4b04-b7b8-293005bf4164" />
     <Project Path="test/Application/INSS.Platform.Portal.Application.Tests/INSS.Platform.Portal.Application.Tests.csproj" />
   </Folder>
   <Folder Name="/test/Domain/">

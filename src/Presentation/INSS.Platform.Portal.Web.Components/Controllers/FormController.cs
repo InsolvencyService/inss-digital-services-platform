@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace INSS.Platform.Portal.Web.Components.Controllers;
 
+[Obsolete("This controller is deprecated and will be removed. It attempts to dynamically build forms, but a one size fits all solution never works in the real world. Use the new BaseFormController or BaseFormListController or create a new derived type instead. Use actions to orchestrate.")]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class FormController : Controller
 {

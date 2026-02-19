@@ -75,12 +75,9 @@ public class TaskListController : Controller
         return View(model: instanceId);
     }
 
-#pragma warning disable IDE0060 // Remove unused parameter
     private static bool IsFormComplete<T>(T? form) where T : FormBase
-#pragma warning restore IDE0060 // Remove unused parameter
     {
-return true;
-        //return form != null && form.IsComplete;
+        return form != null && form.IsComplete;
     }
 
     private async Task<bool> PostFormDataAsync(Guid instanceId)

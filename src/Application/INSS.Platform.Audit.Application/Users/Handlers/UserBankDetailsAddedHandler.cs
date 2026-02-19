@@ -30,15 +30,7 @@ public class UserBankDetailsAddedHandler :  IDomainEventHandler<UserBankDetailsA
             EventType: nameof(UserBankDetailsAddedEvent),
             TimestampUtc: DateTime.UtcNow,
             Description: $"User bank details added: {domainEvent.AccountName}",
-            Metadata: new
-            {
-                domainEvent.CorrelationId,
-                domainEvent.Actor,
-                domainEvent.AggregateRootId,
-                domainEvent.OccurredOnUtc,
-                domainEvent.AccountName,
-                domainEvent.SortCode
-            }
+            Metadata: domainEvent
         );
         
         await _auditService.RecordAsync(auditEntry, cancellationToken);

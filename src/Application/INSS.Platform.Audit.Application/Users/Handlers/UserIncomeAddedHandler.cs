@@ -30,15 +30,7 @@ public class UserIncomeAddedHandler : IDomainEventHandler<UserIncomeAddedEvent>
             EventType: nameof(UserIncomeAddedEvent),
             TimestampUtc: DateTime.UtcNow,
             Description: $"User income added: {domainEvent.IncomeProvider}",
-            Metadata: new
-            {
-                domainEvent.CorrelationId,
-                domainEvent.Actor,
-                domainEvent.AggregateRootId,
-                domainEvent.OccurredOnUtc,
-                domainEvent.IncomeProvider,
-                domainEvent.GrossIncome,
-            }
+            Metadata: domainEvent
         );
 
         await _auditService.RecordAsync(auditEntry, cancellationToken);

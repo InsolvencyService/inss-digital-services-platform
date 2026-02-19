@@ -3,6 +3,7 @@ using INSS.Platform.Portal.Domain;
 
 namespace INSS.Platform.Portal.Application.Services;
 
+[Obsolete("This class is deprecated and will be removed. It attempts to dynamically build forms, but a one size fits all solution never works in the real world. Use the new BaseFormController or BaseFormListController or create a new derived type instead. Use actions to orchestrate.")]
 public sealed class FormService : IFormService
 {
     private readonly IFormStateService _formStateService;

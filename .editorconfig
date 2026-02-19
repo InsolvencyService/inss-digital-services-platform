@@ -62,6 +62,7 @@ dotnet_diagnostic.CA1873.severity = none
 dotnet_diagnostic.CA1848.severity = none
 dotnet_diagnostic.CA1304.severity = none
 dotnet_diagnostic.CA1311.severity = none
+dotnet_diagnostic.CS0618.severity = none
 
 # Allow the use of the reserve word 'Shared' in a namespace
 dotnet_diagnostic.CA1716.severity = none
@@ -101,6 +102,8 @@ dotnet_diagnostic.IDE0046.severity = silent
 # Suppress namespace warning for C# files
 csharp_style_namespace_declarations = file_scoped:warning
 
+[*.cshtml]
+dotnet_diagnostic.CS0618.severity = none
 
 [*.razor]
 dotnet_diagnostic.BL0008.severity = none
