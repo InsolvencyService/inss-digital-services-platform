@@ -2,12 +2,14 @@
 using INSS.Platform.Canonical.Infrastructure;
 using INSS.Platform.Canonical.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace INSS.Platform.Canonical.API;
 
 /// <summary>
 /// Provides extension methods for configuring persistence-related services for User Management.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class PersistenceExtensions
 {
     /// <summary>

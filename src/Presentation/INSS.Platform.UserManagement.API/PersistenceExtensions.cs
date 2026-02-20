@@ -3,12 +3,14 @@ using INSS.Platform.UserManagement.Infrastructure.Repositories;
 using INSS.Platform.UserManagement.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using INSS.Platform.UserManagement.Application.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace INSS.Platform.UserManagement.API;
 
 /// <summary>
 /// Provides extension methods for configuring persistence-related services for User Management.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class PersistenceExtensions
 {
     /// <summary>

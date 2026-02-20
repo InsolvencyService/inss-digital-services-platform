@@ -1,30 +1,38 @@
-
-using INSS.Platform.Canonical.API;
 using INSS.Platform.Audit.Infrastructure.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+namespace INSS.Platform.Canonical.API;
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-builder.Services.AddApplicationInsightsTelemetry();
-
-builder.Services.AddCanonicalDb(builder.Configuration);
-builder.Services.AddRepositories();
-builder.Services.AddAuditInfrastructure(builder.Configuration);
-
-WebApplication app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+[ExcludeFromCodeCoverage]
+public partial class Program
 {
-    _ = app.MapOpenApi();
-
-    app.UseSwaggerUI(options =>
+    private static void Main(string[] args)
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "v1");
-    });
-}
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
+        builder.Services.AddControllers();
+        builder.Services.AddOpenApi();
+        builder.Services.AddApplicationInsightsTelemetry();
+
+        builder.Services.AddCanonicalDb(builder.Configuration);
+        builder.Services.AddRepositories();
+        builder.Services.AddAuditInfrastructure(builder.Configuration);
+
+        WebApplication app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            _ = app.MapOpenApi();
+
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1.json", "v1");
+            });
+        }
+
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
+        app.MapControllers();
+        app.Run();
+    }
+}
