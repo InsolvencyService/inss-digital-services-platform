@@ -37,9 +37,14 @@
   <Folder Name="/test/Application/">
     <Project Path="test/Application/INSS.Platform.Audit.Application.Tests/INSS.Platform.Audit.Application.Tests.csproj" Id="8ca54b99-40e2-4b04-b7b8-293005bf4164" />
     <Project Path="test/Application/INSS.Platform.Portal.Application.Tests/INSS.Platform.Portal.Application.Tests.csproj" />
+    <Project Path="test/Application/INSS.Platform.UserManagement.Application.Tests.csproj/INSS.Platform.UserManagement.Application.Tests.csproj" Id="6bbab38f-ce52-46d0-a517-76e35f7662c1" />
   </Folder>
   <Folder Name="/test/Domain/">
+    <Project Path="test/Domain/INSS.Platform.Audit.Domain.Tests/INSS.Platform.Audit.Domain.Tests.csproj" Id="5101370a-c7c7-49f4-b640-6d2ff0898122" />
+    <Project Path="test/Domain/INSS.Platform.Canonical.Domain.Tests/INSS.Platform.Canonical.Domain.Tests.csproj" Id="8d3eeac4-6a57-4b37-8bb8-c31b7d2703e1" />
+    <Project Path="test/Domain/INSS.Platform.Events.Domain.Tests/INSS.Platform.Events.Domain.Tests.csproj" Id="d2f8d187-d704-4349-bc8a-a74b8efbd71e" />
     <Project Path="test/Domain/INSS.Platform.Portal.Domain.Tests/INSS.Platform.Portal.Domain.Tests.csproj" />
+    <Project Path="test/Domain/INSS.Platform.UserManagement.Domain.Tests/INSS.Platform.UserManagement.Domain.Tests.csproj" Id="d94129e4-2745-4bf0-9a2e-3a8c3373e84e" />
   </Folder>
   <Folder Name="/test/Infrastructure/">
     <Project Path="test/Infrastructure/INSS.Platform.Cache.Infrastructure.Tests/INSS.Platform.Cache.Infrastructure.Tests.csproj" Id="701e5690-a733-4532-8fd0-09133926b534" />
