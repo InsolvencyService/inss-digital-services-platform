@@ -25,39 +25,6 @@ jobs:
     - name: Build solution
       run: dotnet build INSS.Platform.slnx --no-restore --configuration Release
 
-    - name: List projects in solution
-      run: |
-        Write-Host "=== Projects in INSS.Platform.slnx ==="
-        dotnet sln INSS.Platform.slnx list
-        Write-Host "`n=== Looking for test projects in file system ==="
-        $testProjects = @()
-        Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object {
-          $content = Get-Content $_.FullName -Raw
-          if ($content -like "*Microsoft.NET.Test.Sdk*" -or $content -like "*MSTest*" -or $content -like "*xunit*" -or $content -like "*NUnit*" -or $content -like "*bunit*") {
-            Write-Host "TEST PROJECT FOUND: $($_.FullName)"
-            $testProjects += $_.FullName
-          }
-        }
-        if ($testProjects.Count -gt 0) {
-          Write-Host "`n=== Checking if test projects are in solution ==="
-          $solutionProjects = dotnet sln INSS.Platform.slnx list
-          foreach ($testProject in $testProjects) {
-            $relativePath = $testProject.Replace((Get-Location).Path + "\", "").Trim()
-            $inSolution = $false
-            foreach ($line in $solutionProjects) {
-                if ($line.Trim().ToLower() -eq $relativePath.ToLower()) {
-                    $inSolution = $true
-                    break
-                }
-            }
-            if ($inSolution) {
-                Write-Host "✓ $relativePath is in solution"
-            } else {
-                Write-Host "✗ $relativePath is NOT in solution - needs to be added"
-            }
-          }
-        }
-
     - name: Run tests with coverage (verbose)
       run: |
         Write-Host "Running tests with detailed output..."
