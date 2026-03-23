@@ -39,24 +39,24 @@ stages:
             cd test/host/GovUk.Forms.HostApp.PageTest
             bin/$(buildConfiguration)/net10.0/playwright.ps1 install
             
-      #- task: DotNetCoreCLI@2
-      #  displayName: 'Run Tests'
-      #  inputs:
-      #    command: test
-      #    projects: '**/*Test/*.csproj'
-      #    arguments: '--configuration $(buildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/*Test/*.csproj'
+          arguments: '--configuration $(buildConfiguration)'
 
       #- task: DotNetCoreCLI@2
       #  displayName: 'Publish Project'
       #  inputs:
       #    command: 'publish'
       #    publishWebProjects: false
-      #    projects: '**/*.csproj'
+      #    projects: '**/GovUk.Forms.HostApp.csproj'
       #    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
       #- task: PublishPipelineArtifact@1
       #  displayName: 'Publish Artifact'
       #  inputs:
       #    targetPath: '$(Build.ArtifactStagingDirectory)'
-      #    artifactName: 'Insolvency.CalculationsEngine'
+      #    artifactName: 'GovUk.Forms.HostApp'
       #  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
