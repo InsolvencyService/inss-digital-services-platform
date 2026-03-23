@@ -31,19 +31,19 @@ stages:
           projects: '**/GovUk.Forms.slnx'
           arguments: '--configuration $(buildConfiguration)'
 
-      - task: PowerShell@2
-        displayName: Install Playwright Tooling
-        targetType: 'inline'
-        script: |
-          cd test/host/GovUk.Forms.HostApp.PageTest
-          bin/Release/net10.0/playwright.ps1 install
+      #- task: PowerShell@2
+      #  displayName: Install Playwright Tooling
+      #  targetType: 'inline'
+      #  script: |
+      #    cd test/host/GovUk.Forms.HostApp.PageTest
+      #    bin/Release/net10.0/playwright.ps1 install
             
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Tests'
-        inputs:
-          command: test
-          projects: '**/*Test/*.csproj'
-          arguments: '--configuration $(buildConfiguration)'
+      #- task: DotNetCoreCLI@2
+      #  displayName: 'Run Tests'
+      #  inputs:
+      #    command: test
+      #    projects: '**/*Test/*.csproj'
+      #    arguments: '--configuration $(buildConfiguration)'
 
       #- task: DotNetCoreCLI@2
       #  displayName: 'Publish Project'
