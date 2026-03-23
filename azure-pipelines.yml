@@ -33,10 +33,11 @@ stages:
 
       - task: PowerShell@2
         displayName: Install Playwright Tooling
-        targetType: 'inline'
-        script: |
-          cd test/host/GovUk.Forms.HostApp.PageTest
-          bin/$(buildConfiguration)/net10.0/playwright.ps1 install
+        inputs:
+          targetType: 'inline'
+          script: |
+            cd test/host/GovUk.Forms.HostApp.PageTest
+            bin/$(buildConfiguration)/net10.0/playwright.ps1 install
             
       #- task: DotNetCoreCLI@2
       #  displayName: 'Run Tests'
