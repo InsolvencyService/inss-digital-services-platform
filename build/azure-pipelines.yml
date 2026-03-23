@@ -17,14 +17,6 @@ stages:
         inputs:
           version: '10.0.x'
 
-      - task: Cache@2
-        displayName: Cache NuGet Packages
-        inputs:
-          key: 'nuget | "$(Agent.OS)" | **/*.csproj, **/*.slnx'
-          restoreKeys: |
-            nuget | "$(Agent.OS)"
-          path: $(Pipeline.Workspace)/.nuget/packages
-
       - task: DotNetCoreCLI@2
         displayName: NuGet Restore
         inputs:
