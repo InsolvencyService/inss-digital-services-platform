@@ -1,8 +1,0 @@
-﻿@model INSS.Platform.Portal.Domain.FormModel
-
-<inss-task-list>
-    @foreach(var section in Model.Sections)
-    {
-        <inss-task-list-item name="@(section.Title)" is-complete="@(section.IsComplete)" url="@(section.GetStartUrl())" />
-    }
-</inss-task-list>

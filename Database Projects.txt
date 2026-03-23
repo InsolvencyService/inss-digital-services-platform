@@ -1,8 +1,0 @@
-The database projects are not included in this solution because some of the dependencies are not available in the PR build environment.
-
-Ideally we need a task to build them seperately and publish the artifacts for use in the main build.
-
-The database projects can be accessed via \inss-digital-services-platform\Apps\Infra\Database\INSS.Platform.Database.sln
-
-
-
