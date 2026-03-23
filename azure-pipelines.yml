@@ -18,14 +18,6 @@ stages:
         inputs:
           version: '10.0.x'
 
-      - task: Cache@2
-        displayName: Cache NuGet Packages
-        inputs:
-          key: 'nuget | "$(Agent.OS)" | **/packages.lock.json'
-          restoreKeys: |
-            nuget | "$(Agent.OS)"
-          path: $(NUGET_PACKAGES)
-
       - task: DotNetCoreCLI@2
         displayName: NuGet Restore
         inputs:
@@ -39,12 +31,12 @@ stages:
           projects: '**/GovUk.Forms.slnx'
           arguments: '--configuration $(buildConfiguration)'
 
-      #- task: PowerShell@2
-      #  displayName: Install Playwright Tooling
-      #  targetType: 'inline'
-      #  script: |
-      #    cd test/host/GovUk.Forms.HostApp.PageTest
-      #    bin/Release/net10.0/playwright.ps1 install
+      - task: PowerShell@2
+        displayName: Install Playwright Tooling
+        targetType: 'inline'
+        script: |
+          cd test/host/GovUk.Forms.HostApp.PageTest
+          bin/$(buildConfiguration)/net10.0/playwright.ps1 install
             
       #- task: DotNetCoreCLI@2
       #  displayName: 'Run Tests'
