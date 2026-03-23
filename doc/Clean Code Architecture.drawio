@@ -1,0 +1,45 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.2 Safari/605.1.15" version="29.3.6">
+  <diagram name="Page-1" id="rO7QVetUb5hncCseul6t">
+    <mxGraphModel dx="1018" dy="639" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="GK88zm_BquKs2OoFjak1-9" edge="1" parent="1" source="GK88zm_BquKs2OoFjak1-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="GK88zm_BquKs2OoFjak1-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-10" edge="1" parent="1" source="GK88zm_BquKs2OoFjak1-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="GK88zm_BquKs2OoFjak1-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-12" connectable="0" parent="GK88zm_BquKs2OoFjak1-10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Bootstrapping" vertex="1">
+          <mxGeometry relative="1" x="0.2833" y="2" as="geometry">
+            <mxPoint x="6" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-1" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="Gov.Uk.Forms.Components" vertex="1">
+          <mxGeometry height="70" width="200" x="150" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-2" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="Gov.Uk.Forms.Domain" vertex="1">
+          <mxGeometry height="70" width="200" x="40" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-11" edge="1" parent="1" source="GK88zm_BquKs2OoFjak1-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="GK88zm_BquKs2OoFjak1-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-4" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="Gov.Uk.Forms.Application" vertex="1">
+          <mxGeometry height="70" width="200" x="40" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-5" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="Gov.Uk.Forms.Infrastructure" vertex="1">
+          <mxGeometry height="70" width="200" x="290" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-8" edge="1" parent="1" source="GK88zm_BquKs2OoFjak1-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="GK88zm_BquKs2OoFjak1-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-6" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="Gov.Uk.Forms.WebApp" vertex="1">
+          <mxGeometry height="70" width="200" x="150" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="GK88zm_BquKs2OoFjak1-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=11;" value="Services/Bootstrapping" vertex="1">
+          <mxGeometry height="30" width="130" x="60" y="380" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

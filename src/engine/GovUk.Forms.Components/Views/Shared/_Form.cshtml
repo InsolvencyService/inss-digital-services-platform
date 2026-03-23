@@ -1,0 +1,12 @@
+﻿@model FormModel
+
+<govuk-task-list>
+    @foreach(SectionModel section in Model.Sections)
+    {
+        <govuk-task-list-item 
+            name="@(section.Title)" 
+            is-complete="@(section.State == SectionStateTypes.Completed)" 
+            state="@(section.State.Description())" 
+            url="@(section.FirstPage.Path)" />
+    }
+</govuk-task-list>

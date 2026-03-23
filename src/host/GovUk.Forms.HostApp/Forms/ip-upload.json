@@ -1,0 +1,110 @@
+{
+  "Sections": [
+    {
+      "Title": "IP Upload",
+      "State": "NotStarted",
+      "Pages": [
+        {
+          "$type": "IPUploadDeclarationModel",
+          "Accepted": false,
+          "Key": "IPUpload-Declaration",
+          "Html": null,
+          "EditMode": "NotStarted",
+          "Title": "Declaration",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Agree and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "9ef72d64-084b-4efa-972e-1017e6623ef8",
+          "Path": "/ip-upload/redundancy-payment/declaration",
+          "ViewName": "_StaticHtml",
+          "SubmitType": "Section",
+          "TypeName": "GovUk.Forms.IPUpload.Domain.IPUploadDeclarationModel"
+        },
+        {
+          "$type": "XmlFileUploadModel",
+          "Filename": null,
+          "Contents": null,
+          "Length": 0,
+          "SizeInMb": 0,
+          "EditMode": "NotStarted",
+          "Title": "Upload document",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "cf8bb6ee-2323-4b16-ab7a-6630128f133b",
+          "Path": "/ip-upload/redundancy-payment/upload-document",
+          "ViewName": "_FileUpload",
+          "SubmitType": "Section",
+          "TypeName": "GovUk.Forms.IPUpload.Domain.XmlFileUploadModel"
+        },
+        {
+          "$type": "IPUploadXmlErrorsModel",
+          "Filename": null,
+          "HasErrors": false,
+          "EditMode": "NotStarted",
+          "Title": "IP upload errors",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "1cf1cc0c-7903-499b-80af-7a2ddc12c865",
+          "Path": "/ip-upload/redundancy-payment/upload-errors",
+          "ViewName": "_IPUploadXmlErrors",
+          "SubmitType": "Section",
+          "TypeName": "GovUk.Forms.IPUpload.Domain.IPUploadXmlErrorsModel"
+        },
+        {
+          "$type": "SummaryModel",
+          "EditMode": "NotStarted",
+          "Title": "Redundancy payment summary",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": "Check your answers before sending the form",
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Send form"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "102f76af-4e3f-4da0-b232-5703ae1c42b0",
+          "Path": "/ip-upload/redundancy-payment/summary",
+          "ViewName": "_Summary",
+          "SubmitType": "Section",
+          "TypeName": "GovUk.Forms.Domain.SummaryModel"
+        }
+      ],
+      "Id": "c491a302-07ae-414e-99a0-eb6ad1308b30",
+      "Path": "/ip-upload/redundancy-payment",
+      "ViewName": "_Section",
+      "SubmitType": "Section",
+      "TypeName": "GovUk.Forms.Domain.SectionModel"
+    }
+  ],
+  "CanSubmit": false,
+  "Id": "30f6dc8a-01f5-413a-828e-d9aa0d5ba723",
+  "Path": "/ip-upload",
+  "ViewName": "_Form",
+  "SubmitType": "Section",
+  "TypeName": "GovUk.Forms.Domain.FormModel"
+}

@@ -1,0 +1,7 @@
+﻿@model MoneyModel
+
+<govuk-input for="@Model.Amount" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-10" inputmode="numeric">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.MetaData.Question ?? "What is the amount?")</govuk-input-label>
+    <govuk-input-hint>@(Model.MetaData.Hint ?? "Enter value in pounds only")</govuk-input-hint>
+    <govuk-input-prefix>&pound;</govuk-input-prefix>
+</govuk-input>

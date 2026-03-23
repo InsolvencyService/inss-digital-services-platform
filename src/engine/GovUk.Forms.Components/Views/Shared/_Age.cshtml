@@ -1,0 +1,6 @@
+﻿@model AgeModel
+
+<govuk-input for="@Model.Value" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-10" inputmode="numeric">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.MetaData.Question ?? "What is your age?")</govuk-input-label>
+    <govuk-input-hint>@(Model.MetaData.Hint ?? "Enter value between 16 and 80 inclusive")</govuk-input-hint>
+</govuk-input>

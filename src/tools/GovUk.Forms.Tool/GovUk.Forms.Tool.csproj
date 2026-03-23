@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.AboutYou\Demo.GovUk.Forms.AboutYou.csproj" />
+      <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Bankruptcy\Demo.GovUk.Forms.Bankruptcy.csproj" />
+      <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
+      <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
+    </ItemGroup>
+
+</Project>

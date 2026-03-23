@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="www.inss.gsi.gov.uk/RP14A_Application" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns="www.inss.gsi.gov.uk/RP14A_Application" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="RP14A">
+        <xsd:annotation>
+            <xsd:documentation>Comment describing your root element</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Header">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="CaseReference" type="CaseReferenceType">
+                                <xsd:annotation>
+                                    <xsd:documentation>Case Reference to which this document relates.</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element name="DMSDocumentID" type="xsd:string" minOccurs="0">
+                                <xsd:annotation>
+                                    <xsd:documentation>The DMS document ID to which this document relates.</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element name="ClaimReference" type="xsd:string" minOccurs="0">
+                                <xsd:annotation>
+                                    <xsd:documentation>Claim Reference to which this document relates.</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element name="CHAMPDocumentID" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="EmployerName" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="Employee" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="EmployeeName" type="NameType"/>
+                            <xsd:element name="NIClass" minOccurs="0">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:string">
+                                        <xsd:maxLength value="1"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:element>
+                            <xsd:element name="NINO" type="NinoType"/>
+                            <xsd:element name="DateOfBirth" type="xsd:date" minOccurs="0"/>
+                            <xsd:element name="StartDate" type="xsd:date" minOccurs="0"/>
+                            <xsd:element name="DateNoticeGiven" type="xsd:date" minOccurs="0"/>
+                            <xsd:element name="EndDate" type="xsd:date" minOccurs="0"/>
+                            <xsd:element name="IsDirector" type="YesNoType" minOccurs="0"/>
+                            <xsd:element name="AverageHoursWorked" minOccurs="0">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:decimal">
+                                        <xsd:fractionDigits value="1"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:element>
+                            <xsd:element name="MoneyOwedToEmployer" minOccurs="0">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:decimal">
+                                        <xsd:fractionDigits value="2"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:element>
+                            <xsd:element name="EntitledToRedundancyPay" type="YesNoType" minOccurs="0"/>
+                            <xsd:element name="EntitledToNoticePay" type="YesNoType" minOccurs="0"/>
+
+                            <xsd:element name="PayDetails">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <!--  Added Restriction to allow only 2 decimal digits 27-09-2011 14:09  -->
+                                        <xsd:element name="BasicPayPerWeek" minOccurs="0">
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:decimal">
+                                                    <xsd:fractionDigits value="2"/>
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xsd:element>
+
+                                        <xsd:element name="ComponentPayPerWeek" minOccurs="0" maxOccurs="8">
+                                            <xsd:annotation>
+                                                <xsd:documentation>Override for base pay when calculating a component rate.</xsd:documentation>
+                                            </xsd:annotation>
+
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="ComponentType" minOccurs="1" maxOccurs="1">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="Redundancy Pay"/>
+                                                                <xsd:enumeration value="Arrears of Pay"/>
+                                                                <xsd:enumeration value="Holiday Pay Taken Not Paid"/>
+                                                                <xsd:enumeration value="Holiday Pay Accrued"/>
+                                                                <xsd:enumeration value="Protective Award"/>
+                                                                <xsd:enumeration value="Compensatory Notice Pay"/>
+                                                                <xsd:enumeration value="Refund of Notional Tax"/>
+                                                                <xsd:enumeration value="Basic Award"/>
+                                                                <xsd:enumeration value="Notice Worked Not Paid"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                    <xsd:element name="ComponentRate" minOccurs="0" maxOccurs="1">
+                                                        <xsd:simpleType>
+                                                            <xsd:union>
+                                                                <xsd:simpleType>
+                                                                    <xsd:restriction base="xsd:decimal">
+                                                                        <xsd:fractionDigits value="2"/>
+                                                                    </xsd:restriction>
+                                                                </xsd:simpleType>
+                                                                <xsd:simpleType>
+                                                                    <xsd:restriction base="xsd:string">
+                                                                        <xsd:whiteSpace value="collapse"/>
+                                                                        <xsd:length value="0"/>
+                                                                    </xsd:restriction>
+                                                                </xsd:simpleType>
+                                                            </xsd:union>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                    <xsd:element name="ComponentRateStatus" minOccurs="1" maxOccurs="1" default="Rate provided">
+                                                        <xsd:annotation>
+                                                            <xsd:documentation>If the component rate is available, and if not, why.</xsd:documentation>
+                                                        </xsd:annotation>
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <!-- Rate has been provided in ComponentRate -->
+                                                                <xsd:enumeration value="Rate provided"/>
+
+                                                                <!-- Placeholder for components where it's not relevant -->
+                                                                <xsd:enumeration value="No rate defined in law" />
+
+                                                                <!-- Placeholder for interim processes -->
+                                                                <xsd:enumeration value="Data not yet available" />
+                                                                <xsd:enumeration value="Data to be requested from IP" />
+
+                                                                <!-- Reasons 52 week rate doesn't apply -->
+                                                                <xsd:enumeration value="Fixed rate of pay" />
+                                                                <xsd:enumeration value="No holiday pay payable"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+
+                                        <xsd:element name="WeeklyPayDay" minOccurs="0">
+                                            <xsd:annotation>
+                                                <xsd:documentation>Pay day, if paid weekly. </xsd:documentation>
+                                            </xsd:annotation>
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:string">
+                                                    <xsd:enumeration value="Sunday"/>
+                                                    <xsd:enumeration value="Monday"/>
+                                                    <xsd:enumeration value="Tuesday"/>
+                                                    <xsd:enumeration value="Wednesday"/>
+                                                    <xsd:enumeration value="Thursday"/>
+                                                    <xsd:enumeration value="Friday"/>
+                                                    <xsd:enumeration value="Saturday"/>
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="ArrearsOfPay" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="ArrearsOfPayPeriod" maxOccurs="unbounded">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="Period" type="PeriodType"/>
+                                                                <!--  Added Restriction to allow only 2 decimal digits 27-09-2011 14:30  -->
+                                                                <xsd:element name="AOPOwed" minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:decimal">
+                                                                            <xsd:fractionDigits value="2"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                                <xsd:element name="PayType" minOccurs="0">
+                                                                    <xsd:simpleType>
+                                                                        <xsd:restriction base="xsd:string">
+                                                                            <xsd:enumeration value="wages"/>
+                                                                            <xsd:enumeration value="bouncedcheque"/>
+                                                                            <xsd:enumeration value="attachmentofearnings"/>
+                                                                            <xsd:enumeration value="overtime"/>
+                                                                            <xsd:enumeration value="commission"/>
+                                                                        </xsd:restriction>
+                                                                    </xsd:simpleType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Holiday" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="HolidayYearStart" type="xsd:date" minOccurs="0"/>
+                                        <xsd:element name="HolidayContractedEntitlementDays" minOccurs="0">
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:decimal">
+                                                    <xsd:fractionDigits value="1"/>
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="HolidayDaysCarriedForward" minOccurs="0">
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:decimal">
+                                                    <xsd:fractionDigits value="1"/>
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="HolidayDaysTaken" minOccurs="0">
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:decimal">
+                                                    <xsd:fractionDigits value="1"/>
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xsd:element>
+                                        <xsd:element name="HolidayNotPaid" minOccurs="0">
+                                            <xsd:annotation>
+                                                <xsd:documentation>Holiday taken but not paid </xsd:documentation>
+                                            </xsd:annotation>
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="Holiday" type="PeriodType" maxOccurs="unbounded"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <!--  Added Restriction to allow only 2 decimal digits 27-09-2011 14:31  -->
+                                        <xsd:element name="NoDaysHolidayOwed" minOccurs="0">
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:decimal">
+                                                    <xsd:fractionDigits value="2"/>
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:simpleType name="NinoType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-CEGHJ-PR-TW-Za-ceghj-pr-tw-z]{1}[A-CEGHJ-NPR-TW-Za-ceghj-npr-tw-z]{1}[0-9]{6}[A-DFMa-dfm]{1}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="CaseReferenceType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="CN[0-9]{8}|cn[0-9]{8}|Cn[0-9]{8}|cN[0-9]{8}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="YesNoType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Yes"/>
+            <xsd:enumeration value="No"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="NameType">
+        <xsd:sequence>
+            <xsd:element name="Surname" type="xsd:string"/>
+            <xsd:element name="Forenames" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="Title" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PeriodType">
+        <xsd:sequence>
+            <xsd:element name="StartDate" type="xsd:date"/>
+            <xsd:element name="EndDate" type="xsd:date"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

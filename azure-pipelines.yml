@@ -1,0 +1,62 @@
+trigger:
+  - develop
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  - name: buildConfiguration
+    value: 'Release'
+
+stages:
+  - stage: BuildTest
+    displayName: 'Build and Test'
+    jobs:
+    - job:
+      steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '10.0.x'
+
+      - task: DotNetCoreCLI@2
+        displayName: NuGet Restore
+        inputs:
+          command: 'restore'
+          projects: '**/GovUk.Forms.slnx'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Build Solution'
+        inputs:
+          command: 'build'
+          projects: '**/GovUk.Forms.slnx'
+          arguments: '--configuration $(buildConfiguration)'
+
+      - task: PowerShell@2
+        displayName: Install Playwright Tooling
+        inputs:
+          targetType: 'inline'
+          script: |
+            cd test/host/GovUk.Forms.HostApp.PageTest
+            bin/$(buildConfiguration)/net10.0/playwright.ps1 install
+            
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Tests'
+        inputs:
+          command: test
+          projects: '**/*Test/*.csproj'
+          arguments: '--configuration $(buildConfiguration)'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Publish HostApp'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/GovUk.Forms.HostApp.csproj'
+          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish HostApp Artifact'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'GovUk.Forms.HostApp'
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))

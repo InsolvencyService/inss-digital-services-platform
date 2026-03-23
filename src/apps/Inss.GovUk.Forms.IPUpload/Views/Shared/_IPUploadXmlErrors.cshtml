@@ -1,0 +1,11 @@
+﻿@model IPUploadXmlErrorsModel
+
+<h1 class="govuk-heading-l">Your form has errors</h1>
+
+<p class="govuk-body">You uploaded:<br><strong>@Model.Filename</strong></p>
+
+<p class="govuk-body">The following errors were found when validating your form. Check the details and try uploading again.</p>
+
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Case"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employment dates"))

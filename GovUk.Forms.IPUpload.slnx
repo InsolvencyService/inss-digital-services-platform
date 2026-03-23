@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/apps/">
+    <Project Path="src/apps/GovUk.Forms.IPUpload/GovUk.Forms.IPUpload.csproj" />
+  </Folder>
+  <Folder Name="/src/engine/">
+    <Project Path="src/engine/GovUk.Forms.Application/GovUk.Forms.Application.csproj" />
+    <Project Path="src/engine/GovUk.Forms.Components/GovUk.Forms.Components.csproj" />
+    <Project Path="src/engine/GovUk.Forms.Domain/GovUk.Forms.Domain.csproj" />
+    <Project Path="src/engine/GovUk.Forms.Infrastructure/GovUk.Forms.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/test/host/">
+    <Project Path="test/host/GovUk.Forms.WebApp.PageTest/GovUk.Forms.WebApp.PageTest.csproj" />
+    <Project Path="test/host/GovUk.Forms.WebApp.Test/GovUk.Forms.WebApp.Test.csproj" />
+  </Folder>
+  <Folder Name="/src/host/">
+    <Project Path="src/host/GovUk.Forms.WebApp/GovUk.Forms.WebApp.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+  <Folder Name="/test/apps/">    
+    <Project Path="test/apps/GovUk.Forms.IPUpload.Test/GovUk.Forms.IPUpload.Test.csproj" />
+  </Folder>
+  <Folder Name="/test/engine/">
+    <Project Path="test/engine/GovUk.Forms.Application.Test/GovUk.Forms.Application.Test.csproj" />
+    <Project Path="test/engine/GovUk.Forms.Components.Test/GovUk.Forms.Components.Test.csproj" />
+    <Project Path="test/engine/GovUk.Forms.Domain.Test/GovUk.Forms.Domain.Test.csproj" />
+  </Folder>
+</Solution>

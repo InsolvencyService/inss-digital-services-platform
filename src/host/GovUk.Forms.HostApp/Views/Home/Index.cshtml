@@ -1,0 +1,35 @@
+﻿@model HomeModel
+
+<h1 class="govuk-heading-l">Welcome to the Insolvency Service<br/>demo site</h1>
+
+<govuk-warning-text icon-fallback-text="Warning">
+    This site is for demonstration purposes only.
+</govuk-warning-text>
+
+<p class="govuk-body">
+    The Insolvency Service are a government agency that helps to deliver
+    economic confidence by supporting those in financial distress, tackling
+    financial wrongdoing and maximising returns to creditors.
+</p>
+
+<p class="govuk-body">
+    The Insolvency Service is an executive agency, 
+    sponsored by the <a class="govuk-link" href="https://www.gov.uk/government/organisations/department-for-business-and-trade" target="_blank">Department for Business and Trade</a>.
+</p>
+
+<p class="govuk-body">
+    The links below demonstrate the following:
+</p>
+
+<ul class="govuk-list govuk-list--bullet">
+    <li>View the demo forms</li>
+    <li>Save draft data (in-memory)</li>
+    <li>Submit data to a database (TBD)</li>
+</ul>
+
+@foreach (FormModel form in Model.Forms)
+{
+    <p class="govuk-body">
+        Try the <a href="@(form.Root)" class="govuk-link">@(form.Name)</a> form.
+    </p>    
+}
