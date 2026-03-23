@@ -46,17 +46,17 @@ stages:
           projects: '**/*Test/*.csproj'
           arguments: '--configuration $(buildConfiguration)'
 
-      #- task: DotNetCoreCLI@2
-      #  displayName: 'Publish Project'
-      #  inputs:
-      #    command: 'publish'
-      #    publishWebProjects: false
-      #    projects: '**/GovUk.Forms.HostApp.csproj'
-      #    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      - task: DotNetCoreCLI@2
+        displayName: 'Publish HostApp'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/GovUk.Forms.HostApp.csproj'
+          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-      #- task: PublishPipelineArtifact@1
-      #  displayName: 'Publish Artifact'
-      #  inputs:
-      #    targetPath: '$(Build.ArtifactStagingDirectory)'
-      #    artifactName: 'GovUk.Forms.HostApp'
-      #  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish HostApp Artifact'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'GovUk.Forms.HostApp'
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
