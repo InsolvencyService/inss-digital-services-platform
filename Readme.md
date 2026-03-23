@@ -70,10 +70,10 @@ such as using the date component for both dob and also date of employment. Both 
 
 ## End-to-End Tests
 
-The _GovUk.Forms.WebApp.Test_ project contains a few _Playwright_ tests to demonstrate usage. This also uses the _WebApplicationFactory_ in 
+The _GovUk.Forms.HostApp.PageTest_ project contains a few _Playwright_ tests to demonstrate usage. This also uses the _WebApplicationFactory_ in 
 conjunction with _Playwright_ to allow running of the tests locally without explicitly needing to run the web app and also in a pipline.
 
-The work is based upon the following liknk:
+The work is based upon the following link:
 
 https://danieldonbavand.com/2022/06/13/using-playwright-with-the-webapplicationfactory-to-test-a-blazor-application/
 
@@ -84,6 +84,15 @@ as the tests run headless in that context.
 
 Ideally we would have mocks for the externals to allow a subset of the tests to run at build time and then also a fuller pack of tests 
 that can run against and environment after deployment - without mocks.
+
+To get these running locally, from the repository root:
+
+```bash
+cd test/host/GovUk.Forms.HostApp.PageTest
+
+bin/Debug/net10.0/playwright.ps1 install
+
+```
 
 ## Links
 
