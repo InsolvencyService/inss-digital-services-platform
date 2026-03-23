@@ -1,5 +1,5 @@
 trigger:
-  - develop-reset
+  - develop
 
 pool:
   vmImage: windows-latest
