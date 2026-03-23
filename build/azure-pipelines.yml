@@ -5,8 +5,7 @@ pool:
   vmImage: windows-latest
 
 variables:
-  - name: buildConfiguration
-    value: 'Release'
+  - group: PlatformBuild
 
 stages:
   - stage: BuildTest
@@ -29,7 +28,7 @@ stages:
         inputs:
           command: 'build'
           projects: '**/GovUk.Forms.slnx'
-          arguments: '--configuration $(buildConfiguration)'
+          arguments: '--configuration $(BuildConfiguration)'
 
       - task: PowerShell@2
         displayName: Install Playwright Tooling
@@ -37,14 +36,14 @@ stages:
           targetType: 'inline'
           script: |
             cd test/host/GovUk.Forms.HostApp.PageTest
-            bin/$(buildConfiguration)/net10.0/playwright.ps1 install
+            bin/$(BuildConfiguration)/net10.0/playwright.ps1 install
             
       - task: DotNetCoreCLI@2
         displayName: 'Run Tests'
         inputs:
           command: test
           projects: '**/*Test/*.csproj'
-          arguments: '--configuration $(buildConfiguration)'
+          arguments: '--configuration $(BuildConfiguration)'
 
       - task: DotNetCoreCLI@2
         displayName: 'Publish HostApp'
