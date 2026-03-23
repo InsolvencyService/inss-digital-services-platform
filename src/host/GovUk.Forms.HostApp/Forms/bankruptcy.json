@@ -1,0 +1,65 @@
+{
+  "Sections": [
+    {
+      "Title": "Bankruptcy",
+      "State": "NotStarted",
+      "Pages": [
+        {
+          "$type": "DateModel",
+          "Day": 27,
+          "Month": 3,
+          "Year": 2001,
+          "Value": "2001-03-27",
+          "EditMode": "NotStarted",
+          "Title": "Date you went bankrupt",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": "When did you go bankrupt?",
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "f4559652-a134-4337-987a-aebc5d8627d4",
+          "Path": "/bankruptcy/your-bankruptcy/date-bankrupt",
+          "ViewName": "_Date",
+          "SubmitType": "Form",
+          "TypeName": "GovUk.Forms.Domain.DateModel"
+        },
+        {
+          "$type": "SummaryModel",
+          "EditMode": "NotStarted",
+          "Title": "Bankruptcy summary",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "f306942a-5e9c-4dc0-a05b-1dea82a04082",
+          "Path": "/bankruptcy/your-bankruptcy/summary",
+          "ViewName": "_Summary",
+          "SubmitType": "Form",
+          "TypeName": "GovUk.Forms.Domain.SummaryModel"
+        }
+      ],
+      "Id": "26ed3e10-b1f5-4553-b075-bd93f7a1edd2",
+      "Path": "/bankruptcy/your-bankruptcy",
+      "ViewName": "_Section",
+      "SubmitType": "Form",
+      "TypeName": "GovUk.Forms.Domain.SectionModel"
+    }
+  ],
+  "CanSubmit": false,
+  "Id": "15a211ce-e3f3-43c1-b25f-2c50bebe06c2",
+  "Path": "/bankruptcy",
+  "ViewName": "_Form",
+  "SubmitType": "Form",
+  "TypeName": "GovUk.Forms.Domain.FormModel"
+}

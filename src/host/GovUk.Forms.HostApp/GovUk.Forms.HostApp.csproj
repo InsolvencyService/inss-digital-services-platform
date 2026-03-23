@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+    <PackageReference Include="GovUk.Frontend.AspNetCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Shared\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Form\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_Address.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_Form.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_FullName.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\_Summary.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\_ViewImports.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\_ViewStart.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Test\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\frontend\govuk-frontend-5.11.1.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\frontend\govuk-frontend-5.11.1.min.css.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\frontend\govuk-frontend-5.11.1.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\frontend\govuk-frontend-5.11.1.min.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\frontend\VERSION.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Controllers\FormController.Pages.cs">
+      <DependentUpon>FormController.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Controllers\FormController.Summary.cs">
+      <DependentUpon>FormController.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Form\Index.cshtml" />
+    <UpToDateCheckInput Remove="Views\Test\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.AboutYou\Demo.GovUk.Forms.AboutYou.csproj" />
+    <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Bankruptcy\Demo.GovUk.Forms.Bankruptcy.csproj" />
+    <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
+    <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
+    <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Infrastructure\RP14A.xsd" />
+    <None Remove="Infrastructure\Declaration.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\IPUpload-Declaration.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

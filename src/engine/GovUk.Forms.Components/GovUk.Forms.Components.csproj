@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="GovUk.Frontend.AspNetCore" />
+        <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+    </ItemGroup>
+    <ItemGroup>
+        <UpToDateCheckInput Remove="Views\Form\Index.cshtml" />
+        <UpToDateCheckInput Remove="Views\Shared\_Address.cshtml" />
+        <UpToDateCheckInput Remove="Views\Shared\_Form.cshtml" />
+        <UpToDateCheckInput Remove="Views\Shared\_FullName.cshtml" />
+        <UpToDateCheckInput Remove="Views\_ViewImports.cshtml" />
+        <UpToDateCheckInput Remove="Views\Remove\Index.cshtml" />
+    </ItemGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="Views\Shared\_Layout.cshtml" />
+        <AdditionalFiles Include="Views\_ViewStart.cshtml" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\GovUk.Forms.Application\GovUk.Forms.Application.csproj" />
+      <ProjectReference Include="..\GovUk.Forms.Infrastructure\GovUk.Forms.Infrastructure.csproj" />
+    </ItemGroup>
+</Project>

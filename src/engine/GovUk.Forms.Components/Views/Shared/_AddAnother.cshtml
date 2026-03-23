@@ -1,0 +1,32 @@
+﻿@model AddAnotherModel
+
+@*<h1 class="govuk-heading-xl">@Model.Heading</h1>
+
+@Html.HiddenFor(m => m.GroupLength)
+@Html.HiddenFor(m => m.Heading)*@
+
+@foreach (AddAnotherModel.AddAnotherSummaryModel item in Model.SummaryInfo)
+{
+    <govuk-summary-list>
+        <govuk-summary-list-row>
+            <govuk-summary-list-row-key>@(item.Value)</govuk-summary-list-row-key>
+            <govuk-summary-list-row-actions>
+                <govuk-summary-list-row-action href="@item.ChangeUrl" visually-hidden-text="Change @item.Value">Change</govuk-summary-list-row-action>
+                <govuk-summary-list-row-action href="@item.RemoveUrl" visually-hidden-text="Remove @item.Value">Remove</govuk-summary-list-row-action>
+            </govuk-summary-list-row-actions>
+        </govuk-summary-list-row>
+    </govuk-summary-list>
+}
+
+<govuk-radios for="@Model.AddAnotherItem">
+    <govuk-radios-fieldset>
+        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+            @(Model.Question ?? "Do you want to add another?")
+        </govuk-radios-fieldset-legend>
+        <govuk-radios-hint>
+            @(Model.Hint ?? "Choose an option below")
+        </govuk-radios-hint>
+        <govuk-radios-item value="true" checked="@Model.AddAnotherItem">Yes</govuk-radios-item>
+        <govuk-radios-item value="false" checked="@(!Model.AddAnotherItem)">No</govuk-radios-item>
+    </govuk-radios-fieldset>
+</govuk-radios>

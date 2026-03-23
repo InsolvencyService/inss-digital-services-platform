@@ -1,0 +1,16 @@
+﻿@model RemoveModel
+
+@Html.HiddenFor(m => m.SetIndex)
+
+<govuk-radios for="@Model.RemoveConfirmed" orientation="Vertical">
+    <govuk-radios-fieldset>
+        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+            @Model.RemoveQuestion
+        </govuk-radios-fieldset-legend>
+        <govuk-radios-hint>
+            @Model.RemoveHint
+        </govuk-radios-hint>
+        <govuk-radios-item value="true">Yes</govuk-radios-item>
+        <govuk-radios-item value="false">No</govuk-radios-item>
+    </govuk-radios-fieldset>
+</govuk-radios>

@@ -1,0 +1,891 @@
+{
+  "Sections": [
+    {
+      "Title": "Employee Details",
+      "State": "NotStarted",
+      "Pages": [
+        {
+          "$type": "AddAnotherGroup",
+          "WorkingPages": [
+            {
+              "$type": "FullNameModel",
+              "Value": "",
+              "EditMode": "NotStarted",
+              "Title": "Employee name",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the employee\u0027s name?",
+                "Hint": "Enter their first and last name",
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "66b1eb01-ea20-4dfe-929c-95877c83db62",
+              "Path": "/business/your-employee-details/employee-name",
+              "ViewName": "_FullName",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.FullNameModel"
+            },
+            {
+              "$type": "AgeModel",
+              "Value": 0,
+              "EditMode": "NotStarted",
+              "Title": "Employee age",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the employee\u0027s age?",
+                "Hint": null,
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "6192885a-1413-4135-b8d1-e7065ffcfd47",
+              "Path": "/business/your-employee-details/employee-age",
+              "ViewName": "_Age",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AgeModel"
+            }
+          ],
+          "SavablePages": [
+            {
+              "$type": "AddAnotherModel",
+              "AddAnotherItem": false,
+              "Items": [],
+              "Question": null,
+              "Hint": null,
+              "GroupLength": 0,
+              "EditMode": "NotStarted",
+              "Title": "Employee details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "6d7881cc-1a23-440a-bef0-94f6af450d50",
+              "Path": "/business/your-employee-details/add-another-employee",
+              "ViewName": "_AddAnother",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+            }
+          ],
+          "SubmittablePages": [],
+          "CheckAnswers": {
+            "Information": "Check your answers before continuing",
+            "EditMode": "NotStarted",
+            "Title": "Check employee details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Employees",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "fd8ddc3d-3052-4fee-abde-ed87290971ea",
+            "Path": "/business/your-employee-details/check-employee-details",
+            "ViewName": "_CheckAnswers",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.CheckAnswersModel"
+          },
+          "AddAnother": {
+            "AddAnotherItem": false,
+            "Items": [],
+            "Question": null,
+            "Hint": null,
+            "GroupLength": 0,
+            "EditMode": "NotStarted",
+            "Title": "Employee details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Employees",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "6d7881cc-1a23-440a-bef0-94f6af450d50",
+            "Path": "/business/your-employee-details/add-another-employee",
+            "ViewName": "_AddAnother",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+          },
+          "Remove": {
+            "RemoveQuestion": "Confirm Remove?",
+            "RemoveHint": "Select one option",
+            "RemoveConfirmed": false,
+            "SetIndex": -1,
+            "EditMode": "NotStarted",
+            "Title": "Remove employee details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Employees",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "359063a3-fcba-4f56-b6e0-77ea15b7a25c",
+            "Path": "/business/your-employee-details/remove-employee-details",
+            "ViewName": "_Remove",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.RemoveModel"
+          },
+          "Pages": [
+            {
+              "$type": "FullNameModel",
+              "Value": "",
+              "EditMode": "NotStarted",
+              "Title": "Employee name",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the employee\u0027s name?",
+                "Hint": "Enter their first and last name",
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "66b1eb01-ea20-4dfe-929c-95877c83db62",
+              "Path": "/business/your-employee-details/employee-name",
+              "ViewName": "_FullName",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.FullNameModel"
+            },
+            {
+              "$type": "AgeModel",
+              "Value": 0,
+              "EditMode": "NotStarted",
+              "Title": "Employee age",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the employee\u0027s age?",
+                "Hint": null,
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "6192885a-1413-4135-b8d1-e7065ffcfd47",
+              "Path": "/business/your-employee-details/employee-age",
+              "ViewName": "_Age",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AgeModel"
+            },
+            {
+              "$type": "CheckAnswersModel",
+              "Information": "Check your answers before continuing",
+              "EditMode": "NotStarted",
+              "Title": "Check employee details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "fd8ddc3d-3052-4fee-abde-ed87290971ea",
+              "Path": "/business/your-employee-details/check-employee-details",
+              "ViewName": "_CheckAnswers",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.CheckAnswersModel"
+            },
+            {
+              "$type": "RemoveModel",
+              "RemoveQuestion": "Confirm Remove?",
+              "RemoveHint": "Select one option",
+              "RemoveConfirmed": false,
+              "SetIndex": -1,
+              "EditMode": "NotStarted",
+              "Title": "Remove employee details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "359063a3-fcba-4f56-b6e0-77ea15b7a25c",
+              "Path": "/business/your-employee-details/remove-employee-details",
+              "ViewName": "_Remove",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.RemoveModel"
+            },
+            {
+              "$type": "AddAnotherModel",
+              "AddAnotherItem": false,
+              "Items": [],
+              "Question": null,
+              "Hint": null,
+              "GroupLength": 0,
+              "EditMode": "NotStarted",
+              "Title": "Employee details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Employees",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "6d7881cc-1a23-440a-bef0-94f6af450d50",
+              "Path": "/business/your-employee-details/add-another-employee",
+              "ViewName": "_AddAnother",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+            }
+          ],
+          "EditMode": "NotStarted",
+          "Title": "",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "Employees",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "76a331ce-2453-447f-b0f2-d329c18ba096",
+          "Path": "",
+          "ViewName": "_AddAnotherGroup",
+          "SubmitType": "Form",
+          "TypeName": "GovUk.Forms.Domain.AddAnotherGroup"
+        },
+        {
+          "$type": "SummaryModel",
+          "EditMode": "NotStarted",
+          "Title": "Employee summary",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "4db4b2f0-1c49-4102-a3e1-ad140847a690",
+          "Path": "/business/your-employee-details/summary",
+          "ViewName": "_Summary",
+          "SubmitType": "Form",
+          "TypeName": "GovUk.Forms.Domain.SummaryModel"
+        }
+      ],
+      "Id": "0bce60a5-be57-4d20-a1e0-c61e1e29bf5f",
+      "Path": "/business/your-employee-details",
+      "ViewName": "_Section",
+      "SubmitType": "Form",
+      "TypeName": "GovUk.Forms.Domain.SectionModel"
+    },
+    {
+      "Title": "Creditors and Debtors",
+      "State": "NotStarted",
+      "Pages": [
+        {
+          "$type": "AddAnotherGroup",
+          "WorkingPages": [
+            {
+              "$type": "FullNameModel",
+              "Value": "",
+              "EditMode": "NotStarted",
+              "Title": "Creditor name",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the creditor\u0027s name?",
+                "Hint": "Enter their first and last name",
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "d47aecbf-cc0c-4128-8eed-f8ab9b8ed0ff",
+              "Path": "/business/your-creditors-and-debtors/creditor-name",
+              "ViewName": "_FullName",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.FullNameModel"
+            },
+            {
+              "$type": "MoneyModel",
+              "Amount": 0,
+              "EditMode": "NotStarted",
+              "Title": "Amount owned to creditor",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the amount owned to the creditor?",
+                "Hint": null,
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "74f2b4fd-131b-4854-946a-de1773d55f21",
+              "Path": "/business/your-creditors-and-debtors/amount-owned-to-creditor",
+              "ViewName": "_Money",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.MoneyModel"
+            }
+          ],
+          "SavablePages": [
+            {
+              "$type": "AddAnotherModel",
+              "AddAnotherItem": false,
+              "Items": [],
+              "Question": null,
+              "Hint": null,
+              "GroupLength": 0,
+              "EditMode": "NotStarted",
+              "Title": "Creditor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "1b1d2410-0e51-4473-a4ec-a692fab46129",
+              "Path": "/business/your-creditors-and-debtors/add-another-creditor",
+              "ViewName": "_AddAnother",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+            }
+          ],
+          "SubmittablePages": [],
+          "CheckAnswers": {
+            "Information": "Check your answers before continuing",
+            "EditMode": "NotStarted",
+            "Title": "Check creditor details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Creditors",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "2f7f0e90-c5ea-406c-bf0d-c1f6718b1c5e",
+            "Path": "/business/your-creditors-and-debtors/check-creditor-details",
+            "ViewName": "_CheckAnswers",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.CheckAnswersModel"
+          },
+          "AddAnother": {
+            "AddAnotherItem": false,
+            "Items": [],
+            "Question": null,
+            "Hint": null,
+            "GroupLength": 0,
+            "EditMode": "NotStarted",
+            "Title": "Creditor details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Creditors",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "1b1d2410-0e51-4473-a4ec-a692fab46129",
+            "Path": "/business/your-creditors-and-debtors/add-another-creditor",
+            "ViewName": "_AddAnother",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+          },
+          "Remove": {
+            "RemoveQuestion": "Confirm Remove?",
+            "RemoveHint": "Select one option",
+            "RemoveConfirmed": false,
+            "SetIndex": -1,
+            "EditMode": "NotStarted",
+            "Title": "Remove creditor details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Creditors",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "5f75a580-34c9-4db2-8e8b-84f038ab4a33",
+            "Path": "/business/your-creditors-and-debtors/remove-creditor-details",
+            "ViewName": "_Remove",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.RemoveModel"
+          },
+          "Pages": [
+            {
+              "$type": "FullNameModel",
+              "Value": "",
+              "EditMode": "NotStarted",
+              "Title": "Creditor name",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the creditor\u0027s name?",
+                "Hint": "Enter their first and last name",
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "d47aecbf-cc0c-4128-8eed-f8ab9b8ed0ff",
+              "Path": "/business/your-creditors-and-debtors/creditor-name",
+              "ViewName": "_FullName",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.FullNameModel"
+            },
+            {
+              "$type": "MoneyModel",
+              "Amount": 0,
+              "EditMode": "NotStarted",
+              "Title": "Amount owned to creditor",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the amount owned to the creditor?",
+                "Hint": null,
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "74f2b4fd-131b-4854-946a-de1773d55f21",
+              "Path": "/business/your-creditors-and-debtors/amount-owned-to-creditor",
+              "ViewName": "_Money",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.MoneyModel"
+            },
+            {
+              "$type": "CheckAnswersModel",
+              "Information": "Check your answers before continuing",
+              "EditMode": "NotStarted",
+              "Title": "Check creditor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "2f7f0e90-c5ea-406c-bf0d-c1f6718b1c5e",
+              "Path": "/business/your-creditors-and-debtors/check-creditor-details",
+              "ViewName": "_CheckAnswers",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.CheckAnswersModel"
+            },
+            {
+              "$type": "RemoveModel",
+              "RemoveQuestion": "Confirm Remove?",
+              "RemoveHint": "Select one option",
+              "RemoveConfirmed": false,
+              "SetIndex": -1,
+              "EditMode": "NotStarted",
+              "Title": "Remove creditor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "5f75a580-34c9-4db2-8e8b-84f038ab4a33",
+              "Path": "/business/your-creditors-and-debtors/remove-creditor-details",
+              "ViewName": "_Remove",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.RemoveModel"
+            },
+            {
+              "$type": "AddAnotherModel",
+              "AddAnotherItem": false,
+              "Items": [],
+              "Question": null,
+              "Hint": null,
+              "GroupLength": 0,
+              "EditMode": "NotStarted",
+              "Title": "Creditor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Creditors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "1b1d2410-0e51-4473-a4ec-a692fab46129",
+              "Path": "/business/your-creditors-and-debtors/add-another-creditor",
+              "ViewName": "_AddAnother",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+            }
+          ],
+          "EditMode": "NotStarted",
+          "Title": "",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "Creditors",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "e72fde9a-124b-4ffa-a525-4c13542d83a7",
+          "Path": "",
+          "ViewName": "_AddAnotherGroup",
+          "SubmitType": "Form",
+          "TypeName": "GovUk.Forms.Domain.AddAnotherGroup"
+        },
+        {
+          "$type": "AddAnotherGroup",
+          "WorkingPages": [
+            {
+              "$type": "FullNameModel",
+              "Value": "",
+              "EditMode": "NotStarted",
+              "Title": "Debtor name",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the debtor\u0027s name?",
+                "Hint": "Enter their first and last name",
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "66bc48da-8278-4de2-9c2f-cb6b32030625",
+              "Path": "/business/your-creditors-and-debtors/debtor-name",
+              "ViewName": "_FullName",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.FullNameModel"
+            },
+            {
+              "$type": "MoneyModel",
+              "Amount": 0,
+              "EditMode": "NotStarted",
+              "Title": "Amount owned by the debtor",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the amount owned by the debtor?",
+                "Hint": null,
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "b517b3cc-ed51-486a-b2aa-5430cfef3ea9",
+              "Path": "/business/your-creditors-and-debtors/amount-owned-by-debtor",
+              "ViewName": "_Money",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.MoneyModel"
+            }
+          ],
+          "SavablePages": [
+            {
+              "$type": "AddAnotherModel",
+              "AddAnotherItem": false,
+              "Items": [],
+              "Question": null,
+              "Hint": null,
+              "GroupLength": 0,
+              "EditMode": "NotStarted",
+              "Title": "Debtor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "6f19eaf7-67ef-4fb3-89e8-4ce07b0bdb2a",
+              "Path": "/business/your-creditors-and-debtors/add-another-debtor",
+              "ViewName": "_AddAnother",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+            }
+          ],
+          "SubmittablePages": [],
+          "CheckAnswers": {
+            "Information": "Check your answers before continuing",
+            "EditMode": "NotStarted",
+            "Title": "Check debtor details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Debtors",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "97e4408f-3dbb-437d-b710-f3c1fc4acd52",
+            "Path": "/business/your-creditors-and-debtors/check-debtor-details",
+            "ViewName": "_CheckAnswers",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.CheckAnswersModel"
+          },
+          "AddAnother": {
+            "AddAnotherItem": false,
+            "Items": [],
+            "Question": null,
+            "Hint": null,
+            "GroupLength": 0,
+            "EditMode": "NotStarted",
+            "Title": "Debtor details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Debtors",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "6f19eaf7-67ef-4fb3-89e8-4ce07b0bdb2a",
+            "Path": "/business/your-creditors-and-debtors/add-another-debtor",
+            "ViewName": "_AddAnother",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+          },
+          "Remove": {
+            "RemoveQuestion": "Confirm Remove?",
+            "RemoveHint": "Select one option",
+            "RemoveConfirmed": false,
+            "SetIndex": -1,
+            "EditMode": "NotStarted",
+            "Title": "Remove debtor details",
+            "ReturnUrl": null,
+            "MetaData": {
+              "Question": null,
+              "Hint": null,
+              "Description": null,
+              "Group": "Debtors",
+              "SubmitButtonText": "Save and continue"
+            },
+            "LinkedToNode": "",
+            "PreviousPagePath": "",
+            "Id": "28e068ba-c9de-49b5-8852-970792c7668a",
+            "Path": "/business/your-creditors-and-debtors/remove-debtor-details",
+            "ViewName": "_Remove",
+            "SubmitType": "Form",
+            "TypeName": "GovUk.Forms.Domain.RemoveModel"
+          },
+          "Pages": [
+            {
+              "$type": "FullNameModel",
+              "Value": "",
+              "EditMode": "NotStarted",
+              "Title": "Debtor name",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the debtor\u0027s name?",
+                "Hint": "Enter their first and last name",
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "66bc48da-8278-4de2-9c2f-cb6b32030625",
+              "Path": "/business/your-creditors-and-debtors/debtor-name",
+              "ViewName": "_FullName",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.FullNameModel"
+            },
+            {
+              "$type": "MoneyModel",
+              "Amount": 0,
+              "EditMode": "NotStarted",
+              "Title": "Amount owned by the debtor",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": "What is the amount owned by the debtor?",
+                "Hint": null,
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "b517b3cc-ed51-486a-b2aa-5430cfef3ea9",
+              "Path": "/business/your-creditors-and-debtors/amount-owned-by-debtor",
+              "ViewName": "_Money",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.MoneyModel"
+            },
+            {
+              "$type": "CheckAnswersModel",
+              "Information": "Check your answers before continuing",
+              "EditMode": "NotStarted",
+              "Title": "Check debtor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "97e4408f-3dbb-437d-b710-f3c1fc4acd52",
+              "Path": "/business/your-creditors-and-debtors/check-debtor-details",
+              "ViewName": "_CheckAnswers",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.CheckAnswersModel"
+            },
+            {
+              "$type": "RemoveModel",
+              "RemoveQuestion": "Confirm Remove?",
+              "RemoveHint": "Select one option",
+              "RemoveConfirmed": false,
+              "SetIndex": -1,
+              "EditMode": "NotStarted",
+              "Title": "Remove debtor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "28e068ba-c9de-49b5-8852-970792c7668a",
+              "Path": "/business/your-creditors-and-debtors/remove-debtor-details",
+              "ViewName": "_Remove",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.RemoveModel"
+            },
+            {
+              "$type": "AddAnotherModel",
+              "AddAnotherItem": false,
+              "Items": [],
+              "Question": null,
+              "Hint": null,
+              "GroupLength": 0,
+              "EditMode": "NotStarted",
+              "Title": "Debtor details",
+              "ReturnUrl": null,
+              "MetaData": {
+                "Question": null,
+                "Hint": null,
+                "Description": null,
+                "Group": "Debtors",
+                "SubmitButtonText": "Save and continue"
+              },
+              "LinkedToNode": "",
+              "PreviousPagePath": "",
+              "Id": "6f19eaf7-67ef-4fb3-89e8-4ce07b0bdb2a",
+              "Path": "/business/your-creditors-and-debtors/add-another-debtor",
+              "ViewName": "_AddAnother",
+              "SubmitType": "Form",
+              "TypeName": "GovUk.Forms.Domain.AddAnotherModel"
+            }
+          ],
+          "EditMode": "NotStarted",
+          "Title": "",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "Debtors",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "4ec26968-a545-4f2a-a9ea-b353f0fe04a5",
+          "Path": "",
+          "ViewName": "_AddAnotherGroup",
+          "SubmitType": "Form",
+          "TypeName": "GovUk.Forms.Domain.AddAnotherGroup"
+        },
+        {
+          "$type": "SummaryModel",
+          "EditMode": "NotStarted",
+          "Title": "Creditors and debtors summary",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "",
+          "Id": "539eedc2-3614-4c96-a8bb-869c6b912bc3",
+          "Path": "/business/your-creditors-and-debtors/summary",
+          "ViewName": "_Summary",
+          "SubmitType": "Form",
+          "TypeName": "GovUk.Forms.Domain.SummaryModel"
+        }
+      ],
+      "Id": "584ef710-9d47-484d-8e13-59a4f64ada67",
+      "Path": "/business/your-creditors-and-debtors",
+      "ViewName": "_Section",
+      "SubmitType": "Form",
+      "TypeName": "GovUk.Forms.Domain.SectionModel"
+    }
+  ],
+  "CanSubmit": false,
+  "Id": "3bb62275-f39a-4090-b444-84672f3273ef",
+  "Path": "/business",
+  "ViewName": "_Form",
+  "SubmitType": "Form",
+  "TypeName": "GovUk.Forms.Domain.FormModel"
+}

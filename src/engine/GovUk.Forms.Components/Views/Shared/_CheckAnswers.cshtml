@@ -1,0 +1,30 @@
+﻿@model CheckAnswersModel
+
+<h1 class="govuk-heading-l">@Model.Information</h1>
+
+<govuk-summary-list>
+
+    @foreach (CheckAnswersModel.CheckAnswersItem page in Model.Items)
+    {
+        if (page.Values.Length == 0)
+        {
+            continue;
+        }
+
+        <govuk-summary-list-row>
+            <govuk-summary-list-row-key>
+                @(page.Title)
+            </govuk-summary-list-row-key>
+            <govuk-summary-list-row-value>
+                @foreach (string propValue in page.Values)
+                {
+                    <p class="govuk-body">@(propValue)</p>
+                }
+            </govuk-summary-list-row-value>
+            <govuk-summary-list-row-actions>
+                <govuk-summary-list-row-action href="@(page.ChangeUrl)" visually-hidden-text="@(page.Title)">Change</govuk-summary-list-row-action>
+            </govuk-summary-list-row-actions>
+        </govuk-summary-list-row>
+    }
+
+</govuk-summary-list>

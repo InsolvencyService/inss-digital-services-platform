@@ -1,0 +1,197 @@
+using System.Globalization;
+using GovUk.Forms.Domain.Enums;
+using GovUk.Forms.Domain.Exceptions;
+using GovUk.Forms.Domain.Serialization;
+using Xunit;
+
+namespace GovUk.Forms.Domain.Test;
+
+public class PageModelTests
+{
+    public PageModelTests()
+    {
+        FormSerializer.Initialize(typeof(PageModel).Assembly);
+    }
+    
+    [Fact]
+    public void SummaryModel_ClearValues_IgnoresSummary()
+    {
+        SummaryModel summary = new()
+        {
+            Overview = [new SummaryModel.SummaryInfo { Title = "Title", ChangeUrl = "/form/", Values = ["1"] }]
+        };
+
+        summary.ClearValues();
+
+        Assert.Single(summary.Overview);
+    }
+
+    [Fact]
+    public void NonSummaryModel_ClearValues_ResetsValues()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        TestSectionDefaults.YourDetails(section);
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
+        address.ReturnUrl = summary.Path;
+        address.EditMode = PageEditTypes.Saved;
+
+        address.ClearValues();
+
+        Assert.Null(address.AddressLine1);
+        Assert.Null(address.AddressLine2);
+        Assert.Null(address.TownCity);
+        Assert.Null(address.County);
+        Assert.Null(address.Postcode);
+        Assert.Null(address.ReturnUrl);
+        Assert.Equal(PageEditTypes.NotStarted, address.EditMode);
+    }
+
+    [Fact]
+    public void PopulatedModel_GetValues_ReturnsModelSummaryValues()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        TestSectionDefaults.YourDetails(section);
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+
+        string[] values = address.GetValues();
+
+        Assert.True(values.Contains(address.AddressLine1));
+        Assert.False(values.Contains(address.AddressLine2));
+        Assert.False(values.Contains(address.TownCity));
+        Assert.False(values.Contains(address.County));
+        Assert.False(values.Contains(address.Postcode));
+    }
+
+    [Fact]
+    public void DisplayFormattedModel_GetValues_ReturnsFormattedModelValue()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        TestSectionDefaults.YourDetails(section);
+        SalaryModel salary = section.Pages.GetFirstOf<SalaryModel>();
+
+        string[] values = salary.GetValues();
+
+        Assert.True(values.Contains(salary.Value.ToString("C", CultureInfo.CurrentCulture)));
+    }
+
+    [Fact]
+    public void PopulatedModelMismatch_CopyTo_ThrowsException()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        TestSectionDefaults.YourDetails(section);
+        AddressModel address = new();
+        SalaryModel copyOf = new();
+
+        ModelException exception = Assert.Throws<ModelException>(() => address.CopyTo(copyOf));
+        
+        Assert.Equal(
+            $"The target type to copy to {typeof(SalaryModel)} does not match the " +
+            $"page type {typeof(AddressModel)}.", exception.Message);
+    }
+
+    [Fact]
+    public void PopulatedModel_CopyTo_UpdatesUnsetVersion()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        TestSectionDefaults.YourDetails(section);
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        AddressModel copyOf = new();
+        
+        address.CopyTo(copyOf);
+        
+        Assert.Equal(address.AddressLine1, copyOf.AddressLine1);
+        Assert.Equal(address.AddressLine2, copyOf.AddressLine2);
+        Assert.Equal(address.TownCity, copyOf.TownCity);
+        Assert.Equal(address.County, copyOf.County);
+        Assert.Equal(address.Postcode, copyOf.Postcode);
+    }
+
+    [Fact]
+    public void PopulatedModel_Clone_ReturnsNewInstance()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        TestSectionDefaults.YourDetails(section);
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+
+        AddressModel cloneOf = (AddressModel)address.Clone();
+        
+        Assert.NotEqual(address, cloneOf);
+        Assert.Equal(address.AddressLine1, cloneOf.AddressLine1);
+        Assert.Equal(address.AddressLine2, cloneOf.AddressLine2);
+        Assert.Equal(address.TownCity, cloneOf.TownCity);
+        Assert.Equal(address.County, cloneOf.County);
+        Assert.Equal(address.Postcode, cloneOf.Postcode);
+    }
+
+    [Fact]
+    public void ForPageNotStarted_TransitionToEdit_SetsEditingMode()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        address.EditMode = PageEditTypes.NotStarted;
+        
+        address.TransitionToEdit("/form");
+        
+        Assert.Equal(PageEditTypes.Editing, address.EditMode);
+    }
+    
+    [Fact]
+    public void ForPageWithPreviousPagePath_TransitionToEdit_DoesNotOverridePreviousPagePath()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        address.PreviousPagePath = "/form/section/fullname";
+        
+        address.TransitionToEdit("/form");
+        
+        Assert.Equal("/form/section/fullname", address.PreviousPagePath);
+    }
+    
+    [Fact]
+    public void ForPageWithNoPreviousPagePath_TransitionToEdit_SetsPreviousPagePath()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        
+        address.TransitionToEdit("/form");
+        
+        Assert.Equal("/form", address.PreviousPagePath);
+    }
+    
+    [Fact]
+    public void NotLockedPage_IsLocked_ReturnsFalse()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        address.EditMode = PageEditTypes.Saved;
+        
+        bool isLocked = address.IsLocked();
+        
+        Assert.False(isLocked);
+    }
+    
+    [Fact]
+    public void LockedPage_IsLocked_ReturnsTrue()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        address.EditMode = PageEditTypes.Locked;
+        
+        bool isLocked = address.IsLocked();
+        
+        Assert.True(isLocked);
+    }
+    
+    [Fact]
+    public void SavedAndLockedPage_IsLocked_ReturnsTrue()
+    {
+        SectionModel section = TestSectionModels.CreateYourDetailsSection();
+        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        address.EditMode = PageEditTypes.Saved | PageEditTypes.Locked;
+        
+        bool isLocked = address.IsLocked();
+        
+        Assert.True(isLocked);
+    }
+}

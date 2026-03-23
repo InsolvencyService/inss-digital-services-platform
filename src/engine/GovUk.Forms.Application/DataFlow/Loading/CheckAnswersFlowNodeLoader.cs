@@ -1,0 +1,50 @@
+using System.Globalization;
+using GovUk.Forms.Application.Exceptions;
+using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Primitives;
+
+namespace GovUk.Forms.Application.DataFlow.Loading;
+
+public sealed class CheckAnswersFlowNodeLoader : IFlowNodeLoader
+{
+    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    {
+        CheckAnswersModel checkAnswers = context.Page.As<CheckAnswersModel>();
+        AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(checkAnswers.MetaData.Group);
+
+        if (context.State is not null)
+        {
+            int setIndex = int.Parse(context.State, CultureInfo.CurrentCulture);
+            PageModel[] pages = groupInfo.AddAnother.Items.Skip(setIndex * groupInfo.WorkingPages.Count).Take(groupInfo.WorkingPages.Count).ToArray();
+            
+            if (groupInfo.WorkingPages.Count != pages.Length)
+            {
+                throw new FlowchartException("The expected working pages not not match edit Ids.");
+            }
+            
+            for (int i = 0; i < pages.Length; i++)
+            {
+                pages[i].CopyTo(groupInfo.WorkingPages[i]);
+                groupInfo.WorkingPages[i].Id = pages[i].Id;
+            }
+        }
+        
+        List<CheckAnswersModel.CheckAnswersItem> itemList = [];
+        
+        foreach (PageModel groupPage in groupInfo.WorkingPages)
+        {
+            groupPage.ReturnUrl = checkAnswers.Path;
+            string[] values = groupPage.GetValues();
+            itemList.Add(new CheckAnswersModel.CheckAnswersItem
+            {
+                Title = groupPage.Title,
+                ChangeUrl = groupPage.Path,
+                Values = values
+            });
+        }
+
+        checkAnswers.Items = itemList.ToArray();
+
+        return ValueTask.FromResult<NodeId?>(null);
+    }
+}

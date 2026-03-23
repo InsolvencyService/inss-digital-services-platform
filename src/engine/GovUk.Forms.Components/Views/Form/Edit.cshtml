@@ -1,0 +1,36 @@
+﻿@model ContentModel
+
+@using (Html.BeginForm(Model))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id.Value)
+    @Html.HiddenFor(m => m.Path.Value)
+    @Html.HiddenFor(m => m.TypeName)
+    @Html.HiddenFor(m => m.ViewName)
+
+    if (Model.IsPageModel())
+    {
+        <govuk-back-link href="@(((PageModel)Model).PreviousPagePath.Value)"/>
+        @Html.HiddenFor(m => ((PageModel)m).LinkedToNode.Value)
+        @Html.HiddenFor(m => ((PageModel)m).MetaData.Question)
+        @Html.HiddenFor(m => ((PageModel)m).MetaData.Hint)
+        @Html.HiddenFor(m => ((PageModel)m).MetaData.Group.Value)
+    }
+    
+    @await Html.PartialAsync(Model.ViewName, Model)
+    
+    @if (Model is FormModel form)
+    {
+        if (form.SubmitType == SubmitTypes.Form)
+        {
+            <govuk-button type="submit" disabled="!@form.CanSubmit">@(Model.GetSubmitButtonText())</govuk-button>
+        }
+    }
+    else 
+    {
+        @if (!Model.IsPageLocked())
+        {
+            <govuk-button type="submit">@(Model.GetSubmitButtonText())</govuk-button>
+        }
+    }
+}
