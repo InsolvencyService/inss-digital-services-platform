@@ -1,10 +1,22 @@
 ﻿@model BankAccountModel
 
-<govuk-input for="@Model.AccountNumber" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-10" inputmode="text" spellcheck="false">
-    <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your account number?</govuk-input-label>
-    <govuk-input-hint>Must be 8 digits long</govuk-input-hint>
+<h1 class="govuk-heading-l">Bank or building society account details</h1>
+
+<govuk-input for="@Model.AccountName" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" autocomplete="name" spellcheck="false">
+    <govuk-input-label class="govuk-label">Name on the account name</govuk-input-label>
 </govuk-input>
-<govuk-input for="@Model.SortCode" input-class="govuk-input--width-10" inputmode="text" spellcheck="false">
-    <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your sort code?</govuk-input-label>
-    <govuk-input-hint>Must be in the format 11-22-33</govuk-input-hint>
+
+<govuk-input for="@Model.SortCode" input-class="govuk-input--width-5 govuk-input--extra-letter-spacing" inputmode="numeric" spellcheck="false" aria-describedby="sort-code-hint">
+    <govuk-input-label  class="govuk-label">Sort code</govuk-input-label>
+    <govuk-input-hint>Must be 6 digits long</govuk-input-hint>
+</govuk-input>
+
+<govuk-input for="@Model.AccountNumber" input-class="govuk-input--width-10 govuk-input--extra-letter-spacing" inputmode="numeric" spellcheck="false">
+    <govuk-input-label class="govuk-label">Account number</govuk-input-label>
+    <govuk-input-hint>Must be between 6 and 8 digits long</govuk-input-hint>
+</govuk-input>
+
+<govuk-input for="@Model.BuildingSocietyRollNumber" input-class="govuk-input--width-10 govuk-input--extra-letter-spacing" inputmode="text" spellcheck="false" aria-describedby="roll-number-hint">
+    <govuk-input-label class="govuk-label">Building society roll number (if you have one)</govuk-input-label>
+    <govuk-input-hint>You can find it on your card, statement or passbook</govuk-input-hint>
 </govuk-input>

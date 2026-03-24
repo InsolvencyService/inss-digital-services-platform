@@ -13,7 +13,7 @@ public class BankAccountFlowNodeValidatorTests
     public async Task InvalidBankAccountDetails_ValidateAsync_ReturnsErrorDetails()
     {
         BankAccountFlowNodeValidator validator = new();
-        BankAccountModel bankAccount = new() { AccountNumber = "12345678", SortCode = "11-22-33" };
+        BankAccountModel bankAccount = new() { AccountName = "H J Simpson", AccountNumber = "12345678", SortCode = "11-22-33" };
         FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
         ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
         
@@ -25,10 +25,31 @@ public class BankAccountFlowNodeValidatorTests
     }
     
     [Fact]
+    public async Task InvalidBuildingSocietyRollNumber_ValidateAsync_ReturnsErrorDetails()
+    {
+        BankAccountFlowNodeValidator validator = new();
+        BankAccountModel bankAccount = new()
+        {
+            AccountName = "H J Simpson",
+            AccountNumber = "11223344", 
+            SortCode = "11-22-33", 
+            BuildingSocietyRollNumber = "ABC-123$"
+        };
+        FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
+        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
+        
+        ValidationResult[] validationResults = await validator.ValidateAsync(context);
+
+        Assert.Single(validationResults);
+        AssertError(validationResults[0], "Building society roll number must only include letters a to z, numbers, " +
+                                          "hyphens, spaces, forward slashes and full stops", "BuildingSocietyRollNumber");
+    }
+    
+    [Fact]
     public async Task ValidBankAccountDetails_ValidateAsync_ReturnsNoErrorDetails()
     {
         BankAccountFlowNodeValidator validator = new();
-        BankAccountModel bankAccount = new() { AccountNumber = "11223344", SortCode = "11-22-33" };
+        BankAccountModel bankAccount = new() { AccountName = "H J Simpson", AccountNumber = "11223344", SortCode = "11-22-33" };
         FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
         ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
