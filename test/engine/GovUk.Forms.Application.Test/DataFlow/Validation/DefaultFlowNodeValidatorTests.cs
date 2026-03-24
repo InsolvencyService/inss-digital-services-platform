@@ -13,6 +13,7 @@ public class DefaultFlowNodeValidatorTests
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         BankAccountModel bankAccount = section.Pages.GetFirstOf<BankAccountModel>();
+        bankAccount.AccountName = "H J Simpson";
         bankAccount.SortCode = "112233";
         bankAccount.AccountNumber = "12345678";
         IFlowNodeValidator validator = DefaultFlowNodeValidator.Default;
@@ -30,6 +31,7 @@ public class DefaultFlowNodeValidatorTests
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         BankAccountModel bankAccount = section.Pages.GetFirstOf<BankAccountModel>();
+        bankAccount.AccountName = "H J Simpson";
         bankAccount.SortCode = "11-22-33";
         bankAccount.AccountNumber = "12345678";
         IFlowNodeValidator validator = DefaultFlowNodeValidator.Default;

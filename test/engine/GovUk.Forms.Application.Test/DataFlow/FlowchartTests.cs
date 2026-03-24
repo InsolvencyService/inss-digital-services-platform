@@ -250,6 +250,7 @@ public class FlowchartTests
         TestSectionDefaults.YourDetails(_yourDetails);
         BankAccountModel bankAccount = _yourDetails.Pages.GetFirstOf<BankAccountModel>();
         bankAccount.LinkedToNode = _bankAccountNode.Id;
+        bankAccount.AccountName = "H J Simpson";
         bankAccount.AccountNumber = "11223344";
         bankAccount.SortCode = "11-22-33";
 
