@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <UserSecretsId>3fe97ba3-ab83-4604-ad1d-8b2e8bb94666</UserSecretsId>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
     <PackageReference Include="GovUk.Frontend.AspNetCore" />
