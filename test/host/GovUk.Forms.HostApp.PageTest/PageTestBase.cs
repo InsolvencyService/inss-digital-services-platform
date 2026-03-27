@@ -40,6 +40,12 @@ public abstract class PageTestBase(TestWebApplicationFactory factory) : Microsof
         await Expect(question).ToBeVisibleAsync();
     }
     
+    protected async Task ExpectHeading(string text)
+    {
+        ILocator question = Page.GetByText(text);
+        await Expect(question).ToBeVisibleAsync();
+    }
+    
     protected async Task ExpectHint(string text)
     {
         ILocator hint = Page.GetByText(text);
