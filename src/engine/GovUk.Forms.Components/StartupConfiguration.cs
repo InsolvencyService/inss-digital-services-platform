@@ -42,7 +42,7 @@ public class StartupConfiguration : IHostingStartup
                 .AddApplicationPart(typeof(FormController).Assembly);
             services.AddSingleton<ITypeNameResolver>(_ => new TypeNameResolver(modelAssemblies.ToArray()));
             services.AddHttpClient();
-            services.AddGovUkFrontend(o => o.Rebrand = true);
+            services.AddGovUkFrontend();
         });
         
         builder.Configure(app =>
