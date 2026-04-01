@@ -1,0 +1,17 @@
+﻿@model LoginModel
+
+@using (Html.BeginForm(Model))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ReturnUrl)
+
+    <govuk-input for="Email" input-class="govuk-input govuk-!-width-two-thirds" spellcheck="false" autocomplete="email">
+        <govuk-input-label is-page-heading="true" class="govuk-label--s">Email address</govuk-input-label>
+    </govuk-input>
+    
+    <govuk-password-input for="Password" autocomplete="current-password">
+        <govuk-password-input-label>Password</govuk-password-input-label>
+    </govuk-password-input>
+    
+    <govuk-button type="submit">Sign in</govuk-button>
+}

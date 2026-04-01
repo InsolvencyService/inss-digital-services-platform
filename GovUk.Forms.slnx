@@ -8,6 +8,7 @@
   </Folder>
   <Folder Name="/src/auth/">
     <Project Path="src/auth/Inss.Auth.Broker/Inss.Auth.Broker.csproj" />
+    <Project Path="src/auth/Inss.Auth.RpsProvider/Inss.Auth.RpsProvider.csproj" />
   </Folder>
   <Folder Name="/src/engine/">
     <Project Path="src/engine/GovUk.Forms.Application/GovUk.Forms.Application.csproj" />
