@@ -1,18 +1,12 @@
 using System.Globalization;
 using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Exceptions;
-using GovUk.Forms.Domain.Serialization;
 using Xunit;
 
 namespace GovUk.Forms.Domain.Test;
 
 public class PageModelTests
 {
-    public PageModelTests()
-    {
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
-    }
-    
     [Fact]
     public void SummaryModel_ClearValues_IgnoresSummary()
     {

@@ -1,6 +1,7 @@
 using System.Reflection;
 using GovUk.Forms.Components.Exceptions;
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Serialization;
 
 namespace GovUk.Forms.Components.Resolvers;
 
@@ -8,8 +9,9 @@ public sealed class TypeNameResolver : ITypeNameResolver
 {
     private readonly Dictionary<string, Type> _types = [];
     
-    public TypeNameResolver(Assembly[] assemblies)
+    public TypeNameResolver()
     {
+        Assembly[] assemblies = ModelAssemblies.GetAll();
         Type contentModelType = typeof(ContentModel);
 
         foreach (Type type in GetAllTypes(assemblies))

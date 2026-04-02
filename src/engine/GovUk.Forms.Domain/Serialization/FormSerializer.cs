@@ -9,12 +9,13 @@ namespace GovUk.Forms.Domain.Serialization;
 
 public static class FormSerializer
 {
-    private static JsonSerializerOptions? _options;
+    private static readonly JsonSerializerOptions? _options;
     private static readonly Type _baseModelType = typeof(PageModel);
-    
-    public static void Initialize(params Assembly[] assemblies)
+
+    static FormSerializer()
     {
-        _options ??= CreateOptions(assemblies);
+        Assembly[] assemblies = ModelAssemblies.GetAll();
+        _options = CreateOptions(assemblies);
     }
     
     public static string SerializeForm(FormModel form)

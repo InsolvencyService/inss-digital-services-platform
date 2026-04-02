@@ -7,7 +7,6 @@ using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Primitives;
-using GovUk.Forms.Domain.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -46,8 +45,6 @@ public class FlowchartTests
         _salaryNode = new FlowNode { Id = salaryId, PagePath = _yourDetails.Pages[3].Path, NextNodes = [bankAccountId, summaryId] };
         _bankAccountNode = new FlowNode { Id = bankAccountId, PagePath = _yourDetails.Pages[4].Path, NextNodes = [summaryId] };
         _summaryNode = new FlowNode { Id = summaryId, PagePath = _yourDetails.Pages[5].Path };
-        
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
     }
 
     [Fact]

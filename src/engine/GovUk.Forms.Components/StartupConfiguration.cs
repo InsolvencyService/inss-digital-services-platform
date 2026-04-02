@@ -1,4 +1,3 @@
-using System.Reflection;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Components.Binding;
@@ -7,11 +6,11 @@ using GovUk.Forms.Components.Handlers;
 using GovUk.Forms.Components.Options;
 using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Serialization;
 using GovUk.Forms.Infrastructure.Extensions;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: HostingStartup(typeof(GovUk.Forms.Components.StartupConfiguration))]
@@ -24,17 +23,6 @@ public class StartupConfiguration : IHostingStartup
     {
         builder.ConfigureServices((context, services) =>
         {
-            List<Assembly> modelAssemblies = [typeof(PageModel).Assembly];
-                
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a =>
-                         a.FullName?.StartsWith("Demo.", StringComparison.OrdinalIgnoreCase) == true ||
-                         a.FullName?.StartsWith("Inss.", StringComparison.OrdinalIgnoreCase) == true))
-            {
-                modelAssemblies.Add(assembly);
-            }
-            
-            FormSerializer.Initialize(modelAssemblies.ToArray());
-
             services.AddOptions<HeaderOptions>()
                 .Bind(context.Configuration.GetSection("Header"))
                 .ValidateDataAnnotations()
@@ -48,10 +36,13 @@ public class StartupConfiguration : IHostingStartup
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddApplication();
             services.AddInfrastructure();
-            services
+            
+            IMvcBuilder mvcBuilder = services
                 .AddControllersWithViews(o => o.ModelBinderProviders.Insert(0, new ContentModelBinderProvider()))
                 .AddApplicationPart(typeof(FormController).Assembly);
-            services.AddSingleton<ITypeNameResolver>(_ => new TypeNameResolver(modelAssemblies.ToArray()));
+            RemoveNonHostedDiscoveredParts(mvcBuilder);
+            
+            services.AddSingleton<ITypeNameResolver, TypeNameResolver>();
             services.AddHttpClient();
             services.AddGovUkFrontend();
         });
@@ -110,11 +101,35 @@ public class StartupConfiguration : IHostingStartup
             
                 endpoints.MapControllerRoute(
                         name: "default",
-                        pattern: "{controller=Home}/{action=Index}/{id?}")
+                        pattern: "{controller=Start}/{action=Index}/{id?}")
                     .WithStaticAssets();
                 
                 endpoints.MapStaticAssets();
             });
         });
+    }
+
+    private static string[] GetHostedAssemblyNames()
+    {
+        string environmentName = Environment.GetEnvironmentVariable("DOTNET_HOSTINGSTARTUPASSEMBLIES")!;
+        var hostedAssemblies = environmentName
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        hostedAssemblies.Add("GovUk.Forms.HostApp");
+        hostedAssemblies.Add("GovUk.Frontend.AspNetCore");
+        return hostedAssemblies.ToArray();
+    }
+
+    private static void RemoveNonHostedDiscoveredParts(IMvcBuilder mvcBuilder)
+    {
+        string[] hostedAssemblyNames = GetHostedAssemblyNames();
+        ApplicationPartManager partManager = mvcBuilder.PartManager;
+        ApplicationPart[] applicationPartsToRemove = partManager.ApplicationParts.Where(
+            part => !hostedAssemblyNames.Contains(part.Name)).ToArray();
+            
+        foreach (var part in applicationPartsToRemove)
+        {
+            partManager.ApplicationParts.Remove(part);
+        }
     }
 }

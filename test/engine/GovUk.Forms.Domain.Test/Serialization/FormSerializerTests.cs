@@ -6,11 +6,6 @@ namespace GovUk.Forms.Domain.Test.Serialization;
 
 public class FormSerializerTests
 {
-    public FormSerializerTests()
-    {
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
-    }
-
     [Fact]
     public void FromForm_SerializeForm_ContainsSectionInfo()
     {

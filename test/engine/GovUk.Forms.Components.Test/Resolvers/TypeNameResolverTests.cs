@@ -10,7 +10,7 @@ public class TypeNameResolverTests
     [Fact]
     public void UnknownType_Resolve_ThrowsException()
     {
-        TypeNameResolver resolver = new([typeof(PageModel).Assembly]);
+        TypeNameResolver resolver = new();
         Type unknownType = typeof(TypeNameResolverTests);
 
         ComponentException exception = Assert.Throws<ComponentException>(() => resolver.Resolve(unknownType.FullName!));
@@ -21,7 +21,7 @@ public class TypeNameResolverTests
     [Fact]
     public void KnownType_Resolve_ReturnsType()
     {
-        TypeNameResolver resolver = new([typeof(PageModel).Assembly]);
+        TypeNameResolver resolver = new();
         Type expectedType = typeof(AddAnotherModel);
         
         Type type = resolver.Resolve(expectedType.FullName!);
