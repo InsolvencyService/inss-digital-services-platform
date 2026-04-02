@@ -1,5 +1,6 @@
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Components;
+using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Options;
 using GovUk.Forms.Domain.Primitives;
@@ -31,6 +32,8 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<IRedundancyPaymentProvider, RedundancyPaymentProvider>();
             ExternalApiOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<ExternalApiOptions>()!;
             services.AddTypedClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(dynamicsOptions);
+            
+            services.AddSingleton<IAuthenticationProvider, RpsAuthenticationProvider>();
             
             IPUploadFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);

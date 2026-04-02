@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.Services;
+using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GovUk.Forms.Components.Controllers;
 
+[DynamicAuthorize]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class FormController : Controller
 {
