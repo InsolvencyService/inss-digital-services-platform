@@ -7,7 +7,6 @@
     <PackageReference Include="GovUk.Frontend.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

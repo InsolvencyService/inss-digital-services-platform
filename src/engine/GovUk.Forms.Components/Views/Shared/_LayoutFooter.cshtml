@@ -1,0 +1,14 @@
+﻿@inject IOptions<FooterOptions> Footer
+
+<govuk-footer>
+    <govuk-footer-meta>
+        <govuk-footer-meta-items>
+            @foreach (FooterLink item in Footer.Value.Links)
+            {
+                <govuk-footer-meta-item href="@(item.Link)">@(item.Label)</govuk-footer-meta-item>
+            }
+        </govuk-footer-meta-items>
+    </govuk-footer-meta>
+    <govuk-footer-content-licence />
+    <govuk-footer-copyright />
+</govuk-footer>
