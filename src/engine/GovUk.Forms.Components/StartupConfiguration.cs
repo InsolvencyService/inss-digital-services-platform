@@ -4,6 +4,7 @@ using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Components.Binding;
 using GovUk.Forms.Components.Controllers;
 using GovUk.Forms.Components.Handlers;
+using GovUk.Forms.Components.Options;
 using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Serialization;
@@ -21,7 +22,7 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureServices((context, services) =>
         {
             List<Assembly> modelAssemblies = [typeof(PageModel).Assembly];
                 
@@ -34,6 +35,16 @@ public class StartupConfiguration : IHostingStartup
             
             FormSerializer.Initialize(modelAssemblies.ToArray());
 
+            services.AddOptions<HeaderOptions>()
+                .Bind(context.Configuration.GetSection("Header"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+            
+            services.AddOptions<FooterOptions>()
+                .Bind(context.Configuration.GetSection("Footer"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+            
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddApplication();
             services.AddInfrastructure();

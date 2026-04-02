@@ -23,7 +23,8 @@ An example is defined in the host project within the _launchsettings.json_ file:
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=your-key-here",
-        "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;Demo.GovUk.Forms.AboutYou;Demo.GovUk.Forms.Bankruptcy;Demo.GovUk.Forms.Business;Inss.GovUk.Forms.IPUpload"
+        "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;Demo.GovUk.Forms.AboutYou"
+        // AVAILABLE ONES ... "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;Demo.GovUk.Forms.AboutYou;Demo.GovUk.Forms.Bankruptcy;Demo.GovUk.Forms.Business;Inss.GovUk.Forms.IPUpload"
       }
     }
   }
@@ -31,9 +32,9 @@ An example is defined in the host project within the _launchsettings.json_ file:
 ```
 
 **You must** define the _GovUk.Forms.Components_ assembly first! This bootstraps all the shared components _before_ the 
-apps are registered.
+app is registered.
 
-You then add each assembly app - split by semi-colons to the list.
+You then add your assembly app - with semi-colon to the list.
 
 In each app, you must implement the _IHostingStartup_ interface. This is the standard ASP.NET extension that allows libraries
 to register configuration during the startup process.
