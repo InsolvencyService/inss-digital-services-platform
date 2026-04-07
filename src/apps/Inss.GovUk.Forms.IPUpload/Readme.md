@@ -20,6 +20,6 @@ To run this, you will need to do the following:
 
 2. Run the Inss.Auth.RpsProvider
 
-3. Run the Inss.Ath.Broker
+3. Run the Inss.Auth.Broker
 
 4. Run the GovUk.Forms.HostApp
