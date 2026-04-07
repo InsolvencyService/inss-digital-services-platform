@@ -44,13 +44,4 @@
     <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
     <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Remove="Infrastructure\RP14A.xsd" />
-    <None Remove="Infrastructure\Declaration.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\IPUpload-Declaration.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 </Project>

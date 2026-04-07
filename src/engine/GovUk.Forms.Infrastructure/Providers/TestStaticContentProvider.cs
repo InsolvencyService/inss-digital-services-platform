@@ -1,19 +1,33 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json;
 using GovUk.Forms.Application.Providers;
 
 namespace GovUk.Forms.Infrastructure.Providers;
 
+[ExcludeFromCodeCoverage]
 public sealed class TestStaticContentProvider : IStaticContentProvider
 {
     public Task<string> GetAsync(string key)
     {
-        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", $"{key}.html");
-
-        if (!File.Exists(path))
+        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Resources.json");
+        using StreamReader reader = new(path);
+        
+        JsonDocument jsonDocument = JsonDocument.Parse(reader.ReadToEnd());
+        
+        foreach (JsonElement element in jsonDocument.RootElement.EnumerateArray())
         {
-            throw new FileNotFoundException($"Unable to find a HTML resource for {key}.");
+            if (element.TryGetProperty("Key", out JsonElement keyElement))
+            {
+                if (keyElement.GetString()?.Equals(key, StringComparison.OrdinalIgnoreCase) == true &&
+                    element.TryGetProperty("Value", out JsonElement valueElement))
+                {
+                    byte[] decodedBytes = Convert.FromBase64String(valueElement.GetString() ?? string.Empty);
+                    return Task.FromResult(Encoding.UTF8.GetString(decodedBytes));
+                }
+            }
         }
         
-        using StreamReader reader = new(path);
-        return Task.FromResult(reader.ReadToEnd());
+        throw new FileNotFoundException($"Unable to find the resource for {key}.");
     }
 }
