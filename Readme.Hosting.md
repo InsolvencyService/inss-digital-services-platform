@@ -76,9 +76,15 @@ project to create all the routes for the form(s). An example is:
 public sealed class WebRoot : IWebRoot
 {
     public ContentPath Root => "/bankruptcy";
+    
+    public string Name => "Bankruptcy";
 }
 ```
 
 Using the above pattern allows us to have a single host but create multiple instances of it in Azure within one or more 
 app service plans. Then it is a simple case of deciding - using the environment variable above, what apps to host. **This**
 can then be controlled as part of a deployment process.
+
+## Start Page
+
+The main host app looks for a start partial view so each app will need to create one with the name _Start.cshtml.

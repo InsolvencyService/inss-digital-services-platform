@@ -37,8 +37,6 @@ public class AuthorizationController : Controller
                 ["client_code_challenge_method"] = codeChallengeMethod
             }
         };
-        
-        //await HttpContext.ChallengeAsync(loginHint, props);
 
         return Challenge(props, loginHint);
     }
@@ -72,8 +70,7 @@ public class AuthorizationController : Controller
             CodeChallenge = clientCodeChallenge,
             CodeChallengeMethod = clientCodeChallengeMethod
         });
-
-        // Redirect back to the client with the token
+        
         var finalRedirect = $"{clientRedirectUri}?code={code}&state={clientState}";
         return Redirect(finalRedirect);
     }

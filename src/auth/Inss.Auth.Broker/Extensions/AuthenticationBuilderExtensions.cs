@@ -40,7 +40,8 @@ public static class AuthenticationBuilderExtensions
         public AuthenticationBuilder AddOneLogin()
         {
             IServiceProvider serviceProvider = builder.Services.BuildServiceProvider();
-            IOptions<OneLoginIdentityProviderOptions> identityProviderOptions = serviceProvider.GetRequiredService<IOptions<OneLoginIdentityProviderOptions>>();
+            IOptions<OneLoginIdentityProviderOptions> identityProviderOptions = 
+                serviceProvider.GetRequiredService<IOptions<OneLoginIdentityProviderOptions>>();
             
             return builder.AddOpenIdConnect("OneLogin", options =>
             {
