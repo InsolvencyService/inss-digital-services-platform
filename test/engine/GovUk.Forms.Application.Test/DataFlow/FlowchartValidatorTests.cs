@@ -57,11 +57,10 @@ public class FlowchartValidatorTests
     [Fact]
     public void MissingStaticLoader_Validate_ThrowsException()
     {
-        SectionModel section = TestSectionModels.CreateIPUploadSection();
+        SectionModel section = TestSectionModels.CreateStaticSection();
         FlowNode declarationNode = CreateFlowNode(_declarationNodeId, section.Pages[0].Path, _uploadFileNodeId);
-        FlowNode uploadNode = CreateFlowNode(_uploadFileNodeId, section.Pages[1].Path, _summaryNodeId);
-        FlowNode summaryNode = CreateFlowNode(_summaryNodeId, section.Pages[2].Path);
-        FlowchartValidator flowchartValidator = new([declarationNode, uploadNode, summaryNode]);
+        FlowNode summaryNode = CreateFlowNode(_summaryNodeId, section.Pages[1].Path);
+        FlowchartValidator flowchartValidator = new([declarationNode, summaryNode]);
         
         FlowchartException exception = Assert.Throws<FlowchartException>(
             () => flowchartValidator.Validate(section, _services.BuildServiceProvider()));

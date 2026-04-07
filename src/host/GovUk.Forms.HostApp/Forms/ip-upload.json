@@ -47,7 +47,7 @@
           "PreviousPagePath": "",
           "Id": "cf8bb6ee-2323-4b16-ab7a-6630128f133b",
           "Path": "/ip-upload/redundancy-payment/upload-document",
-          "ViewName": "_FileUpload",
+          "ViewName": "_XmlFileUpload",
           "SubmitType": "Section",
           "TypeName": "GovUk.Forms.IPUpload.Domain.XmlFileUploadModel"
         },
