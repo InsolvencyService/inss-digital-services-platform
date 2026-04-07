@@ -12,12 +12,12 @@ namespace GovUk.Forms.Components.Controllers;
 public class FormController : Controller
 {
     private readonly IFormService _formService;
-    
+
     public FormController(IFormService formService)
     {
         _formService = formService;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> Edit(string? state = null)
     {
@@ -39,15 +39,11 @@ public class FormController : Controller
                     ModelState.AddModelError(memberName, error.ErrorMessage ?? string.Empty);
                 }
             }
-            
+
             return View(postedContent);
         }
-        
+
         ContentPath redirectTo = await _formService.SaveAsync(postedContent);
         return Redirect(redirectTo);
     }
 }
-
-
-
-
