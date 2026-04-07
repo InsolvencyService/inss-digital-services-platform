@@ -27,7 +27,7 @@ public static class TestFormModels
         return new FormModel
         {
             Path = "/form",
-            Sections = [TestSectionModels.CreateIPUploadSection()]
+            Sections = [TestSectionModels.CreateStaticSection()]
         };
     }
 }

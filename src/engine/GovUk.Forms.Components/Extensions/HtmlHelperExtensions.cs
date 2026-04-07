@@ -9,8 +9,8 @@ public static class HtmlHelperExtensions
     {
         public MvcForm BeginForm(ContentModel content)
         {
-            return content is FileUploadModel 
-                ? helper.BeginForm("Edit", "Form", FormMethod.Post, new { enctype = "multipart/form-data" }) 
+            return content.EncodingType is not null 
+                ? helper.BeginForm("Edit", "Form", FormMethod.Post, new { enctype = content.EncodingType }) 
                 : helper.BeginForm("Edit", "Form", FormMethod.Post);
         }
     }

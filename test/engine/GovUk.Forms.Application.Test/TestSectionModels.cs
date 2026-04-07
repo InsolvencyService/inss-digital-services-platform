@@ -45,7 +45,7 @@ public static class TestSectionModels
         };
     }
     
-    public static SectionModel CreateIPUploadSection()
+    public static SectionModel CreateStaticSection()
     {
         return new SectionModel
         {
@@ -53,7 +53,6 @@ public static class TestSectionModels
             Title = "IP Upload",
             Pages = [
                 new StaticHtmlModel { Title = "Declaration", Path = "/form/ip-upload/declaration", Key = "Declaration" },
-                new FileUploadModel { Title = "Upload File", Path = "/form/ip-upload/upload" },
                 new SummaryModel { Title = "Summary", Path = "/form/ip-upload/summary" }
             ]
         };

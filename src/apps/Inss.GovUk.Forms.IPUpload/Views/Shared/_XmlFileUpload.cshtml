@@ -1,10 +1,10 @@
-﻿@model FileUploadModel
+﻿@model XmlFileUploadModel
 
   <h1 class="govuk-heading-l">
     Upload redundancy payment forms(RP14/A)
   </h1>
   
-  <govuk-file-upload for="@Model.Contents" javascript-enhancements="true" label-class="govuk-label--m">
+  <govuk-file-upload for="@Model.Contents" javascript-enhancements="true" label-class="govuk-label--m" input-accept=".xml">
     <govuk-file-upload-label>Upload a file</govuk-file-upload-label>
     <govuk-file-upload-hint>
       The uploaded file must be XML ending with '.xml'. (Other formats e.g. PDF, XLS are NOT supported).
