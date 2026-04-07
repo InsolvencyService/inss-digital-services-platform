@@ -13,9 +13,20 @@
     @await Html.PartialAsync("_LayoutHeader")
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        @RenderBody()
+<div class="govuk-width-container">
+    
+    @* ReSharper disable once Razor.SectionNotResolved *@
+    @section ContainerStart {
+        @if (ViewData["Back"] is not null)
+        {
+            <govuk-back-link href="@ViewData["Back"]"/>
+        }
+    }
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @RenderBody()
+        </div>
     </div>
 </div>
 

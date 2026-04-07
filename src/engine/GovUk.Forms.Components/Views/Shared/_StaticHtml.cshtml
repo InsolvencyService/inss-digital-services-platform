@@ -1,3 +1,5 @@
 ﻿@model StaticHtmlModel
 
+@Html.HiddenFor(m => m.Key)
+
 @Html.Raw(Model.Html)
