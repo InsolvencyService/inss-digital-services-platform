@@ -2,17 +2,18 @@
 
 public static class EnvironmentConfigFactory
 {
-
+    public static IEnvironmentConfig EnvironmentConfig => GetEnvironmentConfig();
+    public static TestEnvironment CurrentEnvironment => EnvironmentConfig.EnvironmentType;
     public static IEnvironmentConfig GetEnvironmentConfig()
     {
-        TestEnvironment environment = GetEnvironmente();
+        TestEnvironment environment = GetEnvironment();
 
         return Create(environment);
     }
 
 
 
-    private static TestEnvironment GetEnvironmente()
+    private static TestEnvironment GetEnvironment()
     {
         string environment = TestContext.Parameters.Get("TestEnvironment") ??
             Environment.GetEnvironmentVariable("TEST_ENVIRONMENT") ??
@@ -25,9 +26,9 @@ public static class EnvironmentConfigFactory
     {
         return environmentType switch
         {
-            TestEnvironment.Local => new EnvLocalConfig(),
+            TestEnvironment.QA => new EnvQaConfig(),
             TestEnvironment.Dev => new EnvDevConfig(),
-            TestEnvironment.Test => new EnvTestConfig(),
+            TestEnvironment.ST => new EnvStConfig(),
             TestEnvironment.Prod => new EnvProdConfig(),
             _ => throw new ArgumentException($"Unsupported environment type: {environmentType}")
         };

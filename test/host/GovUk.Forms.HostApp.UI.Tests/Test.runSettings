@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+<!--Environment Configuration-->
+<TestRunParameters>
+    <Parameter name="TestEnvironment" value="Dev" />
+</TestRunParameters>
+<!--Playwright Configuration-->
+  <Playwright>
+    <BrowserName>chromium</BrowserName>
+    <LaunchOptions>
+      <Channel>msedge</Channel>
+	  <Headless>false</Headless>
+	  <SlowMo>100</SlowMo>	
+    </LaunchOptions>
+  </Playwright>
+</RunSettings>

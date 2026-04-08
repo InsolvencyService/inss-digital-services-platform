@@ -21,7 +21,7 @@ public class TestArtifacts
     {
         _testName = testName;
         string date = DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-        Folder = Path.Combine(WorkDrirectory, "Reports", environmentType.ToString(), date, TestNameWithDateTimestamp());
+        Folder = FileDirectoryExtensions.DirectoryPathCombine(WorkDrirectory, "Reports", environmentType.ToString(), date, TestNameWithDateTimestamp());
         Directory.CreateDirectory(Folder);
     }
 

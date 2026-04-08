@@ -94,4 +94,10 @@ public static class FileDirectoryExtensions
         }
 
     }
+
+    public static string DirectoryPathCombine(params string[] subDirectories)
+    {
+        ArgumentNullException.ThrowIfNull(subDirectories);
+        return Path.Combine([.. subDirectories.Select(path => path.SanitizeDirectoryName())]);
+    }
 }

@@ -39,16 +39,32 @@ public static class TestValidator
                 $"Scenario '{scenarioContext.ScenarioInfo.Title}' must have at least one @tag");
         }
 
-        string[] validTags = Enum.GetNames<TestLevelTag>();
+        string[] distinctTags = tags
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
 
-        bool hasValidTag = tags.Any(tag =>
-            validTags.Contains(tag, StringComparer.OrdinalIgnoreCase));
-
-        if (!hasValidTag)
+        if (distinctTags.Length != tags.Length)
         {
             throw new ArgumentException(
-                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must contain at least one of: " +
-                string.Join(", ", validTags.Select(t => "@" + t.ToLower())));
+                $"Scenario '{scenarioContext.ScenarioInfo.Title}' contains duplicate tags");
+        }
+
+        List<string> matchedLevelTags = distinctTags
+            .Where(tag => Enum.TryParse<TestLevelTag>(tag, true, out _))
+            .ToList();
+
+        if (matchedLevelTags.Count == 0)
+        {
+            throw new ArgumentException(
+                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must contain exactly one test level tag: " +
+                string.Join(", ", Enum.GetNames<TestLevelTag>().Select(t => "@" + t.ToLower())));
+        }
+
+        if (matchedLevelTags.Count > 1)
+        {
+            throw new ArgumentException(
+                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must not contain multiple test level tags. Found: " +
+                string.Join(", ", matchedLevelTags));
         }
     }
 
@@ -115,6 +131,8 @@ public static class TestValidator
             {"[contain",DontUseXpath },
             {"public ilocator",LocatorAccessModifiers },
             {"internal ilocator",LocatorAccessModifiers },
+            {"Task.Delay", "Avoid Task.Delay in tests. Use explicit waits instead"},
+            {"Thread.Sleep", "Do not use Thread.Sleep. Use proper waits instead"}
         };
 
         Regex regex = new(

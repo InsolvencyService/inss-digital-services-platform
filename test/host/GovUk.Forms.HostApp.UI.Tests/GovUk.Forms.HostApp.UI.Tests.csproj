@@ -1,31 +1,26 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿   <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Expressium.LivingDoc.ReqnrollPlugin" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Playwright.NUnit" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Reqnroll.NUnit" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" />
-		<PackageReference Include="Microsoft.Playwright.Xunit" />
-		<PackageReference Include="Reqnroll.Tools.MsBuild.Generation" />
-		<PackageReference Include="Reqnroll.xUnit" />
-		<PackageReference Include="xunit.runner.visualstudio">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="xunit" />
-	</ItemGroup>
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\..\src\host\GovUk.Forms.HostApp\GovUk.Forms.HostApp.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <Folder Include="Hook\" />
+    <Folder Include="Features\" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Features\" />
-	  <Folder Include="Extensions\" />
-	  <Folder Include="Coordinators\" />
-	  <Folder Include="Steps\" />
-	  <Folder Include="Pages\" />
-	</ItemGroup>
 </Project>

@@ -4,9 +4,9 @@
 
 public enum TestEnvironment
 {
-    Local,
+    QA,
     Dev,
-    Test,
+    ST,
     Prod
 }
 public abstract class BaseEnvironmentConfig : IEnvironmentConfig
