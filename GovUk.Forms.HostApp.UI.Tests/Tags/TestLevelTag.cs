@@ -4,5 +4,6 @@ public enum TestLevelTag
 {
     Smoke,
     Regrssion,
+    Funtional,
     Production
 }

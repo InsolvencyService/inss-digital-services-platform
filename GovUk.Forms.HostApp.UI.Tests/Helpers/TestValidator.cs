@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.HostApp.UI.Tests.Config.Environments;
 using GovUk.Forms.HostApp.UI.Tests.Extensions;
 using GovUk.Forms.HostApp.UI.Tests.Pages;
+using GovUk.Forms.HostApp.UI.Tests.Tags;
 using Reqnroll;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -36,6 +37,18 @@ public static class TestValidator
         {
             throw new ArgumentException(
                 $"Scenario '{scenarioContext.ScenarioInfo.Title}' must have at least one @tag");
+        }
+
+        string[] validTags = Enum.GetNames<TestLevelTag>();
+
+        bool hasValidTag = tags.Any(tag =>
+            validTags.Contains(tag, StringComparer.OrdinalIgnoreCase));
+
+        if (!hasValidTag)
+        {
+            throw new ArgumentException(
+                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must contain at least one of: " +
+                string.Join(", ", validTags.Select(t => "@" + t.ToLower())));
         }
     }
 
