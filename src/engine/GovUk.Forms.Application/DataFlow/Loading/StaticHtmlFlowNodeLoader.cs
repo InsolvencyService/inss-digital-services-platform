@@ -19,7 +19,8 @@ public sealed class StaticHtmlFlowNodeLoader : IFlowNodeLoader
 
         if (string.IsNullOrWhiteSpace(staticHtml.Html))
         {
-            staticHtml.Html = await _staticContentProvider.GetAsync(staticHtml.Key);
+            string resourceKey = $"{staticHtml.Path}/{staticHtml.Key}";
+            staticHtml.Html = await _staticContentProvider.GetAsync(resourceKey);
         }
 
         return null;
