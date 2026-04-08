@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Components.Authentication;
+using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ public class FormController : Controller
     public async Task<IActionResult> Edit(string? state = null)
     {
         (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(new ContentPath(Request.Path), state);
+        ViewData.AddBackButton(result.Content);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
 
