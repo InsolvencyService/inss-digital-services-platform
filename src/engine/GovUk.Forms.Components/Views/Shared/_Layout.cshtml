@@ -17,10 +17,7 @@
     
     @* ReSharper disable once Razor.SectionNotResolved *@
     @section ContainerStart {
-        @if (ViewData["Back"] is not null)
-        {
-            <govuk-back-link href="@ViewData["Back"]"/>
-        }
+        @await Html.PartialAsync("_BackButton")
     }
 
     <div class="govuk-grid-row">
