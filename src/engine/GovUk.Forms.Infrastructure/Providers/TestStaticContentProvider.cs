@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using GovUk.Forms.Application.Providers;
 
@@ -22,8 +21,13 @@ public sealed class TestStaticContentProvider : IStaticContentProvider
                 if (keyElement.GetString()?.Equals(key, StringComparison.OrdinalIgnoreCase) == true &&
                     element.TryGetProperty("Value", out JsonElement valueElement))
                 {
-                    byte[] decodedBytes = Convert.FromBase64String(valueElement.GetString() ?? string.Empty);
-                    return Task.FromResult(Encoding.UTF8.GetString(decodedBytes));
+                    string filePath = Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory, "Resources", valueElement.GetString() ?? string.Empty);
+
+                    if (File.Exists(filePath))
+                    {
+                        return Task.FromResult(File.ReadAllText(filePath));
+                    }
                 }
             }
         }
