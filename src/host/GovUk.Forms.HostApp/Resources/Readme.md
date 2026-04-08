@@ -2,7 +2,7 @@
 
 This is a temp location to simulate loading config for a page from some remote storage using the _TestStaticContentProvider_.
 
-It provides a JSON file where the contents are bas64-encoded as some content is multiline and JSON doesn't support it.
+It provides a JSON file where the contents are a relative file path as some content is multiline and JSON doesn't support it.
 
 Ultimately this content will reside in Azure Blob storage which is why paths are fully-qualified, for example:
 
