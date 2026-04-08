@@ -10,7 +10,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=your-key-here",
-        "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;Demo.GovUk.Forms.AboutYou"
+        "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;Inss.GovUk.Forms.IPUpload"
       }
     }
   }

@@ -18,4 +18,6 @@ public class BrokerOptions
     
     [Required]
     public string LogoutRedirectUrl { get; init; }
+    
+    public IdentityProviderTypes? IdentityProvider { get; init; }
 }
