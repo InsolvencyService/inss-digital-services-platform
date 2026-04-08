@@ -1,6 +1,5 @@
 using Demo.GovUk.Forms.Business.Builders;
 using GovUk.Forms.Components;
-using GovUk.Forms.Components.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +15,6 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
-            services.AddSingleton<IAuthenticationProvider, AnonymousAuthenticationProvider>();
             
             YourCreditorsAndDebtorsFlowchart yourCreditorsAndDebtorsFlowchart = new();
             yourCreditorsAndDebtorsFlowchart.Construct(services);

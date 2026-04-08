@@ -47,6 +47,17 @@ public class StartupConfiguration : IHostingStartup
             BrokerOptions brokerOptions = new();
             context.Configuration.GetSection("Broker").Bind(brokerOptions);
             
+            services.AddSingleton<IAuthenticationProvider>(_ =>
+            {
+                return brokerOptions.IdentityProvider switch
+                {
+                    IdentityProviderTypes.Rps => new RpsAuthenticationProvider(),
+                    IdentityProviderTypes.Entra => new EntraAuthenticationProvider(),
+                    IdentityProviderTypes.OneLogin => new OneLoginAuthenticationProvider(),
+                    _ => new AnonymousAuthenticationProvider()
+                };
+            });
+            
             services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
