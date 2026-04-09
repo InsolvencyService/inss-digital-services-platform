@@ -4,100 +4,118 @@ public static class FileDirectoryExtensions
 {
     public static string FilePathCombine(this string directory, string fileName)
     {
+        ArgumentNullException.ThrowIfNull(directory);
+        ArgumentNullException.ThrowIfNull(fileName);
+
+        string safeFileName = SanitizeFileName(fileName);
+
+        if (string.IsNullOrWhiteSpace(safeFileName))
         {
-            ArgumentNullException.ThrowIfNull(directory);
-            ArgumentNullException.ThrowIfNull(fileName);
-
-            string sanitizedDirectory = directory.SanitizeDirectoryName();
-            string sanitizedFileName = fileName.SanitizeFileName();
-
-            return string.IsNullOrEmpty(sanitizedFileName)
-                ? throw new ArgumentException("Sanitization removed all characters from the file name.", nameof(fileName))
-                : Path.Combine(sanitizedDirectory, sanitizedFileName);
+            throw new ArgumentException(
+                "Sanitization removed all characters from the file name.",
+                nameof(fileName));
         }
-    }
 
-
-    public static string SanitizeDirectoryName(this string directoryName)
-    {
-        return string.Concat(directoryName.Split(Path.GetInvalidPathChars()));
+        return Path.Combine(directory, safeFileName);
     }
 
     public static string SanitizeFileName(this string fileName)
     {
-        return string.Concat(fileName.Split(Path.GetInvalidFileNameChars())).Trim('.');
+        ArgumentNullException.ThrowIfNull(fileName);
+
+        return string.Concat(fileName
+            .Split(Path.GetInvalidFileNameChars()))
+            .Trim('.');
     }
 
-    public static string? FindProjectRoot(this string projectRoot)
+    public static string? FindProjectRoot(this string startPath)
     {
-        DirectoryInfo? dir = new(projectRoot);
+        ArgumentNullException.ThrowIfNull(startPath);
+
+        DirectoryInfo? dir = File.Exists(startPath)
+            ? new FileInfo(startPath).Directory
+            : new DirectoryInfo(startPath);
 
         while (dir != null)
         {
-            if (dir.GetFiles("*.csproj").Length != 0)
+            if (dir.EnumerateFiles("*.csproj").Any() ||
+                dir.EnumerateFiles("*.sln").Any())
             {
                 return dir.FullName;
             }
+
             dir = dir.Parent;
         }
 
         return null;
     }
 
-    public static IEnumerable<string> FindAllFilePaths(this string root, string fileExtension, HashSet<string> ignoreDirs)
+    public static IEnumerable<string> FindAllFilePaths(
+        this string root,
+        string fileExtension,
+        ISet<string> ignoreDirs)
     {
+        ArgumentNullException.ThrowIfNull(root);
+        ArgumentNullException.ThrowIfNull(fileExtension);
+        ArgumentNullException.ThrowIfNull(ignoreDirs);
+
         Stack<string> dirs = new();
         dirs.Push(root);
 
         while (dirs.Count > 0)
         {
             string current = dirs.Pop();
-            IEnumerable<string> subDirs;
 
+            IEnumerable<string> subDirs;
             try
             {
                 subDirs = Directory.EnumerateDirectories(current);
             }
-            catch (Exception)
+            catch (UnauthorizedAccessException)
             {
-                // Skip directories we can't access
+                continue;
+            }
+            catch (IOException)
+            {
                 continue;
             }
 
             foreach (string dir in subDirs)
             {
-                string name = new DirectoryInfo(dir).Name;
-
+                string name = Path.GetFileName(dir);
                 if (!ignoreDirs.Contains(name))
                 {
-                    dirs.Push(name);
+                    dirs.Push(dir); // ✅ critical fix
                 }
             }
-            IEnumerable<string> files;
 
+            IEnumerable<string> files;
             try
             {
-                files = Directory.EnumerateFiles(current, "*" + fileExtension.TrimStart('.'), SearchOption.TopDirectoryOnly);
+                files = Directory.EnumerateFiles(
+                    current,
+                    $"*.{fileExtension.TrimStart('.')}",
+                    SearchOption.TopDirectoryOnly);
             }
-            catch (Exception)
+            catch (UnauthorizedAccessException)
             {
-                // Skip directories we can't list files for
                 continue;
             }
-
+            catch (IOException)
+            {
+                continue;
+            }
 
             foreach (string file in files)
             {
                 yield return file;
             }
-
         }
-
     }
 
-    public static string DirectoryPathCombine(params string[] subDirectories)
+    public static string DirectoryPathCombine(params string[] paths)
     {
-        ArgumentNullException.ThrowIfNull(subDirectories);
-        return Path.Combine([.. subDirectories.Select(path => path.SanitizeDirectoryName())]);
+        ArgumentNullException.ThrowIfNull(paths);
+        return Path.Combine(paths);
     }
 }

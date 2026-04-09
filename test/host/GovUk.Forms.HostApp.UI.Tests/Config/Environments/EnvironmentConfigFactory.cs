@@ -2,24 +2,40 @@
 
 public static class EnvironmentConfigFactory
 {
-    public static IEnvironmentConfig EnvironmentConfig => GetEnvironmentConfig();
+    private static readonly Lazy<IEnvironmentConfig> _environmentConfig =
+        new(BuildEnvironmentConfig, LazyThreadSafetyMode.ExecutionAndPublication);
+
+    public static IEnvironmentConfig EnvironmentConfig => _environmentConfig.Value;
+
     public static TestEnvironment CurrentEnvironment => EnvironmentConfig.EnvironmentType;
-    public static IEnvironmentConfig GetEnvironmentConfig()
+
+    private static IEnvironmentConfig BuildEnvironmentConfig()
     {
         TestEnvironment environment = GetEnvironment();
-
         return Create(environment);
     }
 
-
-
     private static TestEnvironment GetEnvironment()
     {
-        string environment = TestContext.Parameters.Get("TestEnvironment") ??
-            Environment.GetEnvironmentVariable("TEST_ENVIRONMENT") ??
-            throw new InvalidOperationException("Test environment not specified. Please set the 'TestEnvironment' parameter or the 'TEST_ENVIRONMENT' environment variable.");
+        string? environment =
+            Environment.GetEnvironmentVariable("TEST_ENVIRONMENT")
+            ?? TestConfigReader.Settings.TestEnvironment;
 
-        return Enum.Parse<TestEnvironment>(environment, ignoreCase: true);
+        if (string.IsNullOrWhiteSpace(environment))
+        {
+            throw new InvalidOperationException(
+                "Test environment not specified. Set 'TestSettings:TestEnvironment' in appsettings.json " +
+                "or the 'TEST_ENVIRONMENT' environment variable.");
+        }
+
+        if (!Enum.TryParse(environment, ignoreCase: true, out TestEnvironment result))
+        {
+            throw new InvalidOperationException(
+                $"Invalid test environment '{environment}'. Valid values are: " +
+                string.Join(", ", Enum.GetNames<TestEnvironment>()));
+        }
+
+        return result;
     }
 
     public static IEnvironmentConfig Create(TestEnvironment environmentType)
@@ -30,7 +46,8 @@ public static class EnvironmentConfigFactory
             TestEnvironment.Dev => new EnvDevConfig(),
             TestEnvironment.ST => new EnvStConfig(),
             TestEnvironment.Prod => new EnvProdConfig(),
-            _ => throw new ArgumentException($"Unsupported environment type: {environmentType}")
+            _ => throw new ArgumentOutOfRangeException(nameof(environmentType),
+                $"Unsupported environment type: {environmentType}")
         };
     }
 }

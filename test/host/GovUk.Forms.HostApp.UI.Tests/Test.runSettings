@@ -2,7 +2,7 @@
 <RunSettings>
 <!--Environment Configuration-->
 <TestRunParameters>
-    <Parameter name="TestEnvironment" value="Dev" />
+    <Parameter name="TestEnvironment" value="QA" />
 </TestRunParameters>
 <!--Playwright Configuration-->
   <Playwright>

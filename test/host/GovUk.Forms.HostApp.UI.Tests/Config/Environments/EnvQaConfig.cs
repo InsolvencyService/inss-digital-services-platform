@@ -3,5 +3,5 @@
 public class EnvQaConfig : BaseEnvironmentConfig
 {
     public override TestEnvironment EnvironmentType => TestEnvironment.QA;
-    public override string BaseUrl => "http://localhost:5000";
+    public override string BaseUrl => "https://digital-services-prototypes.azurewebsites.net/ipservice/ip-upload/index";
 }

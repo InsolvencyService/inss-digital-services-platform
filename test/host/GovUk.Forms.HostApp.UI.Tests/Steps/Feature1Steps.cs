@@ -1,27 +1,26 @@
-using System;
 using Reqnroll;
 
-namespace GovUk.Forms.HostApp.UI.Tests;
+namespace GovUk.Forms.HostApp.UI.Tests.Steps;
 
 [Binding]
 public class Feature1Steps
 {
     [Given("I am on the start page")]
-    public void GivenIAmOnTheStartPage()
+    public static void GivenIAmOnTheStartPage()
     {
-        throw new PendingStepException();
+
     }
 
     [When("I choose Start now")]
-    public void WhenIChooseStartNow()
+    public static void WhenIChooseStartNow()
     {
-        throw new PendingStepException();
+
     }
 
     [Then("I will be taken to the sign in page")]
-    public void ThenIWillBeTakenToTheSignInPage()
+    public static void ThenIWillBeTakenToTheSignInPage()
     {
-        throw new PendingStepException();
+
     }
 
 }

@@ -109,15 +109,17 @@ namespace GovUk.Forms.HostApp.UI.Tests.Features
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Navigete to sign in page")]
+        [global::NUnit.Framework.DescriptionAttribute("Navigate to sign in page")]
         [global::NUnit.Framework.CategoryAttribute("tag1")]
-        public async global::System.Threading.Tasks.Task NavigeteToSignInPage()
+        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        public async global::System.Threading.Tasks.Task NavigateToSignInPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "tag1"};
+                    "tag1",
+                    "smoke"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigete to sign in page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigate to sign in page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 6

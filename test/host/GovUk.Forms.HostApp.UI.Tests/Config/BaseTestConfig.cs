@@ -2,12 +2,11 @@
 using GovUk.Forms.HostApp.UI.Tests.Extensions;
 using GovUk.Forms.HostApp.UI.Tests.Helpers;
 using Microsoft.Playwright;
-using Microsoft.Playwright.NUnit;
 using Reqnroll;
 
 namespace GovUk.Forms.HostApp.UI.Tests.Config;
 
-public class BaseTestConfig : PageTest
+public class BaseTestConfig
 {
     protected string BasePathForArtifacts { get; private set; } = string.Empty;
     protected string TestOutputDir { get; private set; } = string.Empty;
@@ -18,7 +17,7 @@ public class BaseTestConfig : PageTest
     /// Initializes browser, tracing, logging, and navigates to base URL.
     /// Should be called at the beginning of each scenario.
     /// </summary>
-    public async Task BrowserSetupAsync(ScenarioContext scenarioContext)
+    public async Task BrowserSetupAsync(ScenarioContext scenarioContext, IPage page)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
 
@@ -41,14 +40,8 @@ public class BaseTestConfig : PageTest
 
         LogTestStart();
 
-        // Attach browser console logging for debugging frontend issues
-        AttachConsoleLogging();
-
-        // Start Playwright tracing (screenshots + DOM snapshots)
-        await StartTracingSafeAsync();
-
         // Navigate to application under test
-        await NavigateToBaseUrlAsync(config.BaseUrl);
+        await NavigateToBaseUrlAsync(config.BaseUrl, page);
     }
 
     /// <summary>
@@ -59,7 +52,9 @@ public class BaseTestConfig : PageTest
     /// </summary>
     public async Task BrowserTearDownAsync(
         ScenarioContext scenarioContext,
-        IReqnrollOutputHelper outputHelper)
+        IReqnrollOutputHelper outputHelper,
+        IBrowserContext browserContext,
+        IPage page)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
         ArgumentNullException.ThrowIfNull(outputHelper);
@@ -69,12 +64,12 @@ public class BaseTestConfig : PageTest
         try
         {
             // Always attempt final screenshot (even on pass)
-            await CaptureFinalScreenshotAsync(outputHelper);
+            await CaptureFinalScreenshotAsync(outputHelper, page);
 
             LogTestEnd(outputHelper);
 
             // Ensure tracing is stopped and saved
-            await StopTracingSafeAsync(outputHelper);
+            await StopTracingSafeAsync(outputHelper, browserContext);
 
             // Attach any existing artifacts (logs etc.)
             AttachArtifacts(outputHelper);
@@ -82,7 +77,7 @@ public class BaseTestConfig : PageTest
             // Only perform heavy diagnostics on failure
             if (outcome == ScenarioExecutionStatus.TestError)
             {
-                await HandleFailureAsync(scenarioContext, outputHelper);
+                await HandleFailureAsync(scenarioContext, outputHelper, page);
             }
         }
         catch (Exception ex)
@@ -114,44 +109,13 @@ public class BaseTestConfig : PageTest
         Console.WriteLine($"=== Test Start: {TestName} | {DateTime.UtcNow:O} ===");
     }
 
-    /// <summary>
-    /// Captures browser console messages and pipes them to test output.
-    /// Useful for debugging client-side issues.
-    /// </summary>
-    private void AttachConsoleLogging()
-    {
-        Page.Console += (_, msg) =>
-        {
-            Console.WriteLine($"[Browser Console] {msg.Type}: {msg.Text}");
-        };
-    }
-
-    /// <summary>
-    /// Starts Playwright tracing safely.
-    /// Will not throw if context is unavailable.
-    /// </summary>
-    private async Task StartTracingSafeAsync()
-    {
-        if (Context == null)
-        {
-            return;
-        }
-
-        await Context.Tracing.StartAsync(new()
-        {
-            Title = TestName,
-            Screenshots = true,
-            Snapshots = true,
-            Sources = true
-        });
-    }
 
     /// <summary>
     /// Navigates to base URL and validates response.
     /// </summary>
-    private async Task NavigateToBaseUrlAsync(string baseUrl)
+    private static async Task NavigateToBaseUrlAsync(string baseUrl, IPage page)
     {
-        IResponse response = await Page.GotoAsync(baseUrl)
+        IResponse response = await page.GotoAsync(baseUrl, new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded, Timeout = 8000 })
             ?? throw new InvalidOperationException($"Navigation returned null for '{baseUrl}'");
 
         if (!response.Ok)
@@ -165,9 +129,9 @@ public class BaseTestConfig : PageTest
     /// <summary>
     /// Captures a final screenshot regardless of test outcome.
     /// </summary>
-    private async Task CaptureFinalScreenshotAsync(IReqnrollOutputHelper outputHelper)
+    private async Task CaptureFinalScreenshotAsync(IReqnrollOutputHelper outputHelper, IPage page)
     {
-        if (Page == null || TestArtifacts == null)
+        if (page == null || TestArtifacts == null)
         {
             return;
         }
@@ -175,7 +139,7 @@ public class BaseTestConfig : PageTest
         string fileName = $"{TestName}_Final_{DateTime.UtcNow:HH-mm-ss}.jpg";
         string path = TestArtifacts.FilePath(fileName);
 
-        await Page.TakeScreenshotAsync(outputHelper, path);
+        await page.TakeScreenshotAsync(outputHelper, path);
     }
 
     /// <summary>
@@ -189,16 +153,16 @@ public class BaseTestConfig : PageTest
     /// <summary>
     /// Stops tracing and safely attaches trace file if available.
     /// </summary>
-    private async Task StopTracingSafeAsync(IReqnrollOutputHelper outputHelper)
+    private async Task StopTracingSafeAsync(IReqnrollOutputHelper outputHelper, IBrowserContext browserContext)
     {
-        if (Context == null || TestArtifacts == null)
+        if (browserContext == null || TestArtifacts == null)
         {
             return;
         }
 
         try
         {
-            await Context.Tracing.StopAsync(new()
+            await browserContext.Tracing.StopAsync(new()
             {
                 Path = TestArtifacts.TracePath
             });
@@ -238,7 +202,8 @@ public class BaseTestConfig : PageTest
     /// </summary>
     private async Task HandleFailureAsync(
         ScenarioContext scenarioContext,
-        IReqnrollOutputHelper outputHelper)
+        IReqnrollOutputHelper outputHelper,
+        IPage page)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
         Console.WriteLine($"Test '{TestName}' failed. Collecting artifacts...");
@@ -249,7 +214,7 @@ public class BaseTestConfig : PageTest
             await SaveFileAsync(TestArtifacts.FailureLogPath, message, outputHelper);
         }
 
-        await SaveVideoAsync(outputHelper);
+        await SaveVideoAsync(outputHelper, page);
     }
 
     /// <summary>
@@ -275,14 +240,14 @@ public class BaseTestConfig : PageTest
     /// <summary>
     /// Saves Playwright video if available.
     /// </summary>
-    private async Task SaveVideoAsync(IReqnrollOutputHelper outputHelper)
+    private async Task SaveVideoAsync(IReqnrollOutputHelper outputHelper, IPage page)
     {
-        if (Page?.Video == null || TestArtifacts?.VideoPath == null)
+        if (page?.Video == null || TestArtifacts?.VideoPath == null)
         {
             return;
         }
 
-        await Page.Video.SaveAsAsync(TestArtifacts.VideoPath);
+        await page.Video.SaveAsAsync(TestArtifacts.VideoPath);
 
         outputHelper.WriteLine($"Video saved: {TestArtifacts.VideoPath}");
         outputHelper.AddAttachmentAsLink(TestArtifacts.VideoPath);

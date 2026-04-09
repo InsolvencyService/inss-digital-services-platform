@@ -15,13 +15,12 @@ public static class TestValidator
     private static bool _codeValidated;
     private const string DontUseXpath = "Do not use XPath in loactors. Follow best practices.";
     private const string LocatorAccessModifiers = "Locators must be private or protected";
-
     public static void ValidateScenario(ScenarioContext scenarioContext)
     {
         ValidateScenarioTag(scenarioContext);
         ValidateNoPageObjectsInBindingOnce();
 
-        IEnvironmentConfig environmentConfig = EnvironmentConfigFactory.GetEnvironmentConfig();
+        IEnvironmentConfig environmentConfig = EnvironmentConfigFactory.EnvironmentConfig;
 
         if (!environmentConfig.EnvironmentType.IsAnyOf(TestEnvironment.Prod))
         {
@@ -127,7 +126,6 @@ public static class TestValidator
             {"[@class",DontUseXpath },
             {"[@value",DontUseXpath },
             {"[@text()",DontUseXpath },
-            {"[contain",DontUseXpath },
             {"[contain",DontUseXpath },
             {"public ilocator",LocatorAccessModifiers },
             {"internal ilocator",LocatorAccessModifiers },
