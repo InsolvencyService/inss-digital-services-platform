@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using GovUk.Forms.Domain;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace GovUk.Forms.Components.Extensions;
@@ -13,9 +12,9 @@ public static class ViewDataDictionaryExtensions
     {
         public bool HasBackButton => viewData.ContainsKey(BackButtonKey);
 
-        public void AddBackButton(ContentModel? content)
+        public void AddBackButton(string? path)
         {
-            viewData[BackButtonKey] = content is PageModel page ? page.PreviousPagePath : null;
+            viewData[BackButtonKey] = path;
         }
 
         public string? GetBackButton()

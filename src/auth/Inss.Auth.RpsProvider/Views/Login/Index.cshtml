@@ -1,5 +1,7 @@
 ﻿@model LoginModel
 
+<h1 class="govuk-heading-l">Sign in</h1>
+
 @using (Html.BeginForm(Model))
 {
     @Html.AntiForgeryToken()
@@ -9,9 +11,15 @@
         <govuk-input-label is-page-heading="true" class="govuk-label--s">Email address</govuk-input-label>
     </govuk-input>
     
-    <govuk-password-input for="Password" autocomplete="current-password">
+    <div class="govuk-form-group govuk-password-input govuk-!-width-two-thirds">
+    <govuk-password-input for="Password" autocomplete="current-password" show-password-text="Show" label-class="govuk-label--s">
         <govuk-password-input-label>Password</govuk-password-input-label>
     </govuk-password-input>
+    </div>
     
     <govuk-button type="submit">Sign in</govuk-button>
 }
+
+<p class="govuk-body">
+    <a href="@(Model.ForgotPasswordUrl)">Forgot password</a>
+</p>

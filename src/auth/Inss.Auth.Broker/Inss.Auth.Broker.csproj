@@ -11,10 +11,15 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Views\Login\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Application\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
     </ItemGroup>
     
 </Project>
