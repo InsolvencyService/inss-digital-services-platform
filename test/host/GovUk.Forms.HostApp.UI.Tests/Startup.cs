@@ -1,4 +1,5 @@
 ﻿using GovUk.Forms.HostApp.UI.Tests.Config.Driver;
+using GovUk.Forms.HostApp.UI.Tests.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll.Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,7 @@ public static class Startup
     {
         IServiceCollection services = new ServiceCollection();
         services.AddScoped<IPlaywrightDriver, PlaywrightDriver>();
+        services.AddPageObjects();
         return services;
 
     }

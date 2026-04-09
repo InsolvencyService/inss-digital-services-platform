@@ -1,8 +1,6 @@
 using GovUk.Forms.HostApp.UI.Tests.Config;
 using GovUk.Forms.HostApp.UI.Tests.Config.Driver;
 using GovUk.Forms.HostApp.UI.Tests.Helpers;
-using Microsoft.Playwright;
-using Reqnroll;
 namespace GovUk.Forms.HostApp.UI.Tests.Hook;
 
 [Binding]

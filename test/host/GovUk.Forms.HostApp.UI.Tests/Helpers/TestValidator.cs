@@ -2,7 +2,7 @@
 using GovUk.Forms.HostApp.UI.Tests.Extensions;
 using GovUk.Forms.HostApp.UI.Tests.Pages;
 using GovUk.Forms.HostApp.UI.Tests.Tags;
-using Reqnroll;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -26,6 +26,8 @@ public static class TestValidator
         {
             ValidateCodeOnce();
         }
+
+        ValidateAllPagesRegistered();
     }
 
     private static void ValidateScenarioTag(ScenarioContext scenarioContext)
@@ -167,5 +169,55 @@ public static class TestValidator
                 }
             }
         }
+    }
+
+    private static void ValidateAllPagesRegistered()
+    {
+        VerifyAllTypeWithSuffixAreRegistered(
+            assemblyAnchor: typeof(RegisterPageObjects),
+            suffix: "Page",
+            registerAction: sc => sc.AddPageObjects(),
+            friendlyName: "Page",
+            registerMethodName: "RegisterPageObjects.AddPageObjects()");
+    }
+
+    private static void VerifyAllTypeWithSuffixAreRegistered(
+        Type assemblyAnchor,
+        string suffix,
+        Action<IServiceCollection> registerAction,
+        string friendlyName,
+        string registerMethodName)
+    {
+        ServiceCollection services = new();
+        registerAction(services);
+        Assembly assembly = assemblyAnchor.Assembly;
+
+        bool IsConcreteTarget(Type type)
+        {
+            return type.IsClass &&
+            !type.IsAbstract &&
+            !type.IsGenericTypeDefinition &&
+            type.Name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase) &&
+            !type.Name.StartsWith("Base", StringComparison.Ordinal);
+        }
+
+        List<Type> allTypes = assembly.GetTypes().Where(IsConcreteTarget).ToList();
+
+        List<Type> register = services
+            .Where(s => s.ImplementationType != null)
+            .Select(s => s.ImplementationType!)
+            .Where(t => t.Name.EndsWith(suffix, StringComparison.Ordinal))
+            .ToList();
+
+        List<Type> unregisterPages = allTypes.Where(t => !register.Contains(t)).ToList();
+
+        if (unregisterPages.Count != 0)
+        {
+            Assert.Fail(
+                $"The following {friendlyName} were not registered in {registerMethodName}:\n" +
+                string.Join("\n", unregisterPages.Select(t => "- " + t.FullName)) +
+                $"\n\n Action: Add them inside{registerMethodName}");
+        }
+
     }
 }

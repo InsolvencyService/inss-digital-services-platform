@@ -1,5 +1,4 @@
 ﻿using GovUk.Forms.HostApp.UI.Tests.Models.Settings;
-using Microsoft.Playwright;
 
 namespace GovUk.Forms.HostApp.UI.Tests.Config.Driver;
 
