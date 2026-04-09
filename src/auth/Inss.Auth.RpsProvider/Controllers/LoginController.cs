@@ -49,11 +49,11 @@ public class LoginController : Controller
 
         if (authenticationType == RpsAuthenticationTypes.Unknown)
         {
-            ModelState.AddModelError(nameof(model.Email), "The email address or password you entered is incorrect");
+            ModelState.AddModelError("Email.Value", "The email address or password you entered is incorrect");
         }
         else if (authenticationType == RpsAuthenticationTypes.Locked)
         {
-            ModelState.AddModelError(nameof(model.Email), "Your account is locked");
+            ModelState.AddModelError("Email.Value", "Your account is locked");
         }
         
         return View(model);
