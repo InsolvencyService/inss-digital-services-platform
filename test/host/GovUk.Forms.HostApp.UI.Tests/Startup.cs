@@ -14,6 +14,7 @@ public static class Startup
         IServiceCollection services = new ServiceCollection();
         services.AddScoped<IPlaywrightDriver, PlaywrightDriver>();
         services.AddPageObjects();
+        services.AddCoordinators();
         return services;
 
     }

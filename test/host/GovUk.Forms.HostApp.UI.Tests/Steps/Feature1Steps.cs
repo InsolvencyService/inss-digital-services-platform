@@ -1,33 +1,33 @@
-using GovUk.Forms.HostApp.UI.Tests.Pages;
+using GovUk.Forms.HostApp.UI.Tests.Coordinators;
 
 namespace GovUk.Forms.HostApp.UI.Tests.Steps;
 
 [Binding]
 public class Feature1Steps
 {
-    private readonly IStartPage _startPage;
-
-    public Feature1Steps(IStartPage startPage)
+    private readonly DemoCoordinator _demoCoordinator;
+    // private readonly IDeclarationPage _declarationPage;
+    public Feature1Steps(DemoCoordinator demoCoordinator)
     {
-        _startPage = startPage;
+        _demoCoordinator = demoCoordinator;
     }
 
-    [Given("I am on the start page")]
-    public static void GivenIAmOnTheStartPage()
+    [Given("I am on the declaration page")]
+    public async Task GivenIAmOnTheDeclarationPage()
     {
-
+        await _demoCoordinator.VerifyDeclarationPageContentAsync();
     }
 
-    [When("I choose Start now")]
-    public static void WhenIChooseStartNow()
+    [When("I choose to view section 187")]
+    public async Task WhenIChooseToViewSection()
     {
-
+        await _demoCoordinator.OpenSection187Async();
     }
 
-    [Then("I will be taken to the sign in page")]
-    public static void ThenIWillBeTakenToTheSignInPage()
+    [Then("I will be taken to thesection 187 page")]
+    public async Task ThenIWillBeTakenToThesectionPage()
     {
-
+        await _demoCoordinator.VerifySection187PageContentAsync();
     }
 
 }

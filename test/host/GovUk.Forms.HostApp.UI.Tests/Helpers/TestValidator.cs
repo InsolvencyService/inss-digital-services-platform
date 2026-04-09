@@ -28,7 +28,9 @@ public static class TestValidator
         }
 
         ValidateAllPagesRegistered();
+        VerifyAllCoordinatorsRegistered();
     }
+
 
     private static void ValidateScenarioTag(ScenarioContext scenarioContext)
     {
@@ -181,6 +183,16 @@ public static class TestValidator
             registerMethodName: "RegisterPageObjects.AddPageObjects()");
     }
 
+    private static void VerifyAllCoordinatorsRegistered()
+    {
+        VerifyAllTypeWithSuffixAreRegistered(
+            assemblyAnchor: typeof(RegisterCoordinators),
+            suffix: "Coordinator",
+            registerAction: sc => sc.AddCoordinators(),
+            friendlyName: "Coordinator",
+            registerMethodName: "RegisterCoordinators.AddCoordinators()");
+    }
+
     private static void VerifyAllTypeWithSuffixAreRegistered(
         Type assemblyAnchor,
         string suffix,
@@ -214,10 +226,72 @@ public static class TestValidator
         if (unregisterPages.Count != 0)
         {
             Assert.Fail(
-                $"The following {friendlyName} were not registered in {registerMethodName}:\n" +
-                string.Join("\n", unregisterPages.Select(t => "- " + t.FullName)) +
-                $"\n\n Action: Add them inside{registerMethodName}");
+                $"These {friendlyName} classes exist but are not registered in {registerMethodName}:\n\n" +
+                string.Join("\n", unregisterPages.Select(t => t.FullName)) +
+                $"\n\n Action: Add them inside {registerMethodName}. \n\n");
         }
 
     }
+
+    public static void VerifyStepDefinitionsUseOnlyCoordinators(Assembly assembly)
+    {
+        IEnumerable<Type> stepTypes = assembly.GetTypes()
+            .Where(t =>
+                t.IsClass &&
+                t.GetMethods().Any(m =>
+                    m.GetCustomAttributes(inherit: true).Any(a =>
+                        a.GetType().Name is "GivenAttribute" or "WhenAttribute" or "ThenAttribute")));
+
+        foreach (Type stepType in stepTypes)
+        {
+
+            if (HasDependencyOnBasePage(stepType))
+            {
+                throw new InvalidOperationException(
+                    $"Step definition '{stepType.FullName}'\n\n must not depend on BasePage.");
+            }
+
+            ConstructorInfo[] constructors = stepType.GetConstructors(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            IEnumerable<ParameterInfo> parameters = constructors
+                .SelectMany(c => c.GetParameters())
+                .DistinctBy(p => p.ParameterType);
+            foreach (ParameterInfo? param in from param in parameters
+                                             where !param.ParameterType.Name.EndsWith("Coordinator", StringComparison.Ordinal)
+                                             select param)
+            {
+                throw new InvalidOperationException(
+                                    $"Step definition '{stepType.FullName}'\n has invalid dependency '{param.ParameterType.FullName}'.\n\n " +
+                                    "Steps may only depend on Coordinators.\n\n Please use the Coordinators");
+            }
+        }
+    }
+    private static bool HasDependencyOnBasePage(Type stepType)
+    {
+        Type forbidden = typeof(BasePage);
+
+        const BindingFlags flags =
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
+        // Fields
+        bool hasFieldDependency = stepType
+            .GetFields(flags)
+            .Any(f => forbidden.IsAssignableFrom(f.FieldType));
+
+        // Properties
+        bool hasPropertyDependency = stepType
+            .GetProperties(flags)
+            .Any(p => forbidden.IsAssignableFrom(p.PropertyType));
+
+        // Constructors 
+        bool hasCtorDependency = stepType
+            .GetConstructors(flags)
+            .SelectMany(c => c.GetParameters())
+            .Any(p => forbidden.IsAssignableFrom(p.ParameterType));
+
+        return hasFieldDependency || hasPropertyDependency || hasCtorDependency;
+    }
+
+
 }

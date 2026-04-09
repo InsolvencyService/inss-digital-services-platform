@@ -1,6 +1,7 @@
 using GovUk.Forms.HostApp.UI.Tests.Config;
 using GovUk.Forms.HostApp.UI.Tests.Config.Driver;
 using GovUk.Forms.HostApp.UI.Tests.Helpers;
+using System.Reflection;
 namespace GovUk.Forms.HostApp.UI.Tests.Hook;
 
 [Binding]
@@ -40,5 +41,16 @@ public sealed class ReqnrollHook : BaseTestConfig
         await BrowserTearDownAsync(_scenarioContext, _reqnrollOutputHelper, context, page);
         await _playwrightDriver.Browser.CloseAsync();
     }
+
+
+
+    [BeforeTestRun]
+    public static void EnforceArchitecture()
+    {
+        TestValidator.VerifyStepDefinitionsUseOnlyCoordinators(
+            Assembly.GetExecutingAssembly());
+    }
+
+
 
 }
