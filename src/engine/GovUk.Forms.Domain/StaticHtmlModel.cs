@@ -1,12 +1,22 @@
-using GovUk.Forms.Domain.Attributes;
-
 namespace GovUk.Forms.Domain;
 
 public class StaticHtmlModel : PageModel
 {
-    [Copyable]
-    public string Key { get; init; }
+    public string Key { get; set; }
     
-    [Copyable]
     public string Html { get; set; }
+
+    public override void CopyTo(PageModel target)
+    {
+        StaticHtmlModel staticHtml = target.As<StaticHtmlModel>();
+        staticHtml.Key = Key;
+        staticHtml.Html = Html;
+    }
+    
+    public override void ClearValues()
+    {
+        base.ClearValues();
+        Key = string.Empty;
+        Html = string.Empty;
+    }
 }

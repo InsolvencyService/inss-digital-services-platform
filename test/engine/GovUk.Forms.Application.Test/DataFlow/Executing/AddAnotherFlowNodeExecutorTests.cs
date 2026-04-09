@@ -102,7 +102,7 @@ public class AddAnotherFlowNodeExecutorTests
         
         await _executor.ExecuteAsync(context);
         
-        Assert.Null(fullName.Value);
+        Assert.Empty(fullName.Value);
         Assert.Equal(0, age.Value);
     }
 }

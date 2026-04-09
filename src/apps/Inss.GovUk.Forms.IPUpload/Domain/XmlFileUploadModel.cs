@@ -1,7 +1,6 @@
 using System.Text;
 using System.Xml.Linq;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Attributes;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain;
 
@@ -12,10 +11,8 @@ public sealed class XmlFileUploadModel : PageModel
         EncodingType = "multipart/form-data";
     }
     
-    [Copyable]
     public string Filename { get; set; }
     
-    [Copyable]
     public string Contents { get; set; }
     
     public int Length { get; set; }
@@ -32,5 +29,19 @@ public sealed class XmlFileUploadModel : PageModel
     public override string[] GetSummaryInfo()
     {
         return [Filename];
+    }
+
+    public override void CopyTo(PageModel target)
+    {
+        XmlFileUploadModel xmlFileUpload = target.As<XmlFileUploadModel>();
+        xmlFileUpload.Filename = Filename;
+        xmlFileUpload.Contents = Contents;
+    }
+    
+    public override void ClearValues()
+    {
+        base.ClearValues();
+        Filename = string.Empty;
+        Contents = string.Empty;
     }
 }

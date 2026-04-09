@@ -114,8 +114,8 @@ public class PageModelListTests
         section.Pages.ResetDownstream(age);
 
         BankAccountModel bankAccount = section.Pages.GetFirstOf<BankAccountModel>();
-        Assert.Null(bankAccount.SortCode);
-        Assert.Null(bankAccount.AccountNumber);
+        Assert.Empty(bankAccount.SortCode);
+        Assert.Empty(bankAccount.AccountNumber);
     }
     
     [Fact]

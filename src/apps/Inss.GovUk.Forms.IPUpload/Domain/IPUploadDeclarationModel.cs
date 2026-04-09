@@ -1,5 +1,4 @@
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Attributes;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain;
 
@@ -7,15 +6,19 @@ namespace Inss.GovUk.Forms.IPUpload.Domain;
 
 public class IPUploadDeclarationModel : StaticHtmlModel
 {
-    [Copyable]
     public bool Accepted { get; set; }
+
+    public override void CopyTo(PageModel target)
+    {
+        IPUploadDeclarationModel ipUploadDeclaration = target.As<IPUploadDeclarationModel>();
+        ipUploadDeclaration.Accepted = Accepted;
+    }
 }
 
 public sealed class IPUploadXmlErrorsModel : PageModel
 {
     private readonly List<ErrorInfo> _errors = [];
     
-    [Copyable]
     public string Filename { get; set; }
 
     public bool HasErrors => _errors.Count > 0;
@@ -41,7 +44,14 @@ public sealed class IPUploadXmlErrorsModel : PageModel
     public override void ClearValues()
     {
         base.ClearValues();
+        Filename = string.Empty;
         _errors.Clear();
+    }
+    
+    public override void CopyTo(PageModel target)
+    {
+        IPUploadXmlErrorsModel ipUploadXmlErrors = target.As<IPUploadXmlErrorsModel>();
+        ipUploadXmlErrors.Filename = Filename;
     }
 }
 
