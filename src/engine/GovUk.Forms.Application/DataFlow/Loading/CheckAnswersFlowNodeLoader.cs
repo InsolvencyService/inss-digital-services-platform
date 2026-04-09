@@ -34,7 +34,7 @@ public sealed class CheckAnswersFlowNodeLoader : IFlowNodeLoader
         foreach (PageModel groupPage in groupInfo.WorkingPages)
         {
             groupPage.ReturnUrl = checkAnswers.Path;
-            string[] values = groupPage.GetValues();
+            string[] values = groupPage.GetSummaryInfo();
             itemList.Add(new CheckAnswersModel.CheckAnswersItem
             {
                 Title = groupPage.Title,

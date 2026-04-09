@@ -12,7 +12,6 @@ public sealed class XmlFileUploadModel : PageModel
         EncodingType = "multipart/form-data";
     }
     
-    [Summary]
     [Copyable]
     public string Filename { get; set; }
     
@@ -28,5 +27,10 @@ public sealed class XmlFileUploadModel : PageModel
         byte[] xmlBytes = Convert.FromBase64String(Contents);
         string xml = Encoding.UTF8.GetString(xmlBytes);
         return XDocument.Parse(xml);
+    }
+
+    public override string[] GetSummaryInfo()
+    {
+        return [Filename];
     }
 }
