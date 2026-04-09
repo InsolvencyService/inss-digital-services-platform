@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Reflection;
 using GovUk.Forms.Domain.Attributes;
 using GovUk.Forms.Domain.Enums;
@@ -44,37 +42,6 @@ public abstract class PageModel : ContentModel
                 property.SetValue(this, null);
             }
         }
-    }
-
-    public string[] GetValues()
-    {
-        List<string> displayValueList = [];
-
-        IEnumerable<PropertyInfo> properties =
-            GetType().GetProperties().Where(p => p.GetCustomAttribute<SummaryAttribute>() is not null && p.CanRead);
-
-        foreach (PropertyInfo property in properties)
-        {
-            object? value = property.GetValue(this, null);
-
-            if (value is null)
-            {
-                continue;
-            }
-
-            DisplayFormatAttribute? displayValueFormat = property.GetCustomAttribute<DisplayFormatAttribute>();
-
-            string? displayValue = displayValueFormat?.DataFormatString is not null
-                ? string.Format(CultureInfo.CurrentCulture, displayValueFormat.DataFormatString, value)
-                : value.ToString();
-
-            if (!string.IsNullOrWhiteSpace(displayValue))
-            {
-                displayValueList.Add(displayValue);
-            }
-        }
-
-        return [.. displayValueList];
     }
 
     public void CopyTo(PageModel target)
@@ -122,5 +89,10 @@ public abstract class PageModel : ContentModel
     public bool IsLocked()
     {
         return (EditMode & PageEditTypes.Locked) == PageEditTypes.Locked;
+    }
+
+    public virtual string[] GetSummaryInfo()
+    {
+        return [];
     }
 }

@@ -22,7 +22,8 @@ public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
                 
                 for (int i = 0; i < addAnother.Items.Count; i += groupInfo.WorkingPages.Count)
                 {
-                    string[] itemValues = addAnother.Items.Skip(i).Take(groupInfo.WorkingPages.Count).SelectMany(p => p.GetValues()).ToArray();
+                    string[] itemValues = addAnother.Items.Skip(i).Take(
+                        groupInfo.WorkingPages.Count).SelectMany(p => p.GetSummaryInfo()).ToArray();
                     overview.Add(new SummaryModel.SummaryInfo
                     {
                         Title = addAnother.Title,
@@ -36,7 +37,7 @@ public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
                 overview.Add(new SummaryModel.SummaryInfo
                 {
                     Title = savedPage.Title,
-                    Values = savedPage.GetValues(),
+                    Values = savedPage.GetSummaryInfo(),
                     ChangeUrl = context.Section.State == SectionStateTypes.InProgress ? savedPage.Path : null
                 });
             }

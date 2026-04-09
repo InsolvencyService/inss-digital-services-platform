@@ -14,13 +14,18 @@ public class DateModel : PageModel
     [Copyable]
     public int Year { get; set; } = 2001;
     
-    [Summary]
     public DateOnly Value
     {
         get
         {
-            string dateAsString = $"{Year:D4}-{Month:D2}-{Day:D2}";
-            return DateOnly.TryParse(dateAsString, out DateOnly date) ? date : DateOnly.MinValue;
+            return DateOnly.TryParse(DateAsString, out DateOnly date) ? date : DateOnly.MinValue;
         }
+    }
+
+    private string DateAsString => $"{Year:D4}-{Month:D2}-{Day:D2}";
+
+    public override string[] GetSummaryInfo()
+    {
+        return [DateAsString];
     }
 }

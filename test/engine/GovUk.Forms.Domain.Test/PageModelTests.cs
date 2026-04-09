@@ -42,13 +42,13 @@ public class PageModelTests
     }
 
     [Fact]
-    public void PopulatedModel_GetValues_ReturnsModelSummaryValues()
+    public void PopulatedModel_GetSummaryInfo_ReturnsModelSummaryValues()
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         TestSectionDefaults.YourDetails(section);
         AddressModel address = section.Pages.GetFirstOf<AddressModel>();
 
-        string[] values = address.GetValues();
+        string[] values = address.GetSummaryInfo();
 
         Assert.True(values.Contains(address.AddressLine1));
         Assert.False(values.Contains(address.AddressLine2));
@@ -58,13 +58,13 @@ public class PageModelTests
     }
 
     [Fact]
-    public void DisplayFormattedModel_GetValues_ReturnsFormattedModelValue()
+    public void DisplayFormattedModel_GetSummaryInfo_ReturnsFormattedModelValue()
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         TestSectionDefaults.YourDetails(section);
         SalaryModel salary = section.Pages.GetFirstOf<SalaryModel>();
 
-        string[] values = salary.GetValues();
+        string[] values = salary.GetSummaryInfo();
 
         Assert.True(values.Contains(salary.Value.ToString("C", CultureInfo.CurrentCulture)));
     }

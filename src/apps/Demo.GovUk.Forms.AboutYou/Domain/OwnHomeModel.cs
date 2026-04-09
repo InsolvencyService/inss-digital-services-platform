@@ -7,7 +7,9 @@ public sealed class OwnHomeModel : PageModel
 {
     [Copyable]
     public bool OwnsHome { get; set; }
-
-    [Summary]
-    public string OwnsHomeValue => OwnsHome ? "Yes" : "No";
+    
+    public override string[] GetSummaryInfo()
+    {
+        return [OwnsHome ? "Yes" : "No"];
+    }
 }

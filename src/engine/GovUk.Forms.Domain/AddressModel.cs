@@ -9,7 +9,6 @@ public sealed class AddressModel : PageModel
     private const string PostcodeRegexPattern = "^(GIR ?0AA|(?:(?:[A-PR-UWYZa-pr-uwyz][0-9][0-9]?|[A-PR-UWYZa-pr-uwyz][A-HK-Ya-hk-y][0-9][0-9]?|[A-PR-UWYZa-pr-uwyz][0-9][A-HJKSTUWa-hjkstuw]?|[A-PR-UWYZa-pr-uwyz][A-HK-Ya-hk-y][0-9][ABEHMNPRVWXYabehmnprvwxy])) ?[0-9][ABD-HJLNP-UW-Zabd-hjlnp-uw-z]{2})$";
     
     [Copyable]
-    [Summary]
     [Required(ErrorMessage = "Enter address line 1")]
     public string AddressLine1 { get; set; } = string.Empty;
 
@@ -27,4 +26,9 @@ public sealed class AddressModel : PageModel
     [Required(ErrorMessage = "Enter postcode")]
     [RegularExpression(PostcodeRegexPattern, ErrorMessage = "Enter a full UK postcode")]
     public string Postcode { get; set; } = string.Empty;
+    
+    public override string[] GetSummaryInfo()
+    {
+        return [AddressLine1];
+    }
 }
