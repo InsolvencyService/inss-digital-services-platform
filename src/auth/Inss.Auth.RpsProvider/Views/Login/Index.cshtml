@@ -7,9 +7,7 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.ReturnUrl)
 
-    <govuk-input for="Email" input-class="govuk-input govuk-!-width-two-thirds" spellcheck="false" autocomplete="email">
-        <govuk-input-label is-page-heading="true" class="govuk-label--s">Email address</govuk-input-label>
-    </govuk-input>
+    @await Html.RenderTypeAsync(Model.Email, nameof(Model.Email))
     
     <div class="govuk-form-group govuk-password-input govuk-!-width-two-thirds">
     <govuk-password-input for="Password" autocomplete="current-password" show-password-text="Show" label-class="govuk-label--s">

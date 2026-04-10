@@ -1,8 +1,10 @@
 using System.Security.Cryptography;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Handlers;
 using GovUk.Forms.Components.Options;
+using GovUk.Forms.Infrastructure.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +34,19 @@ public class StartupConfiguration : IHostingStartup
                     IdentityProviderTypes.Entra => new EntraAuthenticationProvider(),
                     IdentityProviderTypes.OneLogin => new OneLoginAuthenticationProvider(),
                     _ => new AnonymousAuthenticationProvider()
+                };
+            });
+            
+            services.AddSingleton<IUserSessionProvider>(provider =>
+            {
+                IHttpContextAccessor accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                return brokerOptions.IdentityProvider switch
+                {
+                    IdentityProviderTypes.Rps or 
+                        IdentityProviderTypes.Entra or 
+                        IdentityProviderTypes.OneLogin => 
+                        new AuthenticatedUserSessionProvider(accessor),
+                    _ => new AnonymousUserSessionProvider(accessor)
                 };
             });
             

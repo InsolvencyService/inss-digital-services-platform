@@ -10,6 +10,7 @@ using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: HostingStartup(typeof(GovUk.Forms.Components.StartupConfiguration))]
@@ -32,9 +33,15 @@ public class StartupConfiguration : IHostingStartup
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
             
-            services.AddApplication();
-            services.AddInfrastructure();
-            
+            ComponentOptions componentOptions = new();
+            context.Configuration.GetSection("Components").Bind(componentOptions);
+
+            if (componentOptions.BootstrapFormFramework)
+            {
+                services.AddApplication();
+                services.AddInfrastructure(context.Configuration);
+            }
+
             IMvcBuilder mvcBuilder = services
                 .AddControllersWithViews(o => o.ModelBinderProviders.Insert(0, new ContentModelBinderProvider()))
                 .AddApplicationPart(typeof(FormController).Assembly);

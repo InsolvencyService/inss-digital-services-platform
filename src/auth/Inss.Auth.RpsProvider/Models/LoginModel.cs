@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GovUk.Forms.Domain.Types;
 
 namespace Inss.Auth.RpsProvider.Models;
 
 public class LoginModel
 {
-    [Required(ErrorMessage = "Enter an email address")]
-    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
-    public string Email { get; init; }
+    public Email Email { get; init; } = new();
     
     [Required(ErrorMessage = "Enter a password")]
     public string Password { get; init; }    
