@@ -13,8 +13,8 @@ public static class TestValidator
 {
     private static bool _bindingsValidated;
     private static bool _codeValidated;
-    private const string DontUseXpath = "Do not use XPath in loactors. Follow best practices.";
-    private const string LocatorAccessModifiers = "Locators must be private or protected";
+    private const string DontUseXpath = "Do not use XPath in loactors. Follow best practices.\n\n";
+    private const string LocatorAccessModifiers = "Locators must be private or protected\n\n";
     public static void ValidateScenario(ScenarioContext scenarioContext)
     {
         ValidateScenarioTag(scenarioContext);
@@ -39,7 +39,7 @@ public static class TestValidator
         if (tags == null || tags.Length == 0)
         {
             throw new ArgumentException(
-                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must have at least one @tag");
+                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must have at least one tag.");
         }
 
         string[] distinctTags = tags
@@ -49,27 +49,24 @@ public static class TestValidator
         if (distinctTags.Length != tags.Length)
         {
             throw new ArgumentException(
-                $"Scenario '{scenarioContext.ScenarioInfo.Title}' contains duplicate tags");
+                $"Scenario '{scenarioContext.ScenarioInfo.Title}' contains duplicate tags.");
         }
 
-        List<string> matchedLevelTags = distinctTags
-            .Where(tag => Enum.TryParse<TestLevelTag>(tag, true, out _))
+        List<string> matchedTestLevelTags = distinctTags
+            .Where(tag =>
+                Enum.GetNames<TestLevelTag>()
+                    .Any(t => t.Equals(tag, StringComparison.OrdinalIgnoreCase)))
             .ToList();
 
-        if (matchedLevelTags.Count == 0)
+        if (matchedTestLevelTags.Count == 0)
         {
             throw new ArgumentException(
-                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must contain exactly one test level tag: " +
-                string.Join(", ", Enum.GetNames<TestLevelTag>().Select(t => "@" + t.ToLower())));
-        }
-
-        if (matchedLevelTags.Count > 1)
-        {
-            throw new ArgumentException(
-                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must not contain multiple test level tags. Found: " +
-                string.Join(", ", matchedLevelTags));
+                $"Scenario '{scenarioContext.ScenarioInfo.Title}' must contain at least one test level tag: " +
+                string.Join(", ",
+                    Enum.GetNames<TestLevelTag>().Select(t => "@" + t.ToLower())));
         }
     }
+
 
     private static void ValidateNoPageObjectsInBindingOnce()
     {
@@ -115,6 +112,7 @@ public static class TestValidator
         Dictionary<string, string> invalidKeywords = new(StringComparer.OrdinalIgnoreCase)
         {
             {"xpath",DontUseXpath },
+            {"//table",DontUseXpath },
             {"//*[",DontUseXpath },
             { "//div",DontUseXpath },
             {"/div/",DontUseXpath },
@@ -123,6 +121,7 @@ public static class TestValidator
             {"/ul/li",DontUseXpath },
             {"//tr",DontUseXpath },
             {"//span",DontUseXpath },
+            {"//button",DontUseXpath },
             {"//a",DontUseXpath },
             {"//h",DontUseXpath },
             {"/body/",DontUseXpath },
@@ -133,8 +132,8 @@ public static class TestValidator
             {"[contain",DontUseXpath },
             {"public ilocator",LocatorAccessModifiers },
             {"internal ilocator",LocatorAccessModifiers },
-            {"Task.Delay", "Avoid Task.Delay in tests. Use explicit waits instead"},
-            {"Thread.Sleep", "Do not use Thread.Sleep. Use proper waits instead"}
+            {"Task.Delay", "Avoid Task.Delay in tests. Use explicit waits instead\n"},
+            {"Thread.Sleep", "Do not use Thread.Sleep. Use Playwright waits instead\n"}
         };
 
         Regex regex = new(

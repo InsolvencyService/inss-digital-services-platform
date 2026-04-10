@@ -109,17 +109,19 @@ namespace GovUk.Forms.HostApp.UI.Tests.Features
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Navigate to sign in page")]
+        [global::NUnit.Framework.DescriptionAttribute("Verify that section 187 page is accessible from declaration page")]
         [global::NUnit.Framework.CategoryAttribute("tag1")]
         [global::NUnit.Framework.CategoryAttribute("smoke")]
-        public async global::System.Threading.Tasks.Task NavigateToSignInPage()
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        public async global::System.Threading.Tasks.Task VerifyThatSection187PageIsAccessibleFromDeclarationPage()
         {
             string[] tagsOfScenario = new string[] {
                     "tag1",
-                    "smoke"};
+                    "smoke",
+                    "regression"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigate to sign in page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify that section 187 page is accessible from declaration page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 6
