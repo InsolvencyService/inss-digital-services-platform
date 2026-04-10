@@ -11,7 +11,6 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddInfrastructure()
         {
             services.AddSingleton<IFormStorageProvider, TestFormStorageProvider>();
-            services.AddSingleton<IUserSessionProvider, TestUserSessionProvider>();
             services.AddSingleton<IStaticContentProvider, TestStaticContentProvider>();
             services.AddSingleton<IFormProvider, TestFormProvider>();
             return services;

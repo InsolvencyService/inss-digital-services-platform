@@ -2,4 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GovUk.Forms.Application\GovUk.Forms.Application.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+  </ItemGroup>
 </Project>
