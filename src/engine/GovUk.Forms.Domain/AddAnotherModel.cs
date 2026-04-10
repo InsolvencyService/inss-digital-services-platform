@@ -1,27 +1,40 @@
 using System.Text.Json.Serialization;
-using GovUk.Forms.Domain.Attributes;
 
 namespace GovUk.Forms.Domain;
 
 public sealed class AddAnotherModel : PageModel
 {
-    [Copyable]
     public bool AddAnotherItem { get; set; }
     
     public PageModelList Items { get; init; } = [];
 
-    [Copyable]
-    public string? Question { get; init; }
+    public string? Question { get; set; }
 
-    [Copyable]
-    public string? Hint { get; init; }
+    public string? Hint { get; set; }
 
-    [Copyable]
     public int GroupLength { get; set; }
     
     [JsonIgnore]
     public AddAnotherSummaryModel[] SummaryInfo { get; set; } = [];
+
+    public override void CopyTo(PageModel target)
+    {
+        AddAnotherModel addAnother = target.As<AddAnotherModel>();
+        addAnother.Question =  Question;
+        addAnother.Hint = Hint;
+        addAnother.GroupLength = GroupLength;
+        addAnother.AddAnotherItem = AddAnotherItem;
+    }
     
+    public override void ClearValues()
+    {
+        base.ClearValues();
+        Question = null;
+        Hint = null;
+        GroupLength = 0;
+        AddAnotherItem = false;
+    }
+
     public sealed class AddAnotherSummaryModel
     {
         public required string Value { get; init; }

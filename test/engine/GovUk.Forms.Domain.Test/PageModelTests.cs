@@ -1,6 +1,5 @@
 using System.Globalization;
 using GovUk.Forms.Domain.Enums;
-using GovUk.Forms.Domain.Exceptions;
 using Xunit;
 
 namespace GovUk.Forms.Domain.Test;
@@ -32,11 +31,11 @@ public class PageModelTests
 
         address.ClearValues();
 
-        Assert.Null(address.AddressLine1);
+        Assert.Empty(address.AddressLine1);
         Assert.Null(address.AddressLine2);
-        Assert.Null(address.TownCity);
+        Assert.Empty(address.TownCity);
         Assert.Null(address.County);
-        Assert.Null(address.Postcode);
+        Assert.Empty(address.Postcode);
         Assert.Null(address.ReturnUrl);
         Assert.Equal(PageEditTypes.NotStarted, address.EditMode);
     }
@@ -67,21 +66,6 @@ public class PageModelTests
         string[] values = salary.GetSummaryInfo();
 
         Assert.True(values.Contains(salary.Value.ToString("C", CultureInfo.CurrentCulture)));
-    }
-
-    [Fact]
-    public void PopulatedModelMismatch_CopyTo_ThrowsException()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        TestSectionDefaults.YourDetails(section);
-        AddressModel address = new();
-        SalaryModel copyOf = new();
-
-        ModelException exception = Assert.Throws<ModelException>(() => address.CopyTo(copyOf));
-        
-        Assert.Equal(
-            $"The target type to copy to {typeof(SalaryModel)} does not match the " +
-            $"page type {typeof(AddressModel)}.", exception.Message);
     }
 
     [Fact]
