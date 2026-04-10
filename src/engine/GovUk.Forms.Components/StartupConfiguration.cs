@@ -39,7 +39,7 @@ public class StartupConfiguration : IHostingStartup
             if (componentOptions.BootstrapFormFramework)
             {
                 services.AddApplication();
-                services.AddInfrastructure();
+                services.AddInfrastructure(context.Configuration);
             }
 
             IMvcBuilder mvcBuilder = services

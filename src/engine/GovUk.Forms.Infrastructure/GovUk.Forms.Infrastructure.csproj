@@ -3,6 +3,10 @@
     <ProjectReference Include="..\GovUk.Forms.Application\GovUk.Forms.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 </Project>
