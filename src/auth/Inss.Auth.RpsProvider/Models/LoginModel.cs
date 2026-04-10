@@ -5,7 +5,7 @@ namespace Inss.Auth.RpsProvider.Models;
 
 public class LoginModel
 {
-    public Email Email { get; init; } = new();
+    public EmailAddress Email { get; init; } = new() { Hint = null };
     
     [Required(ErrorMessage = "Enter a password")]
     public string Password { get; init; }    

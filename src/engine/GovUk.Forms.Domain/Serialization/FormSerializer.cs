@@ -77,6 +77,7 @@ public static class FormSerializer
         options.Converters.Add(new SectionStateTypeJsonConverter());
         options.Converters.Add(new GroupIdJsonConverter());
         options.Converters.Add(new SubmitTypeJsonConverter());
+        options.Converters.Add(new LabelSizesJsonConverter());
         
         return options;
     }
