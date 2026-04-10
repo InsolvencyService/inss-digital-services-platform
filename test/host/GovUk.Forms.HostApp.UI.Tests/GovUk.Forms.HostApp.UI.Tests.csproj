@@ -4,6 +4,7 @@
 	</PropertyGroup>
 	
   <ItemGroup>
+    <PackageReference Include="Allure.Reqnroll" />
     <PackageReference Include="Expressium.LivingDoc.ReqnrollPlugin" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />

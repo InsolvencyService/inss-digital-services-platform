@@ -9,29 +9,49 @@ public class TestArtifacts
 {
     public string Folder { get; }
     private readonly string _testName;
+    private readonly string _runId;
 
-    public string ConsoleLogPath => FilePath($"Console-Log.txt");
-    public string TracePath => FilePath($"Trace_{TestNameWithDateTimestamp()}.zip");
-    public string FailureLogPath => FilePath($"Fail_{TestNameWithDateTimestamp()}.txt");
-    public string VideoPath => FilePath($"{TestNameWithDateTimestamp()}.webm");
+    public string ConsoleLogPath => FilePath("Console-Log.txt");
+    public string TracePath => FilePath($"Trace_{_runId}.zip");
+    public string FailureLogPath => FilePath($"Fail_{_runId}.txt");
+    public string VideoDirectory => Path.Combine(Folder, "videos");
 
-
-
-    public TestArtifacts(string testName, TestEnvironment environmentType, string WorkDrirectory)
+    public TestArtifacts(string testName, TestEnvironment environmentType, string workDirectory)
     {
-        _testName = testName;
+        _testName = Sanitize(testName);
+
+        string timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HH-mm-ss_fff", CultureInfo.InvariantCulture);
+        _runId = $"{_testName}_{timestamp}";
+
         string date = DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-        Folder = FileDirectoryExtensions.DirectoryPathCombine(WorkDrirectory, "Reports", environmentType.ToString(), date, TestNameWithDateTimestamp());
+
+        Folder = FileDirectoryExtensions.DirectoryPathCombine(
+            workDirectory,
+            "Reports",
+            environmentType.ToString(),
+            date,
+            _runId);
+
         Directory.CreateDirectory(Folder);
+        Directory.CreateDirectory(VideoDirectory);
+        Directory.CreateDirectory(Path.Combine(Folder, "screenshots"));
     }
 
-    private string TestNameWithDateTimestamp()
+    public string GetScreenshotPath(string name)
     {
-        string timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HH-mm-ss", CultureInfo.InvariantCulture);
-        return $"{_testName}_{timestamp}";
+        string safeName = Sanitize(name);
+        return Path.Combine(Folder, "screenshots", $"{safeName}.png");
     }
 
     public string FilePath(string fileName) => Folder.FilePathCombine(fileName);
 
+    private static string Sanitize(string value)
+    {
+        foreach (char invalidChar in Path.GetInvalidFileNameChars())
+        {
+            value = value.Replace(invalidChar, '_');
+        }
 
+        return value.Replace(' ', '_');
+    }
 }

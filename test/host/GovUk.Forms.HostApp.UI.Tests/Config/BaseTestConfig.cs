@@ -6,48 +6,46 @@ namespace GovUk.Forms.HostApp.UI.Tests.Config;
 
 public class BaseTestConfig
 {
-    protected string BasePathForArtifacts { get; private set; } = string.Empty;
-    protected string TestOutputDir { get; private set; } = string.Empty;
-    protected string TestName { get; private set; } = string.Empty;
-    protected TestArtifacts? TestArtifacts { get; private set; }
+    protected string BasePathForArtifacts { get; set; } = string.Empty;
+    protected string TestOutputDir { get; set; } = string.Empty;
+    protected string TestName { get; set; } = string.Empty;
+    protected TestArtifacts? TestArtifacts { get; set; }
 
-    /// <summary>
-    /// Initializes browser, tracing, logging, and navigates to base URL.
-    /// Should be called at the beginning of each scenario.
-    /// </summary>
     public async Task BrowserSetupAsync(ScenarioContext scenarioContext, IPage page)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
+        ArgumentNullException.ThrowIfNull(page);
 
-        // Ensure artifact base directory is set
         InitializePaths();
 
-        // Sanitize test name to avoid invalid file path characters
-        TestName = SanitizeFileName(scenarioContext.ScenarioInfo.Title);
+        if (TestArtifacts == null)
+        {
+            TestArtifactsSetup(scenarioContext);
+        }
 
-        // Resolve environment configuration
-        TestEnvironment environment = EnvironmentConfigFactory.CurrentEnvironment;
         IEnvironmentConfig config = EnvironmentConfigFactory.EnvironmentConfig;
-
-        // Initialize artifact manager
-        TestArtifacts = new TestArtifacts(TestName, environment, BasePathForArtifacts);
-
-        // Create test-specific output directory
-        TestOutputDir = GetOutputDirectory(environment, TestName);
-        Directory.CreateDirectory(TestOutputDir);
 
         LogTestStart();
 
-        // Navigate to application under test
         await NavigateToBaseUrlAsync(config.BaseUrl, page);
     }
 
-    /// <summary>
-    /// Handles teardown:
-    /// - Always attempts to capture artifacts
-    /// - Handles failures gracefully
-    /// - Ensures tracing is stopped
-    /// </summary>
+    public void TestArtifactsSetup(ScenarioContext scenarioContext)
+    {
+        ArgumentNullException.ThrowIfNull(scenarioContext);
+
+        InitializePaths();
+
+        TestName = SanitizeFileName(scenarioContext.ScenarioInfo.Title);
+
+        TestEnvironment environment = EnvironmentConfigFactory.CurrentEnvironment;
+
+        TestArtifacts = new TestArtifacts(TestName, environment, BasePathForArtifacts);
+
+        // Single source of truth
+        TestOutputDir = TestArtifacts.Folder;
+    }
+
     public async Task BrowserTearDownAsync(
         ScenarioContext scenarioContext,
         IReqnrollOutputHelper outputHelper,
@@ -56,40 +54,33 @@ public class BaseTestConfig
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
         ArgumentNullException.ThrowIfNull(outputHelper);
+        ArgumentNullException.ThrowIfNull(browserContext);
+        ArgumentNullException.ThrowIfNull(page);
 
         ScenarioExecutionStatus outcome = scenarioContext.ScenarioExecutionStatus;
 
         try
         {
-            // Always attempt final screenshot (even on pass)
-            await CaptureFinalScreenshotAsync(outputHelper, page);
+            await CaptureScreenshotAsync(outputHelper, page);
 
             LogTestEnd(outputHelper);
 
-            // Ensure tracing is stopped and saved
             await StopTracingSafeAsync(outputHelper, browserContext);
 
-            // Attach any existing artifacts (logs etc.)
             AttachArtifacts(outputHelper);
 
-            // Only perform heavy diagnostics on failure
             if (outcome == ScenarioExecutionStatus.TestError)
             {
-                await HandleFailureAsync(scenarioContext, outputHelper, page);
+                await HandleFailureAsync(scenarioContext, outputHelper);
             }
         }
         catch (Exception ex)
         {
-            // Never silently swallow teardown failures
             outputHelper.WriteLine($"[TearDown Error] {ex}");
             throw;
         }
     }
 
-
-    /// <summary>
-    /// Initializes the root artifact directory.
-    /// </summary>
     private void InitializePaths()
     {
         BasePathForArtifacts = FileDirectoryExtensions.DirectoryPathCombine(
@@ -97,9 +88,6 @@ public class BaseTestConfig
             "Screenshots-Report");
     }
 
-    /// <summary>
-    /// Logs test start metadata for traceability.
-    /// </summary>
     private void LogTestStart()
     {
         Console.WriteLine($"WorkDirectory: {TestContext.CurrentContext.WorkDirectory}");
@@ -107,14 +95,15 @@ public class BaseTestConfig
         Console.WriteLine($"=== Test Start: {TestName} | {DateTime.UtcNow:O} ===");
     }
 
-
-    /// <summary>
-    /// Navigates to base URL and validates response.
-    /// </summary>
     private static async Task NavigateToBaseUrlAsync(string baseUrl, IPage page)
     {
-        IResponse response = await page.GotoAsync(baseUrl, new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded, Timeout = 8000 })
-            ?? throw new InvalidOperationException($"Navigation returned null for '{baseUrl}'");
+        IResponse response = await page.GotoAsync(
+            baseUrl,
+            new PageGotoOptions
+            {
+                WaitUntil = WaitUntilState.DOMContentLoaded,
+                Timeout = 8000
+            }) ?? throw new InvalidOperationException($"Navigation returned null for '{baseUrl}'");
 
         if (!response.Ok)
         {
@@ -123,13 +112,9 @@ public class BaseTestConfig
         }
     }
 
-
-    /// <summary>
-    /// Captures a final screenshot regardless of test outcome.
-    /// </summary>
-    private async Task CaptureFinalScreenshotAsync(IReqnrollOutputHelper outputHelper, IPage page)
+    protected async Task CaptureScreenshotAsync(IReqnrollOutputHelper outputHelper, IPage page)
     {
-        if (page == null || TestArtifacts == null)
+        if (TestArtifacts == null)
         {
             return;
         }
@@ -140,27 +125,21 @@ public class BaseTestConfig
         await page.TakeScreenshotAsync(outputHelper, path);
     }
 
-    /// <summary>
-    /// Logs test end timestamp.
-    /// </summary>
     private void LogTestEnd(IReqnrollOutputHelper outputHelper)
     {
         outputHelper.WriteLine($"=== Test End: {TestName} | {DateTime.UtcNow:O} ===");
     }
 
-    /// <summary>
-    /// Stops tracing and safely attaches trace file if available.
-    /// </summary>
     private async Task StopTracingSafeAsync(IReqnrollOutputHelper outputHelper, IBrowserContext browserContext)
     {
-        if (browserContext == null || TestArtifacts == null)
+        if (TestArtifacts == null)
         {
             return;
         }
 
         try
         {
-            await browserContext.Tracing.StopAsync(new()
+            await browserContext.Tracing.StopAsync(new TracingStopOptions
             {
                 Path = TestArtifacts.TracePath
             });
@@ -172,14 +151,10 @@ public class BaseTestConfig
         }
         catch (Exception ex)
         {
-            // Do not fail test due to tracing issues
             outputHelper.WriteLine($"[Tracing Error] {ex.Message}");
         }
     }
 
-    /// <summary>
-    /// Attaches any existing artifacts (e.g., console logs).
-    /// </summary>
     private void AttachArtifacts(IReqnrollOutputHelper outputHelper)
     {
         if (TestArtifacts == null)
@@ -191,19 +166,19 @@ public class BaseTestConfig
         {
             outputHelper.AddAttachment(TestArtifacts.ConsoleLogPath);
         }
+
+        if (File.Exists(TestArtifacts.FailureLogPath))
+        {
+            outputHelper.AddAttachment(TestArtifacts.FailureLogPath);
+        }
     }
 
-    /// <summary>
-    /// Handles failure-specific diagnostics:
-    /// - failure log
-    /// - video capture
-    /// </summary>
     private async Task HandleFailureAsync(
         ScenarioContext scenarioContext,
-        IReqnrollOutputHelper outputHelper,
-        IPage page)
+        IReqnrollOutputHelper outputHelper)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
+
         Console.WriteLine($"Test '{TestName}' failed. Collecting artifacts...");
 
         if (TestArtifacts != null)
@@ -211,13 +186,8 @@ public class BaseTestConfig
             string message = BuildFailureMessage();
             await SaveFileAsync(TestArtifacts.FailureLogPath, message, outputHelper);
         }
-
-        await SaveVideoAsync(outputHelper, page);
     }
 
-    /// <summary>
-    /// Builds a detailed failure message using NUnit test context.
-    /// </summary>
     private string BuildFailureMessage()
     {
         TestContext.ResultAdapter result = TestContext.CurrentContext.Result;
@@ -235,26 +205,32 @@ public class BaseTestConfig
                 """;
     }
 
-    /// <summary>
-    /// Saves Playwright video if available.
-    /// </summary>
-    private async Task SaveVideoAsync(IReqnrollOutputHelper outputHelper, IPage page)
+    protected async Task SaveVideoAsync(IReqnrollOutputHelper outputHelper, IPage page)
     {
-        if (page?.Video == null || TestArtifacts?.VideoPath == null)
+        if (page.Video == null || TestArtifacts == null)
         {
             return;
         }
 
-        await page.Video.SaveAsAsync(TestArtifacts.VideoPath);
+        try
+        {
+            string videoPath = TestArtifacts.FilePath($"{TestName}_failure.webm");
 
-        outputHelper.WriteLine($"Video saved: {TestArtifacts.VideoPath}");
-        outputHelper.AddAttachmentAsLink(TestArtifacts.VideoPath);
+            await page.Video.SaveAsAsync(videoPath);
+
+            outputHelper.WriteLine($"Video saved: {videoPath}");
+
+            if (File.Exists(videoPath))
+            {
+                outputHelper.AddAttachment(videoPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            outputHelper.WriteLine($"[Video Error] {ex.Message}");
+        }
     }
 
-    /// <summary>
-    /// Writes content to file and attaches it to test output.
-    /// Ensures directory exists.
-    /// </summary>
     protected static async Task SaveFileAsync(
         string filePath,
         string content,
@@ -271,26 +247,28 @@ public class BaseTestConfig
         outputHelper.AddAttachmentAsLink(filePath);
     }
 
-    /// <summary>
-    /// Builds structured output directory:
-    /// /Artifacts/{Env}/{Date}/{TestName}
-    /// </summary>
-    protected string GetOutputDirectory(TestEnvironment environment, string testName) =>
-        FileDirectoryExtensions.DirectoryPathCombine(
-            BasePathForArtifacts,
-            environment.ToString(),
-            DateTime.UtcNow.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
-            testName);
-
-    /// <summary>
-    /// Removes invalid file system characters from test name.
-    /// </summary>
-    private static string SanitizeFileName(string name)
+    protected static string SanitizeFileName(string name)
     {
         foreach (char c in Path.GetInvalidFileNameChars())
         {
             name = name.Replace(c, '_');
         }
+
         return name;
+    }
+
+    public static string Sanitize(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return "empty";
+        }
+
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+
+        string cleaned = new(
+            name.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray());
+
+        return cleaned.Replace(" ", "_");
     }
 }

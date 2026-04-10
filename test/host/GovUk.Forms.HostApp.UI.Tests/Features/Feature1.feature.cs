@@ -105,20 +105,20 @@ namespace GovUk.Forms.HostApp.UI.Tests.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Feature1.feature.ndjson", 4);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Feature1.feature.ndjson", 3);
         }
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Verify that section 187 page is accessible from declaration page")]
         [global::NUnit.Framework.CategoryAttribute("tag1")]
+        [global::NUnit.Framework.CategoryAttribute("1111")]
         [global::NUnit.Framework.CategoryAttribute("smoke")]
-        [global::NUnit.Framework.CategoryAttribute("regression")]
         public async global::System.Threading.Tasks.Task VerifyThatSection187PageIsAccessibleFromDeclarationPage()
         {
             string[] tagsOfScenario = new string[] {
                     "tag1",
-                    "smoke",
-                    "regression"};
+                    "1111",
+                    "smoke"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify that section 187 page is accessible from declaration page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
@@ -141,46 +141,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
  await testRunner.WhenAsync("I choose to view section 187", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 9
- await testRunner.ThenAsync("I will be taken to thesection 187 page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Verify that section 187 page is accessible from declaration page1")]
-        [global::NUnit.Framework.CategoryAttribute("tag1")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
-        [global::NUnit.Framework.CategoryAttribute("regression")]
-        public async global::System.Threading.Tasks.Task VerifyThatSection187PageIsAccessibleFromDeclarationPage1()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "tag1",
-                    "smoke",
-                    "regression"};
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify that section 187 page is accessible from declaration page1", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 13
-this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 14
- await testRunner.GivenAsync("I am on the declaration page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 15
- await testRunner.WhenAsync("I choose to view section 187", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 16
- await testRunner.ThenAsync("I will be taken to thesection 187 page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+ await testRunner.ThenAsync("I will be taken to the section 187 page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

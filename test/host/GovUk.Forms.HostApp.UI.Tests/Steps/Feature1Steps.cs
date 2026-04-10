@@ -26,9 +26,10 @@ public class Feature1Steps
         await _demoCoordinator.OpenSection187Async();
     }
 
-    [Then("I will be taken to thesection 187 page")]
+    [Then("I will be taken to the section 187 page")]
     public async Task ThenIWillBeTakenToThesectionPage()
     {
+        Assert.Fail();
         await _demoCoordinator.VerifySection187PageContentAsync();
     }
 

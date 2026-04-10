@@ -1,7 +1,4 @@
-﻿using Microsoft.Playwright;
-using Reqnroll;
-
-namespace GovUk.Forms.HostApp.UI.Tests.Extensions;
+﻿namespace GovUk.Forms.HostApp.UI.Tests.Extensions;
 
 public static class PageExtensions
 {
@@ -16,7 +13,7 @@ public static class PageExtensions
                 FullPage = true,
             });
             outputHelper.WriteLine($"Screenshot saved to: {screenshotPath}");
-            outputHelper.AddAttachmentAsLink(screenshotPath);
+            outputHelper.AddAttachment(screenshotPath);
         }
         catch (IOException ex)
         {
