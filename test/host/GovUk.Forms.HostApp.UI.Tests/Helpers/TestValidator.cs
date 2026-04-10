@@ -13,7 +13,7 @@ public static class TestValidator
 {
     private static bool _bindingsValidated;
     private static bool _codeValidated;
-    private const string DontUseXpath = "Do not use XPath in loactors. Follow best practices.\n\n";
+    private const string DontUseXpath = "Do not use XPath in loactors. Follow Playwright best practices.\n\n";
     private const string LocatorAccessModifiers = "Locators must be private or protected\n\n";
     public static void ValidateScenario(ScenarioContext scenarioContext)
     {
