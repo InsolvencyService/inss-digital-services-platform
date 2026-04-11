@@ -1,58 +1,132 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Helpers;
-using GovUk.Forms.HostApp.UI.Tests.Models.Settings;
+﻿using GovUk.Forms.HostApp.UI.Tests.Models.Settings;
 
 namespace GovUk.Forms.HostApp.UI.Tests.Config.Driver;
 
-public class PlaywrightDriver : IPlaywrightDriver
+public sealed class PlaywrightDriver : IPlaywrightDriver
 {
     private IPlaywright? _playwright;
-    private IPage _page;
+    private IPage? _page;
     private IBrowser? _browser;
     private IBrowserContext? _context;
-    private readonly TestArtifacts _artifacts;
 
     private readonly List<IPage> _pages = [];
+    private readonly object _pagesLock = new();
 
-    public PlaywrightDriver(TestArtifacts artifacts)
-    {
-        _artifacts = artifacts ?? throw new ArgumentNullException(nameof(artifacts));
-    }
     public IBrowser Browser =>
         _browser ?? throw new InvalidOperationException("PlaywrightDriver is not initialised.");
+
     public IBrowserContext Context =>
         _context ?? throw new InvalidOperationException("PlaywrightDriver is not initialised.");
+
     public IPage Page =>
-        _page ?? throw new InvalidOperationException("PlaywrightDriver is not initialised.");
+        _page ?? throw new InvalidOperationException("There is no active page.");
 
-    public IReadOnlyList<IPage> Pages => _pages.AsReadOnly();
-    public async Task InitialiseAsync()
+    public IReadOnlyList<IPage> Pages
     {
-        TestSettings config = TestConfigReader.Settings;
-
-        _playwright = await Playwright.CreateAsync();
-
-        _browser = await CreateBrowserAsync(
-            _playwright,
-            config.BrowserSettings,
-           new BrowserTypeLaunchOptions
-           {
-               Headless = config.BrowserSettings.Headless,
-               SlowMo = config.BrowserSettings.SlowMo,
-           });
-
-        _context = await _browser.NewContextAsync(new BrowserNewContextOptions
+        get
         {
-            RecordVideoDir = _artifacts.VideoDirectory,
-            RecordVideoSize = new RecordVideoSize
+            lock (_pagesLock)
             {
-                Width = 1280,
-                Height = 720
+                return _pages.ToList().AsReadOnly();
             }
-        });
-        await StartTracingSafeAsync();
-        _page = await Context.NewPageAsync();
-        AttachConsoleLogging();
-        RegisterPage(_page);
+        }
+    }
+
+    public async Task InitialiseAsync(BrowserNewContextOptions? contextOptions = null)
+    {
+        if (_browser is not null && _context is not null && _page is not null)
+        {
+            return;
+        }
+
+        try
+        {
+            TestSettings config = TestConfigReader.Settings
+                ?? throw new InvalidOperationException("Test settings could not be loaded.");
+
+            BrowserSettings browserSettings = config.BrowserSettings
+                ?? throw new InvalidOperationException("Browser settings are missing.");
+
+            _playwright ??= await Playwright.CreateAsync();
+
+            _browser = await CreateBrowserAsync(
+                _playwright,
+                browserSettings,
+                new BrowserTypeLaunchOptions
+                {
+                    Headless = browserSettings.Headless,
+                    SlowMo = browserSettings.SlowMo,
+                });
+
+            _context = await _browser.NewContextAsync(contextOptions ?? new BrowserNewContextOptions());
+
+            AttachContextHandlers(_context);
+
+            IPage page = await _context.NewPageAsync();
+            RegisterPage(page);
+            AttachConsoleLogging(page);
+        }
+        catch
+        {
+            await CloseAsync();
+            throw;
+        }
+    }
+
+    public void SetActivePage(IPage page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+
+        lock (_pagesLock)
+        {
+            if (!_pages.Contains(page))
+            {
+                _pages.Add(page);
+            }
+
+            _page = page;
+        }
+    }
+
+    public async Task CloseAsync()
+    {
+        try
+        {
+            if (_context is not null)
+            {
+                await _context.CloseAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Driver Context Close Error] {ex}");
+        }
+
+        try
+        {
+            if (_browser is not null)
+            {
+                await _browser.CloseAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Driver Browser Close Error] {ex}");
+        }
+        finally
+        {
+            _playwright?.Dispose();
+
+            lock (_pagesLock)
+            {
+                _pages.Clear();
+                _page = null;
+            }
+
+            _context = null;
+            _browser = null;
+            _playwright = null;
+        }
     }
 
     private static async Task<IBrowser> CreateBrowserAsync(
@@ -60,81 +134,71 @@ public class PlaywrightDriver : IPlaywrightDriver
         BrowserSettings settings,
         BrowserTypeLaunchOptions options)
     {
-        string browserName = settings?.BrowserName?.ToLowerInvariant()!;
+        ArgumentNullException.ThrowIfNull(playwright);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(options);
 
-        return await playwright[browserName].LaunchAsync(options);
+        string browserName = settings.BrowserName?.Trim().ToLowerInvariant()
+            ?? throw new InvalidOperationException("Browser name is not configured.");
 
+        return browserName switch
+        {
+            "chromium" => await playwright.Chromium.LaunchAsync(options),
+            "firefox" => await playwright.Firefox.LaunchAsync(options),
+            "webkit" => await playwright.Webkit.LaunchAsync(options),
+            _ => throw new NotSupportedException($"Unsupported browser: {browserName}")
+        };
     }
 
-    private async Task StartTracingSafeAsync()
+    private void AttachContextHandlers(IBrowserContext context)
     {
-        if (_context == null)
-        {
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(context);
 
-        await _context.Tracing.StartAsync(new()
+        context.Page += (_, page) =>
         {
-            Title = TestContext.CurrentContext.Test.Name,
-            Screenshots = true,
-            Snapshots = true,
-            Sources = true
-        });
+            RegisterPage(page);
+            AttachConsoleLogging(page);
+        };
     }
 
-    private void AttachConsoleLogging()
+    private static void AttachConsoleLogging(IPage page)
     {
-        _page.Console += (_, msg) =>
+        ArgumentNullException.ThrowIfNull(page);
+
+        page.Console += (_, msg) =>
         {
             Console.WriteLine($"[Browser Console] {msg.Type}: {msg.Text}");
         };
     }
 
-    public void SetActivePage(IPage page)
+    private void RegisterPage(IPage page)
     {
         ArgumentNullException.ThrowIfNull(page);
 
-        _page = page;
-        RegisterPage(page);
-    }
-
-    private void RegisterPage(IPage page)
-    {
-        if (_pages.Contains(page))
+        lock (_pagesLock)
         {
-            return;
-        }
+            if (!_pages.Contains(page))
+            {
+                _pages.Add(page);
+            }
 
-        _pages.Add(page);
+            _page = page;
+        }
 
         page.Close += (_, _) =>
         {
-            _pages.Remove(page);
-
-            if (_page == page)
+            lock (_pagesLock)
             {
-                _page = _pages.Last();
+                _pages.Remove(page);
+
+                if (ReferenceEquals(_page, page))
+                {
+                    _page = _pages.Count > 0
+                        ? _pages[^1]
+                        : null;
+                }
             }
         };
-    }
-
-    public async Task<string> TakeScreenshotAsync(string name)
-    {
-        if (_page == null)
-        {
-            throw new InvalidOperationException("Page is not initialised.");
-        }
-
-        string path = _artifacts.GetScreenshotPath(name);
-
-        await _page.ScreenshotAsync(new PageScreenshotOptions
-        {
-            Path = path,
-            FullPage = true
-        });
-
-        TestContext.AddTestAttachment(path, $"Screenshot: {name}");
-        return path;
     }
 }
 

@@ -3,5 +3,5 @@
 public class EnvStConfig : BaseEnvironmentConfig
 {
     public override TestEnvironment EnvironmentType => TestEnvironment.ST;
-    public override string BaseUrl => "https://test-forms-hostapp.azurewebsites.net";
+    public override string BaseUrl => "";
 }

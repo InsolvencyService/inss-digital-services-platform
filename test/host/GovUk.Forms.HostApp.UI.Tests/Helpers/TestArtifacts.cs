@@ -1,57 +1,93 @@
 ﻿using GovUk.Forms.HostApp.UI.Tests.Config.Environments;
-using GovUk.Forms.HostApp.UI.Tests.Extensions;
 using System.Globalization;
 
 
 namespace GovUk.Forms.HostApp.UI.Tests.Helpers;
 
-public class TestArtifacts
+public sealed class TestArtifacts
 {
     public string Folder { get; }
-    private readonly string _testName;
-    private readonly string _runId;
+    public string TestName { get; }
+    public string RunId { get; }
 
-    public string ConsoleLogPath => FilePath("Console-Log.txt");
-    public string TracePath => FilePath($"Trace_{_runId}.zip");
-    public string FailureLogPath => FilePath($"Fail_{_runId}.txt");
+    public string ScreenshotsDirectory => Path.Combine(Folder, "screenshots");
     public string VideoDirectory => Path.Combine(Folder, "videos");
 
-    public TestArtifacts(string testName, TestEnvironment environmentType, string workDirectory)
+    public string ConsoleLogPath => FilePath("Console-Log.txt");
+    public string TracePath => FilePath($"Trace_{RunId}.zip");
+    public string FailureLogPath => FilePath($"Fail_{RunId}.txt");
+
+    public TestArtifacts(
+        string testName,
+        TestEnvironment environmentType,
+        string workDirectory)
     {
-        _testName = Sanitize(testName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(testName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(workDirectory);
 
-        string timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HH-mm-ss_fff", CultureInfo.InvariantCulture);
-        _runId = $"{_testName}_{timestamp}";
+        TestName = Sanitize(testName);
 
-        string date = DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        DateTime now = DateTime.UtcNow;
 
-        Folder = FileDirectoryExtensions.DirectoryPathCombine(
+        string timestamp = now.ToString("yyyyMMdd_HH-mm-ss_fff", CultureInfo.InvariantCulture);
+        string date = now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+        RunId = $"{TestName}_{timestamp}";
+
+        Folder = Path.Combine(
             workDirectory,
             "Reports",
             environmentType.ToString(),
             date,
-            _runId);
+            RunId);
 
+        // Ensure directories exist (parallel-safe)
         Directory.CreateDirectory(Folder);
         Directory.CreateDirectory(VideoDirectory);
-        Directory.CreateDirectory(Path.Combine(Folder, "screenshots"));
+        Directory.CreateDirectory(ScreenshotsDirectory);
     }
+
 
     public string GetScreenshotPath(string name)
     {
-        string safeName = Sanitize(name);
-        return Path.Combine(Folder, "screenshots", $"{safeName}.png");
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return Path.Combine(
+            ScreenshotsDirectory,
+            $"{Sanitize(name)}.png");
     }
 
-    public string FilePath(string fileName) => Folder.FilePathCombine(fileName);
+    public string GetVideoPath(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return Path.Combine(
+            VideoDirectory,
+            $"{Sanitize(name)}.webm");
+    }
+
+    public string FilePath(string fileName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
+
+        return Path.Combine(Folder, fileName);
+    }
+
+
 
     private static string Sanitize(string value)
     {
-        foreach (char invalidChar in Path.GetInvalidFileNameChars())
+        ArgumentException.ThrowIfNullOrWhiteSpace(value);
+
+        foreach (char invalid in Path.GetInvalidFileNameChars())
         {
-            value = value.Replace(invalidChar, '_');
+            value = value.Replace(invalid, '_');
         }
 
-        return value.Replace(' ', '_');
+        value = value.Replace(' ', '_');
+
+        return string.IsNullOrWhiteSpace(value)
+            ? "artifact"
+            : value;
     }
 }

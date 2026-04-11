@@ -1,6 +1,4 @@
-﻿using Reqnroll;
-
-namespace GovUk.Forms.HostApp.UI.Tests.Extensions;
+﻿namespace GovUk.Forms.HostApp.UI.Tests.Extensions;
 
 public static class ReqnRollExtensions
 {

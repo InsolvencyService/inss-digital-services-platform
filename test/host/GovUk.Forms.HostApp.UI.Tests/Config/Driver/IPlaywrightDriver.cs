@@ -2,11 +2,12 @@
 
 public interface IPlaywrightDriver
 {
-    IPage Page { get; }
     IBrowser Browser { get; }
     IBrowserContext Context { get; }
-    Task InitialiseAsync();
-    Task<string> TakeScreenshotAsync(string name);
-    void SetActivePage(IPage page);
+    IPage Page { get; }
     IReadOnlyList<IPage> Pages { get; }
+
+    Task InitialiseAsync(BrowserNewContextOptions? contextOptions = null);
+    Task CloseAsync();
+    void SetActivePage(IPage page);
 }

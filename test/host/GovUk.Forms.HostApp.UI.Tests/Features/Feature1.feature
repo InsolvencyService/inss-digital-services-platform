@@ -1,4 +1,5 @@
-﻿Feature: Feature1
+﻿@addVideo
+Feature: Feature1
 
 A short summary of the feature
 

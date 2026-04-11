@@ -4,29 +4,30 @@ using GovUk.Forms.HostApp.UI.Tests.Helpers;
 
 namespace GovUk.Forms.HostApp.UI.Tests.Config;
 
-public class BaseTestConfig
+public abstract class BaseTestConfig
 {
-    protected string BasePathForArtifacts { get; set; } = string.Empty;
-    protected string TestOutputDir { get; set; } = string.Empty;
-    protected string TestName { get; set; } = string.Empty;
-    protected TestArtifacts? TestArtifacts { get; set; }
+    protected string BasePathForArtifacts { get; private set; } = string.Empty;
+    protected string TestOutputDir { get; private set; } = string.Empty;
+    protected string TestName { get; private set; } = string.Empty;
+    protected TestArtifacts? TestArtifacts { get; private set; }
 
-    public async Task BrowserSetupAsync(ScenarioContext scenarioContext, IPage page)
+    public async Task BrowserSetupAsync(
+        ScenarioContext scenarioContext,
+        IPage page,
+        IBrowserContext browserContext)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
         ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(browserContext);
 
-        InitializePaths();
-
-        if (TestArtifacts == null)
-        {
-            TestArtifactsSetup(scenarioContext);
-        }
+        EnsureArtifactBasePath();
+        EnsureTestArtifactsCreated(scenarioContext);
 
         IEnvironmentConfig config = EnvironmentConfigFactory.EnvironmentConfig;
 
         LogTestStart();
 
+        await StartTracingSafeAsync(browserContext);
         await NavigateToBaseUrlAsync(config.BaseUrl, page);
     }
 
@@ -34,16 +35,8 @@ public class BaseTestConfig
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
 
-        InitializePaths();
-
-        TestName = SanitizeFileName(scenarioContext.ScenarioInfo.Title);
-
-        TestEnvironment environment = EnvironmentConfigFactory.CurrentEnvironment;
-
-        TestArtifacts = new TestArtifacts(TestName, environment, BasePathForArtifacts);
-
-        // Single source of truth
-        TestOutputDir = TestArtifacts.Folder;
+        EnsureArtifactBasePath();
+        EnsureTestArtifactsCreated(scenarioContext);
     }
 
     public async Task BrowserTearDownAsync(
@@ -57,22 +50,39 @@ public class BaseTestConfig
         ArgumentNullException.ThrowIfNull(browserContext);
         ArgumentNullException.ThrowIfNull(page);
 
-        ScenarioExecutionStatus outcome = scenarioContext.ScenarioExecutionStatus;
+        if (TestArtifacts is null)
+        {
+            outputHelper.WriteLine("[TearDown] TestArtifacts was null. Skipping artifact collection.");
+            return;
+        }
+
+        IVideo? video = page.Video;
+        bool failed = scenarioContext.ScenarioExecutionStatus == ScenarioExecutionStatus.TestError;
 
         try
         {
-            await CaptureScreenshotAsync(outputHelper, page);
-
             LogTestEnd(outputHelper);
 
-            await StopTracingSafeAsync(outputHelper, browserContext);
+            await page.SaveFinalScreenshotAsync(TestArtifacts, outputHelper, TestName);
+
+            await StopTracingSafeAsync(browserContext, outputHelper);
+
+            if (failed)
+            {
+                await HandleFailureAsync(outputHelper);
+            }
+
+            if (!page.IsClosed)
+            {
+                await page.CloseAsync();
+            }
+
+            if (failed && video is not null)
+            {
+                await SaveVideoAsync(outputHelper, video);
+            }
 
             AttachArtifacts(outputHelper);
-
-            if (outcome == ScenarioExecutionStatus.TestError)
-            {
-                await HandleFailureAsync(scenarioContext, outputHelper);
-            }
         }
         catch (Exception ex)
         {
@@ -81,58 +91,118 @@ public class BaseTestConfig
         }
     }
 
-    private void InitializePaths()
+    protected async Task SaveVideoAsync(
+        IReqnrollOutputHelper outputHelper,
+        IVideo video)
     {
-        BasePathForArtifacts = FileDirectoryExtensions.DirectoryPathCombine(
-            TestContext.CurrentContext.WorkDirectory,
-            "Screenshots-Report");
-    }
+        ArgumentNullException.ThrowIfNull(outputHelper);
+        ArgumentNullException.ThrowIfNull(video);
 
-    private void LogTestStart()
-    {
-        Console.WriteLine($"WorkDirectory: {TestContext.CurrentContext.WorkDirectory}");
-        Console.WriteLine($"Artifacts folder: {TestArtifacts?.Folder}");
-        Console.WriteLine($"=== Test Start: {TestName} | {DateTime.UtcNow:O} ===");
-    }
-
-    private static async Task NavigateToBaseUrlAsync(string baseUrl, IPage page)
-    {
-        IResponse response = await page.GotoAsync(
-            baseUrl,
-            new PageGotoOptions
-            {
-                WaitUntil = WaitUntilState.DOMContentLoaded,
-                Timeout = 8000
-            }) ?? throw new InvalidOperationException($"Navigation returned null for '{baseUrl}'");
-
-        if (!response.Ok)
+        if (TestArtifacts is null)
         {
-            throw new InvalidOperationException(
-                $"Navigation failed: {response.Status} {response.StatusText} ({baseUrl})");
+            outputHelper.WriteLine("[Video] TestArtifacts was null. Skipping video save.");
+            return;
+        }
+
+        try
+        {
+            string videoPath = TestArtifacts.GetVideoPath($"{TestName}_failure");
+
+            await video.SaveAsAsync(videoPath);
+
+            outputHelper.WriteLine($"Video saved: {videoPath}");
+
+            if (File.Exists(videoPath))
+            {
+                outputHelper.AddAttachment(videoPath);
+            }
+        }
+        catch (Exception ex)
+        {
+            outputHelper.WriteLine($"[Video Error] {ex.Message}");
         }
     }
 
-    protected async Task CaptureScreenshotAsync(IReqnrollOutputHelper outputHelper, IPage page)
+    protected async Task SaveFailureLogAsync(IReqnrollOutputHelper outputHelper)
     {
-        if (TestArtifacts == null)
+        ArgumentNullException.ThrowIfNull(outputHelper);
+
+        if (TestArtifacts is null)
         {
             return;
         }
 
-        string fileName = $"{TestName}_Final_{DateTime.UtcNow:HH-mm-ss}.jpg";
-        string path = TestArtifacts.FilePath(fileName);
-
-        await page.TakeScreenshotAsync(outputHelper, path);
+        string content = BuildFailureMessage();
+        await SaveFileAsync(TestArtifacts.FailureLogPath, content, outputHelper);
     }
 
-    private void LogTestEnd(IReqnrollOutputHelper outputHelper)
+    protected static async Task SaveFileAsync(
+        string filePath,
+        string content,
+        IReqnrollOutputHelper outputHelper)
     {
-        outputHelper.WriteLine($"=== Test End: {TestName} | {DateTime.UtcNow:O} ===");
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(outputHelper);
+
+        string directory = Path.GetDirectoryName(filePath)
+            ?? throw new InvalidOperationException("Invalid file path.");
+
+        Directory.CreateDirectory(directory);
+
+        await File.WriteAllTextAsync(filePath, content);
+
+        outputHelper.WriteLine($"File saved: {filePath}");
+
+        if (File.Exists(filePath))
+        {
+            outputHelper.AddAttachmentAsLink(filePath);
+        }
     }
 
-    private async Task StopTracingSafeAsync(IReqnrollOutputHelper outputHelper, IBrowserContext browserContext)
+    protected static string SanitizeFileName(string name)
     {
-        if (TestArtifacts == null)
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return "empty";
+        }
+
+        foreach (char invalidChar in Path.GetInvalidFileNameChars())
+        {
+            name = name.Replace(invalidChar, '_');
+        }
+
+        return name.Replace(' ', '_');
+    }
+
+    private static async Task StartTracingSafeAsync(IBrowserContext browserContext)
+    {
+        ArgumentNullException.ThrowIfNull(browserContext);
+
+        try
+        {
+            await browserContext.Tracing.StartAsync(new TracingStartOptions
+            {
+                Title = TestContext.CurrentContext.Test.Name,
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Tracing Start Error] {ex.Message}");
+        }
+    }
+
+    private async Task StopTracingSafeAsync(
+        IBrowserContext browserContext,
+        IReqnrollOutputHelper outputHelper)
+    {
+        ArgumentNullException.ThrowIfNull(browserContext);
+        ArgumentNullException.ThrowIfNull(outputHelper);
+
+        if (TestArtifacts is null)
         {
             return;
         }
@@ -155,37 +225,98 @@ public class BaseTestConfig
         }
     }
 
-    private void AttachArtifacts(IReqnrollOutputHelper outputHelper)
+    private void EnsureArtifactBasePath()
     {
-        if (TestArtifacts == null)
+        if (!string.IsNullOrWhiteSpace(BasePathForArtifacts))
         {
             return;
         }
 
-        if (File.Exists(TestArtifacts.ConsoleLogPath))
+        BasePathForArtifacts = Path.Combine(
+            TestContext.CurrentContext.WorkDirectory,
+            "Screenshots-Report");
+    }
+
+    private void EnsureTestArtifactsCreated(ScenarioContext scenarioContext)
+    {
+        if (TestArtifacts is not null)
         {
-            outputHelper.AddAttachment(TestArtifacts.ConsoleLogPath);
+            return;
         }
 
-        if (File.Exists(TestArtifacts.FailureLogPath))
+        TestName = SanitizeFileName(scenarioContext.ScenarioInfo.Title);
+
+        TestEnvironment environment = EnvironmentConfigFactory.CurrentEnvironment;
+
+        TestArtifacts = new TestArtifacts(
+            TestName,
+            environment,
+            BasePathForArtifacts);
+
+        TestOutputDir = TestArtifacts.Folder;
+    }
+
+    private void LogTestStart()
+    {
+        Console.WriteLine($"WorkDirectory: {TestContext.CurrentContext.WorkDirectory}");
+        Console.WriteLine($"Artifacts folder: {TestArtifacts?.Folder}");
+        Console.WriteLine($"=== Test Start: {TestName} | {DateTime.UtcNow:O} ===");
+    }
+
+    private void LogTestEnd(IReqnrollOutputHelper outputHelper)
+    {
+        outputHelper.WriteLine($"=== Test End: {TestName} | {DateTime.UtcNow:O} ===");
+    }
+
+    private static async Task NavigateToBaseUrlAsync(string baseUrl, IPage page)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(baseUrl);
+        ArgumentNullException.ThrowIfNull(page);
+
+        IResponse response = await page.GotoAsync(
+            baseUrl,
+            new PageGotoOptions
+            {
+                WaitUntil = WaitUntilState.DOMContentLoaded,
+                Timeout = 8_000
+            }) ?? throw new InvalidOperationException(
+                $"Navigation returned null for '{baseUrl}'.");
+
+        if (!response.Ok)
         {
-            outputHelper.AddAttachment(TestArtifacts.FailureLogPath);
+            throw new InvalidOperationException(
+                $"Navigation failed: {response.Status} {response.StatusText} ({baseUrl})");
         }
     }
 
-    private async Task HandleFailureAsync(
-        ScenarioContext scenarioContext,
-        IReqnrollOutputHelper outputHelper)
+    private void AttachArtifacts(IReqnrollOutputHelper outputHelper)
     {
-        ArgumentNullException.ThrowIfNull(scenarioContext);
+        ArgumentNullException.ThrowIfNull(outputHelper);
 
-        Console.WriteLine($"Test '{TestName}' failed. Collecting artifacts...");
-
-        if (TestArtifacts != null)
+        if (TestArtifacts is null)
         {
-            string message = BuildFailureMessage();
-            await SaveFileAsync(TestArtifacts.FailureLogPath, message, outputHelper);
+            return;
         }
+
+        AttachIfExists(outputHelper, TestArtifacts.ConsoleLogPath);
+        AttachIfExists(outputHelper, TestArtifacts.FailureLogPath);
+        AttachIfExists(outputHelper, TestArtifacts.TracePath);
+    }
+
+    private static void AttachIfExists(IReqnrollOutputHelper outputHelper, string path)
+    {
+        if (File.Exists(path))
+        {
+            outputHelper.AddAttachment(path);
+        }
+    }
+
+    private async Task HandleFailureAsync(IReqnrollOutputHelper outputHelper)
+    {
+        ArgumentNullException.ThrowIfNull(outputHelper);
+
+        outputHelper.WriteLine($"Test '{TestName}' failed. Collecting failure artifacts...");
+        await SaveFailureLogAsync(outputHelper);
     }
 
     private string BuildFailureMessage()
@@ -203,72 +334,5 @@ public class BaseTestConfig
                 Stack Trace:
                 {result.StackTrace}
                 """;
-    }
-
-    protected async Task SaveVideoAsync(IReqnrollOutputHelper outputHelper, IPage page)
-    {
-        if (page.Video == null || TestArtifacts == null)
-        {
-            return;
-        }
-
-        try
-        {
-            string videoPath = TestArtifacts.FilePath($"{TestName}_failure.webm");
-
-            await page.Video.SaveAsAsync(videoPath);
-
-            outputHelper.WriteLine($"Video saved: {videoPath}");
-
-            if (File.Exists(videoPath))
-            {
-                outputHelper.AddAttachment(videoPath);
-            }
-        }
-        catch (Exception ex)
-        {
-            outputHelper.WriteLine($"[Video Error] {ex.Message}");
-        }
-    }
-
-    protected static async Task SaveFileAsync(
-        string filePath,
-        string content,
-        IReqnrollOutputHelper outputHelper)
-    {
-        string directory = Path.GetDirectoryName(filePath)
-            ?? throw new InvalidOperationException("Invalid file path.");
-
-        Directory.CreateDirectory(directory);
-
-        await File.WriteAllTextAsync(filePath, content);
-
-        outputHelper.WriteLine($"File saved: {filePath}");
-        outputHelper.AddAttachmentAsLink(filePath);
-    }
-
-    protected static string SanitizeFileName(string name)
-    {
-        foreach (char c in Path.GetInvalidFileNameChars())
-        {
-            name = name.Replace(c, '_');
-        }
-
-        return name;
-    }
-
-    public static string Sanitize(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return "empty";
-        }
-
-        char[] invalidChars = Path.GetInvalidFileNameChars();
-
-        string cleaned = new(
-            name.Select(c => invalidChars.Contains(c) ? '_' : c).ToArray());
-
-        return cleaned.Replace(" ", "_");
     }
 }
