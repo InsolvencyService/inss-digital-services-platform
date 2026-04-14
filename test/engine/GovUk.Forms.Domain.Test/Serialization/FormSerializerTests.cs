@@ -24,28 +24,16 @@ public class FormSerializerTests
         FormModel form = TestFormModels.CreateWithYourDetailsSection();
         
         string json = FormSerializer.SerializeForm(form);
-
-        System.Text.Json.JsonDocument doc = System.Text.Json.JsonDocument.Parse(json);
-
-        Assert.True(FindPropertyValues(doc.RootElement, "$type", "FullNameModel"));
-        Assert.True(FindPropertyValues(doc.RootElement, "Value", ""));
-        Assert.True(FindPropertyValues(doc.RootElement, "Title", "Your Name"));
-        Assert.True(FindPropertyValues(doc.RootElement, "ReturnUrl", null));
-        //Assert.True(FindPropertyValues(doc.RootElement, "Id", null));
-        Assert.True(FindPropertyValues(doc.RootElement, "Path", "/form/your-details/your-fullname"));
-        Assert.True(FindPropertyValues(doc.RootElement, "ViewName", "_FullName"));
-        Assert.True(FindPropertyValues(doc.RootElement, "TypeName", "GovUk.Forms.Domain.FullNameModel"));
-        Assert.True(FindPropertyValues(doc.RootElement, "EditMode", "NotStarted"));
         
-        //Assert.Contains("\"$type\":\"FullNameModel\"", json);
-        //Assert.Contains("\"Value\":\"\"", json);
-        //Assert.Contains("\"Title\":\"Your Name\"", json);
-        //Assert.Contains("\"ReturnUrl\":null", json);
-        //Assert.Contains("\"Id\":\"", json);
-        //Assert.Contains("\"Path\":\"/form/your-details/your-fullname\"", json);
-        //Assert.Contains("\"ViewName\":\"_FullName\"", json);
-        //Assert.Contains("\"TypeName\":\"GovUk.Forms.Domain.FullNameModel\"", json);
-        //Assert.Contains("\"EditMode\":\"NotStarted\"", json);
+        Assert.Contains("\"$type\":\"FullNameModel\"", json);
+        Assert.Contains("\"Value\":\"\"", json);
+        Assert.Contains("\"Title\":\"Your Name\"", json);
+        Assert.Contains("\"ReturnUrl\":null", json);
+        Assert.Contains("\"Id\":\"", json);
+        Assert.Contains("\"Path\":\"/form/your-details/your-fullname\"", json);
+        Assert.Contains("\"ViewName\":\"_FullName\"", json);
+        Assert.Contains("\"TypeName\":\"GovUk.Forms.Domain.FullNameModel\"", json);
+        Assert.Contains("\"EditMode\":\"NotStarted\"", json);
     }
     
     static bool FindPropertyValues(JsonElement element, string propertyName, string? propertyValue)

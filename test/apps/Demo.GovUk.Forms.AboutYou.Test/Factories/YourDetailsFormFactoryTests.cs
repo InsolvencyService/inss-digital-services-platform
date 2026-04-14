@@ -37,7 +37,7 @@ public class YourDetailsFormFactoryTests
         FormModel form = factory.Create();
 
         SectionModel yourDetails = form.Sections["Your Details"];
-        Assert.Equal(8, yourDetails.Pages.Count);
+        Assert.Equal(9, yourDetails.Pages.Count);
         AssertSectionPage<FullNameModel>(yourDetails, "Your name", "/about-you/your-details/your-name");
         AssertSectionPage<AddressModel>(yourDetails, "Your address", "/about-you/your-details/your-address");
         AssertSectionPage<AgeModel>(yourDetails, "Your age", "/about-you/your-details/your-age");
