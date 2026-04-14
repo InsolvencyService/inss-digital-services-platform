@@ -41,22 +41,6 @@ public sealed class SectionModelBuilder
         _section.Pages.Add(page);
         return this;
     }
-    
-    public SectionModelBuilder AddStaticPage<TPage>(string title, string path, string key, string submitButtonText = "Save and continue")
-        where TPage : StaticHtmlModel, new()
-    {
-        TPage page = new()
-        {
-            Title = title, 
-            Path = $"{_section.Path}/{path}", 
-            SubmitType = _section.SubmitType,
-            Key = key,
-            ViewName = "_StaticHtml",
-            MetaData = { SubmitButtonText = submitButtonText }
-        };
-        _section.Pages.Add(page);
-        return this;
-    }
 
     public GroupModelBuilder AddGroup<TGroup>(GroupId group) where TGroup : GroupPageModel, new()
     {
