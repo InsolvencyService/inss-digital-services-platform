@@ -66,8 +66,8 @@ public static class FormSerializer
             TypeInfoResolver = new DefaultJsonTypeInfoResolver
             {
                 Modifiers = { typeInfo => AddPolymorphicTypeDiscriminators(modelTypes, typeInfo) }
-            }
-            //WriteIndented = true
+            },
+            WriteIndented = true
         };
 
         options.Converters.Add(new ContentIdJsonConverter());
