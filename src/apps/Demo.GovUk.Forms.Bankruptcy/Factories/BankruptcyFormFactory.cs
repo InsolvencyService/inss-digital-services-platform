@@ -13,7 +13,7 @@ public sealed class BankruptcyFormFactory : IFormFactory
             
             .AddSection("Bankruptcy", "your-bankruptcy")
             .AddPage<DateModel>("Date you went bankrupt", "date-bankrupt", question: "When did you go bankrupt?")
-            .AddSummary("Bankruptcy summary", "summary")
+            .EndSection<SummaryModel>("Bankruptcy summary", "summary")
 
             .ValidateAndComplete();
     }

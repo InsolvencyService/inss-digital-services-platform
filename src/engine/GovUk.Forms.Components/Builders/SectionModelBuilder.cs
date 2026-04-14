@@ -63,23 +63,9 @@ public sealed class SectionModelBuilder
         return new GroupModelBuilder(new TGroup { MetaData = { Group = group } }, _section, this);
     }
     
-    public FormModelBuilder AddSummary(
-        string title, 
-        string path, 
-        string? summaryHeading = null, 
-        string submitButtonText = "Save and continue")
+    public FormModelBuilder EndSection<TPage>(string title, string path) where TPage : PageModel, new()
     {
-        _section.Pages.Add(new SummaryModel
-        {
-            Title = title, 
-            Path = $"{_section.Path}/{path}", 
-            SubmitType = _section.SubmitType,
-            MetaData =
-            {
-                Question = summaryHeading, 
-                SubmitButtonText = submitButtonText
-            }
-        });
+        _section.Pages.Add(new TPage { Title = title, Path = $"{_section.Path}/{path}", SubmitType = _section.SubmitType });
         _form.Sections.Add(_section);
         return _formModelBuilder;
     }

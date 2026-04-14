@@ -18,7 +18,7 @@ public sealed class BusinessFormFactory : IFormFactory
             .AddGroupPage<CheckAnswersModel>("Check employee details", "check-employee-details")
             .AddGroupPage<RemoveModel>("Remove employee details", "remove-employee-details")
             .AddFinalGroupPage<AddAnotherModel>("Employee details", "add-another-employee")
-            .AddSummary("Employee summary", "summary")
+            .EndSection<SummaryModel>("Employee summary", "summary")
             
             .AddSection("Creditors and Debtors", "your-creditors-and-debtors")
             .AddGroup<AddAnotherGroup>("Creditors")
@@ -33,7 +33,7 @@ public sealed class BusinessFormFactory : IFormFactory
             .AddGroupPage<CheckAnswersModel>("Check debtor details", "check-debtor-details")
             .AddGroupPage<RemoveModel>("Remove debtor details", "remove-debtor-details")
             .AddFinalGroupPage<AddAnotherModel>("Debtor details", "add-another-debtor")
-            .AddSummary("Creditors and debtors summary", "summary")
+            .EndSection<SummaryModel>("Creditors and debtors summary", "summary")
             
             .ValidateAndComplete();
     }

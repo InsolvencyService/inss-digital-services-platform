@@ -58,7 +58,7 @@ public class SubmitSectionFlowNodeExecutorTests
         FormModel form = TestFormModels.CreateWithAddAnotherSection();
         SectionModel section = form.Sections[0];
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
-        FlowNode node = new() { Id = "NodeId2", PagePath = summary.Path};
+        FlowNode node = new() { Id = "NodeId2", PagePath = summary.Path, NextNodes = []};
         ExecuteContext context = new()
         {
             Nodes = [node],
