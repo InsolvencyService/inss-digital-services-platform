@@ -12,8 +12,8 @@ public sealed class BankruptcyFormFactory : IFormFactory
             .Create("bankruptcy")
             
             .AddSection("Bankruptcy", "your-bankruptcy")
-            .AddPage<DateModel>("Date you went bankrupt", "date-bankrupt", question: "When did you go bankrupt?")
-            .EndSection<SummaryModel>("Bankruptcy summary", "summary")
+            .AddPage<DateModel>("Date you went bankrupt", "date-bankrupt", question: "When did you go bankrupt?", submitButtonText: "Continue")
+            .EndSection<SummaryModel>("Bankruptcy summary", "summary", submitButtonText: "Continue")
 
             .ValidateAndComplete();
     }
