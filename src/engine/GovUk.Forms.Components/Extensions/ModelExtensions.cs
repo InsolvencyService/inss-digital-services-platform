@@ -10,13 +10,8 @@ public static class ModelExtensions
         {
             return content is PageModel;
         }
-        
-        public bool IsPageLocked()
-        {
-            return content is PageModel page && page.IsLocked();
-        }
 
-        public string GetSubmitButtonText()
+        public string? GetSubmitButtonText()
         {
             return content switch
             {

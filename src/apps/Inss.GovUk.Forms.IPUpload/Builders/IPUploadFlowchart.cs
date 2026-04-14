@@ -19,7 +19,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         NodeId fileUploadId = NodeId.New();
         NodeId fileUploadErrorId = NodeId.New();
         NodeId summaryId = NodeId.New();
-        NodeId submitCompletedId = NodeId.New();
+        NodeId postSubmitSuccessId = NodeId.New();
         WebRoot webRoot = new();
         
         FormModel form = GetForm(services, webRoot.Root);
@@ -44,11 +44,11 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .Next()
             .AddTransitionNode(fileUploadErrorId, uploadErrors.Path, fileUploadId)
             .Next()
-            .AddTransitionNode(summaryId, summary.Path, submitCompletedId)
+            .AddTransitionNode(summaryId, summary.Path, postSubmitSuccessId)
             .WithLoader<SectionSummaryFlowNodeLoader>()
             .WithExecutor<SubmitSectionFlowNodeExecutor>()
             .Next()
-            .AddEndNode(submitCompletedId, postSubmitSuccess.Path)
+            .AddEndNode(postSubmitSuccessId, postSubmitSuccess.Path)
             .BuildAndRegister();
     }
 }

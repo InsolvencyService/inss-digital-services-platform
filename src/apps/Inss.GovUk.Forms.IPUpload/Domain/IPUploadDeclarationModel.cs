@@ -9,6 +9,7 @@ public class IPUploadDeclarationModel : StaticHtmlModel
     public IPUploadDeclarationModel()
     {
         Key = "ipupload-declaration";
+        ViewName = "_StaticHtml";
     }
     
     public bool Accepted { get; set; }

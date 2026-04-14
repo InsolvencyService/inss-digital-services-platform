@@ -1,5 +1,9 @@
 ﻿@model ContentModel
 
+@{
+    string? submitButtonText = Model.GetSubmitButtonText();
+}
+
 @using (Html.BeginForm(Model))
 {
     @Html.AntiForgeryToken()
@@ -20,16 +24,16 @@
     
     @if (Model is FormModel form)
     {
-        if (form.SubmitType == SubmitTypes.Form)
+        if (form.SubmitType == SubmitTypes.Form && submitButtonText is not null)
         {
-            <govuk-button type="submit" disabled="!@form.CanSubmit">@(Model.GetSubmitButtonText())</govuk-button>
+            <govuk-button type="submit" disabled="!@form.CanSubmit">@submitButtonText</govuk-button>
         }
     }
     else 
     {
-        @if (!Model.IsPageLocked())
+        @if (submitButtonText is not null)
         {
-            <govuk-button type="submit">@(Model.GetSubmitButtonText())</govuk-button>
+            <govuk-button type="submit">@submitButtonText</govuk-button>
         }
     }
 }

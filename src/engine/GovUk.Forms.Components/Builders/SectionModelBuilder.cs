@@ -22,7 +22,7 @@ public sealed class SectionModelBuilder
         string? question = null, 
         string? hint = null,
         string? description = null,
-        string submitButtonText = "Save and continue") 
+        string? submitButtonText = null) 
         where TPage : PageModel, new()
     {
         TPage page = new()
@@ -47,9 +47,29 @@ public sealed class SectionModelBuilder
         return new GroupModelBuilder(new TGroup { MetaData = { Group = group } }, _section, this);
     }
     
-    public FormModelBuilder EndSection<TPage>(string title, string path) where TPage : PageModel, new()
+    public FormModelBuilder EndSection<TPage>(
+        string title, 
+        string path,
+        string? question = null, 
+        string? hint = null,
+        string? description = null,
+        string? submitButtonText = null) 
+        where TPage : PageModel, new()
     {
-        _section.Pages.Add(new TPage { Title = title, Path = $"{_section.Path}/{path}", SubmitType = _section.SubmitType });
+        TPage page = new()
+        {
+            Title = title, 
+            Path = $"{_section.Path}/{path}", 
+            SubmitType = _section.SubmitType,
+            MetaData =
+            {
+                Question = question,
+                Hint = hint,
+                Description = description,
+                SubmitButtonText = submitButtonText 
+            }
+        };
+        _section.Pages.Add(page);
         _form.Sections.Add(_section);
         return _formModelBuilder;
     }

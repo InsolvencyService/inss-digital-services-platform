@@ -12,5 +12,5 @@ public sealed class PageMetaData
 
     public GroupId Group { get; set; } = GroupId.Empty;
 
-    public string SubmitButtonText { get; set; } = "Save and continue";
+    public string? SubmitButtonText { get; set; }
 }
