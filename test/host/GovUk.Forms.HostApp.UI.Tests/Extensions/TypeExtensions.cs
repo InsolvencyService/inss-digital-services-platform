@@ -61,7 +61,6 @@ public static class TypeExtensions
 
     private static Type? UnwrapType(Type type)
     {
-        // Nullable<T>
         Type? underlying = Nullable.GetUnderlyingType(type);
         if (underlying != null)
         {

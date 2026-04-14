@@ -3,5 +3,5 @@
 public class EnvProdConfig : IEnvironmentConfig
 {
     public TestEnvironment EnvironmentType => TestEnvironment.Prod;
-    public string BaseUrl => "https://forms.service.gov.uk";
+    public string BaseUrl => "";
 }

@@ -85,7 +85,7 @@ public static class FileDirectoryExtensions
                 string name = Path.GetFileName(dir);
                 if (!ignoreDirs.Contains(name))
                 {
-                    dirs.Push(dir); // ✅ critical fix
+                    dirs.Push(dir);
                 }
             }
 
