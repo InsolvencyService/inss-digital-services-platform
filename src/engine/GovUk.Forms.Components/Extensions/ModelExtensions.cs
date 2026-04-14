@@ -16,7 +16,7 @@ public static class ModelExtensions
             return content switch
             {
                 FormModel => "Submit form",
-                PageModel page => page.MetaData.SubmitButtonText,
+                PageModel page => !page.IsLocked() ? page.MetaData.SubmitButtonText  : null,
                 _ => "Save and continue"
             };
         }
