@@ -129,7 +129,7 @@ brew install --cask powershell
 Finally, navigate to /test/GovUk.Forms.WebApp.Test in a terminal and run:
 
 ```bash
-pwsh bin/Debug/net8.0/playwright.ps1 install
+pwsh bin/Debug/net10.0/playwright.ps1 install
 ```
 
 ## Useful

@@ -18,10 +18,11 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "619ec637-9cca-4925-8d66-2f126f1b02b0",
+          "PreviousPagePath": "/",
+          "Id": "67792666-2acd-436a-bf50-118ae170ca95",
           "Path": "/about-you/your-details/your-name",
           "ViewName": "_FullName",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.FullNameModel"
         },
@@ -43,12 +44,48 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "6f45f673-f698-407b-b2cc-696fab7d8f14",
+          "PreviousPagePath": "/",
+          "Id": "c82e9ac5-4a14-4ccf-be10-9a4a7a9ae5af",
           "Path": "/about-you/your-details/your-address",
           "ViewName": "_Address",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.AddressModel"
+        },
+        {
+          "$type": "ContactDetailsModel",
+          "Email": {
+            "Value": null,
+            "Label": "What is your email address?",
+            "Hint": "Enter your email address",
+            "LabelSize": "Large",
+            "ViewName": "Types/_Email"
+          },
+          "Number": {
+            "Value": null,
+            "Label": "What is your home telephone number?",
+            "Hint": "Enter your telephone number",
+            "LabelSize": "Large",
+            "ViewName": "Types/_TelephoneNumber"
+          },
+          "EditMode": "NotStarted",
+          "Title": "Your contact details",
+          "ReturnUrl": null,
+          "MetaData": {
+            "Question": null,
+            "Hint": null,
+            "Description": null,
+            "Group": "",
+            "SubmitButtonText": "Save and continue"
+          },
+          "LinkedToNode": "",
+          "PreviousPagePath": "/",
+          "Id": "58ab3212-3f70-43f0-8155-a16718a8aaee",
+          "Path": "/about-you/your-details/Your-contact-details",
+          "ViewName": "_ContactDetails",
+          "EncodingType": null,
+          "SubmitType": "Form",
+          "TypeName": "Demo.GovUk.Forms.AboutYou.Domain.ContactDetailsModel"
         },
         {
           "$type": "AgeModel",
@@ -64,10 +101,11 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "79d10ab1-dad9-4e9d-b3cd-aebaea86e15d",
+          "PreviousPagePath": "/",
+          "Id": "a24bf262-5f82-4c7c-9550-5f1b024b68bf",
           "Path": "/about-you/your-details/your-age",
           "ViewName": "_Age",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.AgeModel"
         },
@@ -85,17 +123,20 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "8fc64d5c-e613-4134-9b7c-617e35d6bd55",
+          "PreviousPagePath": "/",
+          "Id": "37f81a67-7dc6-43a7-8ebc-69bc623b7d54",
           "Path": "/about-you/your-details/your-salary",
           "ViewName": "_Salary",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.SalaryModel"
         },
         {
           "$type": "BankAccountModel",
+          "AccountName": null,
           "AccountNumber": "",
           "SortCode": "",
+          "BuildingSocietyRollNumber": null,
           "EditMode": "NotStarted",
           "Title": "Your bank account",
           "ReturnUrl": null,
@@ -107,17 +148,17 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "a1768358-3292-43b2-80f3-306f9ffcc88a",
+          "PreviousPagePath": "/",
+          "Id": "e78d25ca-6704-4c03-9706-197bbb85a4fa",
           "Path": "/about-you/your-details/your-bank-account",
           "ViewName": "_BankAccount",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.BankAccountModel"
         },
         {
           "$type": "OwnHomeModel",
           "OwnsHome": false,
-          "OwnsHomeValue": "No",
           "EditMode": "NotStarted",
           "Title": "Own your own home",
           "ReturnUrl": null,
@@ -129,12 +170,13 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "338c01e7-5d6c-421e-aa19-16ae76c19fd4",
+          "PreviousPagePath": "/",
+          "Id": "46c1ca8d-c873-475a-ac60-1a9f735919b3",
           "Path": "/about-you/your-details/your-home-ownership",
           "ViewName": "_OwnHome",
+          "EncodingType": null,
           "SubmitType": "Form",
-          "TypeName": "GovUk.Forms.AboutYou.Domain.OwnHomeModel"
+          "TypeName": "Demo.GovUk.Forms.AboutYou.Domain.OwnHomeModel"
         },
         {
           "$type": "HomeValueModel",
@@ -150,12 +192,13 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "5fc1dca7-eca2-4fea-9116-50d44a52883e",
+          "PreviousPagePath": "/",
+          "Id": "e2c941bc-bba5-4066-b574-dde062061139",
           "Path": "/about-you/your-details/your-home-value",
           "ViewName": "_HomeValue",
+          "EncodingType": null,
           "SubmitType": "Form",
-          "TypeName": "GovUk.Forms.AboutYou.Domain.HomeValueModel"
+          "TypeName": "Demo.GovUk.Forms.AboutYou.Domain.HomeValueModel"
         },
         {
           "$type": "SummaryModel",
@@ -170,25 +213,28 @@
             "SubmitButtonText": "Save and continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "83a14830-fadf-4ecb-86ac-05e1b7bd5075",
+          "PreviousPagePath": "/",
+          "Id": "94451b2a-156e-45b6-bacc-803f832ae5d7",
           "Path": "/about-you/your-details/summary",
           "ViewName": "_Summary",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "Id": "a547e49b-aedc-4bed-9907-cd9085665451",
+      "Id": "9f7617ef-0bc8-45ec-af4a-5001395e9f26",
       "Path": "/about-you/your-details",
       "ViewName": "_Section",
+      "EncodingType": null,
       "SubmitType": "Form",
       "TypeName": "GovUk.Forms.Domain.SectionModel"
     }
   ],
   "CanSubmit": false,
-  "Id": "0d0314a5-7e2c-4cd8-8408-14032cf68449",
+  "Id": "189ce843-37ba-4fa8-9cf5-e8fb0ab1f824",
   "Path": "/about-you",
   "ViewName": "_Form",
+  "EncodingType": null,
   "SubmitType": "Form",
   "TypeName": "GovUk.Forms.Domain.FormModel"
 }

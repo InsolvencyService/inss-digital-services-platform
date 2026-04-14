@@ -37,11 +37,11 @@ public class LoginController : Controller
             return View(model);
         }
         
-        RpsAuthenticationTypes authenticationType = await  _loginService.AuthenticateAsync(model.Email, model.Password);
+        RpsAuthenticationTypes authenticationType = await  _loginService.AuthenticateAsync(model.Email.Value, model.Password);
 
         if (authenticationType == RpsAuthenticationTypes.Matched)
         {
-            var claims = new List<Claim> { new(ClaimTypes.Name, model.Email) };
+            var claims = new List<Claim> { new(ClaimTypes.Name, model.Email.Value) };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
             return Redirect(model.ReturnUrl);

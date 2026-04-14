@@ -1,0 +1,5 @@
+﻿@model ContactDetailsModel
+
+@await Html.RenderTypeAsync(Model.Email, nameof(Model.Email))
+
+@await Html.RenderTypeAsync(Model.Number, nameof(Model.Number))
