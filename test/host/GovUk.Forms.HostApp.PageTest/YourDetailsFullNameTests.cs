@@ -16,7 +16,7 @@ public class YourDetailsFullNameTests(TestWebApplicationFactory factory) : PageT
     public async Task NotEnteringFullName_DisplaysError()
     {
         await GotToPage("about-you/your-details/your-name");
-        await ClickButton("Save and continue");
+        await ClickButton("Continue");
         await ExpectErrorHeading("There is a problem");
         await ExpectLinkToExist("Enter your full name");
     }

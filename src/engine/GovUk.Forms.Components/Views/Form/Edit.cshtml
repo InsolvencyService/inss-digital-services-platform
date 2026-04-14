@@ -15,10 +15,6 @@
     if (Model.IsPageModel())
     {
         @Html.HiddenFor(m => ((PageModel)m).LinkedToNode.Value)
-        @Html.HiddenFor(m => ((PageModel)m).MetaData.Question)
-        @Html.HiddenFor(m => ((PageModel)m).MetaData.Hint)
-        @Html.HiddenFor(m => ((PageModel)m).MetaData.Group.Value)
-        @Html.HiddenFor(m => ((PageModel)m).MetaData.SubmitButtonText)
     }
     
     @await Html.PartialAsync(Model.ViewName, Model)

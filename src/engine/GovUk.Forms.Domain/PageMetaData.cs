@@ -13,4 +13,13 @@ public sealed class PageMetaData
     public GroupId Group { get; set; } = GroupId.Empty;
 
     public string? SubmitButtonText { get; set; }
+    
+    public void CopyTo(PageMetaData pageMetaData)
+    {
+        pageMetaData.Question = Question;
+        pageMetaData.Hint = Hint;
+        pageMetaData.Description = Description;
+        pageMetaData.Group = Group;
+        pageMetaData.SubmitButtonText = SubmitButtonText;
+    }
 }
