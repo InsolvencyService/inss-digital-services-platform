@@ -53,6 +53,11 @@ public sealed class FormService : IFormService
                 return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != path ? altPath : null);
             }
 
+            if (form.Sections.Count == 1)
+            {
+                return new ValueTuple<ContentModel?, ContentPath?>(null, form.Sections[0].FirstPage.Path);
+            }
+            
             return new ValueTuple<ContentModel?, ContentPath?>(form, null);
         }
         finally

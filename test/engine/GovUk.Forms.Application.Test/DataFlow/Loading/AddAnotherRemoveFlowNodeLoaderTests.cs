@@ -2,7 +2,6 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
-using GovUk.Forms.Domain.Serialization;
 using Xunit;
 
 namespace GovUk.Forms.Application.Test.DataFlow.Loading;
@@ -11,11 +10,6 @@ public class AddAnotherRemoveFlowNodeLoaderTests
 {
     private readonly AddAnotherRemoveFlowNodeLoader _loader = new();
     private readonly FormModel _form = TestFormModels.CreateWithAddAnotherSection();
-
-    public AddAnotherRemoveFlowNodeLoaderTests()
-    {
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
-    }
     
     [Fact]
     public async Task RemoveDetails_LoadAsync_SetsSetIndex()

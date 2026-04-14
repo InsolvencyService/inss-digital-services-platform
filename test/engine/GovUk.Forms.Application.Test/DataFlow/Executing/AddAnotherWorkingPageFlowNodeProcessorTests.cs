@@ -1,7 +1,6 @@
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Serialization;
 using Xunit;
 
 namespace GovUk.Forms.Application.Test.DataFlow.Executing;
@@ -9,11 +8,6 @@ namespace GovUk.Forms.Application.Test.DataFlow.Executing;
 public class AddAnotherWorkingPageFlowNodeExecutorTests
 {
     private readonly AddAnotherWorkingPageFlowNodeExecutor _executor = new();
-
-    public AddAnotherWorkingPageFlowNodeExecutorTests()
-    {
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
-    }
     
     [Fact]
     public async Task PageNotAddedToAddAnotherItems_ExecuteAsync_AttachesCopyOfPageToItemsList()

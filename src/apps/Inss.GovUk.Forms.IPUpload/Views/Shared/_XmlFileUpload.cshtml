@@ -1,0 +1,113 @@
+﻿@model XmlFileUploadModel
+
+<h1 class="govuk-heading-l">
+  Upload redundancy payment forms(RP14/A)
+</h1>
+
+<govuk-file-upload for="@Model.Contents" javascript-enhancements="true" label-class="govuk-label--m" input-accept=".xml">
+  <govuk-file-upload-label>Upload a file</govuk-file-upload-label>
+  <govuk-file-upload-hint>
+    The uploaded file must be XML ending with '.xml'. (Other formats e.g. PDF, XLS are NOT supported).
+  </govuk-file-upload-hint>
+</govuk-file-upload>
+
+<h2 class="govuk-heading-m">Guidance</h2>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Common issues when uploading RP14/A forms
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <div class="govspeak"><p>You might see an error message while trying to upload an RP14 or RP14a form using the Excel templates. This guidance helps you correct some common errors.</p>
+
+      <h3 class="govuk-heading-s">1. Check the upload guidance</h3>
+
+      <p>Make sure you’ve followed all the steps in the <a href="https://www.gov.uk/government/publications/redundancy-payments-rp1414a-instructions">upload guidance</a>.</p>
+      <h3 class="govuk-heading-s">2. Check the file size</h3>
+
+      <p>The file size must be less than 10MB. If your file is bigger than this, you need to separate it into smaller files so it can be uploaded.</p>
+
+      <h3 class="govuk-heading-s">3. Check the case reference is correct</h3>
+
+      <p>Please check the case reference (CN) number you enter is correct. If the incorrect reference number is used the RP14A will not upload and we will not be able to pay the claim.</p>
+
+      <h3 class="govuk-heading-s">4. Check there’s a case reference on every line</h3>
+
+      <p>A case reference must always be included. Please check there are no spaces before or after the case reference. The employer name and case reference must be entered on each line of the spreadsheet.</p>
+
+      <h3 class="govuk-heading-s">5. Check the company registration number (CRN) is correct</h3>
+
+      <p>Check the company registration number is correct, and matches the case. If the wrong registration number is used, the RP14A will not upload and we will not be able to pay the claim.</p>
+
+      <h3 class="govuk-heading-s">6. Check there’s a valid National Insurance number for all entries</h3>
+
+      <p>All entries must include a valid National Insurance number. Temporary or dummy National Insurance numbers will not be accepted and will cause the upload to fail.</p>
+
+      <h3 class="govuk-heading-s">7. Check there are no empty or blank rows</h3>
+
+      <p>If there are empty or blank rows at the end of the file, the upload will fail. To remove any empty records:</p>
+
+      <ol>
+        <li>Highlight the blank row.</li>
+        <li>Right click.</li>
+        <li>Delete the row.</li>
+      </ol>
+
+      <h3 class="govuk-heading-s">8. Check there are no more than 2 decimal places in each cell</h3>
+
+      <p>No cell can have a numerical value with more than 2 decimal places. You might need to select each cell individually to make sure figures do not have more than 2 decimal places, as it’s not always visible.</p>
+
+      <p>This includes the following fields:</p>
+
+      <table>
+        <tbody>
+        <tr>
+          <td>In the RP14:</td>
+          <td>The share holder percentage field</td>
+        </tr>
+        <tr>
+          <td>In the RP14a:</td>
+          <td>The basic pay per week</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>The arrears of pay owed</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>The number of days holiday owed</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <h3 class="govuk-heading-s">9. Check all numerical fields contain numbers only</h3>
+
+      <p>Only numbers can be put in the numerical fields. If you include any special characters, like £, or any text, the upload will fail.</p>
+
+      <h3 class="govuk-heading-s">10. Check date fields are formatted correctly</h3>
+
+      <p>Date fields should be formatted as DD/MM/YYYY. If you do not know the date and the field is not mandatory, leave it blank.</p>
+
+      <h3 class="govuk-heading-s">11. Check drop down boxes have not been overtyped</h3>
+
+      <p>When entering data into a cell with a drop down box, only select one of the options provided. If you type over the options, the upload will fail.</p>
+
+      <h3 class="govuk-heading-s">12. Check no data is entered after the smart tag</h3>
+
+      <p>Do not enter any data after the blue smart tag on the spreadsheet. As this will not be uploaded and will be lost.</p>
+
+      <h3 class="govuk-heading-s">13. If possible, use IP software</h3>
+
+      <p>Using IP software to upload the data minimises the risk of errors occurring while uploading information.</p>
+      
+    </div>
+  </div>
+</details>
+
+<p class="govuk-body">
+  If you follow this guidance and your document will still not upload, email us at:
+</p>
+
+<p class="govuk-body">RPS.Stakeholder@insolvency.gov.uk</p>

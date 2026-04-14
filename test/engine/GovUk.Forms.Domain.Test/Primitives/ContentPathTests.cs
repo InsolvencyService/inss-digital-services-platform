@@ -24,4 +24,24 @@ public class ContentPathTests
         
         Assert.Equal("/test", rootPath);
     }
+    
+    [Fact]
+    public void RootPath_Value_ReturnsSamePath()
+    {
+        ContentPath path = "/";
+
+        ContentPath rootPath = path.Value;
+        
+        Assert.Equal("/", rootPath);
+    }
+    
+    [Fact]
+    public void PathEndsWithSlash_Value_ReturnsTrimmedPath()
+    {
+        ContentPath path = "/test/";
+
+        ContentPath rootPath = path.Value;
+        
+        Assert.Equal("/test", rootPath);
+    }
 }

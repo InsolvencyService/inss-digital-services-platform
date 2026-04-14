@@ -3,7 +3,6 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Enums;
-using GovUk.Forms.Domain.Serialization;
 using Xunit;
 
 namespace GovUk.Forms.Application.Test.DataFlow.Loading;
@@ -13,11 +12,6 @@ public class SectionSummaryFlowNodeLoaderTests
     private readonly FormModel _form = TestFormModels.CreateWithAddAnotherSection();
     private readonly SectionSummaryFlowNodeLoader _loader = new();
     private const string? NoState = null;
-
-    public SectionSummaryFlowNodeLoaderTests()
-    {
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
-    }
     
     [Fact]
     public async Task AddAnotherItems_LoadAsync_PopulatesFullNameInSummary()

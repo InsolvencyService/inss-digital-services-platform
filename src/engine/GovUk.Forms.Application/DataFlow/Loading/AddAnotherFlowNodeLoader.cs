@@ -1,8 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Reflection;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Attributes;
 using GovUk.Forms.Domain.Primitives;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
@@ -28,9 +24,11 @@ public sealed class AddAnotherFlowNodeLoader : IFlowNodeLoader
             
         for (int i = 0; i < addAnother.Items.Count; i += groupInfo.WorkingPages.Count)
         {
+            string[] summaryInfo = addAnother.Items[i].GetSummaryInfo();
+            
             summary.Add(new AddAnotherModel.AddAnotherSummaryModel
             {
-                Value = GetDisplayText(addAnother.Items[i]),
+                Value = string.Join(Environment.NewLine, summaryInfo),
                 ChangeUrl = $"{groupInfo.CheckAnswers.Path}/?state={setIndex}",
                 RemoveUrl = $"{groupInfo.Remove.Path}/?state={setIndex}"
             });
@@ -42,19 +40,5 @@ public sealed class AddAnotherFlowNodeLoader : IFlowNodeLoader
         addAnother.GroupLength = groupInfo.WorkingPages.Count;
 
         return ValueTask.FromResult<NodeId?>(null);
-    }
-    
-    private static string GetDisplayText(PageModel page)
-    {
-        PropertyInfo[] properties = page.GetType().GetProperties().Where(
-            p => p.GetCustomAttribute<CopyableAttribute>() is not null).ToArray();
-        PropertyInfo property = page.GetType().GetProperties().FirstOrDefault(
-            p => p.GetCustomAttribute<SummaryAttribute>() is not null) ?? properties[0];
-        object? value = property.GetValue(page, null);
-        DisplayFormatAttribute? displayValueFormat = property.GetCustomAttribute<DisplayFormatAttribute>();
-        string displayValue = displayValueFormat?.DataFormatString is not null
-            ? string.Format(CultureInfo.CurrentCulture, displayValueFormat.DataFormatString, value)
-            : value?.ToString() ?? string.Empty;
-        return displayValue;
     }
 }

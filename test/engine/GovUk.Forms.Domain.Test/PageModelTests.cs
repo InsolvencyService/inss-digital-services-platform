@@ -1,18 +1,11 @@
 using System.Globalization;
 using GovUk.Forms.Domain.Enums;
-using GovUk.Forms.Domain.Exceptions;
-using GovUk.Forms.Domain.Serialization;
 using Xunit;
 
 namespace GovUk.Forms.Domain.Test;
 
 public class PageModelTests
 {
-    public PageModelTests()
-    {
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
-    }
-    
     [Fact]
     public void SummaryModel_ClearValues_IgnoresSummary()
     {
@@ -38,23 +31,23 @@ public class PageModelTests
 
         address.ClearValues();
 
-        Assert.Null(address.AddressLine1);
+        Assert.Empty(address.AddressLine1);
         Assert.Null(address.AddressLine2);
-        Assert.Null(address.TownCity);
+        Assert.Empty(address.TownCity);
         Assert.Null(address.County);
-        Assert.Null(address.Postcode);
+        Assert.Empty(address.Postcode);
         Assert.Null(address.ReturnUrl);
         Assert.Equal(PageEditTypes.NotStarted, address.EditMode);
     }
 
     [Fact]
-    public void PopulatedModel_GetValues_ReturnsModelSummaryValues()
+    public void PopulatedModel_GetSummaryInfo_ReturnsModelSummaryValues()
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         TestSectionDefaults.YourDetails(section);
         AddressModel address = section.Pages.GetFirstOf<AddressModel>();
 
-        string[] values = address.GetValues();
+        string[] values = address.GetSummaryInfo();
 
         Assert.True(values.Contains(address.AddressLine1));
         Assert.False(values.Contains(address.AddressLine2));
@@ -64,30 +57,15 @@ public class PageModelTests
     }
 
     [Fact]
-    public void DisplayFormattedModel_GetValues_ReturnsFormattedModelValue()
+    public void DisplayFormattedModel_GetSummaryInfo_ReturnsFormattedModelValue()
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         TestSectionDefaults.YourDetails(section);
         SalaryModel salary = section.Pages.GetFirstOf<SalaryModel>();
 
-        string[] values = salary.GetValues();
+        string[] values = salary.GetSummaryInfo();
 
         Assert.True(values.Contains(salary.Value.ToString("C", CultureInfo.CurrentCulture)));
-    }
-
-    [Fact]
-    public void PopulatedModelMismatch_CopyTo_ThrowsException()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        TestSectionDefaults.YourDetails(section);
-        AddressModel address = new();
-        SalaryModel copyOf = new();
-
-        ModelException exception = Assert.Throws<ModelException>(() => address.CopyTo(copyOf));
-        
-        Assert.Equal(
-            $"The target type to copy to {typeof(SalaryModel)} does not match the " +
-            $"page type {typeof(AddressModel)}.", exception.Message);
     }
 
     [Fact]

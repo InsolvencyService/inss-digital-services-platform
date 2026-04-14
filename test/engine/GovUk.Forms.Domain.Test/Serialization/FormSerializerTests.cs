@@ -1,3 +1,4 @@
+using System.Text.Json;
 using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Serialization;
 using Xunit;
@@ -6,11 +7,6 @@ namespace GovUk.Forms.Domain.Test.Serialization;
 
 public class FormSerializerTests
 {
-    public FormSerializerTests()
-    {
-        FormSerializer.Initialize(typeof(PageModel).Assembly);
-    }
-
     [Fact]
     public void FromForm_SerializeForm_ContainsSectionInfo()
     {
@@ -28,7 +24,7 @@ public class FormSerializerTests
         FormModel form = TestFormModels.CreateWithYourDetailsSection();
         
         string json = FormSerializer.SerializeForm(form);
-
+        
         Assert.Contains("\"$type\":\"FullNameModel\"", json);
         Assert.Contains("\"Value\":\"\"", json);
         Assert.Contains("\"Title\":\"Your Name\"", json);
@@ -38,6 +34,56 @@ public class FormSerializerTests
         Assert.Contains("\"ViewName\":\"_FullName\"", json);
         Assert.Contains("\"TypeName\":\"GovUk.Forms.Domain.FullNameModel\"", json);
         Assert.Contains("\"EditMode\":\"NotStarted\"", json);
+    }
+    
+    static bool FindPropertyValues(JsonElement element, string propertyName, string? propertyValue)
+    {
+        var results = new List<string>();
+
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                foreach (var prop in element.EnumerateObject())
+                {
+                    if (prop.NameEquals(propertyName))
+                    {
+                        if (prop.Value.ValueKind == JsonValueKind.Null && propertyValue is null)
+                        {
+                            return true;
+                        }
+
+                        if (prop.Value.ToString() == propertyValue)
+                        {
+                            return true;
+                        }
+
+                    }
+                    else
+                    {
+                        bool x = FindPropertyValues(prop.Value, propertyName, propertyValue);
+
+                        if (x)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                break;
+
+            case JsonValueKind.Array:
+                foreach (var item in element.EnumerateArray())
+                {
+                    bool x = FindPropertyValues(item, propertyName, propertyValue);
+
+                    if (x)
+                    {
+                        return true;
+                    }
+                }
+                break;
+        }
+
+        return false;
     }
     
     [Fact]

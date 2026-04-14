@@ -6,6 +6,11 @@
     <Project Path="src\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
     <Project Path="src\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
   </Folder>
+  <Folder Name="/src/auth/">
+    <File Path="src/auth/Readme.md" />
+    <Project Path="src/auth/Inss.Auth.Broker/Inss.Auth.Broker.csproj" />
+    <Project Path="src/auth/Inss.Auth.RpsProvider/Inss.Auth.RpsProvider.csproj" />
+  </Folder>
   <Folder Name="/src/engine/">
     <Project Path="src/engine/GovUk.Forms.Application/GovUk.Forms.Application.csproj" />
     <Project Path="src/engine/GovUk.Forms.Components/GovUk.Forms.Components.csproj" />

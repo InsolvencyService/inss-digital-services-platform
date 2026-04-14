@@ -7,7 +7,7 @@ using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Serialization;
 using Inss.GovUk.Forms.IPUpload.Factories;
 
-List<Assembly> assemblies =
+List<Assembly> _ =
 [
     typeof(FullNameModel).Assembly,
     typeof(AboutYouFormFactory).Assembly,
@@ -15,8 +15,6 @@ List<Assembly> assemblies =
     typeof(IPUploadFormFactory).Assembly,
     typeof(BusinessFormFactory).Assembly
 ];
-
-FormSerializer.Initialize(assemblies.ToArray());
 
 if (Directory.Exists("Forms"))
 {

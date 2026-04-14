@@ -17,7 +17,7 @@ public class StaticHtmlFlowNodeLoaderTests : TestBase<StaticHtmlFlowNodeLoader>
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel section = form.Sections[0];
         StaticHtmlModel staticHtml = section.Pages.GetFirstOf<StaticHtmlModel>();
-        MockFor<IStaticContentProvider>().GetAsync(staticHtml.Key).Returns("<html/>");
+        MockFor<IStaticContentProvider>().GetAsync($"{staticHtml.Path}/{staticHtml.Key}").Returns("<html/>");
         FlowNode staticHtmlNode = new() { Id = "NodeId1", PagePath = staticHtml.Path, NextNodes = ["NodeId2"] };
         LoadContext context = new()
         {
@@ -54,6 +54,6 @@ public class StaticHtmlFlowNodeLoaderTests : TestBase<StaticHtmlFlowNodeLoader>
         
         await Subject.LoadAsync(context);
 
-        await MockFor<IStaticContentProvider>().Received(0).GetAsync(staticHtml.Key);
+        await MockFor<IStaticContentProvider>().Received(0).GetAsync($"{staticHtml.Path}/{staticHtml.Key}");
     }
 }

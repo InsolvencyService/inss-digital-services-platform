@@ -16,6 +16,7 @@ public sealed class YourDetailsFlowchart : DefineFlowchartBuilder
     {
         NodeId fullNameId = NodeId.New();
         NodeId addressId = NodeId.New();
+        NodeId contactDetailsId = NodeId.New();
         NodeId ageId = NodeId.New();
         NodeId salaryId = NodeId.New();
         NodeId bankAccountId = NodeId.New();
@@ -29,6 +30,7 @@ public sealed class YourDetailsFlowchart : DefineFlowchartBuilder
         
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();
         AddressModel address = section.Pages.GetFirstOf<AddressModel>();
+        ContactDetailsModel contactDetails = section.Pages.GetFirstOf<ContactDetailsModel>();
         AgeModel age = section.Pages.GetFirstOf<AgeModel>();
         SalaryModel salary = section.Pages.GetFirstOf<SalaryModel>();
         BankAccountModel bankAccount = section.Pages.GetFirstOf<BankAccountModel>();
@@ -40,7 +42,9 @@ public sealed class YourDetailsFlowchart : DefineFlowchartBuilder
             .ForSection(section, services)
             .AddTransitionNode(fullNameId, fullName.Path, addressId)
             .Next()
-            .AddTransitionNode(addressId, address.Path, ageId)
+            .AddTransitionNode(addressId, address.Path, contactDetailsId)
+            .Next()
+            .AddTransitionNode(contactDetailsId, contactDetails.Path, ageId)
             .Next()
             .AddDecisionNode(ageId, age.Path, salaryId, summaryId)
             .WithExecutor<YourAgeFlowNodeExecutor>()

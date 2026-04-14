@@ -1,9 +1,6 @@
-using Azure.Monitor.OpenTelemetry.AspNetCore;
+using GovUk.Forms.HostApp.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddOpenTelemetry().UseAzureMonitor(); // TODO: Move to the components?
-
+builder.AddHostServices();
 WebApplication app = builder.Build();
-
 app.Run();

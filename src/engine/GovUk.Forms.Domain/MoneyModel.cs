@@ -1,14 +1,29 @@
 using System.ComponentModel.DataAnnotations;
-using GovUk.Forms.Domain.Attributes;
+using System.Globalization;
+
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace GovUk.Forms.Domain;
 
 public sealed class MoneyModel : PageModel
 {
-    [Copyable]
-    [Summary]
     [Required(ErrorMessage = "You must enter a monetary value")]
-    [DisplayFormat(DataFormatString = "{0:C}")]
     public int Amount { get; set; }
+
+    public override string[] GetSummaryInfo()
+    {
+        return [Amount.ToString("C", CultureInfo.CurrentCulture)];
+    }
+    
+    public override void CopyTo(PageModel target)
+    {
+        MoneyModel money = target.As<MoneyModel>();
+        money.Amount = Amount;
+    }
+    
+    public override void ClearValues()
+    {
+        base.ClearValues();
+        Amount = 0;
+    }
 }

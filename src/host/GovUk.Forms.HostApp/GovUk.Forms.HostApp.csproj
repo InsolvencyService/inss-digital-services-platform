@@ -7,7 +7,6 @@
     <PackageReference Include="GovUk.Frontend.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>
@@ -46,12 +45,8 @@
     <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Infrastructure\RP14A.xsd" />
-    <None Remove="Infrastructure\Declaration.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\IPUpload-Declaration.html">
+    <None Update="Resources\Html\IPUpload-Declaration.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 </Project>

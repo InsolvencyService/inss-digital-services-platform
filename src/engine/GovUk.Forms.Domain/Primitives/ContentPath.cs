@@ -16,7 +16,7 @@ public sealed record ContentPath
         {
             field = value;
             
-            if (field.EndsWith(ForwardSlash, StringComparison.InvariantCultureIgnoreCase))
+            if (field.Length > 1 && field.EndsWith(ForwardSlash, StringComparison.InvariantCultureIgnoreCase))
             {
                 field = value.TrimEnd(ForwardSlash).ToString();
             }

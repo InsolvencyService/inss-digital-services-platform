@@ -1,8 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Reflection;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Attributes;
 using GovUk.Forms.Domain.Primitives;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
@@ -17,22 +14,9 @@ public sealed class AddAnotherRemoveFlowNodeLoader : IFlowNodeLoader
         remove.ReturnUrl = groupInfo.AddAnother.Path;
         PageModel[] subItems = groupInfo.AddAnother.Items.Skip(remove.SetIndex * groupInfo.WorkingPages.Count).Take(groupInfo.WorkingPages.Count).ToArray();
         PageModel firstPageForRemoving = subItems[0];
-        remove.RemoveQuestion = $"Do you want to remove {GetDisplayText(firstPageForRemoving)}?";
+        string[] summaryInfo = firstPageForRemoving.GetSummaryInfo();
+        remove.RemoveQuestion = $"Do you want to remove {string.Join(Environment.NewLine, summaryInfo)}?";
 
         return ValueTask.FromResult<NodeId?>(null);
-    }
-    
-    private static string GetDisplayText(PageModel page)
-    {
-        PropertyInfo[] properties = page.GetType().GetProperties().Where(
-            p => p.GetCustomAttribute<CopyableAttribute>() is not null).ToArray();
-        PropertyInfo property = page.GetType().GetProperties().FirstOrDefault(
-            p => p.GetCustomAttribute<SummaryAttribute>() is not null) ?? properties[0];
-        object? value = property.GetValue(page, null);
-        DisplayFormatAttribute? displayValueFormat = property.GetCustomAttribute<DisplayFormatAttribute>();
-        string displayValue = displayValueFormat?.DataFormatString is not null
-            ? string.Format(CultureInfo.CurrentCulture, displayValueFormat.DataFormatString, value)
-            : value?.ToString() ?? string.Empty;
-        return displayValue;
     }
 }

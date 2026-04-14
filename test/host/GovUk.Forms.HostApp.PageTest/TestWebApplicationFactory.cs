@@ -27,10 +27,7 @@ public sealed class TestWebApplicationFactory : WebApplicationFactory<Program>
     {
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
         Environment.SetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING", "InstrumentationKey=your-key-here");
-        Environment.SetEnvironmentVariable("DOTNET_HOSTINGSTARTUPASSEMBLIES", "GovUk.Forms.Components;Demo.GovUk.Forms.AboutYou;" +
-                                                                              "Demo.GovUk.Forms.Bankruptcy;" +
-                                                                              "Demo.GovUk.Forms.Business;" +
-                                                                              "Inss.GovUk.Forms.IPUpload");
+        Environment.SetEnvironmentVariable("DOTNET_HOSTINGSTARTUPASSEMBLIES", "GovUk.Forms.Components;Demo.GovUk.Forms.AboutYou");
         
         var testHost = builder.Build();  
         

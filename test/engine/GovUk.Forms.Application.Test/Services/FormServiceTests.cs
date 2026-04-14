@@ -58,10 +58,24 @@ public class FormServiceTests
     }
     
     [Fact]
-    public async Task ContentIsForm_LoadAsync_ReturnsForm()
+    public async Task ContentIsFormWithSingleSection_LoadAsync_ReturnsRedirectToFirstPage()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(true);
         BuildForService();
+        FullNameModel fullName = _section.Pages.GetFirstOf<FullNameModel>();
+        
+        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(_form.Path, NoState);
+        
+        Assert.Equal(fullName.Path, result.RedirectTo);
+    }
+    
+    [Fact]
+    public async Task ContentIsFormWithMultipleSections_LoadAsync_ReturnsRedirectToFirstPage()
+    {
+        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(true);
+        BuildForService();
+        _form.Sections.Add(_section);
+        
         (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(_form.Path, NoState);
         
         Assert.Equal(_form, result.Content);
