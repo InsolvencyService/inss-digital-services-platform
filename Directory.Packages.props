@@ -10,6 +10,20 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="Allure.Reqnroll" Version="2.14.1" />
+    <PackageVersion Include="Expressium.LivingDoc.ReqnrollPlugin" Version="1.4.2" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.58.0" />
+    <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.58.0" />
+    <PackageVersion Include="NUnit" Version="4.5.1" />
+    <PackageVersion Include="NUnit.Analyzers" Version="4.12.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
+    <PackageVersion Include="Reqnroll.Assist.Dynamic" Version="3.3.4" />
+    <PackageVersion Include="Reqnroll.ExternalData" Version="3.3.4" />
+    <PackageVersion Include="Reqnroll.Microsoft.Extensions.DependencyInjection" Version="3.3.4" />
+    <PackageVersion Include="Reqnroll.NUnit" Version="3.3.4" />
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0" />
     <PackageVersion Include="GovUk.Frontend.AspNetCore" Version="4.0.1" />
