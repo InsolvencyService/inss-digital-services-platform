@@ -145,13 +145,13 @@ public static class TestValidator
             "bin", "obj", ".git", ".vs"
         };
 
-        foreach (string? file in rootDirectory!
+        foreach (string file in rootDirectory!
                      .FindAllFilePaths(".cs", ignores)
                      .Where(f => !string.Equals(f, currentFilePath, StringComparison.OrdinalIgnoreCase)))
         {
             int lineNum = 0;
 
-            foreach (string? line in File.ReadLines(file))
+            foreach (string line in File.ReadLines(file))
             {
                 lineNum++;
 

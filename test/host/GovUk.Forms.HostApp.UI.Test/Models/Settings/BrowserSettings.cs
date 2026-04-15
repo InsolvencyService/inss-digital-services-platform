@@ -1,4 +1,5 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Models.Settings;
+﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+namespace GovUk.Forms.HostApp.UI.Test.Models.Settings;
 
 public class BrowserSettings
 {

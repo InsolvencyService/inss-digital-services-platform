@@ -59,7 +59,7 @@ public static class TypeExtensions
         return hasMatchingField;
     }
 
-    private static Type? UnwrapType(Type type)
+    private static Type UnwrapType(Type type)
     {
         Type? underlying = Nullable.GetUnderlyingType(type);
         if (underlying != null)
