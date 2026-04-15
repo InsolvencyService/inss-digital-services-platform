@@ -124,9 +124,10 @@ Then install powershell suppprt:
 brew install --cask powershell
 ```
 
-Finally, navigate to /test/GovUk.Forms.WebApp.Test in a terminal and run:
+Run the following command below to ensure that Playwright is configured correctly:
 
 ```bash
+cd test\host\GovUk.Forms.HostApp.UI.Test
 pwsh bin/Debug/net10.0/playwright.ps1 install
 ```
 

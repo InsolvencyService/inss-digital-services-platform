@@ -19,7 +19,7 @@ public class DeclarationPage : BasePage, IDeclarationPage
     private new IPage Page => _playwrightDriver.Page;
 
     private ILocator DeclarationTitle =>
-        Page.GetByRole(AriaRole.Heading, new() { Name = DeclarationLocators.Labels.DeclarationTitle });
+        Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.DeclarationTitle });
 
     private ILocator Section187Link =>
         Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.Section187Link });
