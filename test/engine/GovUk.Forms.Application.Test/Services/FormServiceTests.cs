@@ -94,20 +94,6 @@ public class FormServiceTests
     }
     
     [Fact]
-    public async Task PageIsNotSummaryAndSectionComplete_LoadAsync_ReturnsSummaryPagePath()
-    {
-        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(true);
-        BuildForService();
-        _section.State = SectionStateTypes.Completed;
-        FullNameModel fullName = _section.Pages.GetFirstOf<FullNameModel>();
-        SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
-        
-        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(fullName.Path, NoState);
-        
-        Assert.Equal(summary.Path, result.RedirectTo);
-    }
-    
-    [Fact]
     public async Task PageIsSummaryAndSectionComplete_LoadAsync_ReturnsSummaryPage()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(true);

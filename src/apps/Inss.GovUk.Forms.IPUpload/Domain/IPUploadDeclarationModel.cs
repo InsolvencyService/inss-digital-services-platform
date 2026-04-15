@@ -6,6 +6,12 @@ namespace Inss.GovUk.Forms.IPUpload.Domain;
 
 public class IPUploadDeclarationModel : StaticHtmlModel
 {
+    public IPUploadDeclarationModel()
+    {
+        Key = "ipupload-declaration";
+        ViewName = "_StaticHtml";
+    }
+    
     public bool Accepted { get; set; }
 
     public override void CopyTo(PageModel target)

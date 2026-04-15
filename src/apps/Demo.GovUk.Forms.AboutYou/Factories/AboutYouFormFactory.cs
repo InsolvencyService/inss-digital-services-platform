@@ -13,15 +13,15 @@ public sealed class AboutYouFormFactory : IFormFactory
             .Create("about-you")
             
             .AddSection("Your Details", "your-details")
-            .AddPage<FullNameModel>("Your name", "your-name")
-            .AddPage<AddressModel>("Your address", "your-address")
-            .AddPage<ContactDetailsModel>("Your contact details", "Your-contact-details")
-            .AddPage<AgeModel>("Your age", "your-age")
-            .AddPage<SalaryModel>("Your salary", "your-salary")
-            .AddPage<BankAccountModel>("Your bank account", "your-bank-account")
-            .AddPage<OwnHomeModel>("Own your own home", "your-home-ownership")
-            .AddPage<HomeValueModel>("Your home value", "your-home-value")
-            .AddSummary("Your summary", "summary")
+            .AddPage<FullNameModel>("Your name", "your-name", submitButtonText: "Continue")
+            .AddPage<AddressModel>("Your address", "your-address", submitButtonText: "Continue")
+            .AddPage<ContactDetailsModel>("Your contact details", "Your-contact-details", submitButtonText: "Continue")
+            .AddPage<AgeModel>("Your age", "your-age", submitButtonText: "Continue")
+            .AddPage<SalaryModel>("Your salary", "your-salary", submitButtonText: "Continue")
+            .AddPage<BankAccountModel>("Your bank account", "your-bank-account", submitButtonText: "Continue")
+            .AddPage<OwnHomeModel>("Own your own home", "your-home-ownership", submitButtonText: "Continue")
+            .AddPage<HomeValueModel>("Your home value", "your-home-value", submitButtonText: "Continue")
+            .EndSection<SummaryModel>("Your summary", "summary", submitButtonText: "Continue")
 
             .ValidateAndComplete();
     }

@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,13 +40,6 @@ public sealed class FormService : IFormService
             if (content is PageModel page)
             {
                 SectionModel section = form.GetSectionForPage(page.Path);
-                SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
-                
-                if (path != summary.Path && section.State == SectionStateTypes.Completed)
-                {
-                    return new ValueTuple<ContentModel?, ContentPath?>(null, summary.Path);
-                }
-                
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
                 ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, state);
                 return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != path ? altPath : null);
@@ -75,7 +67,15 @@ public sealed class FormService : IFormService
         {
             SectionModel section = form.GetSectionForPage(page.Path);
             IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-            return await flowchart.ValidateAsync(page);
+            ValidationResult[] validationResults = await flowchart.ValidateAsync(page);
+
+            if (validationResults.Length > 0)
+            {
+                PageModel savedPage = section.Pages.GetPage(page.Path);
+                savedPage.MetaData.CopyTo(page.MetaData);
+            }
+            
+            return validationResults;
         }
 
         return [];

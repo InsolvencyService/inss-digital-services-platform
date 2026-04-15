@@ -21,7 +21,7 @@ public sealed class GroupModelBuilder
         string? question = null, 
         string? hint = null,
         string? description = null,
-        string submitButtonText = "Save and continue") 
+        string? submitButtonText = null) 
         where TPage : PageModel, new()
     {
         TPage page = new()
@@ -48,7 +48,7 @@ public sealed class GroupModelBuilder
         string? question = null, 
         string? hint = null,
         string? description = null,
-        string submitButtonText = "Save and continue") 
+        string? submitButtonText = null) 
         where TPage : PageModel, new()
     {
         TPage page = new()

@@ -11,6 +11,7 @@ public sealed class SubmitSectionFlowNodeExecutor : IFlowNodeExecutor
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IUserSessionProvider _userSessionProvider;
+    private const int CompletedIndex = 0;
 
     public SubmitSectionFlowNodeExecutor(IServiceProvider serviceProvider, IUserSessionProvider userSessionProvider)
     {
@@ -34,6 +35,8 @@ public sealed class SubmitSectionFlowNodeExecutor : IFlowNodeExecutor
             ISubmitSectionService submitSectionService =
                 _serviceProvider.GetRequiredKeyedService<ISubmitSectionService>(context.Section.Path);
             await submitSectionService.SubmitAsync(context.Section, userSessionId);
+            
+            return context.CurrentNode.NextNodes.Length == 1 ? context.CurrentNode.NextNodes[CompletedIndex] : null;
         }
 
         return null;

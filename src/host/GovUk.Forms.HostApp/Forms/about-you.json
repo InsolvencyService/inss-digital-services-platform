@@ -15,11 +15,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "67792666-2acd-436a-bf50-118ae170ca95",
+          "Id": "bbe42abe-48ec-45ff-b5c3-83e33e1fe50a",
           "Path": "/about-you/your-details/your-name",
           "ViewName": "_FullName",
           "EncodingType": null,
@@ -41,11 +41,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "c82e9ac5-4a14-4ccf-be10-9a4a7a9ae5af",
+          "Id": "526b2407-4462-46a9-b6fd-e3dac14fa1ff",
           "Path": "/about-you/your-details/your-address",
           "ViewName": "_Address",
           "EncodingType": null,
@@ -59,7 +59,7 @@
             "Label": "What is your email address?",
             "Hint": "Enter your email address",
             "LabelSize": "Large",
-            "ViewName": "Types/_Email"
+            "ViewName": "Types/_EmailAddress"
           },
           "Number": {
             "Value": null,
@@ -76,11 +76,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "58ab3212-3f70-43f0-8155-a16718a8aaee",
+          "Id": "31a404a2-6635-4d56-8ce8-d54ae910ee2b",
           "Path": "/about-you/your-details/Your-contact-details",
           "ViewName": "_ContactDetails",
           "EncodingType": null,
@@ -98,11 +98,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "a24bf262-5f82-4c7c-9550-5f1b024b68bf",
+          "Id": "f1af7b3a-f35b-4bd7-9bde-6e161e7e8d3f",
           "Path": "/about-you/your-details/your-age",
           "ViewName": "_Age",
           "EncodingType": null,
@@ -120,11 +120,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "37f81a67-7dc6-43a7-8ebc-69bc623b7d54",
+          "Id": "d453aede-189c-4a79-a33a-0008179e3ad7",
           "Path": "/about-you/your-details/your-salary",
           "ViewName": "_Salary",
           "EncodingType": null,
@@ -145,11 +145,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "e78d25ca-6704-4c03-9706-197bbb85a4fa",
+          "Id": "479c1c98-898d-4a4f-bc8a-11900bdcfdf5",
           "Path": "/about-you/your-details/your-bank-account",
           "ViewName": "_BankAccount",
           "EncodingType": null,
@@ -167,11 +167,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "46c1ca8d-c873-475a-ac60-1a9f735919b3",
+          "Id": "9f2765d8-31ab-4f7c-8def-b40208031315",
           "Path": "/about-you/your-details/your-home-ownership",
           "ViewName": "_OwnHome",
           "EncodingType": null,
@@ -189,11 +189,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "e2c941bc-bba5-4066-b574-dde062061139",
+          "Id": "ecf68d77-30d3-4aae-9197-df8168cd3cec",
           "Path": "/about-you/your-details/your-home-value",
           "ViewName": "_HomeValue",
           "EncodingType": null,
@@ -210,11 +210,11 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
           "PreviousPagePath": "/",
-          "Id": "94451b2a-156e-45b6-bacc-803f832ae5d7",
+          "Id": "d336014c-bb65-4f92-ac4a-f1f73e3c739d",
           "Path": "/about-you/your-details/summary",
           "ViewName": "_Summary",
           "EncodingType": null,
@@ -222,7 +222,7 @@
           "TypeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "Id": "9f7617ef-0bc8-45ec-af4a-5001395e9f26",
+      "Id": "a6300c95-0dc1-41fd-b2e1-dab6764314d9",
       "Path": "/about-you/your-details",
       "ViewName": "_Section",
       "EncodingType": null,
@@ -231,7 +231,7 @@
     }
   ],
   "CanSubmit": false,
-  "Id": "189ce843-37ba-4fa8-9cf5-e8fb0ab1f824",
+  "Id": "94f07d24-b02b-4cc7-ac0d-b2370474a1f2",
   "Path": "/about-you",
   "ViewName": "_Form",
   "EncodingType": null,

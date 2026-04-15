@@ -18,13 +18,14 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "f4559652-a134-4337-987a-aebc5d8627d4",
+          "PreviousPagePath": "/",
+          "Id": "95400cb1-2bb6-4818-aa64-e25365170680",
           "Path": "/bankruptcy/your-bankruptcy/date-bankrupt",
           "ViewName": "_Date",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.DateModel"
         },
@@ -38,28 +39,31 @@
             "Hint": null,
             "Description": null,
             "Group": "",
-            "SubmitButtonText": "Save and continue"
+            "SubmitButtonText": "Continue"
           },
           "LinkedToNode": "",
-          "PreviousPagePath": "",
-          "Id": "f306942a-5e9c-4dc0-a05b-1dea82a04082",
+          "PreviousPagePath": "/",
+          "Id": "3bbda178-d7bd-4af6-8dd3-2d07be0d0bbe",
           "Path": "/bankruptcy/your-bankruptcy/summary",
           "ViewName": "_Summary",
+          "EncodingType": null,
           "SubmitType": "Form",
           "TypeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "Id": "26ed3e10-b1f5-4553-b075-bd93f7a1edd2",
+      "Id": "e6f88831-8687-4e75-ae20-8714e3e7ceb1",
       "Path": "/bankruptcy/your-bankruptcy",
       "ViewName": "_Section",
+      "EncodingType": null,
       "SubmitType": "Form",
       "TypeName": "GovUk.Forms.Domain.SectionModel"
     }
   ],
   "CanSubmit": false,
-  "Id": "15a211ce-e3f3-43c1-b25f-2c50bebe06c2",
+  "Id": "b0790c4b-588b-495d-8008-3c790427670d",
   "Path": "/bankruptcy",
   "ViewName": "_Form",
+  "EncodingType": null,
   "SubmitType": "Form",
   "TypeName": "GovUk.Forms.Domain.FormModel"
 }

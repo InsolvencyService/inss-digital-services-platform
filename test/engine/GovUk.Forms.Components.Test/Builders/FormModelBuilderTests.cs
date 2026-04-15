@@ -87,7 +87,7 @@ public class FormModelBuilderTests
             .AddPage<AgeModel>("Your age", "your-age")
             .AddPage<SalaryModel>("Your salary", "your-salary")
             .AddPage<BankAccountModel>("Your bank account", "your-bank-account")
-            .AddSummary("Your summary", "summary")
+            .EndSection<SummaryModel>("Your summary", "summary")
             
             .AddSection("Employee Details", "your-employee-details")
             .AddGroup<AddAnotherGroup>("Employees")
@@ -95,7 +95,7 @@ public class FormModelBuilderTests
             .AddGroupPage<AgeModel>("Employee age", "employee-age")
             .AddGroupPage<CheckAnswersModel>("Check employee details", "check-employee-details")
             .AddFinalGroupPage<AddAnotherModel>("Employee details", "add-another-employee")
-            .AddSummary("Employee summary", "summary")
+            .EndSection<SummaryModel>("Employee summary", "summary")
             
             .ValidateAndComplete();
     }
