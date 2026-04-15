@@ -43,8 +43,7 @@ stages:
         displayName: 'Run Tests'
         inputs:
           command: test
-          projects: '**/*Test/*.csproj'
-          arguments: '--configuration $(BuildConfiguration) --filter "FullyQualifiedName!~PageTest & FullyQualifiedName!~UI.Test"'
+          projects: '**/*.Test/*.csproj'
 
       - task: DotNetCoreCLI@2
         displayName: 'Publish HostApp'

@@ -19,7 +19,6 @@
   </Folder>
   <Folder Name="/test/host/">
     <Project Path="test/host/GovUk.Forms.HostApp.UI.Test/GovUk.Forms.HostApp.UI.Test.csproj" />
-    <Project Path="test\host\GovUk.Forms.HostApp.PageTest\GovUk.Forms.HostApp.PageTest.csproj" />
     <Project Path="test\host\GovUk.Forms.HostApp.Test\GovUk.Forms.HostApp.Test.csproj" />
   </Folder>
   <Folder Name="/src/host/">
