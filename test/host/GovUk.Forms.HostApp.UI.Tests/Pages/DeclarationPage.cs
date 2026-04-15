@@ -1,9 +1,9 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Config.Driver;
-using GovUk.Forms.HostApp.UI.Tests.Pages.Common;
-using GovUk.Forms.HostApp.UI.Tests.Pages.Locators;
-using GovUk.Forms.HostApp.UI.Tests.Support;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Pages.Common;
+using GovUk.Forms.HostApp.UI.Test.Pages.Locators;
+using GovUk.Forms.HostApp.UI.Test.Support;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Pages;
+namespace GovUk.Forms.HostApp.UI.Test.Pages;
 
 public class DeclarationPage : BasePage, IDeclarationPage
 {
@@ -41,12 +41,6 @@ public class DeclarationPage : BasePage, IDeclarationPage
             Page.Context,
             () => Section187Link.ClickAsync(),
             expectedUrlPart: PartialPageUris.Section187Page);
-        _playwrightDriver.SetActivePage(page);
         return page;
-    }
-
-    public void SwitchBackTo(IPage page)
-    {
-        _playwrightDriver.SetActivePage(page);
     }
 }

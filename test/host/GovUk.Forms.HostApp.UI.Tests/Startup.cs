@@ -1,11 +1,11 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Config.Driver;
-using GovUk.Forms.HostApp.UI.Tests.Config.Environments;
-using GovUk.Forms.HostApp.UI.Tests.Extensions;
-using GovUk.Forms.HostApp.UI.Tests.Helpers;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Config.Environments;
+using GovUk.Forms.HostApp.UI.Test.Extensions;
+using GovUk.Forms.HostApp.UI.Test.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll.Microsoft.Extensions.DependencyInjection;
 
-namespace GovUk.Forms.HostApp.UI.Tests;
+namespace GovUk.Forms.HostApp.UI.Test;
 
 public static class Startup
 {

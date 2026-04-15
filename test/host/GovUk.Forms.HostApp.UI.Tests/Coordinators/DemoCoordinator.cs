@@ -1,6 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Pages;
+﻿using GovUk.Forms.HostApp.UI.Test.Pages;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Coordinators;
+namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 
 public class DemoCoordinator(
     IDeclarationPage declarationPage,

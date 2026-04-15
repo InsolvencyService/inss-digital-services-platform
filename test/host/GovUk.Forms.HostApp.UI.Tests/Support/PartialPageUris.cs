@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Tests.Support;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Support;
 
 public class PartialPageUris
 {

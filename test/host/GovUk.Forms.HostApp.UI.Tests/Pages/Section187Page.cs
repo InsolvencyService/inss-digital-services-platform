@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Tests.Pages;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Pages;
 
 
 public class Section187Page : BasePage, ISection187Page

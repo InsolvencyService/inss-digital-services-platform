@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Tests.Extensions;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Extensions;
 
 public static class FileDirectoryExtensions
 {

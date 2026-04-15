@@ -1,13 +1,13 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Config.Environments;
-using GovUk.Forms.HostApp.UI.Tests.Extensions;
-using GovUk.Forms.HostApp.UI.Tests.Pages;
-using GovUk.Forms.HostApp.UI.Tests.Tags;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Environments;
+using GovUk.Forms.HostApp.UI.Test.Extensions;
+using GovUk.Forms.HostApp.UI.Test.Pages;
+using GovUk.Forms.HostApp.UI.Test.Tags;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Helpers;
+namespace GovUk.Forms.HostApp.UI.Test.Helpers;
 
 public static class TestValidator
 {

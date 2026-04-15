@@ -1,7 +1,7 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Models.Settings;
+﻿using GovUk.Forms.HostApp.UI.Test.Models.Settings;
 using Microsoft.Extensions.Configuration;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Config;
+namespace GovUk.Forms.HostApp.UI.Test.Config;
 
 public static class TestConfigReader
 {

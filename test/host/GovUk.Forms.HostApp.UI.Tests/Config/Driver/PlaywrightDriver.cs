@@ -1,16 +1,13 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Models.Settings;
+﻿using GovUk.Forms.HostApp.UI.Test.Models.Settings;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Config.Driver;
+namespace GovUk.Forms.HostApp.UI.Test.Config.Driver;
 
 public sealed class PlaywrightDriver : IPlaywrightDriver
 {
     private IPlaywright? _playwright;
-    private IPage? _page;
     private IBrowser? _browser;
     private IBrowserContext? _context;
-
-    private readonly List<IPage> _pages = [];
-    private readonly object _pagesLock = new();
+    private IPage? _page;
 
     public IBrowser Browser =>
         _browser ?? throw new InvalidOperationException("PlaywrightDriver is not initialised.");
@@ -19,18 +16,7 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
         _context ?? throw new InvalidOperationException("PlaywrightDriver is not initialised.");
 
     public IPage Page =>
-        _page ?? throw new InvalidOperationException("There is no active page.");
-
-    public IReadOnlyList<IPage> Pages
-    {
-        get
-        {
-            lock (_pagesLock)
-            {
-                return _pages.ToList().AsReadOnly();
-            }
-        }
-    }
+        _page ?? throw new InvalidOperationException("PlaywrightDriver is not initialised.");
 
     public async Task InitialiseAsync(BrowserNewContextOptions? contextOptions = null)
     {
@@ -58,33 +44,16 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
                     SlowMo = browserSettings.SlowMo,
                 });
 
-            _context = await _browser.NewContextAsync(contextOptions ?? new BrowserNewContextOptions());
+            _context = await _browser.NewContextAsync(
+                contextOptions ?? new BrowserNewContextOptions());
 
-            AttachContextHandlers(_context);
-
-            IPage page = await _context.NewPageAsync();
-            RegisterPage(page);
-            AttachConsoleLogging(page);
+            _page = await _context.NewPageAsync();
+            AttachConsoleLogging(_page);
         }
         catch
         {
             await CloseAsync();
             throw;
-        }
-    }
-
-    public void SetActivePage(IPage page)
-    {
-        ArgumentNullException.ThrowIfNull(page);
-
-        lock (_pagesLock)
-        {
-            if (!_pages.Contains(page))
-            {
-                _pages.Add(page);
-            }
-
-            _page = page;
         }
     }
 
@@ -116,13 +85,7 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
         finally
         {
             _playwright?.Dispose();
-
-            lock (_pagesLock)
-            {
-                _pages.Clear();
-                _page = null;
-            }
-
+            _page = null;
             _context = null;
             _browser = null;
             _playwright = null;
@@ -150,17 +113,6 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
         };
     }
 
-    private void AttachContextHandlers(IBrowserContext context)
-    {
-        ArgumentNullException.ThrowIfNull(context);
-
-        context.Page += (_, page) =>
-        {
-            RegisterPage(page);
-            AttachConsoleLogging(page);
-        };
-    }
-
     private static void AttachConsoleLogging(IPage page)
     {
         ArgumentNullException.ThrowIfNull(page);
@@ -168,36 +120,6 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
         page.Console += (_, msg) =>
         {
             Console.WriteLine($"[Browser Console] {msg.Type}: {msg.Text}");
-        };
-    }
-
-    private void RegisterPage(IPage page)
-    {
-        ArgumentNullException.ThrowIfNull(page);
-
-        lock (_pagesLock)
-        {
-            if (!_pages.Contains(page))
-            {
-                _pages.Add(page);
-            }
-
-            _page = page;
-        }
-
-        page.Close += (_, _) =>
-        {
-            lock (_pagesLock)
-            {
-                _pages.Remove(page);
-
-                if (ReferenceEquals(_page, page))
-                {
-                    _page = _pages.Count > 0
-                        ? _pages[^1]
-                        : null;
-                }
-            }
         };
     }
 }

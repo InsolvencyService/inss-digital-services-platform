@@ -1,7 +1,7 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Config.Environments;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Environments;
 using System.Globalization;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Helpers;
+namespace GovUk.Forms.HostApp.UI.Test.Helpers;
 
 public sealed class TestArtifacts
 {

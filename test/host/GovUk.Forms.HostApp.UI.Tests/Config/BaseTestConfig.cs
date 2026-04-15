@@ -1,8 +1,8 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Config.Environments;
-using GovUk.Forms.HostApp.UI.Tests.Extensions;
-using GovUk.Forms.HostApp.UI.Tests.Helpers;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Environments;
+using GovUk.Forms.HostApp.UI.Test.Extensions;
+using GovUk.Forms.HostApp.UI.Test.Helpers;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Config;
+namespace GovUk.Forms.HostApp.UI.Test.Config;
 
 public abstract class BaseTestConfig
 {

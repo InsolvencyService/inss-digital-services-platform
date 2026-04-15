@@ -1,10 +1,10 @@
-using GovUk.Forms.HostApp.UI.Tests.Config;
-using GovUk.Forms.HostApp.UI.Tests.Config.Driver;
-using GovUk.Forms.HostApp.UI.Tests.Extensions;
-using GovUk.Forms.HostApp.UI.Tests.Helpers;
+using GovUk.Forms.HostApp.UI.Test.Config;
+using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Extensions;
+using GovUk.Forms.HostApp.UI.Test.Helpers;
 using System.Reflection;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Hook;
+namespace GovUk.Forms.HostApp.UI.Test.Hook;
 
 [Binding]
 public sealed class ReqnrollHook : BaseTestConfig
@@ -29,7 +29,7 @@ public sealed class ReqnrollHook : BaseTestConfig
         _scenarioContext = scenarioContext ?? throw new ArgumentNullException(nameof(scenarioContext));
         _output = output ?? throw new ArgumentNullException(nameof(output));
         _driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        _featureContext = featureContext;
+        _featureContext = featureContext ?? throw new ArgumentNullException(nameof(featureContext));
     }
 
     [BeforeScenario(Order = 0)]
@@ -50,16 +50,13 @@ public sealed class ReqnrollHook : BaseTestConfig
         await _driver.InitialiseAsync(contextOptions);
 
         await BrowserSetupAsync(_scenarioContext, _driver.Page, _driver.Context);
-
-        _scenarioContext.ScenarioContainer.RegisterInstanceAs(_driver.Page);
-        _scenarioContext.ScenarioContainer.RegisterInstanceAs(_driver.Context);
     }
 
     [AfterScenario(Order = 0)]
     public async Task AfterScenarioAsync()
     {
-        IBrowserContext context = _scenarioContext.ScenarioContainer.Resolve<IBrowserContext>();
-        IPage page = _scenarioContext.ScenarioContainer.Resolve<IPage>();
+        IBrowserContext context = _driver.Context;
+        IPage page = _driver.Page;
 
         IVideo? video = page.Video;
         bool failed = _scenarioContext.ScenarioExecutionStatus == ScenarioExecutionStatus.TestError;
@@ -95,14 +92,14 @@ public sealed class ReqnrollHook : BaseTestConfig
     [AfterStep]
     public async Task AfterStepAsync()
     {
-        if (!_shouldCaptureStepScreenshots)
+        if (!_shouldCaptureStepScreenshots || TestArtifacts is null)
         {
             return;
         }
 
         try
         {
-            if (TestArtifacts is null)
+            if (_driver.Page.IsClosed)
             {
                 return;
             }

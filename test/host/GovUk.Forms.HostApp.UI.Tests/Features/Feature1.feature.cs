@@ -11,7 +11,7 @@
 #region Designer generated code
 #pragma warning disable
 using Reqnroll;
-namespace GovUk.Forms.HostApp.UI.Tests.Features
+namespace GovUk.Forms.HostApp.UI.Test.Features
 {
     
     

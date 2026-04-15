@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Tests.Models.Settings;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Models.Settings;
 
 public class BrowserSettings
 {

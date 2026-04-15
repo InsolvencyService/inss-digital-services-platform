@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Tests.Config.Environments;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Config.Environments;
 
 public class EnvProdConfig : IEnvironmentConfig
 {

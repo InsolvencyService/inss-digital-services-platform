@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Pages.Common;
+namespace GovUk.Forms.HostApp.UI.Test.Pages.Common;
 
 public class CommonPage : ICommonPage
 {

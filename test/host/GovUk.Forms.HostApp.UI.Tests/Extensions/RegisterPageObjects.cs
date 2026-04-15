@@ -1,8 +1,8 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Pages;
-using GovUk.Forms.HostApp.UI.Tests.Pages.Common;
+﻿using GovUk.Forms.HostApp.UI.Test.Pages;
+using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Extensions;
+namespace GovUk.Forms.HostApp.UI.Test.Extensions;
 
 public static class RegisterPageObjects
 {

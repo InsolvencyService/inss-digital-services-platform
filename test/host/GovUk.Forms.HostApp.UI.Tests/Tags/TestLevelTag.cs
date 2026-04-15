@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Tests.Tags;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Tags;
 
 public enum TestLevelTag
 {

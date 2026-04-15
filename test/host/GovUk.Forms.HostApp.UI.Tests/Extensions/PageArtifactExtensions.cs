@@ -1,6 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Tests.Helpers;
+﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
 
-namespace GovUk.Forms.HostApp.UI.Tests.Extensions;
+namespace GovUk.Forms.HostApp.UI.Test.Extensions;
 
 public static class PageArtifactExtensions
 {

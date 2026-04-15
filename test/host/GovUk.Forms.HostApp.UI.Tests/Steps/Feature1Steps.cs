@@ -1,23 +1,19 @@
-using GovUk.Forms.HostApp.UI.Tests.Coordinators;
-namespace GovUk.Forms.HostApp.UI.Tests.Steps;
+using GovUk.Forms.HostApp.UI.Test.Coordinators;
+namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
 [Binding]
 public class Feature1Steps
 {
     private readonly DemoCoordinator _demoCoordinator;
-    //private readonly IDeclarationPage _declarationPage;
-    public Feature1Steps(DemoCoordinator demoCoordinator) //IDeclarationPage declarationPage)
+    public Feature1Steps(DemoCoordinator demoCoordinator)
     {
         _demoCoordinator = demoCoordinator;
-        //_declarationPage = declarationPage;
     }
 
     [Given("I am on the declaration page")]
     public async Task GivenIAmOnTheDeclarationPage()
     {
-        // await _declarationPage.WaitForPageToLoadAsync();
         await _demoCoordinator.VerifyDeclarationPageContentAsync();
-        // Thread.Sleep(2000);
     }
 
     [When("I choose to view section 187")]
