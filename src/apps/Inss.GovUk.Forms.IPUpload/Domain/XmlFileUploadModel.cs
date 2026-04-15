@@ -36,6 +36,7 @@ public sealed class XmlFileUploadModel : PageModel
         XmlFileUploadModel xmlFileUpload = target.As<XmlFileUploadModel>();
         xmlFileUpload.Filename = Filename;
         xmlFileUpload.Contents = Contents;
+        xmlFileUpload.Length = Length;
     }
     
     public override void ClearValues()

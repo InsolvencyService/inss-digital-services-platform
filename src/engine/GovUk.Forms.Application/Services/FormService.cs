@@ -115,6 +115,7 @@ public sealed class FormService : IFormService
         if (!await _formStorageProvider.ExistsAsync(formPath, userSessionId))
         {
             FormModel form = _formProvider.Create(formPath);
+            form.Id = userSessionId;
             
             foreach (SectionModel section in form.Sections)
             {

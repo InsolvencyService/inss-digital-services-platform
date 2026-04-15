@@ -14,8 +14,9 @@ public class FormSerializerTests
         
         string json = FormSerializer.SerializeForm(form);
 
-        Assert.Contains("\"Title\":\"Your Details\"", json);
-        Assert.Contains("\"State\":\"NotStarted\"", json);
+        JsonDocument doc = JsonDocument.Parse(json);
+        Assert.True(FindPropertyValues(doc.RootElement, "title", "Your Details"));
+        Assert.True(FindPropertyValues(doc.RootElement, "state", "NotStarted"));
     }
     
     [Fact]
@@ -25,65 +26,15 @@ public class FormSerializerTests
         
         string json = FormSerializer.SerializeForm(form);
         
-        Assert.Contains("\"$type\":\"FullNameModel\"", json);
-        Assert.Contains("\"Value\":\"\"", json);
-        Assert.Contains("\"Title\":\"Your Name\"", json);
-        Assert.Contains("\"ReturnUrl\":null", json);
-        Assert.Contains("\"Id\":\"", json);
-        Assert.Contains("\"Path\":\"/form/your-details/your-fullname\"", json);
-        Assert.Contains("\"ViewName\":\"_FullName\"", json);
-        Assert.Contains("\"TypeName\":\"GovUk.Forms.Domain.FullNameModel\"", json);
-        Assert.Contains("\"EditMode\":\"NotStarted\"", json);
-    }
-    
-    static bool FindPropertyValues(JsonElement element, string propertyName, string? propertyValue)
-    {
-        var results = new List<string>();
-
-        switch (element.ValueKind)
-        {
-            case JsonValueKind.Object:
-                foreach (var prop in element.EnumerateObject())
-                {
-                    if (prop.NameEquals(propertyName))
-                    {
-                        if (prop.Value.ValueKind == JsonValueKind.Null && propertyValue is null)
-                        {
-                            return true;
-                        }
-
-                        if (prop.Value.ToString() == propertyValue)
-                        {
-                            return true;
-                        }
-
-                    }
-                    else
-                    {
-                        bool x = FindPropertyValues(prop.Value, propertyName, propertyValue);
-
-                        if (x)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                break;
-
-            case JsonValueKind.Array:
-                foreach (var item in element.EnumerateArray())
-                {
-                    bool x = FindPropertyValues(item, propertyName, propertyValue);
-
-                    if (x)
-                    {
-                        return true;
-                    }
-                }
-                break;
-        }
-
-        return false;
+        JsonDocument doc = JsonDocument.Parse(json);
+        Assert.True(FindPropertyValues(doc.RootElement, "$type", "FullNameModel"));
+        Assert.True(FindPropertyValues(doc.RootElement, "value", ""));
+        Assert.True(FindPropertyValues(doc.RootElement, "title", "Your Name"));
+        Assert.True(FindPropertyValues(doc.RootElement, "returnUrl", null));
+        Assert.True(FindPropertyValues(doc.RootElement, "path", "/form/your-details/your-fullname"));
+        Assert.True(FindPropertyValues(doc.RootElement, "viewName", "_FullName"));
+        Assert.True(FindPropertyValues(doc.RootElement, "typeName", "GovUk.Forms.Domain.FullNameModel"));
+        Assert.True(FindPropertyValues(doc.RootElement, "editMode", "NotStarted"));
     }
     
     [Fact]
@@ -93,19 +44,19 @@ public class FormSerializerTests
         
         string json = FormSerializer.SerializeForm(form);
 
-        Assert.Contains("\"$type\":\"FullNameModel\"", json);
-        Assert.Contains("\"AddressLine1\":\"\"", json);
-        Assert.Contains("\"AddressLine2\":null", json);
-        Assert.Contains("\"TownCity\":\"\"", json);
-        Assert.Contains("\"County\":null", json);
-        Assert.Contains("\"Postcode\":\"\"", json);
-        Assert.Contains("\"Title\":\"Your Name\"", json);
-        Assert.Contains("\"ReturnUrl\":null", json);
-        Assert.Contains("\"Id\":\"", json);
-        Assert.Contains("\"Path\":\"/form/your-details/your-address\"", json);
-        Assert.Contains("\"ViewName\":\"_Address\"", json);
-        Assert.Contains("\"TypeName\":\"GovUk.Forms.Domain.AddressModel\"", json);
-        Assert.Contains("\"EditMode\":\"NotStarted\"", json);
+        JsonDocument doc = JsonDocument.Parse(json);
+        Assert.True(FindPropertyValues(doc.RootElement, "$type", "AddressModel"));
+        Assert.True(FindPropertyValues(doc.RootElement, "addressLine1", ""));
+        Assert.True(FindPropertyValues(doc.RootElement, "addressLine2", null));
+        Assert.True(FindPropertyValues(doc.RootElement, "townCity", ""));
+        Assert.True(FindPropertyValues(doc.RootElement, "county", null));
+        Assert.True(FindPropertyValues(doc.RootElement, "postcode", ""));
+        Assert.True(FindPropertyValues(doc.RootElement, "title", "Your Name"));
+        Assert.True(FindPropertyValues(doc.RootElement, "returnUrl", null));
+        Assert.True(FindPropertyValues(doc.RootElement, "path", "/form/your-details/your-address"));
+        Assert.True(FindPropertyValues(doc.RootElement, "viewName", "_FullName"));
+        Assert.True(FindPropertyValues(doc.RootElement, "typeName", "GovUk.Forms.Domain.AddressModel"));
+        Assert.True(FindPropertyValues(doc.RootElement, "editMode", "NotStarted"));
     }
 
     [Fact]
@@ -169,15 +120,14 @@ public class FormSerializerTests
 
         string json = FormSerializer.SerializePage(fullName);
 
-        Assert.Contains("\"$type\":\"FullNameModel\"", json);
-        Assert.Contains("\"Value\":\"Homer Simpson\"", json);
-        Assert.Contains("\"Title\":\"Your Name\"", json);
-        Assert.Contains("\"ReturnUrl\":null", json);
-        Assert.Contains("\"Id\":\"", json);
-        Assert.Contains("\"Path\":\"/form/your-details/your-fullname\"", json);
-        Assert.Contains("\"ViewName\":\"_FullName\"", json);
-        Assert.Contains("\"TypeName\":\"GovUk.Forms.Domain.FullNameModel\"", json);
-        Assert.Contains("\"EditMode\":\"NotStarted\"", json);
+        JsonDocument doc = JsonDocument.Parse(json);
+        Assert.True(FindPropertyValues(doc.RootElement, "$type", "FullNameModel"));
+        Assert.True(FindPropertyValues(doc.RootElement, "value", "Homer Simpson"));
+        Assert.True(FindPropertyValues(doc.RootElement, "returnUrl", null));
+        Assert.True(FindPropertyValues(doc.RootElement, "path", "/form/your-details/your-fullname"));
+        Assert.True(FindPropertyValues(doc.RootElement, "viewName", "_FullName"));
+        Assert.True(FindPropertyValues(doc.RootElement, "typeName", "GovUk.Forms.Domain.FullNameModel"));
+        Assert.True(FindPropertyValues(doc.RootElement, "editMode", "NotStarted"));
     }
     
     [Fact]
@@ -193,61 +143,109 @@ public class FormSerializerTests
         Assert.Equal(PageEditTypes. NotStarted, fullName.EditMode);
     }
     
+    private static bool FindPropertyValues(JsonElement element, string propertyName, string? propertyValue)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+            {
+                foreach (var prop in element.EnumerateObject())
+                {
+                    if (prop.NameEquals(propertyName))
+                    {
+                        if (prop.Value.ValueKind == JsonValueKind.Null && propertyValue is null)
+                        {
+                            return true;
+                        }
+
+                        if (prop.Value.ToString() == propertyValue)
+                        {
+                            return true;
+                        }
+
+                    }
+                    else
+                    {
+                        if (FindPropertyValues(prop.Value, propertyName, propertyValue))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                break;
+            }
+            case JsonValueKind.Array:
+            {
+                foreach (var item in element.EnumerateArray())
+                {
+                    if (FindPropertyValues(item, propertyName, propertyValue))
+                    {
+                        return true;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        return false;
+    }
+    
     private const string FormJson = @"
         {
-          ""Sections"" : [ {
-            ""Title"" : ""Your Details"",
-            ""State"" : ""InProgress"",
-            ""Pages"" : [ {
+          ""sections"" : [ {
+            ""title"" : ""Your Details"",
+            ""state"" : ""InProgress"",
+            ""pages"" : [ {
               ""$type"" : ""FullNameModel"",
-              ""Value"" : ""Homer Simpson"",
-              ""EditMode"" : ""Editing"",
-              ""Title"" : ""Your Name"",
-              ""ReturnUrl"" : null,
-              ""Id"" : ""70a36a67-4db5-4d11-a4c5-0769497e2221"",
-              ""Path"" : ""/form/your-details/your-fullname"",
-              ""ViewName"" : ""_FullName"",
-              ""TypeName"" : ""GovUk.Forms.Domain.FullNameModel""
+              ""value"" : ""Homer Simpson"",
+              ""editMode"" : ""Editing"",
+              ""title"" : ""Your Name"",
+              ""returnUrl"" : null,
+              ""id"" : ""70a36a67-4db5-4d11-a4c5-0769497e2221"",
+              ""path"" : ""/form/your-details/your-fullname"",
+              ""viewName"" : ""_FullName"",
+              ""typeName"" : ""GovUk.Forms.Domain.FullNameModel""
             }, {
               ""$type"" : ""AddressModel"",
-              ""AddressLine1"" : ""101 Ivy Terrace"",
-              ""AddressLine2"" : ""Wood Lane"",
-              ""TownCity"" : ""Treetown"",
-              ""County"" : ""Oak County"",
-              ""Question"" : ""What is your address?"",
-              ""Postcode"" : ""TN33 0DN"",
-              ""EditMode"" : ""NotStarted"",
-              ""Title"" : ""Your Address"",
-              ""ReturnUrl"" : null,
-              ""Id"" : ""390a79cc-1dad-467e-ac08-d091dc9a44d3"",
-              ""Path"" : ""/form/your-details/your-address"",
-              ""ViewName"" : ""_Address"",
-              ""TypeName"" : ""GovUk.Forms.Domain.AddressModel""
+              ""addressLine1"" : ""101 Ivy Terrace"",
+              ""addressLine2"" : ""Wood Lane"",
+              ""townCity"" : ""Treetown"",
+              ""county"" : ""Oak County"",
+              ""question"" : ""What is your address?"",
+              ""postcode"" : ""TN33 0DN"",
+              ""editMode"" : ""NotStarted"",
+              ""title"" : ""Your Address"",
+              ""returnUrl"" : null,
+              ""id"" : ""390a79cc-1dad-467e-ac08-d091dc9a44d3"",
+              ""path"" : ""/form/your-details/your-address"",
+              ""viewName"" : ""_Address"",
+              ""typeName"" : ""GovUk.Forms.Domain.AddressModel""
             }],
-            ""CurrentNodeId"" : null,
-            ""Id"" : ""ab7d8a81-3f2c-415e-980d-6b9417f398ac"",
-            ""Path"" : ""/form/your-details"",
-            ""ViewName"" : ""_Section"",
-            ""TypeName"" : ""GovUk.Forms.Domain.SectionModel""
+            ""id"" : ""ab7d8a81-3f2c-415e-980d-6b9417f398ac"",
+            ""path"" : ""/form/your-details"",
+            ""viewName"" : ""_Section"",
+            ""typeName"" : ""GovUk.Forms.Domain.SectionModel""
           } ],
-          ""CanSubmit"" : false,
-          ""Id"" : ""34fc4a66-ef06-48e1-8610-dcdfd1291e3c"",
-          ""Path"" : ""/form"",
-          ""ViewName"" : ""_Form"",
-          ""TypeName"" : ""GovUk.Forms.Domain.FormModel""
+          ""canSubmit"" : false,
+          ""id"" : ""34fc4a66-ef06-48e1-8610-dcdfd1291e3c"",
+          ""path"" : ""/form"",
+          ""viewName"" : ""_Form"",
+          ""typeName"" : ""GovUk.Forms.Domain.FormModel""
         }";
     
     private const string FullNamePageJson = @"
         {
           ""$type"" : ""FullNameModel"",
-          ""Value"" : ""Homer Simpson"",
-          ""EditMode"" : ""NotStarted"",
-          ""Title"" : ""Your Name"",
-          ""ReturnUrl"" : null,
-          ""Group"" : null,
-          ""Id"" : ""7f141eaa-03ca-4004-bbf8-e34a4bd20acc"",
-          ""Path"" : ""/form/your-details/your-fullname"",
-          ""ViewName"" : ""_FullName"",
-          ""TypeName"" : ""GovUk.Forms.Domain.FullNameModel""
+          ""value"" : ""Homer Simpson"",
+          ""editMode"" : ""NotStarted"",
+          ""title"" : ""Your Name"",
+          ""returnUrl"" : null,
+          ""group"" : null,
+          ""id"" : ""7f141eaa-03ca-4004-bbf8-e34a4bd20acc"",
+          ""path"" : ""/form/your-details/your-fullname"",
+          ""viewName"" : ""_FullName"",
+          ""typeName"" : ""GovUk.Forms.Domain.FullNameModel""
         }";
 }

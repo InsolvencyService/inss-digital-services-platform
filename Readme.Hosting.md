@@ -110,3 +110,31 @@ in the user secrets for the host app:
 
 If you want to run authentication, you will need to run the broker at the very least, and if you are authenticaing with RPS then
 the RPS identity provider will also need to be running.
+
+## CosmosDb
+
+By default, the hosting app will store instances of the user forms in-memory. In Azure we use ComsosDb which you can install
+the emulator for locally and run. You can install the emulator by visiting:
+
+https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-develop-emulator?tabs=windows%2Ccsharp&pivots=api-nosql
+
+**Note** that there are a few variations and you (most likely) want the _Windows (local)_ option unless you want to run it
+inside a _docker_ container.
+
+You need to add some configuration to enable this to work. Do this via the _HostApp_ user secrets:
+
+```json
+"CosmosDb": {
+  "ConnectionString": "AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+  "DatabaseName": "AboutYou",
+  "ContainerName": "YourDetails"
+}
+```
+
+You will need to launch the emulator and find your connection string. It will look something like the above. You will also
+need to create your database and container manually.
+
+The database name reflects the app you are working with so you can have all the apps configured in your local instance of CosmosDb.
+
+You will need to create the database in the emulator and give it a container - which reflects the form. The _partition key_ for
+the container is important and **must** be _/path_.
