@@ -1,0 +1,10 @@
+{
+  "$schema": "https://schemas.reqnroll.net/reqnroll-config-latest.json",
+  "formatters": {
+    "expressium": {
+      "outputFilePath": "AutomationReport.ndjson",
+      "outputFileTitle": "GovUk.Forms.HostApp.UI.Tests",
+      "historyPath": "History/*.ndjson"
+    }
+  }
+}
