@@ -58,6 +58,17 @@ public class FormServiceTests
     }
     
     [Fact]
+    public async Task FormNotExists_LoadAsync_AssignsUserSessionIdToForm()
+    {
+        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
+        BuildForService();
+        
+        await _formService.LoadAsync(_form.Path, NoState);
+        
+        Assert.Equal(UserId, _form.Id);
+    }
+    
+    [Fact]
     public async Task ContentIsFormWithSingleSection_LoadAsync_ReturnsRedirectToFirstPage()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(true);

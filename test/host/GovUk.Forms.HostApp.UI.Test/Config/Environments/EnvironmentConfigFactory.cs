@@ -17,7 +17,7 @@ public static class EnvironmentConfigFactory
 
     private static TestEnvironment GetEnvironment()
     {
-        string? environment =
+        string environment =
             Environment.GetEnvironmentVariable("TEST_ENVIRONMENT")
             ?? TestConfigReader.Settings.TestEnvironment;
 
@@ -44,7 +44,7 @@ public static class EnvironmentConfigFactory
         {
             TestEnvironment.QA => new EnvQaConfig(),
             TestEnvironment.Dev => new EnvDevConfig(),
-            TestEnvironment.ST => new EnvStConfig(),
+            TestEnvironment.SIT => new EnvSitConfig(),
             TestEnvironment.Prod => new EnvProdConfig(),
             _ => throw new ArgumentOutOfRangeException(nameof(environmentType),
                 $"Unsupported environment type: {environmentType}")

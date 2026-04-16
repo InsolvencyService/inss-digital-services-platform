@@ -2,6 +2,8 @@ using Azure.Identity;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
+using GovUk.Forms.Infrastructure.Serialization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,21 +18,24 @@ public static class ServiceCollectionExtensions
         {
             CosmosDbOptions cosmosDbOptions = new();
             configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
-            
-            services.AddSingleton<IFormStorageProvider>(_ =>
+
+            services.AddSingleton<IFormStorageProvider>(provider =>
             {
                 if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString) ||
                     !string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
                 {
-                    var client = cosmosDbOptions.ConnectionString is not null 
-                        ? new CosmosClient(cosmosDbOptions.ConnectionString)
-                        : new CosmosClient(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential());
-                    return new CosmosFormStorageProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
+                    CosmosClientOptions options = new() { Serializer = new CosmosFormCosmosSerializer() };
+                    CosmosClient client = cosmosDbOptions.ConnectionString is not null
+                        ? new CosmosClient(cosmosDbOptions.ConnectionString, options)
+                        : new CosmosClient(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
+                    IHttpContextAccessor httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    return new CosmosFormStorageProvider(
+                        client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName, httpContextAccessor);
                 }
 
                 return new TestFormStorageProvider();
             });
-            
+
             services.AddSingleton<IStaticContentProvider, TestStaticContentProvider>();
             services.AddSingleton<IFormProvider, TestFormProvider>();
             return services;

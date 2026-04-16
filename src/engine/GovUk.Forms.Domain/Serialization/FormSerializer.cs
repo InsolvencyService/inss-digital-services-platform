@@ -23,9 +23,19 @@ public static class FormSerializer
         return JsonSerializer.Serialize(form, _options);
     }
 
+    public static void Serialize<T>(Stream stream, T instance)
+    {
+        JsonSerializer.Serialize(stream, instance, _options);
+    }
+    
     public static FormModel DeserializeForm(string json)
     {
         return JsonSerializer.Deserialize<FormModel>(json, _options)!;
+    }
+    
+    public static T Deserialize<T>(Stream stream)
+    {
+        return JsonSerializer.Deserialize<T>(stream, _options)!;
     }
     
     public static string SerializePage(PageModel content)
@@ -66,8 +76,9 @@ public static class FormSerializer
             TypeInfoResolver = new DefaultJsonTypeInfoResolver
             {
                 Modifiers = { typeInfo => AddPolymorphicTypeDiscriminators(modelTypes, typeInfo) }
-            }
-            //WriteIndented = true
+            },
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
         options.Converters.Add(new ContentIdJsonConverter());

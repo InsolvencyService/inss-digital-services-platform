@@ -1,69 +1,69 @@
 {
-  "Sections": [
+  "sections": [
     {
-      "Title": "Bankruptcy",
-      "State": "NotStarted",
-      "Pages": [
+      "title": "Bankruptcy",
+      "state": "NotStarted",
+      "pages": [
         {
           "$type": "DateModel",
-          "Day": 27,
-          "Month": 3,
-          "Year": 2001,
-          "Value": "2001-03-27",
-          "EditMode": "NotStarted",
-          "Title": "Date you went bankrupt",
-          "ReturnUrl": null,
-          "MetaData": {
-            "Question": "When did you go bankrupt?",
-            "Hint": null,
-            "Description": null,
-            "Group": "",
-            "SubmitButtonText": "Continue"
+          "day": 27,
+          "month": 3,
+          "year": 2001,
+          "value": "2001-03-27",
+          "editMode": "NotStarted",
+          "title": "Date you went bankrupt",
+          "returnUrl": null,
+          "metaData": {
+            "question": "When did you go bankrupt?",
+            "hint": null,
+            "description": null,
+            "group": "",
+            "submitButtonText": "Continue"
           },
-          "LinkedToNode": "",
-          "PreviousPagePath": "/",
-          "Id": "95400cb1-2bb6-4818-aa64-e25365170680",
-          "Path": "/bankruptcy/your-bankruptcy/date-bankrupt",
-          "ViewName": "_Date",
-          "EncodingType": null,
-          "SubmitType": "Form",
-          "TypeName": "GovUk.Forms.Domain.DateModel"
+          "linkedToNode": "",
+          "previousPagePath": "/",
+          "id": "c143303c-4db0-4799-8b87-c483b46664f6",
+          "path": "/bankruptcy/your-bankruptcy/date-bankrupt",
+          "viewName": "_Date",
+          "encodingType": null,
+          "submitType": "Form",
+          "typeName": "GovUk.Forms.Domain.DateModel"
         },
         {
           "$type": "SummaryModel",
-          "EditMode": "NotStarted",
-          "Title": "Bankruptcy summary",
-          "ReturnUrl": null,
-          "MetaData": {
-            "Question": null,
-            "Hint": null,
-            "Description": null,
-            "Group": "",
-            "SubmitButtonText": "Continue"
+          "editMode": "NotStarted",
+          "title": "Bankruptcy summary",
+          "returnUrl": null,
+          "metaData": {
+            "question": null,
+            "hint": null,
+            "description": null,
+            "group": "",
+            "submitButtonText": "Continue"
           },
-          "LinkedToNode": "",
-          "PreviousPagePath": "/",
-          "Id": "3bbda178-d7bd-4af6-8dd3-2d07be0d0bbe",
-          "Path": "/bankruptcy/your-bankruptcy/summary",
-          "ViewName": "_Summary",
-          "EncodingType": null,
-          "SubmitType": "Form",
-          "TypeName": "GovUk.Forms.Domain.SummaryModel"
+          "linkedToNode": "",
+          "previousPagePath": "/",
+          "id": "ce00c609-db70-4685-87ce-dc46eb57f5df",
+          "path": "/bankruptcy/your-bankruptcy/summary",
+          "viewName": "_Summary",
+          "encodingType": null,
+          "submitType": "Form",
+          "typeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "Id": "e6f88831-8687-4e75-ae20-8714e3e7ceb1",
-      "Path": "/bankruptcy/your-bankruptcy",
-      "ViewName": "_Section",
-      "EncodingType": null,
-      "SubmitType": "Form",
-      "TypeName": "GovUk.Forms.Domain.SectionModel"
+      "id": "7de4b33c-020d-47a9-824a-3359e040b0e6",
+      "path": "/bankruptcy/your-bankruptcy",
+      "viewName": "_Section",
+      "encodingType": null,
+      "submitType": "Form",
+      "typeName": "GovUk.Forms.Domain.SectionModel"
     }
   ],
-  "CanSubmit": false,
-  "Id": "b0790c4b-588b-495d-8008-3c790427670d",
-  "Path": "/bankruptcy",
-  "ViewName": "_Form",
-  "EncodingType": null,
-  "SubmitType": "Form",
-  "TypeName": "GovUk.Forms.Domain.FormModel"
+  "canSubmit": false,
+  "id": "1081083d-7684-4c0b-9e1d-b34e1f324708",
+  "path": "/bankruptcy",
+  "viewName": "_Form",
+  "encodingType": null,
+  "submitType": "Form",
+  "typeName": "GovUk.Forms.Domain.FormModel"
 }

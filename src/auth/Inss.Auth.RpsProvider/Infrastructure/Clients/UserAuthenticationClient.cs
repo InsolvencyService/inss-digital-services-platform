@@ -17,7 +17,7 @@ public sealed class UserAuthenticationClient : IUserAuthenticationClient
         // TODO: This is where we will provide the connection to RPS and handle the response
         
         Console.WriteLine("Calling RPS...");
-        var response = await _client.GetAsync("/");
+        HttpResponseMessage response = await _client.GetAsync("/");
         response.EnsureSuccessStatusCode();
 
         // Test cases...

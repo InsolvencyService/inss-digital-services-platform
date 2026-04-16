@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Config.Environments;
 using GovUk.Forms.HostApp.UI.Test.Extensions;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace GovUk.Forms.HostApp.UI.Test.Config;
 

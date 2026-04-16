@@ -41,11 +41,11 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
                 new BrowserTypeLaunchOptions
                 {
                     Headless = browserSettings.Headless,
-                    SlowMo = browserSettings.SlowMo,
+                    SlowMo = browserSettings.SlowMo
                 });
 
             _context = await _browser.NewContextAsync(
-                contextOptions ?? new BrowserNewContextOptions());
+                contextOptions ?? new BrowserNewContextOptions { IgnoreHTTPSErrors = true });
 
             _page = await _context.NewPageAsync();
             AttachConsoleLogging(_page);
@@ -101,7 +101,7 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(options);
 
-        string browserName = settings.BrowserName?.Trim().ToLowerInvariant()
+        string browserName = settings.BrowserName.Trim().ToLowerInvariant()
             ?? throw new InvalidOperationException("Browser name is not configured.");
 
         return browserName switch

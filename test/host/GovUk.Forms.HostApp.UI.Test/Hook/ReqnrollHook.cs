@@ -129,7 +129,7 @@ public sealed class ReqnrollHook : BaseTestConfig
 
     private BrowserNewContextOptions BuildContextOptions()
     {
-        BrowserNewContextOptions options = new();
+        BrowserNewContextOptions options = new() { IgnoreHTTPSErrors = true };
 
         if (_shouldRecordVideo && TestArtifacts is not null)
         {

@@ -53,8 +53,6 @@ You need to implement the _IFormFactory_ interface to create your form/section/p
 
 See [Flowchart Framework](Readme.Flowchart.md) for more.
 
-TODO: Remove...
-
 ### Form Pre-population
 
 If you wish to populate a form upon creation once with data that you may know due to context, such as a logged in user, you implmement the 
@@ -126,9 +124,10 @@ Then install powershell suppprt:
 brew install --cask powershell
 ```
 
-Finally, navigate to /test/GovUk.Forms.WebApp.Test in a terminal and run:
+Run the following command below to ensure that Playwright is configured correctly:
 
 ```bash
+cd test\host\GovUk.Forms.HostApp.UI.Test
 pwsh bin/Debug/net10.0/playwright.ps1 install
 ```
 
