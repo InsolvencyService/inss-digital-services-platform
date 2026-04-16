@@ -15,6 +15,7 @@
     if (Model.IsPageModel())
     {
         @Html.HiddenFor(m => ((PageModel)m).LinkedToNode.Value)
+        @Html.HiddenFor(m => ((PageModel)m).MetaData.Group.Value)
     }
     
     @await Html.PartialAsync(Model.ViewName, Model)
