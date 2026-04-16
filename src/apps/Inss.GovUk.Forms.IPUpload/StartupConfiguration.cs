@@ -27,7 +27,6 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddKeyedSingleton<ISubmitSectionService, FileUploadSubmitSectionService>(
                 new ContentPath($"{webRoot.Root}/redundancy-payment"));
-            services.AddSingleton<IXsdProvider, XsdProvider>();
             services.AddSingleton<IRedundancyPaymentProvider, RedundancyPaymentProvider>();
             ExternalApiOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<ExternalApiOptions>()!;
             services.AddTypedClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(dynamicsOptions);

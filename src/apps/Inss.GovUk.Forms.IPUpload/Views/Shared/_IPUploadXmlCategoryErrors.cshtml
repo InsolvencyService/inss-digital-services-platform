@@ -1,26 +1,29 @@
 ﻿@model ErrorInfo[]
 
-<h2 class="govuk-heading-m">@(Model.First().Category)</h2>
-<dl class="govuk-summary-list">
-@foreach (var error in Model)
+@if (Model.Length > 0)
 {
-  <div class="govuk-summary-list__row">
+  <h2 class="govuk-heading-m">@(Model.First().Category)</h2>
+  <dl class="govuk-summary-list">
+    @foreach (var error in Model)
+    {
+      <div class="govuk-summary-list__row">
 
-    <dt class="govuk-summary-list__key">
-      @(error.Property)
-    </dt>
-    @if (error.Count > 0)
-    {
-      <dd class="govuk-summary-list__value">
-        @(error.Count) @(error.SubCategory)
-      </dd>
+        <dt class="govuk-summary-list__key">
+          @(error.Property)
+        </dt>
+        @if (error.Count > 0)
+        {
+          <dd class="govuk-summary-list__value">
+            @(error.Count) @(error.SubCategory)
+          </dd>
+        }
+        else
+        {
+          <dd class="govuk-summary-list__value">
+            @(error.SubCategory)
+          </dd>
+        }
+      </div>
     }
-    else
-    {
-      <dd class="govuk-summary-list__value">
-        @(error.SubCategory)
-      </dd>
-    }
-  </div>
+  </dl>
 }
-</dl>

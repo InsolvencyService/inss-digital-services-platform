@@ -5,5 +5,5 @@ namespace Inss.GovUk.Forms.IPUpload.Application.Providers;
 
 public interface IRedundancyPaymentProvider
 {
-    Rp14A Create(XDocument document);
+    RP14A Create(XDocument document);
 }

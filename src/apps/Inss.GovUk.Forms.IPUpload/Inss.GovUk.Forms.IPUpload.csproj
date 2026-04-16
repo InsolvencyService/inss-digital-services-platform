@@ -12,8 +12,4 @@
       <AdditionalFiles Include="Views\_ViewImports.cshtml" />
     </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="Infrastructure\RP14A.xsd" />
-    </ItemGroup>
-
 </Project>
