@@ -20,36 +20,46 @@ public class SignInPage : BasePage, ISignInPage
     private ILocator SignInButton => Page.GetByRole(AriaRole.Button, new() { Name = SignInLocators.Labels.SignInButton });
     private ILocator ForgotPasswordLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.ForgotPasswordLink });
     private ILocator BackLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.BackLink });
-    private ILocator EmailError => Page.GetByText("Error: Enter an email address");
-    private ILocator PasswordError => Page.GetByText("Error: Enter a password");
     private ILocator ErrorSummary => Page.Locator(".govuk-error-summary");
     private ILocator ErrorSummaryItems => ErrorSummary.GetByRole(AriaRole.Link);
 
-    public async Task EnterEmailAsync(string email)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(email, nameof(email));
-        await PageContentLoadedAsync();
-        await EmailInput.FillAsync(email);
-    }
+    private ILocator EmailError => Page.Locator("#Email_Value-error");
+    private ILocator PasswordError => Page.Locator("#Password-error");
 
-
-    public async Task EnterPasswordAsync(string password)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(password, nameof(password));
-        await PageContentLoadedAsync();
-        await PasswordInput.FillAsync(password);
-    }
-
-    public async Task TogglePasswordVisibilityAsync()
-    {
-        await ShowPasswordButton.ClickAsync();
-    }
     protected override async Task PageContentLoadedAsync()
     {
         await Expect(Heading).ToBeVisibleAsync();
         await Expect(EmailInput).ToBeVisibleAsync();
         await Expect(PasswordInput).ToBeVisibleAsync();
         await Expect(SignInButton).ToBeVisibleAsync();
+    }
+
+    public async Task VerifySignInPageIsDisplayedAsync()
+    {
+        await WaitForPageToLoadAsync();
+    }
+
+    public async Task EnterEmailAsync(string email)
+    {
+        ArgumentNullException.ThrowIfNull(email);
+        await EmailInput.FillAsync(email);
+    }
+
+    public async Task EnterPasswordAsync(string password)
+    {
+        ArgumentNullException.ThrowIfNull(password);
+        await PasswordInput.FillAsync(password);
+    }
+
+    public async Task EnterCredentialsAsync(string email, string password)
+    {
+        await EnterEmailAsync(email);
+        await EnterPasswordAsync(password);
+    }
+
+    public async Task TogglePasswordVisibilityAsync()
+    {
+        await ShowPasswordButton.ClickAsync();
     }
 
     public async Task SubmitAsync()
@@ -59,9 +69,8 @@ public class SignInPage : BasePage, ISignInPage
 
     public async Task SignInAsync(string email, string password)
     {
-        await PageContentLoadedAsync();
-        await EnterEmailAsync(email);
-        await EnterPasswordAsync(password);
+        await WaitForPageToLoadAsync();
+        await EnterCredentialsAsync(email, password);
         await SubmitAsync();
     }
 
@@ -84,10 +93,6 @@ public class SignInPage : BasePage, ISignInPage
     {
         return await PasswordInput.InputValueAsync();
     }
-    public async Task VerifySignInPageIsDisplayedAsync()
-    {
-        await WaitForPageToLoadAsync();
-    }
 
     public async Task VerifyPasswordIsMaskedAsync()
     {
@@ -107,8 +112,20 @@ public class SignInPage : BasePage, ISignInPage
         if (!string.Equals(type, "text", StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException(
-                $"Expected password field type to be 'password' but found '{type}'.");
+                $"Expected password field type to be 'text' but found '{type}'.");
         }
+    }
+
+    public async Task VerifyEmailErrorAsync(string expectedMessage)
+    {
+        await Expect(EmailError).ToBeVisibleAsync();
+        await Expect(EmailError).ToContainTextAsync(expectedMessage);
+    }
+
+    public async Task VerifyPasswordErrorAsync(string expectedMessage)
+    {
+        await Expect(PasswordError).ToBeVisibleAsync();
+        await Expect(PasswordError).ToContainTextAsync(expectedMessage);
     }
 
     public async Task VerifyFieldErrorsAsync()
@@ -123,7 +140,7 @@ public class SignInPage : BasePage, ISignInPage
 
         foreach (string expected in expectedMessages)
         {
-            if (!actualMessages.Any(m => m.Contains(expected)))
+            if (!actualMessages.Any(m => m.Contains(expected, StringComparison.Ordinal)))
             {
                 throw new InvalidOperationException(
                     $"Expected error message '{expected}' was not found. Actual: {string.Join(", ", actualMessages)}");

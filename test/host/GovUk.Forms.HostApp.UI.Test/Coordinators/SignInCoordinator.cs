@@ -21,9 +21,8 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
         await EnterPasswordAsync(password);
     }
 
-    public async Task ShowPasswordAsync(string email, string password)
+    public async Task ShowPasswordAsync()
     {
-        await EnterCredentialsAsync(email, password);
         await signInPage.VerifyPasswordIsMaskedAsync();
         await signInPage.TogglePasswordVisibilityAsync();
     }
@@ -52,5 +51,26 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
     {
         await signInPage.VerifyErrorMessagesAsync(expectedMessages);
         await signInPage.VerifyFieldErrorsAsync();
+    }
+
+    public async Task VerifyFieldErrorAsync(string field, string expectedMessage)
+    {
+        switch (field.ToLowerInvariant())
+        {
+            case "email":
+                await signInPage.VerifyEmailErrorAsync(expectedMessage);
+                break;
+
+            case "password":
+                await signInPage.VerifyPasswordErrorAsync(expectedMessage);
+                break;
+
+            case "summary":
+                await signInPage.VerifyErrorMessagesAsync([expectedMessage]);
+                break;
+
+            default:
+                throw new ArgumentException($"Unsupported field: {field}");
+        }
     }
 }

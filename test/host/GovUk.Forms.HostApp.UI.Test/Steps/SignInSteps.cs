@@ -23,6 +23,13 @@ public sealed class SignInSteps
         await _signInCoordinator.NavigateToSignInPageAsync();
     }
 
+    [Given("I provide valid credentials")]
+    public async Task GivenIProvideValidCredentials()
+    {
+        await _signInCoordinator.EnterCredentialsAsync(ScenarioConstant.EmailAddress, ScenarioConstant.Password);
+    }
+
+
     [When("I provide valid sign in details")]
     public async Task WhenIProvideValidSignInDetails()
     {
@@ -32,7 +39,7 @@ public sealed class SignInSteps
     [When("I choose to view my password")]
     public async Task WhenIChooseToViewMyPassword()
     {
-        await _signInCoordinator.ShowPasswordAsync(ScenarioConstant.EmailAddress, ScenarioConstant.Password);
+        await _signInCoordinator.ShowPasswordAsync();
     }
 
     [When("I submit the sign in form")]
@@ -44,12 +51,14 @@ public sealed class SignInSteps
     [When("I enter {string} into the email address field")]
     public async Task WhenIEnterIntoTheEmailAddressField(string email)
     {
+        email = email == "<empty>" ? string.Empty : email;
         await _signInCoordinator.EnterEmailAsync(email);
     }
 
     [When("I enter {string} into the password field")]
     public async Task WhenIEnterIntoThePasswordField(string password)
     {
+        password = password == "<empty>" ? string.Empty : password;
         await _signInCoordinator.EnterPasswordAsync(password);
     }
 
@@ -72,12 +81,6 @@ public sealed class SignInSteps
         await _signInCoordinator.VerifyPasswordIsVisibleAsync();
     }
 
-    //[Then("I should see the error message {string}")]
-    //public async Task ThenIShouldSeeTheErrorMessage(string errorMessage)
-    //{
-    //    throw new PendingStepException();
-    //}
-
     [Then("I should see the following error messages:")]
     public async Task ThenIShouldSeeTheFollowingErrorMessages(DataTable table)
     {
@@ -88,6 +91,14 @@ public sealed class SignInSteps
         await _signInCoordinator.VerifyErrorMessagesAsync(errors);
 
     }
+
+    [Then(@"I should see ""(.*)"" for the ""(.*)"" field")]
+    public async Task ThenIShouldSeeErrorForField(string errorMessage, string field)
+    {
+        await _signInCoordinator.VerifyFieldErrorAsync(field, errorMessage);
+    }
+
+
 
 
 

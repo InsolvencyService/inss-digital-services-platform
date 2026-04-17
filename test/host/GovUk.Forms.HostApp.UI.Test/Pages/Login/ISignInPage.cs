@@ -17,4 +17,6 @@ public interface ISignInPage
     Task VerifyPasswordIsVisibleAsync();
     Task VerifyErrorMessagesAsync(List<string> expectedMessages);
     Task VerifyFieldErrorsAsync();
+    Task VerifyEmailErrorAsync(string expectedMessage);
+    Task VerifyPasswordErrorAsync(string expectedMessage);
 }
