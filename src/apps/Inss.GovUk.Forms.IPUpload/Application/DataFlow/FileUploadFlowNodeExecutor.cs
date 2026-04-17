@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Extensions;
@@ -24,7 +23,10 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
     public ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
     {
         XmlFileUploadModel fileUpload = context.UpdatedPage.As<XmlFileUploadModel>();
-
+        IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
+        fileUploadErrors.ClearErrors();
+        fileUploadErrors.Filename = fileUpload.Filename;
+        
         if (context.FinalExecuteStep)
         {
             XDocument document = fileUpload.GetXml();
@@ -33,53 +35,16 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             
             if (!redundancyPayment.TryValidateRecursive(validationResults))
             {
-                IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
-                fileUploadErrors.ClearValues();
-                fileUploadErrors.Filename = fileUpload.Filename;
-
                 foreach (ExtendedValidationResult result in validationResults)
                 {
                     PropertyAnnotationAttribute propertyAnnotation = result.PropertyAnnotation;
-                    
                     fileUploadErrors.AddError(propertyAnnotation.Category, propertyAnnotation.PropertyName, result.ErrorMessage!);
                 }
-                
-                return ValueTask.FromResult<NodeId?>(fileUploadErrors.HasErrors 
-                    ? context.CurrentNode.NextNodes[FileUploadErrorIndex] 
-                    : context.CurrentNode.NextNodes[SummaryIndex]);
             }
         }
         
-        return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[FileUploadErrorIndex]);
-
-        /*
-        // TODO: Hack - we need to uncouple the execute and processing as the execute gets called twice. Once before updates and once after
-        // Below needs to move to a process before decider is called
-        if (!string.IsNullOrWhiteSpace(fileUpload.Filename))
-        {
-            IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
-            fileUploadErrors.ClearValues();
-            fileUploadErrors.Filename = fileUpload.Filename;
-
-            if (fileUpload.Filename.Equals("rp14a-with-error.xml", StringComparison.OrdinalIgnoreCase))
-            {
-                fileUploadErrors.AddError("Case", "Case reference", "The case reference provided does not match any of our records");
-
-                fileUploadErrors.AddError("Employee", "Employee title", "missing employee titles");
-                fileUploadErrors.AddError("Employee", "Employee title", "missing employee titles");
-                fileUploadErrors.AddError("Employee", "National insurance number", "Invalid national insurance numbers");
-                fileUploadErrors.AddError("Employee", "National insurance number", "Invalid national insurance numbers");
-                fileUploadErrors.AddError("Employee", "National insurance number", "Invalid national insurance numbers");
-
-                fileUploadErrors.AddError("Employment dates", "Employer start date", "invalid employer start dates");
-                fileUploadErrors.AddError("Employment dates", "Employer start date", "invalid employer start dates");
-            }
-
-            return ValueTask.FromResult<NodeId?>(fileUploadErrors.HasErrors 
-                ? context.CurrentNode.NextNodes[FileUploadErrorIndex] 
-                : context.CurrentNode.NextNodes[SummaryIndex]);
-        }
-
-        return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[FileUploadErrorIndex]);*/
+        return ValueTask.FromResult<NodeId?>(fileUploadErrors.HasErrors 
+            ? context.CurrentNode.NextNodes[FileUploadErrorIndex] 
+            : context.CurrentNode.NextNodes[SummaryIndex]);
     }
 }
