@@ -6,9 +6,8 @@
 
 <p class="govuk-body">The following errors were found when validating your form. Check the details and try uploading again.</p>
 
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Case"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employer"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee Pay"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee Holiday"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee Holiday Not Paid"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors(RP14APropertyAnnotations.Categories.Case))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors(RP14APropertyAnnotations.Categories.Employer))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors(RP14APropertyAnnotations.Categories.Employee))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors(RP14APropertyAnnotations.Categories.EmployeePay))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors(RP14APropertyAnnotations.Categories.EmployeeHoliday))

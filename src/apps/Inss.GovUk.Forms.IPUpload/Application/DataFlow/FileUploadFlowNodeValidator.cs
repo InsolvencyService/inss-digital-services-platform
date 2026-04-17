@@ -3,7 +3,6 @@ using System.Xml.Linq;
 using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.IPUpload.Domain;
-using Inss.GovUk.Forms.IPUpload.Application.Providers;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Extensions;
 using Microsoft.Extensions.Logging;
@@ -12,15 +11,13 @@ namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 
 public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
 {
-    private readonly IRedundancyPaymentProvider _redundancyPaymentProvider;
     private readonly ILogger<FileUploadFlowNodeValidator> _logger;
     private readonly XmlFileCheckList _checkActions = [CheckFileExtension, CheckFileSize, CheckFileIsValidXml];
     private const string XmlExtension = ".xml";
     private const int MaxFileSizeInMb = 10;
 
-    public FileUploadFlowNodeValidator(IRedundancyPaymentProvider redundancyPaymentProvider, ILogger<FileUploadFlowNodeValidator> logger)
+    public FileUploadFlowNodeValidator(ILogger<FileUploadFlowNodeValidator> logger)
     {
-        _redundancyPaymentProvider = redundancyPaymentProvider;
         _logger = logger;
     }
     
@@ -52,7 +49,7 @@ public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
         try
         {
             XDocument document = fileUpload.GetXml();
-            RP14A _ = self._redundancyPaymentProvider.Create(document);
+            RP14A _ = document.CreateModel<RP14A>();
         }
         catch (Exception error)
         {
