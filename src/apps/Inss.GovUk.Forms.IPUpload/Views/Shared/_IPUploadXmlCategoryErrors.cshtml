@@ -11,18 +11,9 @@
         <dt class="govuk-summary-list__key">
           @(error.Property)
         </dt>
-        @if (error.Count > 0)
-        {
-          <dd class="govuk-summary-list__value">
-            @(error.Count) @(error.SubCategory)
-          </dd>
-        }
-        else
-        {
-          <dd class="govuk-summary-list__value">
-            @(error.SubCategory)
-          </dd>
-        }
+        <dd class="govuk-summary-list__value">
+          @Html.Raw(error.SubCategory.Replace("[COUNT]", error.Count.ToString()))
+        </dd>
       </div>
     }
   </dl>

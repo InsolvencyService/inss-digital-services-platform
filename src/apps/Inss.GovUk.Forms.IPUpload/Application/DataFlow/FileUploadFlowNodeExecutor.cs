@@ -1,10 +1,8 @@
-using System.Xml.Linq;
 using GovUk.Forms.Application.DataFlow.Executing;
-using GovUk.Forms.Domain.Extensions;
 using GovUk.Forms.Domain.Primitives;
-using GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain;
-using Inss.GovUk.Forms.IPUpload.Extensions;
+using Inss.GovUk.Forms.IPUpload.Domain.Extensions;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 
@@ -22,8 +20,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         
         if (context.FinalExecuteStep)
         {
-            XDocument document = fileUpload.GetXml();
-            RP14A redundancyPayment = document.CreateModel<RP14A>();
+            object redundancyPayment = fileUpload.GetRedundancyPaymentObject();
             List<ExtendedValidationResult> validationResults = [];
             
             if (!redundancyPayment.TryValidateRecursive(validationResults))

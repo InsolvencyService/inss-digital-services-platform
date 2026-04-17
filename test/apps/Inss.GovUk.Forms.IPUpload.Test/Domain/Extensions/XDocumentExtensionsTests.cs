@@ -1,9 +1,9 @@
 ﻿using System.Xml.Linq;
-using GovUk.Forms.IPUpload.Domain;
-using Inss.GovUk.Forms.IPUpload.Extensions;
+using Inss.GovUk.Forms.IPUpload.Domain.Extensions;
+using Inss.GovUk.Forms.IPUpload.Domain.Spreadsheet;
 using Xunit;
 
-namespace Inss.GovUk.Forms.IPUpload.Test.Extensions;
+namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Extensions;
 
 public class XDocumentExtensionsTests
 {

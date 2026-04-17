@@ -10,10 +10,12 @@
 // Schema: https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.Common/Models/Schemas/RP14A_Flattened.xsd
 
 using Inss.GovUk.Forms.IPUpload.Domain;
+using Inss.GovUk.Forms.IPUpload.Domain.Extensions;
 
-namespace GovUk.Forms.IPUpload.Domain;
+namespace Inss.GovUk.Forms.IPUpload.Domain.Spreadsheet;
 
 using System.Xml.Serialization;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
 
 /// <remarks/>
@@ -116,8 +118,8 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employer, "Employer Name")]
-    [System.ComponentModel.DataAnnotations.MaxLength(99, ErrorMessage = "The employer name must not exceed 99 characters")]
+    [PropertyAnnotation(EmployerNameAnnotation.Category, EmployerNameAnnotation.PropertyName)]
+    [System.ComponentModel.DataAnnotations.MaxLength(EmployerNameAnnotation.MaxLength, ErrorMessage = EmployerNameAnnotation.InvalidLengthErrorMessageFormat)]
     public string EmployerName
     {
         get
@@ -144,7 +146,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "National insurance class")]
     public string NIClass
     {
         get
@@ -158,9 +159,9 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "National insurance number")]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "The National Insurance number is required")]
-    [System.ComponentModel.DataAnnotations.RegularExpression("[A-CEGHJ-PR-TW-Za-ceghj-pr-tw-z]{1}[A-CEGHJ-NPR-TW-Za-ceghj-npr-tw-z]{1}[0-9]{6}[A-DFMa-dfm]{1}", ErrorMessage = "The national insurance number is not in the expected format")]
+    [PropertyAnnotation(EmployeeNationalInsuranceNumber.Category, EmployeeNationalInsuranceNumber.PropertyName)]
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeNationalInsuranceNumber.MissingErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeNationalInsuranceNumber.RegexFormat, ErrorMessage = EmployeeNationalInsuranceNumber.InvalidErrorMessageFormat)]
     public string NINO
     {
         get
@@ -174,7 +175,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Date of birth")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime DateOfBirth
     {
@@ -203,7 +203,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Employment start date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime StartDate
     {
@@ -232,7 +231,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Date notice given")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime DateNoticeGiven
     {
@@ -261,7 +259,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Employment end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime EndDate
     {
@@ -290,7 +287,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Are they a director")]
     public YesNoType IsDirector
     {
         get
@@ -318,7 +314,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Average hours worked")]
     public decimal AverageHoursWorked
     {
         get
@@ -346,8 +341,8 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Money owed to employer")]
-    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = "The money owed to the employer must be on whole pounds or pounds and pence.")]
+    [PropertyAnnotation(EmployeeMoneyOwedToEmployer.Category, EmployeeMoneyOwedToEmployer.PropertyName)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeMoneyOwedToEmployer.RegexFormat, ErrorMessage = EmployeeMoneyOwedToEmployer.InvalidErrorMessageFormat)]
     public decimal MoneyOwedToEmployer
     {
         get
@@ -375,7 +370,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Entitled to redundancy pay")]
     public YesNoType EntitledToRedundancyPay
     {
         get
@@ -403,7 +397,6 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Entitled to notice pay")]
     public YesNoType EntitledToNoticePay
     {
         get
@@ -475,10 +468,10 @@ public partial class RP14AEmployeeHeader
     private string cHAMPDocumentIDField;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Case, "Case reference")]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "A case reference is required")]
-    [System.ComponentModel.DataAnnotations.RegularExpression("CN[0-9]{8}|cn[0-9]{8}|Cn[0-9]{8}|cN[0-9]{8}", ErrorMessage = "The case reference is not in the expected format")]
-    [System.ComponentModel.DataAnnotations.StringLength(12, ErrorMessage = "The case reference must not exceed 12 characters.")]
+    [PropertyAnnotation(CaseReferenceAnnotation.Category, CaseReferenceAnnotation.PropertyName)]
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = CaseReferenceAnnotation.MissingErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(CaseReferenceAnnotation.RegexFormat, ErrorMessage = CaseReferenceAnnotation.InvalidErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.StringLength(12, ErrorMessage = CaseReferenceAnnotation.TooLongErrorMessageFormat)]
     public string CaseReference
     {
         get
@@ -492,7 +485,6 @@ public partial class RP14AEmployeeHeader
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Case, "DMS document Id")]
     public string DMSDocumentID
     {
         get
@@ -506,7 +498,6 @@ public partial class RP14AEmployeeHeader
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Case, "Claims reference")]
     public string ClaimReference
     {
         get
@@ -520,7 +511,6 @@ public partial class RP14AEmployeeHeader
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Case, "CHAMP document Id")]
     public string CHAMPDocumentID
     {
         get
@@ -550,9 +540,9 @@ public partial class NameType
     private string titleField;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Surname")]
+    [PropertyAnnotation(EmployeeSurnameAnnotation.Category, EmployeeSurnameAnnotation.PropertyName)]
     [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "The surname is required")]
-    [System.ComponentModel.DataAnnotations.MaxLength(99, ErrorMessage = "The surname has a maximum length of 99 characters")]
+    [System.ComponentModel.DataAnnotations.MaxLength(EmployeeSurnameAnnotation.MaxLength, ErrorMessage = EmployeeSurnameAnnotation.InvalidLengthErrorMessageFormat)]
     public string Surname
     {
         get
@@ -566,7 +556,6 @@ public partial class NameType
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Forenames")]
     public string Forenames
     {
         get
@@ -580,7 +569,6 @@ public partial class NameType
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.Employee, "Title")]
     public string Title
     {
         get
@@ -644,8 +632,8 @@ public partial class RP14AEmployeePayDetails
     private RP14AEmployeePayDetailsArrearsOfPay arrearsOfPayField;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Basic pay per week")]
-    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = "The basic pay per week must be on whole pounds or pounds and pence.")]
+    [PropertyAnnotation(EmployeeBasicPayPerWeek.Category, EmployeeBasicPayPerWeek.PropertyName)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeBasicPayPerWeek.RegexFormat, ErrorMessage = EmployeeBasicPayPerWeek.InvalidErrorMessageFormat)]
     public decimal BasicPayPerWeek
     {
         get
@@ -840,7 +828,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek1
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -854,7 +841,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek1
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -882,7 +868,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek1
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -998,7 +983,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek2
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -1012,7 +996,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek2
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -1040,7 +1023,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek2
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -1077,7 +1059,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek3
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -1091,7 +1072,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek3
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -1119,7 +1099,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek3
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -1156,7 +1135,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek4
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -1170,7 +1148,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek4
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -1198,7 +1175,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek4
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -1235,7 +1211,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek5
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -1249,7 +1224,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek5
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -1277,7 +1251,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek5
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -1314,7 +1287,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek6
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -1328,7 +1300,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek6
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -1356,7 +1327,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek6
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -1393,7 +1363,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek7
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -1407,7 +1376,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek7
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -1435,7 +1403,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek7
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -1472,7 +1439,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek8
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay")]
     public ComponentType ComponentType
     {
         get
@@ -1486,7 +1452,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek8
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Pay rate")]
     public string ComponentRate
     {
         get
@@ -1514,7 +1479,6 @@ public partial class RP14AEmployeePayDetailsComponentPayPerWeek8
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Type of pay status")] 
     public ComponentRateStatusType ComponentRateStatus
     {
         get
@@ -1653,7 +1617,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1
     private bool aOPPayType1FieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment start date")] 
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP1StartDate
     {
@@ -1682,7 +1645,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP1EndDate
     {
@@ -1711,8 +1673,8 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment owed")]
-    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = "The arrears of pay must be on whole pounds or pounds and pence.")]
+    [PropertyAnnotation(EmployeeArrearsOfPaymentOwedAnnotation.Category, EmployeeArrearsOfPaymentOwedAnnotation.PropertyName)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = EmployeeArrearsOfPaymentOwedAnnotation.InvalidErrorMessageFormat)]
     public decimal AOPOwed1
     {
         get
@@ -1816,7 +1778,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2
     private bool aOPPayType2FieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment start date")]  
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP2StartDate
     {
@@ -1845,7 +1806,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP2EndDate
     {
@@ -1874,8 +1834,8 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment owed")]
-    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = "The arrears of pay must be on whole pounds or pounds and pence.")]
+    [PropertyAnnotation(EmployeeArrearsOfPaymentOwedAnnotation.Category, EmployeeArrearsOfPaymentOwedAnnotation.PropertyName)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = EmployeeArrearsOfPaymentOwedAnnotation.InvalidErrorMessageFormat)]
     public decimal AOPOwed2
     {
         get
@@ -1979,7 +1939,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3
     private bool aOPPayType3FieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment start date")] 
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP3StartDate
     {
@@ -2008,7 +1967,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP3EndDate
     {
@@ -2037,8 +1995,8 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment owed")]
-    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = "The arrears of pay must be on whole pounds or pounds and pence.")]
+    [PropertyAnnotation(EmployeeArrearsOfPaymentOwedAnnotation.Category, EmployeeArrearsOfPaymentOwedAnnotation.PropertyName)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = EmployeeArrearsOfPaymentOwedAnnotation.InvalidErrorMessageFormat)]
     public decimal AOPOwed3
     {
         get
@@ -2142,7 +2100,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4
     private bool aOPPayType4FieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment start date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP4StartDate
     {
@@ -2171,7 +2128,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime AOP4EndDate
     {
@@ -2200,8 +2156,8 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeePay, "Arrears of payment owed")]
-    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = "The arrears of pay must be on whole pounds or pounds and pence.")]
+    [PropertyAnnotation(EmployeeArrearsOfPaymentOwedAnnotation.Category, EmployeeArrearsOfPaymentOwedAnnotation.PropertyName)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = EmployeeArrearsOfPaymentOwedAnnotation.InvalidErrorMessageFormat)]
     public decimal AOPOwed4
     {
         get
@@ -2311,7 +2267,6 @@ public partial class RP14AEmployeeHoliday
     private bool noDaysHolidayOwedFieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday start date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime HolidayYearStart
     {
@@ -2340,7 +2295,10 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday contracted entitlement days")]
+    [PropertyAnnotation(EmployeeHolidayEntitlement.Category, EmployeeHolidayEntitlement.PropertyName)]
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayEntitlement.MissingErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayEntitlement.RegexFormat, ErrorMessage = EmployeeHolidayEntitlement.InvalidErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayEntitlement.MinEntitledDays, EmployeeHolidayEntitlement.MaxEntitledDays, ErrorMessage = EmployeeHolidayEntitlement.InvalidRangeErrorMessageFormat)]
     public decimal HolidayContractedEntitlementDays
     {
         get
@@ -2368,7 +2326,10 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday days carried forward")]
+    [PropertyAnnotation(EmployeeHolidayDaysCarriedForward.Category, EmployeeHolidayDaysCarriedForward.PropertyName)]
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayDaysCarriedForward.MissingErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayDaysCarriedForward.RegexFormat, ErrorMessage = EmployeeHolidayDaysCarriedForward.InvalidErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayDaysCarriedForward.MinEntitledDays, EmployeeHolidayDaysCarriedForward.MaxEntitledDays, ErrorMessage = EmployeeHolidayDaysCarriedForward.InvalidRangeErrorMessageFormat)]
     public decimal HolidayDaysCarriedForward
     {
         get
@@ -2396,7 +2357,10 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday days taken")]
+    [PropertyAnnotation(EmployeeHolidayDaysTaken.Category, EmployeeHolidayDaysTaken.PropertyName)]
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayDaysTaken.MissingErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayDaysTaken.RegexFormat, ErrorMessage = EmployeeHolidayDaysTaken.InvalidErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayDaysTaken.MinEntitledDays, EmployeeHolidayDaysTaken.MaxEntitledDays, ErrorMessage = EmployeeHolidayDaysTaken.InvalidRangeErrorMessageFormat)]
     public decimal HolidayDaysTaken
     {
         get
@@ -2424,7 +2388,6 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday not paid")]
     public RP14AEmployeeHolidayHolidayNotPaid HolidayNotPaid
     {
         get
@@ -2438,7 +2401,10 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Number of holiday days owed")]
+    [PropertyAnnotation(EmployeeHolidayDaysOwed.Category, EmployeeHolidayDaysOwed.PropertyName)]
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayDaysOwed.MissingErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayDaysOwed.RegexFormat, ErrorMessage = EmployeeHolidayDaysOwed.InvalidErrorMessageFormat)]
+    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayDaysOwed.MinEntitledDays, EmployeeHolidayDaysOwed.MaxEntitledDays, ErrorMessage = EmployeeHolidayDaysOwed.InvalidRangeErrorMessageFormat)]
     public decimal NoDaysHolidayOwed
     {
         get
@@ -2539,7 +2505,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1
     private bool holiday1EndDateFieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday start date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime Holiday1StartDate
     {
@@ -2568,7 +2533,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime Holiday1EndDate
     {
@@ -2615,7 +2579,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2
     private bool holiday2EndDateFieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday start date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime Holiday2StartDate
     {
@@ -2644,7 +2607,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime Holiday2EndDate
     {
@@ -2691,7 +2653,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3
     private bool holiday3EndDateFieldSpecified;
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday start date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime Holiday3StartDate
     {
@@ -2708,7 +2669,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3
     }
 
     /// <remarks/>
-    [GovUk.Forms.Domain.Extensions.PropertyAnnotation(RP14APropertyAnnotations.Categories.EmployeeHoliday, "Holiday end date")]
     [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
     public System.DateTime Holiday3EndDate
     {

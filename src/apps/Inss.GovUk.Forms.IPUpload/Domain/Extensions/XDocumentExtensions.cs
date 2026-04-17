@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace Inss.GovUk.Forms.IPUpload.Extensions;
+namespace Inss.GovUk.Forms.IPUpload.Domain.Extensions;
 
 public static class XDocumentExtensions
 {
