@@ -20,6 +20,10 @@ public class SignInPage : BasePage, ISignInPage
     private ILocator SignInButton => Page.GetByRole(AriaRole.Button, new() { Name = SignInLocators.Labels.SignInButton });
     private ILocator ForgotPasswordLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.ForgotPasswordLink });
     private ILocator BackLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.BackLink });
+    private ILocator EmailError => Page.GetByText("Error: Enter an email address");
+    private ILocator PasswordError => Page.GetByText("Error: Enter a password");
+    private ILocator ErrorSummary => Page.Locator(".govuk-error-summary");
+    private ILocator ErrorSummaryItems => ErrorSummary.GetByRole(AriaRole.Link);
 
     public async Task EnterEmailAsync(string email)
     {
@@ -85,15 +89,45 @@ public class SignInPage : BasePage, ISignInPage
         await WaitForPageToLoadAsync();
     }
 
-    public async Task<bool> IsPasswordMaskedAsync()
+    public async Task VerifyPasswordIsMaskedAsync()
     {
         string? type = await PasswordInput.GetAttributeAsync("type");
-        return type == "password";
+
+        if (!string.Equals(type, "password", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException(
+                $"Expected password field type to be 'password' but found '{type}'.");
+        }
     }
 
-    public async Task<bool> IsPasswordVisibleAsync()
+    public async Task VerifyPasswordIsVisibleAsync()
     {
         string? type = await PasswordInput.GetAttributeAsync("type");
-        return type == "text";
+
+        if (!string.Equals(type, "text", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException(
+                $"Expected password field type to be 'password' but found '{type}'.");
+        }
+    }
+
+    public async Task VerifyFieldErrorsAsync()
+    {
+        await Expect(EmailError).ToBeVisibleAsync();
+        await Expect(PasswordError).ToBeVisibleAsync();
+    }
+
+    public async Task VerifyErrorMessagesAsync(List<string> expectedMessages)
+    {
+        IReadOnlyList<string> actualMessages = await ErrorSummaryItems.AllInnerTextsAsync();
+
+        foreach (string expected in expectedMessages)
+        {
+            if (!actualMessages.Any(m => m.Contains(expected)))
+            {
+                throw new InvalidOperationException(
+                    $"Expected error message '{expected}' was not found. Actual: {string.Join(", ", actualMessages)}");
+            }
+        }
     }
 }

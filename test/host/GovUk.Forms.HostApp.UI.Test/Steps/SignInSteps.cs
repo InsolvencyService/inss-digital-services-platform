@@ -1,5 +1,6 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -22,10 +23,10 @@ public sealed class SignInSteps
         await _signInCoordinator.NavigateToSignInPageAsync();
     }
 
-    [When("I sign in with valid credential {string} {string}")]
-    public async Task WhenISignInWithValidCredential(string emailAddress, string password)
+    [When("I provide valid sign in details")]
+    public async Task WhenIProvideValidSignInDetails()
     {
-        await _signInCoordinator.SignInToServiceAsync(emailAddress, password);
+        await _signInCoordinator.SignInToServiceAsync(ScenarioConstant.EmailAddress, ScenarioConstant.Password);
     }
 
     [When("I choose to view my password")]
@@ -34,8 +35,32 @@ public sealed class SignInSteps
         await _signInCoordinator.ShowPasswordAsync(ScenarioConstant.EmailAddress, ScenarioConstant.Password);
     }
 
+    [When("I submit the sign in form")]
+    public async Task WhenISubmitTheSignInForm()
+    {
+        await _signInCoordinator.ClickSignInButtonAsync();
+    }
 
-    [Then("I should be on the declaration page")]
+    [When("I enter {string} into the email address field")]
+    public async Task WhenIEnterIntoTheEmailAddressField(string email)
+    {
+        await _signInCoordinator.EnterEmailAsync(email);
+    }
+
+    [When("I enter {string} into the password field")]
+    public async Task WhenIEnterIntoThePasswordField(string password)
+    {
+        await _signInCoordinator.EnterPasswordAsync(password);
+    }
+
+    [When("I choose to sign in")]
+    public async Task WhenIChooseToSignIn()
+    {
+        await _signInCoordinator.ClickSignInButtonAsync();
+    }
+
+
+    [Then("I should be on to view the declaration page")]
     public async Task ThenIShouldBeOnTheDeclarationPage()
     {
         await _declarationCoordinator.VerifyDeclarationPageIsDisplayedAsync();
@@ -46,6 +71,24 @@ public sealed class SignInSteps
     {
         await _signInCoordinator.VerifyPasswordIsVisibleAsync();
     }
+
+    //[Then("I should see the error message {string}")]
+    //public async Task ThenIShouldSeeTheErrorMessage(string errorMessage)
+    //{
+    //    throw new PendingStepException();
+    //}
+
+    [Then("I should see the following error messages:")]
+    public async Task ThenIShouldSeeTheFollowingErrorMessages(DataTable table)
+    {
+        List<string> errors = table.CreateSet<Errors>()
+                    .Select(e => e.Message)
+                    .ToList();
+
+        await _signInCoordinator.VerifyErrorMessagesAsync(errors);
+
+    }
+
 
 
 

@@ -9,8 +9,8 @@
 
 @smoke
 Scenario: Successful sign in with valid credentials
-  When I sign in with valid credential "user@example.com" "ValidPassword123"
-  Then I should be on the declaration page
+  When I provide valid sign in details
+  Then I should be on to view the declaration page
 
 @smoke
 Scenario: View password while entering sign in details
@@ -18,17 +18,25 @@ Scenario: View password while entering sign in details
   Then I should be able to see the password I entered
 
 @smoke
+Scenario: Error when email and password are blank
+  When I submit the sign in form
+  Then I should see the following error messages:
+    | Message                |
+    | Enter an email address |
+    | Enter a password       |
+
+@smoke
 Scenario Outline: Sign in validation errors
-  Given I am on the sign in page
-  When I enter "<email>" email addesss
-  And I enter "<password>" password
-  And I click the login button
+  When I enter "<email>" into the email address field
+  And I enter "<password>" into the password field
+  And I choose to sign in
   Then I should see the error message "<errorMessage>"
 
 Examples:
   | email            | password         | errorMessage                                                        |
-  |                  | ValidPassword123 | Enter an email address                                              |
-  | user@example.com |                  | Enter a password                                                    |
+  | <empty>          | <empty>          | Enter an email address                                              |
+  | <empty>          | ValidPassword123 | Enter an email address                                              |
+  | user@example.com | <empty>          | Enter a password                                                    |
   | invalid-email    | ValidPassword123 | Enter an email address in the correct format, like name@example.com |
   | user@example.com | WrongPassword123 | The email address or password you entered is incorrect              |
 

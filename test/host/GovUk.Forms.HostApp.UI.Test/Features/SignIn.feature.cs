@@ -115,7 +115,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/SignIn.feature.ndjson", 9);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/SignIn.feature.ndjson", 11);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -144,10 +144,10 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 12
-  await testRunner.WhenAsync("I sign in with valid credential \"user@example.com\" \"ValidPassword123\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+  await testRunner.WhenAsync("I provide valid sign in details", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 13
-  await testRunner.ThenAsync("I should be on the declaration page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+  await testRunner.ThenAsync("I should be on to view the declaration page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -189,12 +189,54 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         }
         
         [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Error when email and password are blank")]
+        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        public async global::System.Threading.Tasks.Task ErrorWhenEmailAndPasswordAreBlank()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "smoke"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Error when email and password are blank", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 21
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 22
+  await testRunner.WhenAsync("I submit the sign in form", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                            "Message"});
+                table1.AddRow(new string[] {
+                            "Enter an email address"});
+                table1.AddRow(new string[] {
+                            "Enter a password"});
+#line 23
+  await testRunner.ThenAsync("I should see the following error messages:", ((string)(null)), table1, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Sign in validation errors")]
         [global::NUnit.Framework.CategoryAttribute("smoke")]
-        [global::NUnit.Framework.TestCaseAttribute("", "ValidPassword123", "Enter an email address", "2", null)]
-        [global::NUnit.Framework.TestCaseAttribute("user@example.com", "", "Enter a password", "3", null)]
-        [global::NUnit.Framework.TestCaseAttribute("invalid-email", "ValidPassword123", "Enter an email address in the correct format, like name@example.com", "4", null)]
-        [global::NUnit.Framework.TestCaseAttribute("user@example.com", "WrongPassword123", "The email address or password you entered is incorrect", "5", null)]
+        [global::NUnit.Framework.TestCaseAttribute("<empty>", "<empty>", "Enter an email address", "3", null)]
+        [global::NUnit.Framework.TestCaseAttribute("<empty>", "ValidPassword123", "Enter an email address", "4", null)]
+        [global::NUnit.Framework.TestCaseAttribute("user@example.com", "<empty>", "Enter a password", "5", null)]
+        [global::NUnit.Framework.TestCaseAttribute("invalid-email", "ValidPassword123", "Enter an email address in the correct format, like name@example.com", "6", null)]
+        [global::NUnit.Framework.TestCaseAttribute("user@example.com", "WrongPassword123", "The email address or password you entered is incorrect", "7", null)]
         public async global::System.Threading.Tasks.Task SignInValidationErrors(string email, string password, string errorMessage, string @__pickleIndex, string[] exampleTags)
         {
             string[] @__tags = new string[] {
@@ -212,7 +254,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Sign in validation errors", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 21
+#line 29
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -225,19 +267,16 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 22
-  await testRunner.GivenAsync("I am on the sign in page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line 30
+  await testRunner.WhenAsync(string.Format("I enter \"{0}\" into the email address field", email), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 23
-  await testRunner.WhenAsync(string.Format("I enter \"{0}\" email addesss", email), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 31
+  await testRunner.AndAsync(string.Format("I enter \"{0}\" into the password field", password), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 24
-  await testRunner.AndAsync(string.Format("I enter \"{0}\" password", password), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line 32
+  await testRunner.AndAsync("I choose to sign in", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 25
-  await testRunner.AndAsync("I click the login button", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 26
+#line 33
   await testRunner.ThenAsync(string.Format("I should see the error message \"{0}\"", errorMessage), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -250,11 +289,11 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "6";
+            string pickleIndex = "8";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error when account is locked", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 36
+#line 44
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -267,22 +306,22 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 7
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 37
+#line 45
   await testRunner.GivenAsync("I am on the signin page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 38
+#line 46
   await testRunner.AndAsync("the account for \"user@example.com\" is locked", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 39
+#line 47
   await testRunner.WhenAsync("I enter \"user@example.com\" into the email field", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 40
+#line 48
   await testRunner.AndAsync("I enter \"ValidPassword123\" into the password field", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 41
+#line 49
   await testRunner.AndAsync("I click the signin button", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 42
+#line 50
   await testRunner.ThenAsync("I should see the error message \"Your account is locked\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
