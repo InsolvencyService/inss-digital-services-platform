@@ -1,13 +1,13 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Pages;
+﻿using GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 
-public class DemoCoordinator(
+public class DeclarationCoordinator(
     IDeclarationPage declarationPage,
     ISection187Page section187Page)
 {
 
-    public async Task VerifyDeclarationPageContentAsync()
+    public async Task VerifyDeclarationPageIsDisplayedAsync()
     {
         await declarationPage.WaitForPageToLoadAsync();
     }

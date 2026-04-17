@@ -4,8 +4,8 @@ namespace GovUk.Forms.HostApp.UI.Test.Steps;
 [Binding]
 public class Feature1Steps
 {
-    private readonly DemoCoordinator _demoCoordinator;
-    public Feature1Steps(DemoCoordinator demoCoordinator)
+    private readonly DeclarationCoordinator _demoCoordinator;
+    public Feature1Steps(DeclarationCoordinator demoCoordinator)
     {
         _demoCoordinator = demoCoordinator;
     }
@@ -13,7 +13,7 @@ public class Feature1Steps
     [Given("I am on the declaration page")]
     public async Task GivenIAmOnTheDeclarationPage()
     {
-        await _demoCoordinator.VerifyDeclarationPageContentAsync();
+        await _demoCoordinator.VerifyDeclarationPageIsDisplayedAsync();
     }
 
     [When("I choose to view section 187")]

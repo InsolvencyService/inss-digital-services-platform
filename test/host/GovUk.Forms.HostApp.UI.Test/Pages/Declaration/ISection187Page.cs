@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Pages;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
 
 public interface ISection187Page
 {

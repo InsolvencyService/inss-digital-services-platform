@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Pages.Locators;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
 
 public class DeclarationLocators
 {

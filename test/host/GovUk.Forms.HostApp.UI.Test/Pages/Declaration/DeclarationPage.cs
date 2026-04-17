@@ -1,9 +1,8 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
-using GovUk.Forms.HostApp.UI.Test.Pages.Locators;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
-namespace GovUk.Forms.HostApp.UI.Test.Pages;
+namespace GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
 
 public class DeclarationPage : BasePage, IDeclarationPage
 {
