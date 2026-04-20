@@ -11,5 +11,5 @@ public sealed class ExtendedValidationResult : ValidationResult
                              new PropertyAnnotationAttribute("Other", property.Name);
     }
 
-    public PropertyAnnotationAttribute PropertyAnnotation { get; }
+    public PropertyAnnotationAttribute PropertyAnnotation { get; init; }
 }

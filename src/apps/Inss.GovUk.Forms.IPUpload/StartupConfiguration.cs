@@ -3,6 +3,7 @@ using GovUk.Forms.Components;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Options;
 using GovUk.Forms.Domain.Primitives;
+using Inss.GovUk.Forms.IPUpload.Application.Clients;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Builders;
 using Inss.GovUk.Forms.IPUpload.Infrastructure.Clients;
@@ -25,8 +26,13 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddKeyedSingleton<ISubmitSectionService, FileUploadSubmitSectionService>(
                 new ContentPath($"{webRoot.Root}/redundancy-payment"));
+            services.AddTransient<ICaseReferenceService, CaseReferenceService>();
+            
             ExternalApiOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<ExternalApiOptions>()!;
             services.AddTypedClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(dynamicsOptions);
+            
+            ExternalApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<ExternalApiOptions>()!;
+            services.AddTypedClient<ICaseReferenceClient, CaseReferenceClient>(rpsOptions);
             
             IPUploadFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);

@@ -4,7 +4,9 @@ using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
+using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
+using NSubstitute;
 using Xunit;
 
 namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
@@ -12,10 +14,12 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
 public class FileUploadFlowNodeExecutorTests
 {
     private readonly FileUploadFlowNodeExecutor _fileUploadFlowNodeExecutor;
+    private readonly ICaseReferenceService _caseReferenceService;
     
     public FileUploadFlowNodeExecutorTests()
     {
-        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor();
+        _caseReferenceService = Substitute.For<ICaseReferenceService>();
+        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor(_caseReferenceService);
     }
     
     [Fact]
@@ -67,6 +71,7 @@ public class FileUploadFlowNodeExecutorTests
     [Fact]
     public async Task FinalPassExecutionWithErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
+        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel ipUploadSection = form.Sections["IP Upload"];
         XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
@@ -90,6 +95,7 @@ public class FileUploadFlowNodeExecutorTests
     [Fact]
     public async Task FinalPassExecutionWithErrors_ExecuteAsync_PopulatesPageWithErrorInfo()
     {
+        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel ipUploadSection = form.Sections["IP Upload"];
         XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
@@ -111,9 +117,34 @@ public class FileUploadFlowNodeExecutorTests
         Assert.NotEmpty(ipUploadErrors.GetErrors("Case"));
         Assert.NotEmpty(ipUploadErrors.GetErrors("Employee"));
         Assert.Empty(ipUploadErrors.GetErrors("Employer"));
-        Assert.Empty(ipUploadErrors.GetErrors("Employee Pay"));
-        Assert.Empty(ipUploadErrors.GetErrors("Employee Holiday"));
-        Assert.Empty(ipUploadErrors.GetErrors("Employee Holiday Not Paid"));
+        Assert.Empty(ipUploadErrors.GetErrors("Employee pay"));
+        Assert.Empty(ipUploadErrors.GetErrors("Employee holiday"));
+    }
+    
+    [Fact]
+    public async Task FinalPassExecutionWithErrors_ExecuteAsync_PopulatesUnknownCaseReference()
+    {
+        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
+        FormModel form = TestFormModels.CreateWithIPUploadSection();
+        SectionModel ipUploadSection = form.Sections["IP Upload"];
+        XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
+        FlowNode node = new() { Id = "NodeId1", PagePath = ipUpload.Path, NextNodes = ["NodeId2", "NodeId3"] };
+        ExecuteContext context = new()
+        {
+            Nodes = [node],
+            CurrentNode = node,
+            Form = form,
+            Section = ipUploadSection,
+            FinalExecuteStep = true,
+            UpdatedPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlWithErrors)) }
+        };
+
+        await _fileUploadFlowNodeExecutor.ExecuteAsync(context);
+
+        IPUploadXmlErrorsModel ipUploadErrors = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
+        ErrorInfo[] errors = ipUploadErrors.GetErrors("Case");
+        ErrorInfo? error = errors.FirstOrDefault(e => e.SubCategory.Contains(CaseReferenceAnnotation.NotFoundErrorMessageFormat));
+        Assert.NotNull(error);
     }
     
     private const string RP14AXmlWithErrors = """
@@ -121,7 +152,7 @@ public class FileUploadFlowNodeExecutorTests
         <ns1:RP14A xmlns:ns1="http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application">
           <ns1:Employee>
             <ns1:Header>
-              <ns1:CaseReference>XN10000112</ns1:CaseReference>
+              <ns1:CaseReference>CN10000112</ns1:CaseReference>
             </ns1:Header>
             <ns1:EmployerName>BANGLA FISH BAZAAR LIMITED</ns1:EmployerName>
             <ns1:EmployeeName>
