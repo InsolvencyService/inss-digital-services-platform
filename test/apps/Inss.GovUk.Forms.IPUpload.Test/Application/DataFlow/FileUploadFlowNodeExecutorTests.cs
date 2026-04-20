@@ -6,6 +6,8 @@ using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Xunit;
 
@@ -19,7 +21,9 @@ public class FileUploadFlowNodeExecutorTests
     public FileUploadFlowNodeExecutorTests()
     {
         _caseReferenceService = Substitute.For<ICaseReferenceService>();
-        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor(_caseReferenceService);
+        ServiceCollection services = [];
+        services.AddSingleton(_caseReferenceService);
+        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor(services.BuildServiceProvider());
     }
     
     [Fact]
@@ -48,6 +52,7 @@ public class FileUploadFlowNodeExecutorTests
     [Fact]
     public async Task FinalPassExecutionNoErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
+        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(true);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel ipUploadSection = form.Sections["IP Upload"];
         XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
@@ -142,9 +147,9 @@ public class FileUploadFlowNodeExecutorTests
         await _fileUploadFlowNodeExecutor.ExecuteAsync(context);
 
         IPUploadXmlErrorsModel ipUploadErrors = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
-        ErrorInfo[] errors = ipUploadErrors.GetErrors("Case");
-        ErrorInfo? error = errors.FirstOrDefault(e => e.SubCategory.Contains(CaseReferenceAnnotation.NotFoundErrorMessageFormat));
-        Assert.NotNull(error);
+        ErrorInfo[] errorInfoList = ipUploadErrors.GetErrors("Case");
+        ErrorInfo? errorInfo = errorInfoList.FirstOrDefault(e => e.Error.Contains("case reference have not been matched in our system"));
+        Assert.NotNull(errorInfo);
     }
     
     private const string RP14AXmlWithErrors = """

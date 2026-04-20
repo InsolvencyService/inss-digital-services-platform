@@ -1,8 +1,9 @@
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using GovUk.Forms.Domain;
 using Inss.GovUk.Forms.IPUpload.Application.Exceptions;
-using Inss.GovUk.Forms.IPUpload.Domain.Extensions;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain;
 
@@ -26,8 +27,8 @@ public sealed class XmlFileUploadModel : PageModel
         XDocument document = GetXml();
         return document.Root?.Name.NamespaceName.ToLower() switch
         {
-            "http://www.ins.gsi.gov.uk/fileupload/rp14a_application" => document.CreateModel<Spreadsheet.RP14A>(),
-            "www.inss.gsi.gov.uk/rp14a_application" => document.CreateModel<Api.RP14A>(),
+            "http://www.ins.gsi.gov.uk/fileupload/rp14a_application" => CreateModel<Spreadsheet.RP14A>(document),
+            "www.inss.gsi.gov.uk/rp14a_application" => CreateModel<Api.RP14A>(document),
             _ => throw new IPUploadException($"Unknown or empty XML schema {document.Root?.Name.NamespaceName} provided.")
         };
     }
@@ -57,5 +58,12 @@ public sealed class XmlFileUploadModel : PageModel
         byte[] xmlBytes = Convert.FromBase64String(Contents);
         string xml = Encoding.UTF8.GetString(xmlBytes);
         return XDocument.Parse(xml);
+    }
+    
+    private static T CreateModel<T>(XDocument document)
+    {
+        XmlSerializer serializer = new(typeof(T));
+        using XmlReader reader = document.Root!.CreateReader();
+        return (T)serializer.Deserialize(reader)!;
     }
 }

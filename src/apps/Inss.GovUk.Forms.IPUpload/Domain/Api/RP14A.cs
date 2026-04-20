@@ -10,6 +10,7 @@
 // Schema: https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.Common/Models/Schemas/RP14A.xsd
 
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation.Attributes;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Api;
 
@@ -43,8 +44,7 @@ public partial class RP14A
     }
 
     /// <remarks/>
-    [PropertyAnnotation(EmployerNameAnnotation.Category, EmployerNameAnnotation.PropertyName)]
-    [System.ComponentModel.DataAnnotations.MaxLength(EmployerNameAnnotation.MaxLength, ErrorMessage = EmployerNameAnnotation.InvalidLengthErrorMessageFormat)]
+    [StringLengthProperty("InvalidLengthEmployerName", 99)]
     public string EmployerName
     {
         get
@@ -90,10 +90,10 @@ public partial class RP14AHeader
     private string cHAMPDocumentIDField;
 
     /// <remarks/>
-    [PropertyAnnotation(CaseReferenceAnnotation.Category, CaseReferenceAnnotation.PropertyName)]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = CaseReferenceAnnotation.MissingErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(CaseReferenceAnnotation.RegexFormat, ErrorMessage = CaseReferenceAnnotation.InvalidErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.StringLength(12, ErrorMessage = CaseReferenceAnnotation.TooLongErrorMessageFormat)]
+    [CaseReference("UnknownCaseReference")]
+    [RequiredProperty("MissingCaseReference")]
+    [RegularExpressionProperty("InvalidFormatCaseReference", "CN[0-9]{8}|cn[0-9]{8}|Cn[0-9]{8}|cN[0-9]{8}")]
+    [StringLengthProperty("InvalidLengthCaseReference", 12)]
     public string CaseReference
     {
         get
@@ -204,9 +204,8 @@ public partial class NameType
     private string titleField;
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeSurnameAnnotation.Category, EmployeeSurnameAnnotation.PropertyName)]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeSurnameAnnotation.MissingErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.MaxLength(EmployeeSurnameAnnotation.MaxLength, ErrorMessage = EmployeeSurnameAnnotation.InvalidLengthErrorMessageFormat)]
+    [RequiredProperty("MissingEmployeeSurname")]
+    [StringLengthProperty("InvalidLengthEmployeeSurname", 99)]
     public string Surname
     {
         get
@@ -328,9 +327,8 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeNationalInsuranceNumber.Category, EmployeeNationalInsuranceNumber.PropertyName)]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeNationalInsuranceNumber.MissingErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeNationalInsuranceNumber.RegexFormat, ErrorMessage = EmployeeNationalInsuranceNumber.InvalidErrorMessageFormat)]
+    [RequiredProperty("MissingEmployeeNino")]
+    [RegularExpressionProperty("InvalidFormatEmployeeNino", "[A-CEGHJ-PR-TW-Za-ceghj-pr-tw-z]{1}[A-CEGHJ-NPR-TW-Za-ceghj-npr-tw-z]{1}[0-9]{6}[A-DFMa-dfm]{1}")]
     public string NINO
     {
         get
@@ -510,8 +508,7 @@ public partial class RP14AEmployee
     }
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeMoneyOwedToEmployer.Category, EmployeeMoneyOwedToEmployer.PropertyName)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeMoneyOwedToEmployer.RegexFormat, ErrorMessage = EmployeeMoneyOwedToEmployer.InvalidErrorMessageFormat)]
+    [RegularExpressionProperty("InvalidFormatMoneyOwedToEmployer", @"^\d+(\.\d{2})?$")]
     public decimal MoneyOwedToEmployer
     {
         get
@@ -655,8 +652,7 @@ public partial class RP14AEmployeePayDetails
     private RP14AEmployeePayDetailsArrearsOfPayPeriod[] arrearsOfPayField;
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeBasicPayPerWeek.Category, EmployeeBasicPayPerWeek.PropertyName)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeBasicPayPerWeek.RegexFormat, ErrorMessage = EmployeeBasicPayPerWeek.InvalidErrorMessageFormat)]
+    [RegularExpressionProperty("InvalidFormatEmployeeBasicPayPerWeek", @"^\d+(\.\d{2})?$")]
     public decimal BasicPayPerWeek
     {
         get
@@ -958,7 +954,7 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayPeriod
     }
 
     /// <remarks/>
-    [System.ComponentModel.DataAnnotations.RegularExpression(@"^\d+(\.\d{2})?$", ErrorMessage = "The arrears of pay must be on whole pounds or pounds and pence.")]
+    [RegularExpressionProperty("InvalidFormatEmployeeAOP", @"^\d+(\.\d{2})?$")]
     public decimal AOPOwed
     {
         get
@@ -1084,10 +1080,9 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeHolidayEntitlement.Category, EmployeeHolidayEntitlement.PropertyName)]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayEntitlement.MissingErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayEntitlement.RegexFormat, ErrorMessage = EmployeeHolidayEntitlement.InvalidErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayEntitlement.MinEntitledDays, EmployeeHolidayEntitlement.MaxEntitledDays, ErrorMessage = EmployeeHolidayEntitlement.InvalidRangeErrorMessageFormat)]
+    [RequiredProperty("MissingContractedHolidayEntitlement")]
+    [RegularExpressionProperty("InvalidContractedHolidayEntitlement", @"^\d+(\.\d{2})?$")]
+    [RangeProperty("InvalidRangeContractedHolidayEntitlement", 0, 365)]
     public decimal HolidayContractedEntitlementDays
     {
         get { return this.holidayContractedEntitlementDaysField; }
@@ -1103,10 +1098,9 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeHolidayDaysCarriedForward.Category, EmployeeHolidayDaysCarriedForward.PropertyName)]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayDaysCarriedForward.MissingErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayDaysCarriedForward.RegexFormat, ErrorMessage = EmployeeHolidayDaysCarriedForward.InvalidErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayDaysCarriedForward.MinEntitledDays, EmployeeHolidayDaysCarriedForward.MaxEntitledDays, ErrorMessage = EmployeeHolidayDaysCarriedForward.InvalidRangeErrorMessageFormat)]
+    [RequiredProperty("MissingHolidayCarriedForward")]
+    [RegularExpressionProperty("InvalidHolidayCarriedForward", @"^\d+(\.\d{2})?$")]
+    [RangeProperty("InvalidRangeHolidayCarriedForward", 0, 365)]
     public decimal HolidayDaysCarriedForward
     {
         get { return this.holidayDaysCarriedForwardField; }
@@ -1122,10 +1116,9 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeHolidayDaysTaken.Category, EmployeeHolidayDaysTaken.PropertyName)]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayDaysTaken.MissingErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayDaysTaken.RegexFormat, ErrorMessage = EmployeeHolidayDaysTaken.InvalidErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayDaysTaken.MinEntitledDays, EmployeeHolidayDaysTaken.MaxEntitledDays, ErrorMessage = EmployeeHolidayDaysTaken.InvalidRangeErrorMessageFormat)]
+    [RequiredProperty("MissingHolidayTaken")]
+    [RegularExpressionProperty("InvalidHolidayTaken", @"^\d+(\.\d{2})?$")]
+    [RangeProperty("InvalidRangeHolidayTaken", 0, 365)]
     public decimal HolidayDaysTaken
     {
         get { return this.holidayDaysTakenField; }
@@ -1149,10 +1142,9 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [PropertyAnnotation(EmployeeHolidayDaysOwed.Category, EmployeeHolidayDaysOwed.PropertyName)]
-    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = EmployeeHolidayDaysOwed.MissingErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.RegularExpression(EmployeeHolidayDaysOwed.RegexFormat, ErrorMessage = EmployeeHolidayDaysOwed.InvalidErrorMessageFormat)]
-    [System.ComponentModel.DataAnnotations.Range(EmployeeHolidayDaysOwed.MinEntitledDays, EmployeeHolidayDaysOwed.MaxEntitledDays, ErrorMessage = EmployeeHolidayDaysOwed.InvalidRangeErrorMessageFormat)]
+    [RequiredProperty("MissingHolidayOwed")]
+    [RegularExpressionProperty("InvalidHolidayOwed", @"^\d+(\.\d{2})?$")]
+    [RangeProperty("InvalidRangeHolidayOwed", 0, 365)]
     public decimal NoDaysHolidayOwed
     {
         get { return this.noDaysHolidayOwedField; }

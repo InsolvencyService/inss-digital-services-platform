@@ -7,6 +7,7 @@ namespace GovUk.Forms.Components.Extensions;
 public static class ViewDataDictionaryExtensions
 {
     private const string BackButtonKey = "Back";
+    private const string FullWidthLayoutKey = "Layout";
     
     extension(ViewDataDictionary viewData)
     {
@@ -20,6 +21,16 @@ public static class ViewDataDictionaryExtensions
         public string? GetBackButton()
         {
             return viewData[BackButtonKey]?.ToString();
+        }
+        
+        public void AddFullWidthLayout(bool layout)
+        {
+            viewData[FullWidthLayoutKey] = layout;
+        }
+
+        public bool GetFullWidthLayout()
+        {
+            return viewData[FullWidthLayoutKey] is true;
         }
     }
 }

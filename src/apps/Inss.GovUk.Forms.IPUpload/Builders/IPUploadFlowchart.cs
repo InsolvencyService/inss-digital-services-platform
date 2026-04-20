@@ -43,6 +43,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .WithExecutor<FileUploadFlowNodeExecutor>()
             .Next()
             .AddTransitionNode(fileUploadErrorId, uploadErrors.Path, fileUploadId)
+            .WithLoader<FileUploadErrorFlowNodeLoader>()
             .Next()
             .AddTransitionNode(summaryId, summary.Path, postSubmitSuccessId)
             .WithLoader<SectionSummaryFlowNodeLoader>()
