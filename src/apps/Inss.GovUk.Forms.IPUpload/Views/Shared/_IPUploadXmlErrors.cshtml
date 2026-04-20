@@ -7,5 +7,7 @@
 <p class="govuk-body">The following errors were found when validating your form. Check the details and try uploading again.</p>
 
 @await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Case"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employer"))
 @await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employment dates"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee pay"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee holiday"))

@@ -47,9 +47,8 @@ public sealed class IPUploadXmlErrorsModel : PageModel
         return _errors.Where(e => e.Category == category).ToArray();
     }
 
-    public override void ClearValues()
+    public void ClearErrors()
     {
-        base.ClearValues();
         Filename = string.Empty;
         _errors.Clear();
     }
