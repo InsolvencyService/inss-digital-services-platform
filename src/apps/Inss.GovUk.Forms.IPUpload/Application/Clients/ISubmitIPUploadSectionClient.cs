@@ -1,6 +1,6 @@
 using GovUk.Forms.Domain;
 
-namespace Inss.GovUk.Forms.IPUpload.Infrastructure.Clients;
+namespace Inss.GovUk.Forms.IPUpload.Application.Clients;
 
 public interface ISubmitIPUploadSectionClient
 {

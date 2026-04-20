@@ -4,9 +4,10 @@ public static class CaseReferenceAnnotation
 {
     public const string Category = "Case";
     public const string PropertyName = "Case reference";
-    public const string MissingErrorMessageFormat = "<p class='govuk-body'>[COUNT] misisng a case reference</p>";
+    public const string MissingErrorMessageFormat = "<p class='govuk-body'>[COUNT] missing a case reference</p>";
     public const string InvalidErrorMessageFormat = "<p class='govuk-body'>[COUNT] invalid case reference format</p><p class='govuk-body govuk-hint'>Format is CN12345678</p>";
     public const string TooLongErrorMessageFormat = "<p class='govuk-body'>[COUNT] too long case reference</p><p class='govuk-body govuk-hint'>Up to 12 characters are allowed</p>";
+    public const string NotFoundErrorMessageFormat = "<p class='govuk-body'>[COUNT] case reference(s) have not been matched in our system</p>";
     public const string RegexFormat = "CN[0-9]{8}|cn[0-9]{8}|Cn[0-9]{8}|cN[0-9]{8}";
 }
 
