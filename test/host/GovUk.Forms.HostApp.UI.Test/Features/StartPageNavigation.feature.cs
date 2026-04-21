@@ -18,20 +18,19 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::NUnit.Framework.TestFixtureAttribute()]
-    [global::NUnit.Framework.DescriptionAttribute("Feature1")]
+    [global::NUnit.Framework.DescriptionAttribute("Start Page Navigation")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
-    [global::NUnit.Framework.CategoryAttribute("addVideo")]
-    public partial class Feature1Feature
+    public partial class StartPageNavigationFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
-        private static string[] featureTags = new string[] {
-                "addVideo"};
+        private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "Feature1", "A short summary of the feature", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "Start Page Navigation", "As an Insolvency Practitioner\r\nI want to access the IPUS start page\r\nSo I can beg" +
+                "in the RP14/14A upload journey", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
-#line 1 "Feature1.feature"
+#line 1 "StartPageNavigation.feature"
 #line hidden
         
         [global::NUnit.Framework.OneTimeSetUpAttribute()]
@@ -107,26 +106,65 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Feature1.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/StartPageNavigation.feature.ndjson", 4);
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Verify that section 187 page is accessible from declaration page")]
-        [global::NUnit.Framework.CategoryAttribute("tag1")]
-        [global::NUnit.Framework.CategoryAttribute("1111")]
+        [global::NUnit.Framework.DescriptionAttribute("User accesses customer feedback from the start page")]
         [global::NUnit.Framework.CategoryAttribute("smoke")]
-        public async global::System.Threading.Tasks.Task VerifyThatSection187PageIsAccessibleFromDeclarationPage()
+        [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
+        public async global::System.Threading.Tasks.Task UserAccessesCustomerFeedbackFromTheStartPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "tag1",
-                    "1111",
-                    "smoke"};
+                    "smoke",
+                    "MEDS-1061"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify that section 187 page is accessible from declaration page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("User accesses customer feedback from the start page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 7
+#line 8
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 9
+    await testRunner.GivenAsync("the user is on the IPUS start page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 10
+    await testRunner.WhenAsync("the user chooses to provide feedback", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 11
+    await testRunner.ThenAsync("a new browser tab should be opened", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 12
+ await testRunner.AndAsync("the Director Conduct Reporting Service customer feedback page should be displayed" +
+                        "", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Start the service from the start page")]
+        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
+        public async global::System.Threading.Tasks.Task StartTheServiceFromTheStartPage()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "smoke",
+                    "MEDS-1061"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "1";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Start the service from the start page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 15
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -136,14 +174,14 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 8
- await testRunner.GivenAsync("I am on the declaration page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line 16
+  await testRunner.GivenAsync("the user is on the IPUS start page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 9
- await testRunner.WhenAsync("I choose to view section 187", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 17
+  await testRunner.WhenAsync("the user chooses to start the application", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 10
- await testRunner.ThenAsync("I will be taken to the section 187 page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 18
+  await testRunner.ThenAsync("the user is redirected to the sign-in page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

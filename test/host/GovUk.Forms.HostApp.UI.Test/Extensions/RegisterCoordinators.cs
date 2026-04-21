@@ -9,5 +9,7 @@ public static class RegisterCoordinators
     {
         services.AddScoped<DeclarationCoordinator>();
         services.AddScoped<SignInCoordinator>();
+        services.AddScoped<StartPageCoordinator>();
+        services.AddScoped<UploadDocumentCoordinator>();
     }
 }

@@ -10,6 +10,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Hook;
 public sealed class ReqnrollHook : BaseTestConfig
 {
     private const string AddVideoTag = "addVideo";
+    private const string AddScreencastTag = "addScreencast";
     private const string StepScreenshotsTag = "stepScreenshots";
 
     private readonly ScenarioContext _scenarioContext;
@@ -18,6 +19,7 @@ public sealed class ReqnrollHook : BaseTestConfig
     private readonly IPlaywrightDriver _driver;
 
     private bool _shouldRecordVideo;
+    private bool _shouldRecordScreencast;
     private bool _shouldCaptureStepScreenshots;
 
     public ReqnrollHook(
@@ -39,7 +41,14 @@ public sealed class ReqnrollHook : BaseTestConfig
         TestArtifactsSetup(_scenarioContext);
 
         _shouldRecordVideo = HasTag(AddVideoTag);
+        _shouldRecordScreencast = HasTag(AddScreencastTag);
         _shouldCaptureStepScreenshots = HasTag(StepScreenshotsTag);
+
+        if (_shouldRecordVideo && _shouldRecordScreencast)
+        {
+            throw new InvalidOperationException(
+                "Use either @addVideo or @addScreencast, not both in the same scenario.");
+        }
     }
 
     [BeforeScenario(Order = 1)]
@@ -48,8 +57,17 @@ public sealed class ReqnrollHook : BaseTestConfig
         BrowserNewContextOptions contextOptions = BuildContextOptions();
 
         await _driver.InitialiseAsync(contextOptions);
-
         await BrowserSetupAsync(_scenarioContext, _driver.Page, _driver.Context);
+
+        if (_shouldRecordScreencast && TestArtifacts is not null)
+        {
+            string screencastPath = TestArtifacts.FilePath($"{TestName}_screencast.webm");
+
+            ScreencastHelper screencast = new(_driver.Page, screencastPath);
+            _scenarioContext.SetScreencast(screencast);
+
+            await screencast.StartAsync();
+        }
     }
 
     [AfterScenario(Order = 0)]
@@ -63,6 +81,22 @@ public sealed class ReqnrollHook : BaseTestConfig
 
         try
         {
+            ScreencastHelper? screencast = _scenarioContext.GetScreencast();
+            if (screencast is not null)
+            {
+
+                await screencast.StopAsync();
+
+                if (TestArtifacts is not null)
+                {
+                    string screencastPath = TestArtifacts.FilePath($"{TestName}_screencast.webm");
+                    if (File.Exists(screencastPath))
+                    {
+                        _output.AddAttachmentAsLink(screencastPath);
+                    }
+                }
+            }
+
             await BrowserTearDownAsync(_scenarioContext, _output, context, page);
 
             if (!page.IsClosed)

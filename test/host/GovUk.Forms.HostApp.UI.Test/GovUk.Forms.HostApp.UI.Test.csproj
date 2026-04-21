@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Hook\" />
-    <Folder Include="Features\" />
   </ItemGroup>
 
   <ItemGroup>

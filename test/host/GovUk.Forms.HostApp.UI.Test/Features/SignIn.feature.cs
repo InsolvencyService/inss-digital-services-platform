@@ -27,8 +27,8 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "SignIn", "  As a user\r\n  I want to sign in to the RP14/A service\r\n  So that I can access my" +
-                " account securely", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "SignIn", "An an Insolvency Practitioner\r\nI want to sign in to IPUS\r\nSo I can upload an RP14" +
+                "/14A", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "SignIn.feature"
 #line hidden
@@ -107,9 +107,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
         {
 #line 7
-  #line hidden
+ #line hidden
 #line 8
-  await testRunner.GivenAsync("I am on the sign in page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+ await testRunner.GivenAsync("I am on the sign in page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
         
@@ -141,7 +141,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 7
-  await this.FeatureBackgroundAsync();
+ await this.FeatureBackgroundAsync();
 #line hidden
 #line 12
   await testRunner.WhenAsync("I provide valid sign in details", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -176,7 +176,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 7
-  await this.FeatureBackgroundAsync();
+ await this.FeatureBackgroundAsync();
 #line hidden
 #line 17
   await testRunner.GivenAsync("I provide valid credentials", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
@@ -216,7 +216,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 7
-  await this.FeatureBackgroundAsync();
+ await this.FeatureBackgroundAsync();
 #line hidden
 #line 23
   await testRunner.WhenAsync("I submit the sign in form", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -239,7 +239,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         [global::NUnit.Framework.CategoryAttribute("smoke")]
         [global::NUnit.Framework.TestCaseAttribute("<empty>", "ValidPassword123", "Enter an email address", "email", "3", null)]
         [global::NUnit.Framework.TestCaseAttribute("user@example.com", "<empty>", "Enter a password", "password", "4", null)]
-        [global::NUnit.Framework.TestCaseAttribute("invalid-email", "ValidPassword123", "Enter an email address in the correct format, like name@example.com", "email", "5", null)]
+        [global::NUnit.Framework.TestCaseAttribute("invalid@temp.org", "ValidPassword123", "Enter an email address in the correct format, like name@example.com", "email", "5", null)]
         [global::NUnit.Framework.TestCaseAttribute("user@example.com", "WrongPassword123", "The email address or password you entered is incorrect", "summary", "6", null)]
         public async global::System.Threading.Tasks.Task SignInValidationErrors(string email, string password, string errorMessage, string field, string @__pickleIndex, string[] exampleTags)
         {
@@ -270,7 +270,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 7
-  await this.FeatureBackgroundAsync();
+ await this.FeatureBackgroundAsync();
 #line hidden
 #line 31
 await testRunner.WhenAsync(string.Format("I enter \"{0}\" into the email address field", email), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -311,13 +311,13 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 7
-  await this.FeatureBackgroundAsync();
+ await this.FeatureBackgroundAsync();
 #line hidden
 #line 47
-  await testRunner.GivenAsync("a locked account exists for \"user@example.com\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+  await testRunner.GivenAsync("a locked account exists for \"locked@temp.org\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 48
-  await testRunner.WhenAsync("I enter \"user@example.com\" into the email address field", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+  await testRunner.WhenAsync("I enter \"locked@temp.org\" into the email address field", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 49
   await testRunner.AndAsync("I enter \"ValidPassword123\" into the password field", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");

@@ -3,6 +3,6 @@
 public interface ISection187Page
 {
     void AttachTo(IPage page);
-    Task VerifySection187PageContentAsync();
+    Task VerifyThatSection187PageIsDisplayedAsync();
 
 }

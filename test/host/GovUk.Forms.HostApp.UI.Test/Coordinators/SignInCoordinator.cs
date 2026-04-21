@@ -7,7 +7,7 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
     public async Task NavigateToSignInPageAsync()
     {
         await startPage.ClickOnStartNowAsync();
-        await signInPage.VerifySignInPageIsDisplayedAsync();
+        await VerifyThatSignInPageIsDisplayedAsync();
     }
 
     public async Task SignInToServiceAsync(string email, string password)
@@ -72,5 +72,10 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
             default:
                 throw new ArgumentException($"Unsupported field: {field}");
         }
+    }
+
+    public async Task VerifyThatSignInPageIsDisplayedAsync()
+    {
+        await signInPage.VerifySignInPageIsDisplayedAsync();
     }
 }

@@ -18,8 +18,12 @@ public class StartPage : BasePage, IStartPage
 
     private new IPage Page => _playwrightDriver.Page;
     private ILocator Heading => Page.GetByRole(AriaRole.Heading, new() { Name = StartPageLocators.Labels.Heading });
+    private ILocator BeforeYouStartText => Page.GetByRole(AriaRole.Heading, new() { Name = StartPageLocators.Labels.BeforeYouStartText });
     private ILocator StartNowButton => Page.GetByRole(AriaRole.Button, new() { Name = StartPageLocators.Labels.StartNowButton });
     private ILocator FeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = StartPageLocators.Labels.FeedbackLink });
+    private ILocator UploadRedundancyPaymentFormsLink => Page.GetByRole(AriaRole.Link, new() { Name = StartPageLocators.Labels.UploadRedundancyPaymentFormsLink });
+    private ILocator OnceLoggedInText => Page.GetByText(StartPageLocators.Labels.OnceLoggedInText, new() { Exact = true });
+    private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SignInLocators.Labels.GOVUKLink });
 
     public async Task ClickOnStartNowAsync()
     {
@@ -46,7 +50,17 @@ public class StartPage : BasePage, IStartPage
 
     protected override async Task PageContentLoadedAsync()
     {
+        await Expect(GOVUKLink).ToBeVisibleAsync();
         await Expect(Heading).ToBeVisibleAsync();
         await Expect(StartNowButton).ToBeVisibleAsync();
+        await Expect(BeforeYouStartText).ToBeVisibleAsync();
+        await Expect(FeedbackLink).ToBeVisibleAsync();
+        await Expect(UploadRedundancyPaymentFormsLink).ToBeVisibleAsync();
+        await Expect(OnceLoggedInText).ToBeVisibleAsync();
+    }
+
+    public async Task VerifyStartPageIsDisplayedAsync()
+    {
+        await PageContentLoadedAsync();
     }
 }

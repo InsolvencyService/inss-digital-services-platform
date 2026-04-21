@@ -1,11 +1,11 @@
 ﻿Feature: SignIn
 
-  As a user
-  I want to sign in to the RP14/A service
-  So that I can access my account securely
+An an Insolvency Practitioner
+I want to sign in to IPUS
+So I can upload an RP14/14A
 
-  Background: 
-  Given I am on the sign in page
+ Background: 
+ Given I am on the sign in page
 
 @smoke
 Scenario: Successful sign in with valid credentials
@@ -37,15 +37,15 @@ Examples:
   | email            | password         | errorMessage                                                        | field    |
   | <empty>          | ValidPassword123 | Enter an email address                                              | email    |
   | user@example.com | <empty>          | Enter a password                                                    | password |
-  | invalid-email    | ValidPassword123 | Enter an email address in the correct format, like name@example.com | email    |
+  | invalid@temp.org | ValidPassword123 | Enter an email address in the correct format, like name@example.com | email    |
   | user@example.com | WrongPassword123 | The email address or password you entered is incorrect              | summary  |
 
 
 
 @ignore
 Scenario: Display error when a locked account attempts to sign in
-  Given a locked account exists for "user@example.com"
-  When I enter "user@example.com" into the email address field
+  Given a locked account exists for "locked@temp.org"
+  When I enter "locked@temp.org" into the email address field
   And I enter "ValidPassword123" into the password field
   And I choose to sign in
   Then I should see the error message "Your account has been locked"

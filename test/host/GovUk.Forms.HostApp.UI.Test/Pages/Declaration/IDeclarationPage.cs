@@ -4,5 +4,7 @@ public interface IDeclarationPage
 {
     Task WaitForPageToLoadAsync();
     Task<IPage> ClickOnSection187LinkAsync();
+    Task ClickOnBackButtonAsync();
+    Task ClickOnAgreeAndContinueButtonAsync();
 }
 

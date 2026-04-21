@@ -1,5 +1,6 @@
 ﻿
 using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 
 namespace GovUk.Forms.HostApp.UI.Test.Pages.Login;
 
@@ -19,19 +20,26 @@ public class SignInPage : BasePage, ISignInPage
     private ILocator ShowPasswordButton => Page.GetByRole(AriaRole.Button, new() { Name = SignInLocators.Labels.ShowPasswordButton });
     private ILocator SignInButton => Page.GetByRole(AriaRole.Button, new() { Name = SignInLocators.Labels.SignInButton });
     private ILocator ForgotPasswordLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.ForgotPasswordLink });
-    private ILocator BackLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.BackLink });
-    private ILocator ErrorSummary => Page.Locator(".govuk-error-summary");
+    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
+    private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SharedLoactors.GOVUKLink });
+    private ILocator UploadRedundancyPaymentFormsLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.UploadRedundancyPaymentForms });
+    private ILocator ErrorSummary => Page.Locator(SignInLocators.Selectors.ErrorSummary);
     private ILocator ErrorSummaryItems => ErrorSummary.GetByRole(AriaRole.Link);
-
-    private ILocator EmailError => Page.Locator("#Email_Value-error");
-    private ILocator PasswordError => Page.Locator("#Password-error");
+    private ILocator EmailError => Page.Locator(SignInLocators.Selectors.EmailError);
+    private ILocator PasswordError => Page.Locator(SignInLocators.Selectors.PasswordError);
+    private ILocator BetaText => Page.GetByText(SharedLoactors.Beta, new() { Exact = true });
 
     protected override async Task PageContentLoadedAsync()
     {
+        await Expect(GOVUKLink).ToBeVisibleAsync();
+        await Expect(BetaText).ToBeVisibleAsync();
         await Expect(Heading).ToBeVisibleAsync();
         await Expect(EmailInput).ToBeVisibleAsync();
         await Expect(PasswordInput).ToBeVisibleAsync();
         await Expect(SignInButton).ToBeVisibleAsync();
+        await Expect(UploadRedundancyPaymentFormsLink).ToBeVisibleAsync();
+        await Expect(BackButton).ToBeVisibleAsync();
+        await Expect(ForgotPasswordLink).ToBeVisibleAsync();
     }
 
     public async Task VerifySignInPageIsDisplayedAsync()
@@ -81,7 +89,7 @@ public class SignInPage : BasePage, ISignInPage
 
     public async Task ClickBackAsync()
     {
-        await BackLink.ClickAsync();
+        await BackButton.ClickAsync();
     }
 
     public async Task<string> GetEmailValueAsync()
@@ -98,7 +106,7 @@ public class SignInPage : BasePage, ISignInPage
     {
         string? type = await PasswordInput.GetAttributeAsync("type");
 
-        if (!string.Equals(type, "password", StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(type, SignInLocators.password, StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException(
                 $"Expected password field type to be 'password' but found '{type}'.");
@@ -109,7 +117,7 @@ public class SignInPage : BasePage, ISignInPage
     {
         string? type = await PasswordInput.GetAttributeAsync("type");
 
-        if (!string.Equals(type, "text", StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(type, SignInLocators.text, StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException(
                 $"Expected password field type to be 'text' but found '{type}'.");

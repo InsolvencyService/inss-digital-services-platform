@@ -5,4 +5,5 @@ public interface IStartPage
     Task ClickOnStartNowAsync();
     Task<IPage> ClickOnFeedbackAsync();
     Task<string> GetHeadingTextAsync();
+    Task VerifyStartPageIsDisplayedAsync();
 }
