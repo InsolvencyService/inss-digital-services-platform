@@ -76,6 +76,6 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
 
     public async Task VerifyThatSignInPageIsDisplayedAsync()
     {
-        await signInPage.VerifySignInPageIsDisplayedAsync();
+        await signInPage.WaitForPageToLoadAsync();
     }
 }

@@ -122,13 +122,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Verify that section 187 page is accessible from declaration page")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
-        [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
         public async global::System.Threading.Tasks.Task VerifyThatSection187PageIsAccessibleFromDeclarationPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "smoke",
-                    "MEDS-1061"};
+                    "functional"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify that section 187 page is accessible from declaration page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
@@ -159,12 +157,12 @@ await this.FeatureBackgroundAsync();
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Navigate to file upload page after agreeing")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
         [global::NUnit.Framework.CategoryAttribute("addScreencast")]
         public async global::System.Threading.Tasks.Task NavigateToFileUploadPageAfterAgreeing()
         {
             string[] tagsOfScenario = new string[] {
-                    "smoke",
+                    "functional",
                     "addScreencast"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
@@ -196,11 +194,11 @@ await this.FeatureBackgroundAsync();
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Navigate back to start page")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
         public async global::System.Threading.Tasks.Task NavigateBackToStartPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "smoke"};
+                    "functional"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigate back to start page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
@@ -232,11 +230,11 @@ await this.FeatureBackgroundAsync();
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("View declaration terms")]
         [global::NUnit.Framework.IgnoreAttribute("Ignored scenario")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
         public async global::System.Threading.Tasks.Task ViewDeclarationTerms()
         {
             string[] tagsOfScenario = new string[] {
-                    "smoke",
+                    "functional",
                     "ignore"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";

@@ -64,6 +64,4 @@ public class DeclarationSteps
         await _uploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
     }
 
-
-
 }

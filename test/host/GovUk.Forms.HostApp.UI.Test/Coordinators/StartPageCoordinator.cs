@@ -12,13 +12,13 @@ public class StartPageCoordinator(
 
     public async Task VerifyStartPageIsDisplayedAsync()
     {
-        await startPage.VerifyStartPageIsDisplayedAsync();
+        await startPage.WaitForPageToLoadAsync();
     }
 
     public async Task NavigateToLoginPageAsync()
     {
         await startPage.ClickOnStartNowAsync();
-        await signInPage.VerifySignInPageIsDisplayedAsync();
+        await signInPage.WaitForPageToLoadAsync();
     }
 
     public async Task NavigateToFeedbackPageAsync()
@@ -40,6 +40,11 @@ public class StartPageCoordinator(
         string originalPageUrl = await startPage.GetHeadingTextAsync();
         string newPageUrl = feedbackPage.Url;
         Assert.That(newPageUrl, Is.Not.EqualTo(originalPageUrl), "A new browser tab was not opened.");
+    }
+
+    public async Task<string> CaptureStartPageVisualAsync()
+    {
+        return await startPage.CaptureVisualAsync();
     }
 
 }

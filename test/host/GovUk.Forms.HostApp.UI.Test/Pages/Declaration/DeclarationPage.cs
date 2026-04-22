@@ -33,11 +33,11 @@ public class DeclarationPage : BasePage, IDeclarationPage
         await Page.WaitForLoadStateAsync(LoadState.Load);
         await Expect(GOVUKLink).ToBeVisibleAsync();
         await Expect(UploadRedundancyPaymentFormsLink).ToBeVisibleAsync();
+        await Expect(BackButton).ToBeVisibleAsync();
         await Expect(DeclarationTitle).ToBeVisibleAsync();
         await Expect(DeclarationTitle).ToHaveTextAsync(DeclarationLocators.Labels.DeclarationTitle);
         await Expect(Section187Link).ToBeVisibleAsync();
         await Expect(Section187Link).ToBeEnabledAsync();
-        await Expect(BackButton).ToBeVisibleAsync();
         await Expect(AgreeAndContinueButton).ToBeVisibleAsync();
     }
 

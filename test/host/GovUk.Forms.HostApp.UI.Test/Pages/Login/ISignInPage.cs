@@ -12,7 +12,7 @@ public interface ISignInPage
 
     Task<string> GetEmailValueAsync();
     Task<string> GetPasswordValueAsync();
-    Task VerifySignInPageIsDisplayedAsync();
+    Task WaitForPageToLoadAsync();
     Task VerifyPasswordIsMaskedAsync();
     Task VerifyPasswordIsVisibleAsync();
     Task VerifyErrorMessagesAsync(List<string> expectedMessages);

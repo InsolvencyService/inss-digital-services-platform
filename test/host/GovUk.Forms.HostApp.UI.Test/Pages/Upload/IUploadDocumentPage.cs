@@ -2,7 +2,7 @@
 
 public interface IUploadDocumentPage
 {
-    Task VerifyUploadDocumentPageIsDisplayedAsync();
+    Task WaitForPageToLoadAsync();
     Task ClickOnContinueButtonAsync();
     Task ClickOnBackButtonAsync();
     Task<IPage> ClickOnGiveFeedbackLinkAsync();

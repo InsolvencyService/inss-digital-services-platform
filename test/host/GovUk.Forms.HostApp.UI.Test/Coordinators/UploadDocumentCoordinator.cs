@@ -7,7 +7,7 @@ public class UploadDocumentCoordinator(IUploadDocumentPage uploadDocumentPage, S
 
     public async Task VerifyUploadDocumentPageIsDisplayedAsync()
     {
-        await uploadDocumentPage.VerifyUploadDocumentPageIsDisplayedAsync();
+        await uploadDocumentPage.WaitForPageToLoadAsync();
     }
 
     public async Task ClickOnContinueButtonAsync()

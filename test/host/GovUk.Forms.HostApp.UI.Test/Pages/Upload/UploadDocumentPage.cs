@@ -49,25 +49,21 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
         await Expect(ContinueButton).ToBeVisibleAsync();
     }
 
-    public async Task VerifyUploadDocumentPageIsDisplayedAsync()
-    {
-        await WaitForPageToLoadAsync();
-    }
 
     public async Task ClickOnContinueButtonAsync()
     {
-        await VerifyUploadDocumentPageIsDisplayedAsync();
+        await WaitForPageToLoadAsync();
         await ContinueButton.ClickAsync();
     }
     public async Task ClickOnBackButtonAsync()
     {
-        await VerifyUploadDocumentPageIsDisplayedAsync();
+        await WaitForPageToLoadAsync();
         await BackButton.ClickAsync();
     }
 
     public async Task<IPage> ClickOnGiveFeedbackLinkAsync()
     {
-        await VerifyUploadDocumentPageIsDisplayedAsync();
+        await WaitForPageToLoadAsync();
         IPage page = await _commonPage.OpenNewTabAndVerifyAsync(
             Page.Context,
             () => GiveFeedbackLink.ClickAsync(),
@@ -78,14 +74,14 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     public async Task ExpandCommonIssuesWhenUploadingRP14AFormsAsync()
     {
-        await VerifyUploadDocumentPageIsDisplayedAsync();
+        await WaitForPageToLoadAsync();
         await CommonIssuesWhenUploadingRP14AForms.ClickAsync();
     }
 
     public async Task UploadFileAsync(string filePath)
     {
         ArgumentNullException.ThrowIfNull(filePath);
-        await VerifyUploadDocumentPageIsDisplayedAsync();
+        await WaitForPageToLoadAsync();
         await FileUploadInput.SetInputFilesAsync(filePath);
     }
 

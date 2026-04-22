@@ -104,26 +104,35 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
             await testRunner.CollectScenarioErrorsAsync();
         }
         
+        public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
+        {
+#line 6
+#line hidden
+#line 7
+ await testRunner.GivenAsync("the user is on the IPUS start page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+        }
+        
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/StartPageNavigation.feature.ndjson", 4);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/StartPageNavigation.feature.ndjson", 5);
         }
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("User accesses customer feedback from the start page")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
         [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
         public async global::System.Threading.Tasks.Task UserAccessesCustomerFeedbackFromTheStartPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "smoke",
+                    "functional",
                     "MEDS-1061"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("User accesses customer feedback from the start page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 8
+#line 9
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -133,8 +142,8 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 9
-    await testRunner.GivenAsync("the user is on the IPUS start page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
 #line 10
     await testRunner.WhenAsync("the user chooses to provide feedback", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -152,12 +161,12 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Start the service from the start page")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
         [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
         public async global::System.Threading.Tasks.Task StartTheServiceFromTheStartPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "smoke",
+                    "functional",
                     "MEDS-1061"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
@@ -174,14 +183,48 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 16
-  await testRunner.GivenAsync("the user is on the IPUS start page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 17
+#line 16
   await testRunner.WhenAsync("the user chooses to start the application", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 18
+#line 17
   await testRunner.ThenAsync("the user is redirected to the sign-in page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Verify Start Page visual snapshot")]
+        [global::NUnit.Framework.CategoryAttribute("visual")]
+        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        public async global::System.Threading.Tasks.Task VerifyStartPageVisualSnapshot()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "visual",
+                    "smoke"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify Start Page visual snapshot", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 21
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 22
+  await testRunner.ThenAsync("the start page should match the visual snapshot", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

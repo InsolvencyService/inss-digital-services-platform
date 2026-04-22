@@ -5,40 +5,40 @@ namespace GovUk.Forms.HostApp.UI.Test.Steps;
 [Binding]
 public class StartPageSteps
 {
-    private readonly StartPageCoordinator _homePageCoordinator;
+    private readonly StartPageCoordinator _startPageCoordinator;
     private readonly SignInCoordinator _signInCoordinator;
     public StartPageSteps(StartPageCoordinator homePageCoordinator, SignInCoordinator signInCoordinator)
     {
-        _homePageCoordinator = homePageCoordinator;
+        _startPageCoordinator = homePageCoordinator;
         _signInCoordinator = signInCoordinator;
     }
     [Given("the user is on the IPUS start page")]
     public async Task GivenTheUserIsOnTheIPUSStartPage()
     {
-        await _homePageCoordinator.VerifyStartPageIsDisplayedAsync();
+        await _startPageCoordinator.VerifyStartPageIsDisplayedAsync();
     }
 
     [When("the user chooses to provide feedback")]
     public async Task WhenTheUserChoosesToProvideFeedback()
     {
-        await _homePageCoordinator.NavigateToFeedbackPageAsync();
+        await _startPageCoordinator.NavigateToFeedbackPageAsync();
     }
     [When("the user chooses to start the application")]
     public async Task WhenTheUserChoosesToStartTheApplication()
     {
-        await _homePageCoordinator.NavigateToLoginPageAsync();
+        await _startPageCoordinator.NavigateToLoginPageAsync();
     }
 
     [Then("a new browser tab should be opened")]
     public async Task ThenANewBrowserTabShouldBeOpened()
     {
-        await _homePageCoordinator.VerifyNewBrowserTabIsOpenedAsync();
+        await _startPageCoordinator.VerifyNewBrowserTabIsOpenedAsync();
     }
 
     [Then("the Director Conduct Reporting Service customer feedback page should be displayed")]
     public async Task ThenTheDirectorConductReportingServiceCustomerFeedbackPageShouldBeDisplayed()
     {
-        await _homePageCoordinator.VerifyDirectorConductReportingServicePageIsDisplayedAsync();
+        await _startPageCoordinator.VerifyDirectorConductReportingServicePageIsDisplayedAsync();
     }
 
     [Then("the user is redirected to the sign-in page")]
@@ -46,5 +46,16 @@ public class StartPageSteps
     {
         await _signInCoordinator.VerifyThatSignInPageIsDisplayedAsync();
     }
+
+    [Then("the start page should match the visual snapshot")]
+    public async Task ThenTheStartPageShouldMatchTheVisualSnapshot()
+    {
+        string screenshotPath = await _startPageCoordinator.CaptureStartPageVisualAsync();
+
+        await VerifyFile(screenshotPath)
+        .UseDirectory("SnapShots")
+        .UseFileName("StartPage"); ;
+    }
+
 
 }

@@ -42,11 +42,6 @@ public class SignInPage : BasePage, ISignInPage
         await Expect(ForgotPasswordLink).ToBeVisibleAsync();
     }
 
-    public async Task VerifySignInPageIsDisplayedAsync()
-    {
-        await WaitForPageToLoadAsync();
-    }
-
     public async Task EnterEmailAsync(string email)
     {
         ArgumentNullException.ThrowIfNull(email);
