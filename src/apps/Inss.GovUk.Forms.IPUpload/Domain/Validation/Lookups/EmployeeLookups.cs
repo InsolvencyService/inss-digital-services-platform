@@ -15,7 +15,7 @@ internal sealed class EmployeeLookups : Dictionary<string, ErrorInfoHeader>
         
         this["InvalidFormatEmployeeAOP"] = new ErrorInfoHeader
         {
-            Category = "Employee", Property = "Arrears of payment owed", Error = "[COUNT] invalid arrears of pay owed", Hint = "Expected format is 12.34 or 100"
+            Category = "Employee", Property = "Employee arrears of payment owed", Error = "[COUNT] invalid arrears of pay owed", Hint = "Expected format is 12.34 or 100"
         };
         
         this["MissingEmployeeNino"] = new ErrorInfoHeader
@@ -39,7 +39,7 @@ internal sealed class EmployeeLookups : Dictionary<string, ErrorInfoHeader>
         
         this["AOPEndBeforeStartDate"] = new ErrorInfoHeader
         {
-            Category = "Employee", Property = "Arrears of payment dates", Error = "[COUNT] invalid arrears of dates", Hint = "Start date must be before the end date"
+            Category = "Employee", Property = "Employee arrears of payment dates", Error = "[COUNT] invalid arrears of dates", Hint = "Start date must be before the end date"
         };
     }
 }

@@ -9,6 +9,7 @@
 
 // Schema: https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.Common/Models/Schemas/RP14A.xsd
 
+using System.ComponentModel.DataAnnotations;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Attributes;
 
@@ -251,7 +252,7 @@ public partial class NameType
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "www.inss.gsi.gov.uk/RP14A_Application")]
-public partial class RP14AEmployee
+public partial class RP14AEmployee : IValidatableObject
 {
 
     private NameType employeeNameField;
@@ -614,6 +615,22 @@ public partial class RP14AEmployee
             this.holidayField = value;
         }
     }
+    
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (StartDate > EndDate)
+        {
+            ValidationResult result = validationContext.CreateValidationResult(
+                "EmploymentEndBeforeStartDate", 
+                "EmploymentEndBeforeStartDate",
+                [nameof(StartDate), nameof(EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
+        }
+    }
 }
 
 /// <remarks/>
@@ -927,7 +944,7 @@ public enum RP14AEmployeePayDetailsWeeklyPayDay
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "www.inss.gsi.gov.uk/RP14A_Application")]
-public partial class RP14AEmployeePayDetailsArrearsOfPayPeriod
+public partial class RP14AEmployeePayDetailsArrearsOfPayPeriod : IValidatableObject
 {
 
     private PeriodType periodField;
@@ -1007,6 +1024,22 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayPeriod
             this.payTypeFieldSpecified = value;
         }
     }
+    
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (Period.StartDate > Period.EndDate)
+        {
+            ValidationResult result = validationContext.CreateValidationResult(
+                "AOPEndBeforeStartDate", 
+                "AOPEndBeforeStartDate",
+                [nameof(Period.StartDate), nameof(Period.EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
+        }
+    }
 }
 
 /// <remarks/>
@@ -1038,7 +1071,7 @@ public enum RP14AEmployeePayDetailsArrearsOfPayPeriodPayType
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "www.inss.gsi.gov.uk/RP14A_Application")]
-public partial class RP14AEmployeeHoliday
+public partial class RP14AEmployeeHoliday : IValidatableObject
 {
 
     private System.DateTime holidayYearStartField;
@@ -1157,5 +1190,24 @@ public partial class RP14AEmployeeHoliday
     {
         get { return this.noDaysHolidayOwedFieldSpecified; }
         set { this.noDaysHolidayOwedFieldSpecified = value; }
+    }
+    
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        for (int i = 0; i < HolidayNotPaid.Length; i++)
+        {
+            if (HolidayNotPaid[i].StartDate > HolidayNotPaid[i].EndDate)
+            {
+                ValidationResult result = validationContext.CreateValidationResult(
+                    "HolidayNotPaidEndBeforeStartDate",
+                    $"HolidayNotPaidEndBeforeStartDate{i}",
+                    [nameof(HolidayNotPaid)]);
+
+                if (result is not null)
+                {
+                    yield return result;
+                }
+            }
+        }
     }
 }

@@ -55,5 +55,10 @@ internal sealed class EmployeeHolidayLookups : Dictionary<string, ErrorInfoHeade
         {
             Category = "Employee holiday", Property = "Holiday owed", Error = "[COUNT] invalid range of holiday owed", Hint = "0 to 365 days allowed"
         };
+        
+        this["HolidayNotPaidEndBeforeStartDate"] = new ErrorInfoHeader
+        {
+            Category = "Employee holiday", Property = "Holiday not paid", Error = "[COUNT] invalid holiday not paid of dates", Hint = "Start date must be before the end date"
+        };
     }
 }

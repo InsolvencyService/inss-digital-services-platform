@@ -451,7 +451,15 @@ public partial class RP14AEmployee : IValidatableObject
     {
         if (StartDate > EndDate)
         {
-            yield return new ValidationResult("EmploymentEndBeforeStartDate", [nameof(StartDate), nameof(EndDate)]);
+            ValidationResult result = validationContext.CreateValidationResult(
+                "EmploymentEndBeforeStartDate", 
+                "EmploymentEndBeforeStartDate",
+                [nameof(StartDate), nameof(EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
         }
     }
 }
@@ -1735,7 +1743,15 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1 : IV
     {
         if (AOP1StartDate > AOP1EndDate)
         {
-            yield return new ValidationResult("AOPEndBeforeStartDate", [nameof(AOP1StartDate), nameof(AOP1EndDate)]);
+            ValidationResult result = validationContext.CreateValidationResult(
+                "AOPEndBeforeStartDate", 
+                "AOPEndBeforeStartDate1",
+                [nameof(AOP1StartDate), nameof(AOP1EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
         }
     }
 }
@@ -1903,10 +1919,14 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2 : IV
     {
         if (AOP2StartDate > AOP2EndDate)
         {
-            if (!validationContext.Items.ContainsKey("XXX"))
+            ValidationResult result = validationContext.CreateValidationResult(
+                "AOPEndBeforeStartDate", 
+                "AOPEndBeforeStartDate2",
+                [nameof(AOP2StartDate), nameof(AOP2EndDate)]);
+
+            if (result is not null)
             {
-                validationContext.Items["XXX"] = true;
-                yield return new ValidationResult("AOPEndBeforeStartDate", [nameof(AOP2StartDate), nameof(AOP2EndDate)]);
+                yield return result;
             }
         }
     }
@@ -2075,7 +2095,15 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3 : IV
     {
         if (AOP3StartDate > AOP3EndDate)
         {
-            yield return new ValidationResult("AOPEndBeforeStartDate", [nameof(AOP3StartDate), nameof(AOP3EndDate)]);
+            ValidationResult result = validationContext.CreateValidationResult(
+                "AOPEndBeforeStartDate", 
+                "AOPEndBeforeStartDate3",
+                [nameof(AOP3StartDate), nameof(AOP3EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
         }
     }
 }
@@ -2243,7 +2271,15 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4 : IV
     {
         if (AOP4StartDate > AOP4EndDate)
         {
-            yield return new ValidationResult("AOPEndBeforeStartDate", [nameof(AOP4StartDate), nameof(AOP4EndDate)]);
+            ValidationResult result = validationContext.CreateValidationResult(
+                "AOPEndBeforeStartDate", 
+                "AOPEndBeforeStartDate4",
+                [nameof(AOP4StartDate), nameof(AOP4EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
         }
     }
 }
@@ -2525,7 +2561,7 @@ public partial class RP14AEmployeeHolidayHolidayNotPaid
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1
+public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1 : IValidatableObject
 {
 
     private System.DateTime holiday1StartDateField;
@@ -2591,6 +2627,22 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1
             this.holiday1EndDateFieldSpecified = value;
         }
     }
+    
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (Holiday1StartDate > Holiday1EndDate)
+        {
+            ValidationResult result = validationContext.CreateValidationResult(
+                "HolidayNotPaidEndBeforeStartDate", 
+                "HolidayNotPaidEndBeforeStartDate1",
+                [nameof(Holiday1StartDate), nameof(Holiday1EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
+        }
+    }
 }
 
 /// <remarks/>
@@ -2599,7 +2651,7 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2
+public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2 : IValidatableObject
 {
 
     private System.DateTime holiday2StartDateField;
@@ -2665,6 +2717,22 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2
             this.holiday2EndDateFieldSpecified = value;
         }
     }
+    
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (Holiday2StartDate > Holiday2EndDate)
+        {
+            ValidationResult result = validationContext.CreateValidationResult(
+                "HolidayNotPaidEndBeforeStartDate", 
+                "HolidayNotPaidEndBeforeStartDate2",
+                [nameof(Holiday2StartDate), nameof(Holiday2EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
+        }
+    }
 }
 
 /// <remarks/>
@@ -2673,7 +2741,7 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3
+public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3 : IValidatableObject
 {
 
     private System.DateTime holiday3StartDateField;
@@ -2714,5 +2782,21 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3
     {
         get { return this.holiday3EndDateFieldSpecified; }
         set { this.holiday3EndDateFieldSpecified = value; }
+    }
+    
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (Holiday3StartDate > Holiday3EndDate)
+        {
+            ValidationResult result = validationContext.CreateValidationResult(
+                "HolidayNotPaidEndBeforeStartDate", 
+                "HolidayNotPaidEndBeforeStartDate3",
+                [nameof(Holiday3StartDate), nameof(Holiday3EndDate)]);
+
+            if (result is not null)
+            {
+                yield return result;
+            }
+        }
     }
 }
