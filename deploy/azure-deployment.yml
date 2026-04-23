@@ -22,7 +22,7 @@ jobs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 appType: 'webApp'
                 WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
                 package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
                 deployToSlotOrASE: true
                 slotName: 'staging'
@@ -50,7 +50,7 @@ jobs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 Action: 'Start Azure App Service'
                 WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
                 SpecifySlotOrASE: true
                 Slot: 'staging'
 
@@ -60,7 +60,7 @@ jobs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 Action: 'Start Azure App Service'
                 WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-dsp-prototype' #'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
                 SpecifySlotOrASE: true
                 Slot: 'Production'
 
@@ -83,7 +83,7 @@ jobs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 Action: 'Swap Slots'
                 WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
                 SourceSlot: 'staging'
                 SwapWithProduction: true
             
