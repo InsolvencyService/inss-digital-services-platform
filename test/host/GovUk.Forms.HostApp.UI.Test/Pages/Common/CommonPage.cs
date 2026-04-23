@@ -44,4 +44,18 @@ public class CommonPage : ICommonPage
 
         return screenshotPath;
     }
+
+
+    public async Task<IResponse> PageGoForwardAsync(IPage page, PageGoForwardOptions? options = null)
+    {
+        IResponse? response = await page.GoForwardAsync(options);
+
+        return response ?? throw new InvalidOperationException("No response received when navigating forward.");
+    }
+
+    public async Task<IResponse> PageGoBackAsync(IPage page, PageGoBackOptions? options = null)
+    {
+        IResponse? response = await page.GoBackAsync(options);
+        return response ?? throw new InvalidOperationException("No response received when navigating back.");
+    }
 }

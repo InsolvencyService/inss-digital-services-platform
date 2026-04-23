@@ -11,4 +11,11 @@ public class BaseCoordinator
 
         return page ?? throw new InvalidOperationException("Navigation did not return a valid page.");
     }
+
+    public static async Task<string> CapturePageVisualAsync(
+       Func<string, Task<string>> captureAction,
+       string name)
+    {
+        return await captureAction(name);
+    }
 }

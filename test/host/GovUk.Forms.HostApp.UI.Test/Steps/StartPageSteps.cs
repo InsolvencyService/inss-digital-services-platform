@@ -1,4 +1,5 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
+using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -7,7 +8,9 @@ public class StartPageSteps
 {
     private readonly StartPageCoordinator _startPageCoordinator;
     private readonly SignInCoordinator _signInCoordinator;
-    public StartPageSteps(StartPageCoordinator homePageCoordinator, SignInCoordinator signInCoordinator)
+    public StartPageSteps(
+        StartPageCoordinator homePageCoordinator,
+        SignInCoordinator signInCoordinator)
     {
         _startPageCoordinator = homePageCoordinator;
         _signInCoordinator = signInCoordinator;
@@ -27,6 +30,12 @@ public class StartPageSteps
     public async Task WhenTheUserChoosesToStartTheApplication()
     {
         await _startPageCoordinator.NavigateToLoginPageAsync();
+    }
+
+    [When("the use chooses to open {string} in the footer")]
+    public async Task WhenTheUseChoosesToOpenInTheFooter(string linkText)
+    {
+        await _startPageCoordinator.ClickOnFooterLinkAsync(linkText);
     }
 
     [Then("a new browser tab should be opened")]
@@ -53,9 +62,16 @@ public class StartPageSteps
         string screenshotPath = await _startPageCoordinator.CaptureStartPageVisualAsync();
 
         await VerifyFile(screenshotPath)
-        .UseDirectory("SnapShots")
-        .UseFileName("StartPage"); ;
+        .UseDirectory(ScenarioConstant.SnapShots)
+        .UseFileName(ScenarioConstant.StartPage); ;
     }
+
+    [Then("a new page should open with title {string} with url containing {string}")]
+    public async Task ThenANewPageShouldOpenWithTitleWithUrlContaining(string title, string url)
+    {
+        await _startPageCoordinator.VerifyFooterLinkNavigationAsync(title, url);
+    }
+
 
 
 }

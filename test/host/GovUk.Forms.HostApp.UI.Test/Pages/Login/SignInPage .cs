@@ -131,7 +131,7 @@ public class SignInPage : BasePage, ISignInPage
         await Expect(PasswordError).ToContainTextAsync(expectedMessage);
     }
 
-    public async Task VerifyFieldErrorsAsync()
+    public async Task VerifyEmailAndPasswordFieldErrorsAsync()
     {
         await Expect(EmailError).ToBeVisibleAsync();
         await Expect(PasswordError).ToBeVisibleAsync();

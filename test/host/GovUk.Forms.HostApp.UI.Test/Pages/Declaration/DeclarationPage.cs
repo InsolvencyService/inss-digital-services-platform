@@ -15,17 +15,12 @@ public class DeclarationPage : BasePage, IDeclarationPage
         _commonPage = commonPage;
     }
 
-    private new IPage Page => _playwrightDriver.Page;
+    protected new IPage Page => _playwrightDriver.Page;
 
-    private ILocator DeclarationTitle =>
-        Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.DeclarationTitle });
-
-    private ILocator Section187Link =>
-        Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.Section187Link });
-    private ILocator BackButton =>
-        Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
-    private ILocator AgreeAndContinueButton =>
-        Page.GetByRole(AriaRole.Button, new() { Name = DeclarationLocators.Labels.AgreeAndContinueButton });
+    private ILocator DeclarationTitle => Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.DeclarationTitle });
+    private ILocator Section187Link => Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.Section187Link });
+    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
+    private ILocator AgreeAndContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = DeclarationLocators.Labels.AgreeAndContinueButton });
     private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SharedLoactors.GOVUKLink });
     private ILocator UploadRedundancyPaymentFormsLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.UploadRedundancyPaymentForms });
     protected override async Task PageContentLoadedAsync()
@@ -62,5 +57,19 @@ public class DeclarationPage : BasePage, IDeclarationPage
     {
         await PageContentLoadedAsync();
         await AgreeAndContinueButton.ClickAsync();
+    }
+
+    public async Task<string> CaptureVisualAsync()
+    {
+        await PageContentLoadedAsync();
+        return await _commonPage.CaptureVisualAsync(Page, ScenarioConstant.DeclarationPage);
+
+    }
+
+    public async Task<string> CapturePageVisualAsync(string name)
+    {
+        await PageContentLoadedAsync();
+        return await _commonPage.CaptureVisualAsync(Page, name);
+
     }
 }

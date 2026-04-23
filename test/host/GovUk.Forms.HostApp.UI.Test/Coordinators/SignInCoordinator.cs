@@ -47,10 +47,10 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
         await signInPage.SubmitAsync();
     }
 
-    public async Task VerifyErrorMessagesAsync(List<string> expectedMessages)
+    public async Task VerifyThatSummaryAndFieldsErrorMessagesAreDisplayedAsync(List<string> expectedMessages)
     {
         await signInPage.VerifyErrorMessagesAsync(expectedMessages);
-        await signInPage.VerifyFieldErrorsAsync();
+        await signInPage.VerifyEmailAndPasswordFieldErrorsAsync();
     }
 
     public async Task VerifyFieldErrorAsync(string field, string expectedMessage)
@@ -77,5 +77,11 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
     public async Task VerifyThatSignInPageIsDisplayedAsync()
     {
         await signInPage.WaitForPageToLoadAsync();
+    }
+
+    public async Task VerifyThatAccountIsBlockedAsync(string errorMessage)
+    {
+        await signInPage.VerifyErrorMessagesAsync([errorMessage]);
+        await signInPage.VerifyEmailErrorAsync(errorMessage);
     }
 }

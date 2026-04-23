@@ -20,12 +20,14 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
     [global::NUnit.Framework.TestFixtureAttribute()]
     [global::NUnit.Framework.DescriptionAttribute("Start Page Navigation")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
+    [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
     public partial class StartPageNavigationFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
-        private static string[] featureTags = ((string[])(null));
+        private static string[] featureTags = new string[] {
+                "MEDS-1061"};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "Start Page Navigation", "As an Insolvency Practitioner\r\nI want to access the IPUS start page\r\nSo I can beg" +
                 "in the RP14/14A upload journey", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
@@ -106,33 +108,31 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         
         public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
         {
-#line 6
+#line 8
 #line hidden
-#line 7
+#line 9
  await testRunner.GivenAsync("the user is on the IPUS start page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/StartPageNavigation.feature.ndjson", 5);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/StartPageNavigation.feature.ndjson", 10);
         }
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("User accesses customer feedback from the start page")]
         [global::NUnit.Framework.CategoryAttribute("functional")]
-        [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
         public async global::System.Threading.Tasks.Task UserAccessesCustomerFeedbackFromTheStartPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "functional",
-                    "MEDS-1061"};
+                    "functional"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("User accesses customer feedback from the start page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 9
+#line 12
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -142,16 +142,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 6
+#line 8
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 10
+#line 13
     await testRunner.WhenAsync("the user chooses to provide feedback", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 11
+#line 14
     await testRunner.ThenAsync("a new browser tab should be opened", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 12
+#line 15
  await testRunner.AndAsync("the Director Conduct Reporting Service customer feedback page should be displayed" +
                         "", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
@@ -162,18 +162,16 @@ await this.FeatureBackgroundAsync();
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Start the service from the start page")]
         [global::NUnit.Framework.CategoryAttribute("functional")]
-        [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
         public async global::System.Threading.Tasks.Task StartTheServiceFromTheStartPage()
         {
             string[] tagsOfScenario = new string[] {
-                    "functional",
-                    "MEDS-1061"};
+                    "functional"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Start the service from the start page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 15
+#line 18
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -183,13 +181,13 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 6
+#line 8
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 16
+#line 19
   await testRunner.WhenAsync("the user chooses to start the application", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 17
+#line 20
   await testRunner.ThenAsync("the user is redirected to the sign-in page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -210,7 +208,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify Start Page visual snapshot", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 21
+#line 24
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -220,11 +218,61 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 6
+#line 8
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 22
+#line 25
   await testRunner.ThenAsync("the start page should match the visual snapshot", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Verify footer links navigate correctly")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
+        [global::NUnit.Framework.CategoryAttribute("footer")]
+        [global::NUnit.Framework.TestCaseAttribute("Privacy", "personal-information-charter", "Personal information charter - The Insolvency Service - GOV.UK", "3", null)]
+        [global::NUnit.Framework.TestCaseAttribute("Cookies", "cookies", "Cookies", "4", null)]
+        [global::NUnit.Framework.TestCaseAttribute("Contact us", "login", "Login", "5", null)]
+        [global::NUnit.Framework.TestCaseAttribute("Open Government Licence v3.0", "open-government-licence", "Open Government Licence", "6", null)]
+        [global::NUnit.Framework.TestCaseAttribute("Crown copyright", "crown-copyright", "Crown copyright - Re-using PSI", "7", null)]
+        public async global::System.Threading.Tasks.Task VerifyFooterLinksNavigateCorrectly(string linkName, string expectedUrl, string expectedTitle, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "functional",
+                    "footer"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("linkName", linkName);
+            argumentsOfScenario.Add("expectedUrl", expectedUrl);
+            argumentsOfScenario.Add("expectedTitle", expectedTitle);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify footer links navigate correctly", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 28
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 29
+  await testRunner.WhenAsync(string.Format("the use chooses to open \"{0}\" in the footer", linkName), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 30
+  await testRunner.ThenAsync(string.Format("a new page should open with title \"{0}\" with url containing \"{1}\"", expectedTitle, expectedUrl), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

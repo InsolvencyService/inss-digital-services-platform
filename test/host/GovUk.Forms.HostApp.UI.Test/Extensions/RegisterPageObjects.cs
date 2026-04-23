@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Pages.Common;
+﻿using GovUk.Forms.HostApp.UI.Test.Pages;
+using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
 using GovUk.Forms.HostApp.UI.Test.Pages.Login;
 using GovUk.Forms.HostApp.UI.Test.Pages.Upload;

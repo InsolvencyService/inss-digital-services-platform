@@ -46,6 +46,12 @@ public class DeclarationSteps
         await _declarationCoordinator.ReturnToStartPageAsync();
     }
 
+    [When("I am on the declaration page")]
+    public async Task WhenIAmOnTheDeclarationPage()
+    {
+        await _declarationCoordinator.VerifyDeclarationPageIsDisplayedAsync();
+    }
+
     [Then("I will be taken to the section 187 page")]
     public async Task ThenIWillBeTakenToThesectionPage()
     {
@@ -63,5 +69,15 @@ public class DeclarationSteps
     {
         await _uploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
     }
+
+    [Then("I will see the terms I need to agree to")]
+    public async Task ThenIWillSeeTheTermsINeedToAgreeTo()
+    {
+        string screenshotPath = await _declarationCoordinator.CaptureDeclarationPageVisualAsync();
+        await VerifyFile(screenshotPath)
+            .UseDirectory(ScenarioConstant.SnapShots)
+            .UseFileName(ScenarioConstant.DeclarationPage); ;
+    }
+
 
 }

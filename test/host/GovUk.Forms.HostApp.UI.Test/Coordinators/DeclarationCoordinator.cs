@@ -1,12 +1,11 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
-using GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
+﻿using GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
+using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 
 public class DeclarationCoordinator(
     IDeclarationPage declarationPage,
-    ISection187Page section187Page,
-    ScenarioContext scenarioContext)
+    ISection187Page section187Page) : BaseCoordinator
 {
 
     public async Task VerifyDeclarationPageIsDisplayedAsync()
@@ -32,14 +31,8 @@ public class DeclarationCoordinator(
     {
         await declarationPage.ClickOnAgreeAndContinueButtonAsync();
     }
-
-    public async Task ShowChapterAsync(string title, string description)
+    public async Task<string> CaptureDeclarationPageVisualAsync()
     {
-        ScreencastHelper screencast = (ScreencastHelper)scenarioContext["Screencast"];
-
-        await screencast.ShowChapterAsync(
-            title,
-            description);
-
+        return await CapturePageVisualAsync(declarationPage.CapturePageVisualAsync, ScenarioConstant.DeclarationPage);
     }
 }

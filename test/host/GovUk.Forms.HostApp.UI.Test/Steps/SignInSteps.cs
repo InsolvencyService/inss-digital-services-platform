@@ -68,7 +68,6 @@ public sealed class SignInSteps
         await _signInCoordinator.ClickSignInButtonAsync();
     }
 
-
     [Then("I should be on to view the declaration page")]
     public async Task ThenIShouldBeOnTheDeclarationPage()
     {
@@ -88,7 +87,7 @@ public sealed class SignInSteps
                     .Select(e => e.Message)
                     .ToList();
 
-        await _signInCoordinator.VerifyErrorMessagesAsync(errors);
+        await _signInCoordinator.VerifyThatSummaryAndFieldsErrorMessagesAreDisplayedAsync(errors);
 
     }
 
@@ -98,9 +97,10 @@ public sealed class SignInSteps
         await _signInCoordinator.VerifyFieldErrorAsync(field, errorMessage);
     }
 
-
-
-
-
+    [Then("I should see the error message {string}")]
+    public async Task ThenIShouldSeeTheErrorMessage(string errorMessage)
+    {
+        await _signInCoordinator.VerifyThatAccountIsBlockedAsync(errorMessage);
+    }
 
 }

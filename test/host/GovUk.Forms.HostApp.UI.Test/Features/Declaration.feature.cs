@@ -204,7 +204,7 @@ await this.FeatureBackgroundAsync();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigate back to start page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 21
+#line 22
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -217,10 +217,10 @@ await this.FeatureBackgroundAsync();
 #line 8
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 22
+#line 23
  await testRunner.WhenAsync("I choose to return to the start page", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 23
+#line 24
  await testRunner.ThenAsync("the start page should be displayed", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -229,19 +229,19 @@ await this.FeatureBackgroundAsync();
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("View declaration terms")]
-        [global::NUnit.Framework.IgnoreAttribute("Ignored scenario")]
-        [global::NUnit.Framework.CategoryAttribute("functional")]
+        [global::NUnit.Framework.CategoryAttribute("visual")]
+        [global::NUnit.Framework.CategoryAttribute("smoke")]
         public async global::System.Threading.Tasks.Task ViewDeclarationTerms()
         {
             string[] tagsOfScenario = new string[] {
-                    "functional",
-                    "ignore"};
+                    "visual",
+                    "smoke"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("View declaration terms", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 26
+#line 27
  this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -254,11 +254,8 @@ await this.FeatureBackgroundAsync();
 #line 8
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 27
-    await testRunner.GivenAsync("I am completing the IP Upload journey", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
 #line 28
-    await testRunner.WhenAsync("I land on the declaration page", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.WhenAsync("I am on the declaration page", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 29
     await testRunner.ThenAsync("I will see the terms I need to agree to", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");

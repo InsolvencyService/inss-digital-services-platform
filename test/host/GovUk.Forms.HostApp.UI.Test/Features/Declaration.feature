@@ -17,13 +17,13 @@ Scenario: Verify that section 187 page is accessible from declaration page
  Scenario: Navigate to file upload page after agreeing
     When I choose to Agree and continue
     Then I will be taken to the file upload page
+
 @functional
   Scenario: Navigate back to start page
 	When I choose to return to the start page
 	Then the start page should be displayed
 
-@functional @ignore
+@visual @smoke
  Scenario: View declaration terms
-    Given I am completing the IP Upload journey
-    When I land on the declaration page
+    When I am on the declaration page
     Then I will see the terms I need to agree to

@@ -9,18 +9,23 @@ public class StartPage : BasePage, IStartPage
 {
     private readonly IPlaywrightDriver _playwrightDriver;
     private readonly ICommonPage _commonPage;
+    private readonly ScenarioContext _scenarioContext;
 
-    public StartPage(IPlaywrightDriver playwrightDriver, ICommonPage commonPage)
+    public StartPage(IPlaywrightDriver playwrightDriver,
+        ICommonPage commonPage,
+        ScenarioContext scenarioContext)
     {
         _playwrightDriver = playwrightDriver;
         _commonPage = commonPage;
+        _scenarioContext = scenarioContext;
     }
 
-    private new IPage Page => _playwrightDriver.Page;
+    protected new IPage Page => _playwrightDriver.Page;
     private ILocator Heading => Page.GetByRole(AriaRole.Heading, new() { Name = StartPageLocators.Labels.Heading });
     private ILocator BeforeYouStartText => Page.GetByRole(AriaRole.Heading, new() { Name = StartPageLocators.Labels.BeforeYouStartText });
     private ILocator StartNowButton => Page.GetByRole(AriaRole.Button, new() { Name = StartPageLocators.Labels.StartNowButton });
     private ILocator FeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = StartPageLocators.Labels.FeedbackLink });
+    private ILocator GetLink(string linkText) => Page.GetByRole(AriaRole.Link, new() { Name = linkText });
     private ILocator UploadRedundancyPaymentFormsLink => Page.GetByRole(AriaRole.Link, new() { Name = StartPageLocators.Labels.UploadRedundancyPaymentFormsLink });
     private ILocator OnceLoggedInText => Page.GetByText(StartPageLocators.Labels.OnceLoggedInText, new() { Exact = true });
     private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SignInLocators.Labels.GOVUKLink });
@@ -58,11 +63,16 @@ public class StartPage : BasePage, IStartPage
         await Expect(UploadRedundancyPaymentFormsLink).ToBeVisibleAsync();
         await Expect(OnceLoggedInText).ToBeVisibleAsync();
     }
-    public async Task<string> CaptureVisualAsync()
+    public async Task<string> CaptureStartPageVisualAsync(string name)
     {
         await PageContentLoadedAsync();
-        return await _commonPage.CaptureVisualAsync(Page, "StartPage");
+        return await _commonPage.CaptureVisualAsync(Page, name);
 
+    }
+    public async Task ClickOnFooterLinkAsync(string linkText)
+    {
+        _scenarioContext.Set(Page);
+        await GetLink(linkText).ClickAsync();
     }
 
 
