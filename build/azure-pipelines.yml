@@ -75,7 +75,7 @@ stages:
   variables:
     - group: Host-Dev
   jobs:
-    - template: ./deploy/azure-deployment.yml
+    - template: ../deploy/azure-deployment.yml
       parameters:
         environment: 'Dev'
         azureSubscription: $(AzureSubscription)
