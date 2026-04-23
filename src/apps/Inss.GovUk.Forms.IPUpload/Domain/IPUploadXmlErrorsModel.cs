@@ -11,8 +11,6 @@ public sealed class IPUploadXmlErrorsModel : PageModel
 
     public bool HasErrors => _errors.Count > 0;
     
-    public ErrorInfo? CurrentErrorDetail { get; set; }
-    
     public void AddError(
         string firstName,
         string surname,
@@ -55,10 +53,5 @@ public sealed class IPUploadXmlErrorsModel : PageModel
     {
         IPUploadXmlErrorsModel ipUploadXmlErrors = target.As<IPUploadXmlErrorsModel>();
         ipUploadXmlErrors.Filename = Filename;
-    }
-    
-    public override string? GetButtonText()
-    {
-        return CurrentErrorDetail is null ? MetaData.SubmitButtonText : null;
     }
 }

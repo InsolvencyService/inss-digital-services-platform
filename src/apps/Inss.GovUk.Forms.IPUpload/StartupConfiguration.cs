@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Components;
 using GovUk.Forms.Components.Extensions;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Inss.GovUk.Forms.IPUpload;
 
+[ExcludeFromCodeCoverage]
 public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)

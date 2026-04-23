@@ -18,6 +18,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         NodeId declarationId = NodeId.New();
         NodeId fileUploadId = NodeId.New();
         NodeId fileUploadErrorId = NodeId.New();
+        NodeId fileUploadErrorDetailsId = NodeId.New();
         NodeId summaryId = NodeId.New();
         NodeId postSubmitSuccessId = NodeId.New();
         WebRoot webRoot = new();
@@ -28,6 +29,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         StaticHtmlModel declaration = section.Pages.GetFirstOf<StaticHtmlModel>();
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
         IPUploadXmlErrorsModel uploadErrors = section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
+        IPUploadXmlErrorDetailsModel errorDetails = section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         PostSubmitSuccessModel  postSubmitSuccess = section.Pages.GetFirstOf<PostSubmitSuccessModel>();
         
@@ -42,8 +44,11 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .WithValidator<FileUploadFlowNodeValidator>()
             .WithExecutor<FileUploadFlowNodeExecutor>()
             .Next()
-            .AddTransitionNode(fileUploadErrorId, uploadErrors.Path, fileUploadId)
+            .AddSpurNode(fileUploadErrorId, uploadErrors.Path, fileUploadId, fileUploadErrorDetailsId)
             .WithLoader<FileUploadErrorFlowNodeLoader>()
+            .Next()
+            .AddTransitionNode(fileUploadErrorDetailsId, errorDetails.Path, fileUploadErrorId)
+            .WithLoader<FileUploadErrorDetailsFlowNodeLoader>()
             .Next()
             .AddTransitionNode(summaryId, summary.Path, postSubmitSuccessId)
             .WithLoader<SectionSummaryFlowNodeLoader>()
