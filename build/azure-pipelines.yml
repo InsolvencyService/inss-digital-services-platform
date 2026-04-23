@@ -8,92 +8,74 @@ variables:
   - group: PlatformBuild
 
 stages:
-  - stage: BuildTest
-    displayName: 'Build and Test'
-    jobs:
-    - job:
-      steps:
-      - task: UseDotNet@2
-        inputs:
-          version: '10.0.x'
+- stage: BuildTest
+  displayName: 'Build and Test'
+  jobs:
+  - job:
+    steps:
+    - task: UseDotNet@2
+      inputs:
+        version: '10.0.x'
 
-      - task: DotNetCoreCLI@2
-        displayName: NuGet Restore
-        inputs:
-          command: 'restore'
-          projects: '**/GovUk.Forms.slnx'
+    - task: DotNetCoreCLI@2
+      displayName: NuGet Restore
+      inputs:
+        command: 'restore'
+        projects: '**/GovUk.Forms.slnx'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Build Solution'
-        inputs:
-          command: 'build'
-          projects: '**/GovUk.Forms.slnx'
-          arguments: '--configuration $(BuildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Solution'
+      inputs:
+        command: 'build'
+        projects: '**/GovUk.Forms.slnx'
+        arguments: '--configuration $(BuildConfiguration)'
+          
+    - task: DotNetCoreCLI@2
+      displayName: 'Run Tests'
+      inputs:
+        command: test
+        projects: '**/*Test/*.csproj'
+        arguments: '--configuration $(BuildConfiguration) --filter "FullyQualifiedName!~UI.Test"'
 
-      # ADO Broken build issue
-      #- task: PowerShell@2
-      #  displayName: Install Playwright Tooling
-      #  inputs:
-      #    targetType: 'inline'
-      #    script: |
-      #      cd test/host/GovUk.Forms.HostApp.PageTest
-      #      bin/$(BuildConfiguration)/net10.0/playwright.ps1 install
-            
-      - task: DotNetCoreCLI@2
-        displayName: 'Run Tests'
-        inputs:
-          command: test
-          projects: '**/*Test/*.csproj'
-          arguments: '--configuration $(BuildConfiguration) --filter "FullyQualifiedName!~UI.Test"'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish HostApp'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/GovUk.Forms.HostApp.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish HostApp'
-        inputs:
-          command: 'publish'
-          publishWebProjects: false
-          projects: '**/GovUk.Forms.HostApp.csproj'
-          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish OIDC Broker'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/Inss.Auth.Broker.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish OIDC Broker'
-        inputs:
-          command: 'publish'
-          publishWebProjects: false
-          projects: '**/Inss.Auth.Broker.csproj'
-          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish OIDC RPS Provider'
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/Inss.Auth.RpsProvider.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish OIDC RPS Provider'
-        inputs:
-          command: 'publish'
-          publishWebProjects: false
-          projects: '**/Inss.Auth.RpsProvider.csproj'
-          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-
-      - task: PublishPipelineArtifact@1
-        displayName: 'Publish Artifacts'
-        inputs:
-          targetPath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'WebApps'
-        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-        
-      #- task: PublishPipelineArtifact@1
-      #  displayName: 'Publish HostApp Artifact'
-      #  inputs:
-      #    targetPath: '$(Build.ArtifactStagingDirectory)'
-      #    artifactName: 'GovUk.Forms.HostApp'
-      #  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-        
-      #- task: PublishPipelineArtifact@1
-      #  displayName: 'Publish OIDC Broker Artifact'
-      #  inputs:
-      #    targetPath: '$(Build.ArtifactStagingDirectory)'
-      #    artifactName: 'Inss.Auth.Broker'
-      #  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-        
-      #- task: PublishPipelineArtifact@1
-      #  displayName: 'Publish OIDC RPS Provider Artifact'
-      #  inputs:
-      #    targetPath: '$(Build.ArtifactStagingDirectory)'
-      #    artifactName: 'Inss.Auth.RpsProvider'
-      #  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Artifacts'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'WebApps'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      
+- stage: DeployDev
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: BuildTest
+  displayName: 'Deploy to Dev'
+  variables:
+    - group: Host-Dev
+  jobs:
+    - template: ./deploy/azure-deployment.yml
+      parameters:
+        environment: 'Dev'
+        azureSubscription: $(AzureSubscription)

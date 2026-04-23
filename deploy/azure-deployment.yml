@@ -1,0 +1,107 @@
+parameters:
+  - name: environment
+    type: string
+    default: 'Dev'
+  - name: location
+    type: string
+    default: 'uksouth'
+  - name: azureSubscription
+    type: string
+    
+jobs:
+  - deployment:
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureRmWebAppDeployment@4
+              displayName: Azure Web App Deploy
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appType: 'webApp'
+                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
+                deployToSlotOrASE: true
+                slotName: 'staging'
+                #appSettings: >
+                #  -APPLICATIONINSIGHTS_CONNECTION_STRING ${{ parameters.appInsightsConnectionString }}
+
+            - task: AzureAppServiceSettings@1
+              displayName: Apply App Service Settings
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appName: 'app-${{ parameters.location }}-${{ lower(parameters.environment) }}-ce-calcengine'
+                slotName: 'staging'
+                appSettings: |
+                  [
+                    {
+                        "name": "Environment",
+                        "value": "${{ parameters.environment }}",
+                        "slotSetting": false
+                    }
+                  ]
+
+            - task: AzureAppServiceManage@0
+              displayName: Start Staging Slot
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                Action: 'Start Azure App Service'
+                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                SpecifySlotOrASE: true
+                Slot: 'staging'
+
+            - task: AzureAppServiceManage@0
+              displayName: Start Production Slot
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                Action: 'Start Azure App Service'
+                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                SpecifySlotOrASE: true
+                Slot: 'Production'
+
+            #- task: PowerShell@2
+            #  displayName: 'Performing Health Check - Staging'
+            #  inputs:
+            #    failOnStderr: true
+            #    targetType: 'filePath'
+            #    filePath: $(System.DefaultWorkingDirectory)/powershell/InvokeRequestWithRetry.ps1
+            #    arguments: > # Use this to avoid newline characters in multi-line string
+            #      -URI "https://app-host-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
+            #      -Method "${{ parameters.method }}"
+            #      -Retries ${{ parameters.retries }}
+            #      -SecondsDelay ${{ parameters.secondsDelay }}
+            #      -TimeoutSec ${{ parameters.timeoutSec }}
+
+            - task: AzureAppServiceManage@0
+              displayName: Swap Staging Slot into Production
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                Action: 'Swap Slots'
+                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-${{ lower(parameters.environment) }}'
+                SourceSlot: 'staging'
+                SwapWithProduction: true
+            
+            ##          - task: PowerShell@2
+            ##            displayName: 'Performing Health Check - Production'
+            ##            inputs:
+            ##              failOnStderr: true
+            ##              targetType: 'filePath'
+            ##              filePath: $(System.DefaultWorkingDirectory)/powershell/InvokeRequestWithRetry.ps1
+            ##              arguments: > # Use this to avoid newline characters in multi-line string
+            ##                -URI "https://app-${{ parameters.location }}-${{ lower(parameters.environment) }}-ce-calcengine.azurewebsites.net/api/health/ping"
+            ##                -Method "${{ parameters.method }}"
+            ##                -Retries ${{ parameters.retries }}
+            ##                -SecondsDelay ${{ parameters.secondsDelay }}
+            ##                -TimeoutSec ${{ parameters.timeoutSec }}
+
+            - task: AzureAppServiceManage@0
+              displayName: Stop Staging Slot
+              inputs:
+                azureSubscription: ${{ parameters.azureSubscription }}
+                Action: 'Stop Azure App Service'
