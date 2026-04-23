@@ -54,9 +54,39 @@ stages:
           projects: '**/GovUk.Forms.HostApp.csproj'
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
+      - task: DotNetCoreCLI@2
+        displayName: 'Publish OIDC Broker'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/Inss.Auth.Broker.csproj'
+          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Publish OIDC RPS Provider'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/Inss.Auth.RpsProvider.csproj'
+          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+          
       - task: PublishPipelineArtifact@1
         displayName: 'Publish HostApp Artifact'
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'GovUk.Forms.HostApp'
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish OIDC Broker Artifact'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'Inss.Auth.Broker'
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish OIDC RPS Provider Artifact'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'Inss.Auth.RpsProvider'
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
