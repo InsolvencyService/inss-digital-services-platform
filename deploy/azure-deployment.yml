@@ -21,8 +21,8 @@ jobs:
                 ConnectionType: 'AzureRM'
                 azureSubscription: ${{ parameters.azureSubscription }}
                 appType: 'webApp'
-                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
+                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
                 package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
                 deployToSlotOrASE: true
                 slotName: 'staging'
@@ -49,8 +49,8 @@ jobs:
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 Action: 'Start Azure App Service'
-                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
+                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
                 SpecifySlotOrASE: true
                 Slot: 'staging'
 
@@ -59,8 +59,8 @@ jobs:
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 Action: 'Start Azure App Service'
-                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-dsp-prototype' #'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
+                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-temp' #'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
                 SpecifySlotOrASE: true
                 Slot: 'Production'
 
@@ -71,7 +71,7 @@ jobs:
             #    targetType: 'filePath'
             #    filePath: $(System.DefaultWorkingDirectory)/powershell/InvokeRequestWithRetry.ps1
             #    arguments: > # Use this to avoid newline characters in multi-line string
-            #      -URI "https://app-host-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
+            #      -URI "https://app-ipupload-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
             #      -Method "${{ parameters.method }}"
             #      -Retries ${{ parameters.retries }}
             #      -SecondsDelay ${{ parameters.secondsDelay }}
@@ -82,8 +82,8 @@ jobs:
               inputs:
                 azureSubscription: ${{ parameters.azureSubscription }}
                 Action: 'Swap Slots'
-                WebAppName: 'app-host-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
+                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+                resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
                 SourceSlot: 'staging'
                 SwapWithProduction: true
             
