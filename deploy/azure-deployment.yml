@@ -24,10 +24,11 @@ jobs:
                 WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
                 resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
                 package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
-                deployToSlotOrASE: true
+                deployToSlotOrASE: false
                 slotName: 'staging'
                 appSettings: >
                   -DOTNET_HOSTINGSTARTUPASSEMBLIES "GovUk.Forms.Components;GovUk.Forms.HostApp;Inss.GovUk.Forms.IPUpload"
+                  -APPLICATIONINSIGHTS_CONNECTION_STRING "InstrumentationKey=your-key-here"
 
             #- task: AzureAppServiceSettings@1
             #  displayName: Apply App Service Settings
@@ -44,25 +45,25 @@ jobs:
             #        }
             #      ]
 
-            - task: AzureAppServiceManage@0
-              displayName: Start Staging Slot
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                Action: 'Start Azure App Service'
-                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
-                SpecifySlotOrASE: true
-                Slot: 'staging'
+            #- task: AzureAppServiceManage@0
+            #  displayName: Start Staging Slot
+            #  inputs:
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    Action: 'Start Azure App Service'
+            #    WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+            #    resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
+            #    SpecifySlotOrASE: true
+            #    Slot: 'staging'
 
-            - task: AzureAppServiceManage@0
-              displayName: Start Production Slot
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                Action: 'Start Azure App Service'
-                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-temp' #'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
-                SpecifySlotOrASE: true
-                Slot: 'Production'
+            #- task: AzureAppServiceManage@0
+            #  displayName: Start Production Slot
+            #  inputs:
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    Action: 'Start Azure App Service'
+            #    WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+            #    resourceGroupName: 'rg-platform-temp' #'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
+            #    SpecifySlotOrASE: true
+            #    Slot: 'Production'
 
             #- task: PowerShell@2
             #  displayName: 'Performing Health Check - Staging'
@@ -77,15 +78,15 @@ jobs:
             #      -SecondsDelay ${{ parameters.secondsDelay }}
             #      -TimeoutSec ${{ parameters.timeoutSec }}
 
-            - task: AzureAppServiceManage@0
-              displayName: Swap Staging Slot into Production
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                Action: 'Swap Slots'
-                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
-                SourceSlot: 'staging'
-                SwapWithProduction: true
+            #- task: AzureAppServiceManage@0
+            #  displayName: Swap Staging Slot into Production
+            #  inputs:
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    Action: 'Swap Slots'
+            #    WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+            #    resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
+            #    SourceSlot: 'staging'
+            #    SwapWithProduction: true
             
             ##          - task: PowerShell@2
             ##            displayName: 'Performing Health Check - Production'
