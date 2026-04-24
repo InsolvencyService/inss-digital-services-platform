@@ -73,7 +73,7 @@ stages:
   dependsOn: BuildTest
   displayName: 'Deploy to Dev'
   variables:
-    - group: Host-Dev
+    - group: Platform-Dev
   jobs:
     - template: ../deploy/azure-deployment.yml
       parameters:
