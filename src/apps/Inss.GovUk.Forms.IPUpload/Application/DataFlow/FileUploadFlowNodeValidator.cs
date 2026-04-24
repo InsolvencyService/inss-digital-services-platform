@@ -60,7 +60,8 @@ public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
         List<ValidationResult> validationResults, 
         XmlFileUploadModel fileUpload)
     {
-        if (!fileUpload.Filename.EndsWith(XmlExtension, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(fileUpload.Filename) || 
+            fileUpload.Filename.EndsWith(XmlExtension, StringComparison.OrdinalIgnoreCase) == false)
         {
             validationResults.AddResult("The file must end with an XML extension", [nameof(fileUpload.Contents)]);
         }

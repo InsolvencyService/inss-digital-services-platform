@@ -1,4 +1,4 @@
-﻿@model ErrorInfo[]
+﻿@model Inss.GovUk.Forms.IPUpload.Domain.Validation.ErrorInfo[]
 
 @if (Model.Length > 0)
 {
@@ -12,7 +12,14 @@
           @(error.Property)
         </dt>
         <dd class="govuk-summary-list__value">
-          @Html.Raw(error.SubCategory.Replace("[COUNT]", error.Count.ToString()))
+          <p class="govuk-body">@(error.Error.Replace("[COUNT]", error.Count.ToString()))</p>
+          @if (error.Hint is not null)
+          {
+            <p class='govuk-body govuk-hint'>@(error.Hint)</p>
+          }
+        </dd>
+        <dd class="govuk-summary-list_actions">
+          <a class="govuk-link" href="/ip-upload/redundancy-payment/upload-error-details/?state=@error.Id">View details</a>
         </dd>
       </div>
     }

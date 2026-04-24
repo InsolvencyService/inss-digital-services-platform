@@ -32,6 +32,8 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(LoginModel model)
     {
+        ViewData.AddBackButton(_loginOptions.Value.BackUrl);
+        
         if (!ModelState.IsValid)
         {
             return View(model);

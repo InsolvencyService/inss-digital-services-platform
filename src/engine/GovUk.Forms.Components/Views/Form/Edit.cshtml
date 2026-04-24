@@ -1,7 +1,7 @@
 ﻿@model ContentModel
 
 @{
-    string? submitButtonText = Model.GetSubmitButtonText();
+    string? buttonText = Model.GetButtonText();
 }
 
 @using (Html.BeginForm(Model))
@@ -11,27 +11,29 @@
     @Html.HiddenFor(m => m.Path.Value)
     @Html.HiddenFor(m => m.TypeName)
     @Html.HiddenFor(m => m.ViewName)
+    @Html.HiddenFor(m => m.FullWidthLayout)
 
     if (Model.IsPageModel())
     {
         @Html.HiddenFor(m => ((PageModel)m).LinkedToNode.Value)
         @Html.HiddenFor(m => ((PageModel)m).MetaData.Group.Value)
+        @Html.HiddenFor(m => ((PageModel)m).PreviousPagePath.Value)
     }
     
     @await Html.PartialAsync(Model.ViewName, Model)
     
     @if (Model is FormModel form)
     {
-        if (form.SubmitType == SubmitTypes.Form && submitButtonText is not null)
+        if (form.SubmitType == SubmitTypes.Form && buttonText is not null)
         {
-            <govuk-button type="submit" disabled="!@form.CanSubmit">@submitButtonText</govuk-button>
+            <govuk-button type="submit" disabled="!@form.CanSubmit">@buttonText</govuk-button>
         }
     }
     else 
     {
-        @if (submitButtonText is not null)
+        @if (buttonText is not null)
         {
-            <govuk-button type="submit">@submitButtonText</govuk-button>
+            <govuk-button type="submit">@buttonText</govuk-button>
         }
     }
 }

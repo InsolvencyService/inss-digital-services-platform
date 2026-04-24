@@ -1,4 +1,5 @@
 ﻿using GovUk.Forms.Domain;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain;
 
@@ -10,22 +11,36 @@ public sealed class IPUploadXmlErrorsModel : PageModel
 
     public bool HasErrors => _errors.Count > 0;
     
-    public void AddError(string category, string property, string subcategory)
+    public void AddError(
+        string firstName,
+        string surname,
+        DateOnly dob,
+        string nino,
+        string value,
+        string category, 
+        string property, 
+        string error,
+        string? hint)
     {
-        ErrorInfo? error = _errors.FirstOrDefault(e => e.Category == category && e.Property == property && e.SubCategory == subcategory);
+        ErrorInfo? errorInfo = _errors.FirstOrDefault(e => e.Category == category && e.Property == property && e.Error == error);
 
-        if (error is null)
+        if (errorInfo is null)
         {
-            error = new ErrorInfo { Category = category, Property = property, SubCategory = subcategory };
-            _errors.Add(error);
+            errorInfo = new ErrorInfo { Category = category, Property = property, Error = error, Hint = hint };
+            _errors.Add(errorInfo);
         }
 
-        error.Count++;
+        errorInfo.AddIdentifier(firstName, surname, dob, nino, value);
     }
-
+    
     public ErrorInfo[] GetErrors(string category)
     {
-        return _errors.Where(e => e.Category == category).ToArray();
+        return _errors.Where(e => e.Category == category).OrderBy(e => e.Property).ToArray();
+    }
+
+    public ErrorInfo? GetError(string id)
+    {
+        return _errors.FirstOrDefault(e => e.Id == id);
     }
 
     public void ClearErrors()
