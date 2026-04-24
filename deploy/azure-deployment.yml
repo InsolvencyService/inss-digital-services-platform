@@ -25,7 +25,7 @@ jobs:
                 resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
                 package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
                 deployToSlotOrASE: false
-                slotName: 'staging'
+                slotName: 'production'
                 appSettings: >
                   -DOTNET_HOSTINGSTARTUPASSEMBLIES "GovUk.Forms.Components;GovUk.Forms.HostApp;Inss.GovUk.Forms.IPUpload"
                   -APPLICATIONINSIGHTS_CONNECTION_STRING "InstrumentationKey=your-key-here"
