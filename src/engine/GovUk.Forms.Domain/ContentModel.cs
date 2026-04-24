@@ -19,6 +19,8 @@ public abstract class ContentModel
 
     public string? EncodingType { get; init; }
     
+    public bool FullWidthLayout { get; set; }
+    
     public SubmitTypes SubmitType { get; init; } = SubmitTypes.Form;
     
     public string TypeName => GetType().FullName!;

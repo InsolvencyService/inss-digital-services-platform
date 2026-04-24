@@ -37,10 +37,11 @@ public class IPUploadFormFactoryTests
         FormModel form = factory.Create();
 
         SectionModel redundancyPayment = form.Sections[0];
-        Assert.Equal(5, redundancyPayment.Pages.Count);
+        Assert.Equal(6, redundancyPayment.Pages.Count);
         AssertSectionPage<IPUploadDeclarationModel>(redundancyPayment, "Declaration", "/ip-upload/redundancy-payment/declaration");
         AssertSectionPage<XmlFileUploadModel>(redundancyPayment, "Upload document", "/ip-upload/redundancy-payment/upload-document");
         AssertSectionPage<IPUploadXmlErrorsModel>(redundancyPayment, "IP upload errors", "/ip-upload/redundancy-payment/upload-errors");
+        AssertSectionPage<IPUploadXmlErrorDetailsModel>(redundancyPayment, "IP upload error details", "/ip-upload/redundancy-payment/upload-error-details");
         AssertSectionPage<SummaryModel>(redundancyPayment, "Redundancy payment summary", "/ip-upload/redundancy-payment/summary");
         AssertSectionPage<PostSubmitSuccessModel>(redundancyPayment, "Submitted", "/ip-upload/redundancy-payment/submit-completed");
     }

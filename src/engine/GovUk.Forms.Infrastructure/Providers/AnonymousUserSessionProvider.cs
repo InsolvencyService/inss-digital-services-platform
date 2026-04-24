@@ -32,7 +32,7 @@ public sealed class AnonymousUserSessionProvider : IUserSessionProvider
                     HttpOnly = true, 
                     Secure = true, 
                     SameSite = SameSiteMode.Strict, 
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(5)
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(30) // This does not slide so will expire after 30mins and you might see an error
                 };
                 byte[] userSessionIdBytes = Encoding.UTF8.GetBytes(userSessionId);
                 string encodedUserSessionId = Convert.ToBase64String(userSessionIdBytes);

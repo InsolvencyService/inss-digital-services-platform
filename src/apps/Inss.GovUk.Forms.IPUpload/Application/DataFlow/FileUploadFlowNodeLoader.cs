@@ -15,6 +15,9 @@ public sealed class FileUploadFlowNodeLoader : IFlowNodeLoader
             throw new InvalidOperationException("You must accept the declaration.");
         }
 
+        XmlFileUploadModel fileUpload = context.Section.Pages.GetFirstOf<XmlFileUploadModel>();
+        fileUpload.PreviousPagePath = declaration.Path;
+        
         IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         fileUploadErrors.ClearValues();
         

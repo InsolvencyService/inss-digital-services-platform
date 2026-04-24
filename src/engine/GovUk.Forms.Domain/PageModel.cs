@@ -64,4 +64,9 @@ public abstract class PageModel : ContentModel
     public virtual void CopyTo(PageModel target)
     {
     }
+
+    public virtual string? GetButtonText()
+    {
+        return !IsLocked() ? MetaData.SubmitButtonText : null;
+    }
 }
