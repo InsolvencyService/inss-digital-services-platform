@@ -2,30 +2,29 @@ using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Support;
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
+[Scope(Feature = "Declaration Page")]
 [Binding]
 public class DeclarationSteps
 {
-    private readonly StartPageCoordinator _startPageCoordinator;
     private readonly DeclarationCoordinator _declarationCoordinator;
-    private readonly SignInCoordinator _signInCoordinator;
     private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
+    private readonly CommonCoordinator _commonCoordinator;
+    private readonly StartPageCoordinator _startPageCoordinator;
     public DeclarationSteps(DeclarationCoordinator demoCoordinator,
-        StartPageCoordinator startPageCoordinator,
-        SignInCoordinator signInCoordinator,
-        UploadDocumentCoordinator uploadDocumentCoordinator)
+        UploadDocumentCoordinator uploadDocumentCoordinator,
+        CommonCoordinator commonCoordinator,
+        StartPageCoordinator startPageCoordinator)
     {
         _declarationCoordinator = demoCoordinator;
-        _startPageCoordinator = startPageCoordinator;
-        _signInCoordinator = signInCoordinator;
         _uploadDocumentCoordinator = uploadDocumentCoordinator;
+        _commonCoordinator = commonCoordinator;
+        _startPageCoordinator = startPageCoordinator;
     }
 
     [Given("I am on the declaration page")]
     public async Task GivenIAmOnTheDeclarationPage()
     {
-        await _startPageCoordinator.NavigateToLoginPageAsync();
-        await _signInCoordinator.SignInToServiceAsync(ScenarioConstant.EmailAddress, ScenarioConstant.Password);
-        await _declarationCoordinator.VerifyDeclarationPageIsDisplayedAsync();
+        await _commonCoordinator.VerifyThatDeclarationPageIsDisplayedAsync();
     }
 
     [When("I choose to view section 187")]

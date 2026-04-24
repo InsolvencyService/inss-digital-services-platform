@@ -234,6 +234,12 @@ public static class TestValidator
 
     public static void VerifyStepDefinitionsUseOnlyCoordinators(Assembly assembly)
     {
+        Type[] allowedStepDependencies =
+        [
+            typeof(ScenarioContext),
+        typeof(FeatureContext)
+        ];
+
         IEnumerable<Type> stepTypes = assembly.GetTypes()
             .Where(t =>
                 t.IsClass &&
@@ -243,11 +249,10 @@ public static class TestValidator
 
         foreach (Type stepType in stepTypes)
         {
-
             if (HasDependencyOnBasePage(stepType))
             {
                 throw new InvalidOperationException(
-                    $"Step definition '{stepType.FullName}'\n\n must not depend on BasePage.");
+                    $"Step definition '{stepType.FullName}' must not depend on BasePage.");
             }
 
             ConstructorInfo[] constructors = stepType.GetConstructors(
@@ -256,13 +261,24 @@ public static class TestValidator
             IEnumerable<ParameterInfo> parameters = constructors
                 .SelectMany(c => c.GetParameters())
                 .DistinctBy(p => p.ParameterType);
-            foreach (ParameterInfo? param in from param in parameters
-                                             where !param.ParameterType.Name.EndsWith("Coordinator", StringComparison.Ordinal)
-                                             select param)
+
+            foreach (ParameterInfo param in parameters)
             {
+                bool isCoordinator =
+                    param.ParameterType.Name.EndsWith("Coordinator", StringComparison.Ordinal);
+
+                bool isAllowedContext =
+                    allowedStepDependencies.Contains(param.ParameterType);
+
+                if (isCoordinator || isAllowedContext)
+                {
+                    continue;
+                }
+
                 throw new InvalidOperationException(
-                                    $"Step definition '{stepType.FullName}'\n has invalid dependency '{param.ParameterType.FullName}'.\n\n " +
-                                    "Steps may only depend on Coordinators.\n\n Please use the Coordinators");
+                    $"Step definition '{stepType.FullName}' has invalid dependency '{param.ParameterType.FullName}'.\n\n" +
+                    "Steps may only depend on Coordinators, ScenarioContext, or FeatureContext.\n\n" +
+                    "Please move page/business flow logic into a Coordinator.");
             }
         }
     }

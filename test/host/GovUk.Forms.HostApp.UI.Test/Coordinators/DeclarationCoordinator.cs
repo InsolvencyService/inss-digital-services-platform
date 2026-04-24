@@ -35,4 +35,10 @@ public class DeclarationCoordinator(
     {
         return await CapturePageVisualAsync(declarationPage.CapturePageVisualAsync, ScenarioConstant.DeclarationPage);
     }
+
+    public async Task NavigateToUploadAFilePageAsync()
+    {
+        await VerifyDeclarationPageIsDisplayedAsync();
+        await ClickAgreeAndContinueButtonAsync();
+    }
 }

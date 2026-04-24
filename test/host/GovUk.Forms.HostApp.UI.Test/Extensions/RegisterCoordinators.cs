@@ -11,5 +11,6 @@ public static class RegisterCoordinators
         services.AddScoped<SignInCoordinator>();
         services.AddScoped<StartPageCoordinator>();
         services.AddScoped<UploadDocumentCoordinator>();
+        services.AddScoped<CommonCoordinator>();
     }
 }

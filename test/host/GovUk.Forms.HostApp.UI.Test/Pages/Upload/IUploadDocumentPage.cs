@@ -8,4 +8,7 @@ public interface IUploadDocumentPage
     Task<IPage> ClickOnGiveFeedbackLinkAsync();
     Task ExpandCommonIssuesWhenUploadingRP14AFormsAsync();
     Task UploadFileAsync(string filePath);
+    Task<string> GetUploadedFileNameAsync();
+    Task<IReadOnlyList<string>> GetUploadedFileNamesAsync();
+    Task<string> CapturePageVisualAsync(string name);
 }

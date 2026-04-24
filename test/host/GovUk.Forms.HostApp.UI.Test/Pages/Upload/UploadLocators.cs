@@ -14,6 +14,6 @@ public class UploadLocators
     public class Selectors
     {
         public const string UploadForm = "#Contents";
-        public const string FileInput = "#Contents-input";
+        public const string FileInput = "input[type='file']";
     }
 }

@@ -18,7 +18,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::NUnit.Framework.TestFixtureAttribute()]
-    [global::NUnit.Framework.DescriptionAttribute("Declaration page")]
+    [global::NUnit.Framework.DescriptionAttribute("Declaration Page")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
     [global::NUnit.Framework.CategoryAttribute("MEDS-1061")]
     public partial class DeclarationPageFeature
@@ -29,7 +29,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         private static string[] featureTags = new string[] {
                 "MEDS-1061"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "Declaration page", "As an Insolvency Practitioner\r\nI want to complete the declaration page\r\nSo that I" +
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "Declaration Page", "As an Insolvency Practitioner\r\nI want to complete the declaration page\r\nSo that I" +
                 " can continue the RP14/14A upload journeyA short summary of the feature", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "Declaration.feature"

@@ -23,15 +23,15 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
     private ILocator GiveFeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.FeedbackLink });
     private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SharedLoactors.GOVUKLink });
-    private ILocator UploadForm => Page.Locator(UploadLocators.Selectors.UploadForm);
     private ILocator UploadFileText => Page.GetByText(UploadLocators.Labels.UploadFile, new() { Exact = true });
     private ILocator NoFileChosenText => Page.GetByText(UploadLocators.Labels.NoFileChosen, new() { Exact = true });
     private ILocator CommonIssuesWhenUploadingRP14AForms => Page.GetByText(UploadLocators.Labels.CommonIssuesWhenUploadingRP14AForms, new() { Exact = true });
     private ILocator RPSStakeholderEmail => Page.GetByText(UploadLocators.Labels.RPSStakeholderEmail, new() { Exact = true });
     private ILocator GuidanceText => Page.GetByText(UploadLocators.Labels.Guidance, new() { Exact = true });
     private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLoactors.ContinueButton });
-    private ILocator FileUploadInput => UploadForm.Locator(UploadLocators.Selectors.FileInput);
+    private ILocator FileUploadInput => Page.Locator(UploadLocators.Selectors.FileInput);
     private ILocator BetaText => Page.GetByText(SharedLoactors.Beta, new() { Exact = true });
+    private ILocator UploadedFileStatus => Page.Locator(".govuk-file-upload-button__status");
 
     protected override async Task PageContentLoadedAsync()
     {
@@ -52,12 +52,10 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     public async Task ClickOnContinueButtonAsync()
     {
-        await WaitForPageToLoadAsync();
         await ContinueButton.ClickAsync();
     }
     public async Task ClickOnBackButtonAsync()
     {
-        await WaitForPageToLoadAsync();
         await BackButton.ClickAsync();
     }
 
@@ -74,16 +72,29 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     public async Task ExpandCommonIssuesWhenUploadingRP14AFormsAsync()
     {
-        await WaitForPageToLoadAsync();
         await CommonIssuesWhenUploadingRP14AForms.ClickAsync();
     }
 
     public async Task UploadFileAsync(string filePath)
     {
         ArgumentNullException.ThrowIfNull(filePath);
-        await WaitForPageToLoadAsync();
         await FileUploadInput.SetInputFilesAsync(filePath);
     }
 
+    public async Task<string> GetUploadedFileNameAsync()
+    {
+        return (await UploadedFileStatus.InnerTextAsync()).Trim();
+    }
 
+    public async Task<IReadOnlyList<string>> GetUploadedFileNamesAsync()
+    {
+        return await UploadedFileStatus.AllInnerTextsAsync();
+    }
+
+    public async Task<string> CapturePageVisualAsync(string name)
+    {
+        await PageContentLoadedAsync();
+        return await _commonPage.CaptureVisualAsync(Page, name);
+
+    }
 }

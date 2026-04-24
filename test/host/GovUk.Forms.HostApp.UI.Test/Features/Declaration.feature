@@ -1,5 +1,5 @@
 ﻿@MEDS-1061
-Feature: Declaration page
+Feature: Declaration Page
 
 As an Insolvency Practitioner
 I want to complete the declaration page

@@ -105,26 +105,37 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
             await testRunner.CollectScenarioErrorsAsync();
         }
         
+        public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
+        {
+#line 6
+#line hidden
+#line 7
+  await testRunner.GivenAsync("I am on the upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+        }
+        
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/UploadFile.feature.ndjson", 4);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/UploadFile.feature.ndjson", 6);
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Upload a valid file successfully")]
+        [global::NUnit.Framework.DescriptionAttribute("Upload a valid RP14A file successfully")]
         [global::NUnit.Framework.CategoryAttribute("functional")]
         [global::NUnit.Framework.CategoryAttribute("upload")]
-        public async global::System.Threading.Tasks.Task UploadAValidFileSuccessfully()
+        [global::NUnit.Framework.CategoryAttribute("Addvideo")]
+        public async global::System.Threading.Tasks.Task UploadAValidRP14AFileSuccessfully()
         {
             string[] tagsOfScenario = new string[] {
                     "functional",
-                    "upload"};
+                    "upload",
+                    "Addvideo"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Upload a valid file successfully", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Upload a valid RP14A file successfully", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 7
+#line 10
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -134,13 +145,13 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 8
-  await testRunner.GivenAsync("I am on the upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
-#line 9
-  await testRunner.WhenAsync("I upload a valid file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 11
+  await testRunner.WhenAsync("I upload a valid RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 10
+#line 12
   await testRunner.ThenAsync("the uploaded file should appear in the file list", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -161,7 +172,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Prevent uploading the same file twice", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 13
+#line 15
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -171,17 +182,88 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 14
-  await testRunner.GivenAsync("I am on the upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 15
-  await testRunner.WhenAsync("I upload a file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 6
+await this.FeatureBackgroundAsync();
 #line hidden
 #line 16
-  await testRunner.AndAsync("I upload the same file again", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+  await testRunner.WhenAsync("I upload a valid RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 17
+  await testRunner.AndAsync("I upload the same file again", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 18
   await testRunner.ThenAsync("the file list should contain only one instance of that file", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Verify Upload Document Page visual snapshot")]
+        [global::NUnit.Framework.CategoryAttribute("visual")]
+        [global::NUnit.Framework.CategoryAttribute("smoke")]
+        public async global::System.Threading.Tasks.Task VerifyUploadDocumentPageVisualSnapshot()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "visual",
+                    "smoke"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify Upload Document Page visual snapshot", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 21
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 22
+  await testRunner.ThenAsync("the upload document page should match the visual snapshot", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Verify Common issues when uploading RP14/A forms Contents")]
+        [global::NUnit.Framework.CategoryAttribute("functional")]
+        [global::NUnit.Framework.CategoryAttribute("visual")]
+        public async global::System.Threading.Tasks.Task VerifyCommonIssuesWhenUploadingRP14AFormsContents()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "functional",
+                    "visual"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify Common issues when uploading RP14/A forms Contents", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 26
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 27
+ await testRunner.WhenAsync("I expand the common issues section", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 28
+ await testRunner.ThenAsync("the common issues section should display the correct content", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

@@ -3,6 +3,7 @@ using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
+[Scope(Feature = "Start Page Navigation")]
 [Binding]
 public class StartPageSteps
 {
