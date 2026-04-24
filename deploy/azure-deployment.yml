@@ -29,7 +29,7 @@ jobs:
                 appSettings: >
                   -DOTNET_HOSTINGSTARTUPASSEMBLIES "GovUk.Forms.Components;GovUk.Forms.HostApp;Inss.GovUk.Forms.IPUpload"
                   -APPLICATIONINSIGHTS_CONNECTION_STRING "InstrumentationKey=your-key-here"
-                  -Broker:JwtPublicKey "-----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtkw6a1gJg95FMaDBbET8 Yfdk9P1Pl7DMKok+868r7g2V9BuwbwoSjIBGXAqJuWoYX6NChkjHvO9dKTWHTqpg C0wDwNFdp6QGEZpqPj2n6PTGTyUpTJttf4AHr9sVDIhCe5aEipBVcbrApIsShSy7 /US763a7T/BLpyhZVaysgnUE19P7zM91Ehqf0vPlT0QjHQsHw3E2x7vr4J9NZjIM OoBlwL910KZra6g7Bwh1jGY9GDCiON0DnZkjp5BzxMsBHrI3lFBZHXNKbpfRZrWY RuaUaxHOSt2OI0nrd2i9ZCARXPmyHOfkskZT5GUy8wiGjA7mtF8pOIsHgKMDrjyW pwIDAQAB -----END PUBLIC KEY-----"
+                  -Broker__JwtPublicKey "-----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtkw6a1gJg95FMaDBbET8 Yfdk9P1Pl7DMKok+868r7g2V9BuwbwoSjIBGXAqJuWoYX6NChkjHvO9dKTWHTqpg C0wDwNFdp6QGEZpqPj2n6PTGTyUpTJttf4AHr9sVDIhCe5aEipBVcbrApIsShSy7 /US763a7T/BLpyhZVaysgnUE19P7zM91Ehqf0vPlT0QjHQsHw3E2x7vr4J9NZjIM OoBlwL910KZra6g7Bwh1jGY9GDCiON0DnZkjp5BzxMsBHrI3lFBZHXNKbpfRZrWY RuaUaxHOSt2OI0nrd2i9ZCARXPmyHOfkskZT5GUy8wiGjA7mtF8pOIsHgKMDrjyW pwIDAQAB -----END PUBLIC KEY-----"
 
             #- task: AzureAppServiceSettings@1
             #  displayName: Apply App Service Settings
