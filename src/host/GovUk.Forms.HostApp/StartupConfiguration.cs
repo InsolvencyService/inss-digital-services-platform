@@ -25,7 +25,10 @@ public class StartupConfiguration : IHostingStartup
         {
             BrokerOptions brokerOptions = new();
             context.Configuration.GetSection("Broker").Bind(brokerOptions);
-            
+
+            IServiceProvider sp = services.BuildServiceProvider();
+            ILogger logger = sp.GetRequiredService<ILogger>();
+            logger.LogInformation("The Identity provider is {ID}", brokerOptions.IdentityProvider?.ToString() ?? "NULL");
             services.AddSingleton<IAuthenticationProvider>(_ =>
             {
                 return brokerOptions.IdentityProvider switch
