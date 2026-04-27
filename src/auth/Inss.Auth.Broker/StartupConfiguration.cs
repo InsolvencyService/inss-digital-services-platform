@@ -1,3 +1,4 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Inss.Auth.Broker;
 using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Extensions;
@@ -43,6 +44,8 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
             services.AddSingleton<IAuthCodeStoreProvider, TestAuthCodeStoreProvider>();
+            services.AddOpenTelemetry().UseAzureMonitor();
+            
         });
         
         builder.Configure(app =>

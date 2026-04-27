@@ -1,3 +1,4 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Options;
 using GovUk.Frontend.AspNetCore;
@@ -42,6 +43,7 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
             services.AddGovUkFrontend();
             services.AddControllersWithViews();
+            services.AddOpenTelemetry().UseAzureMonitor();
         });
         
         builder.Configure(app =>

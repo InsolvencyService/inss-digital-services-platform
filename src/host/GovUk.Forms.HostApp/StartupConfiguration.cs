@@ -1,8 +1,8 @@
 using System.Security.Cryptography;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Components.Extensions;
-using GovUk.Forms.Components.Handlers;
 using GovUk.Forms.Components.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -74,9 +74,9 @@ public class StartupConfiguration : IHostingStartup
             }
 
             services.AddSingleton<IAuthorizationHandler, DynamicAccessHandler>();
-            services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddAuthorizationBuilder()
                 .AddPolicy("DynamicAccessPolicy", policy => policy.Requirements.Add(new DynamicAccessRequirement()));
+            services.AddOpenTelemetry().UseAzureMonitor();
         });
     }
     

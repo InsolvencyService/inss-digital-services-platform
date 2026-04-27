@@ -4,6 +4,14 @@ trigger:
 pool:
   vmImage: windows-latest
 
+parameters:
+  - name: location
+    type: string
+    default: 'northeurope'
+    values:
+      - uksouth
+      - northeurope
+
 variables:
   - group: PlatformBuild
 
@@ -46,7 +54,7 @@ stages:
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Publish OIDC Broker'
+      displayName: 'Publish Broker'
       inputs:
         command: 'publish'
         publishWebProjects: false
@@ -54,7 +62,7 @@ stages:
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Publish OIDC RPS Provider'
+      displayName: 'Publish RPS Provider'
       inputs:
         command: 'publish'
         publishWebProjects: false
@@ -78,4 +86,5 @@ stages:
     - template: ../deploy/azure-deployment.yml
       parameters:
         environment: 'Dev'
+        location: ${{ parameters.location }}
         azureSubscription: $(AzureSubscription)

@@ -4,46 +4,56 @@ parameters:
     default: 'Dev'
   - name: location
     type: string
-    default: 'uksouth'
   - name: azureSubscription
     type: string
     
 jobs:
   - deployment:
+    variables:
+      resourceGroupName: rg-platform-${{ parameters.location }}-${{ lower(parameters.environment) }}
+      ipUploadAppName: app-ipupload-${{ parameters.location }}-${{ lower(parameters.environment) }}
+      brokerAppName: app-broker-${{ parameters.location }}-${{ lower(parameters.environment) }}
+      rpsAppName: app-rps-${{ parameters.location }}-${{ lower(parameters.environment) }}
     environment: ${{ parameters.environment }}
     strategy:
       runOnce:
         deploy:
           steps:
             - task: AzureRmWebAppDeployment@4
-              displayName: Azure Web App Deploy
+              displayName: Deploy RPS Provider App
               inputs:
                 ConnectionType: 'AzureRM'
                 azureSubscription: ${{ parameters.azureSubscription }}
                 appType: 'webApp'
-                WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
-                resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
+                WebAppName: ${{ variables.rpsAppName }}
+                resourceGroupName: ${{ variables.resourceGroupName }}
+                package: '$(Pipeline.Workspace)/**/Inss.Auth.RpsProvider.zip'
+                deployToSlotOrASE: false
+                slotName: 'production'
+            
+            - task: AzureRmWebAppDeployment@4
+              displayName: Deploy Broker Host App
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appType: 'webApp'
+                WebAppName: ${{ variables.brokerAppName }}
+                resourceGroupName: ${{ variables.resourceGroupName }}
+                package: '$(Pipeline.Workspace)/**/Inss.Auth.Broker.zip'
+                deployToSlotOrASE: false
+                slotName: 'production'
+
+            - task: AzureRmWebAppDeployment@4
+              displayName: Deploy IP Upload Host App
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appType: 'webApp'
+                WebAppName: ${{ variables.ipUploadAppName }}
+                resourceGroupName: ${{ variables.resourceGroupName }}
                 package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
                 deployToSlotOrASE: false
                 slotName: 'production'
-                appSettings: >
-                  -DOTNET_HOSTINGSTARTUPASSEMBLIES "GovUk.Forms.Components;GovUk.Forms.HostApp;Inss.GovUk.Forms.IPUpload"
-                  -APPLICATIONINSIGHTS_CONNECTION_STRING "InstrumentationKey=your-key-here"
-
-            #- task: AzureAppServiceSettings@1
-            #  displayName: Apply App Service Settings
-            #  inputs:
-            #    azureSubscription: ${{ parameters.azureSubscription }}
-            #    appName: 'app-${{ parameters.location }}-${{ lower(parameters.environment) }}'
-            #    slotName: 'staging'
-            #    appSettings: |
-            #      [
-            #        {
-            #            "name": "Environment",
-            #            "value": "${{ parameters.environment }}",
-            #            "slotSetting": false
-            #        }
-            #      ]
 
             #- task: AzureAppServiceManage@0
             #  displayName: Start Staging Slot
