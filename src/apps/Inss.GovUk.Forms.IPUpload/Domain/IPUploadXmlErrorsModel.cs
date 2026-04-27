@@ -1,15 +1,16 @@
 ﻿using GovUk.Forms.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Inss.GovUk.Forms.IPUpload.Domain;
 
 public sealed class IPUploadXmlErrorsModel : PageModel
 {
-    private readonly List<ErrorInfo> _errors = [];
-    
     public string Filename { get; set; }
 
-    public bool HasErrors => _errors.Count > 0;
+    public bool HasErrors => Errors.Length > 0;
+
+    public ErrorInfo[] Errors { get; set; } = [];
     
     public void AddError(
         string firstName,
@@ -22,31 +23,33 @@ public sealed class IPUploadXmlErrorsModel : PageModel
         string error,
         string? hint)
     {
-        ErrorInfo? errorInfo = _errors.FirstOrDefault(e => e.Category == category && e.Property == property && e.Error == error);
+        List<ErrorInfo> errors = new(Errors);
+        ErrorInfo? errorInfo = errors.FirstOrDefault(e => e.Category == category && e.Property == property && e.Error == error);
 
         if (errorInfo is null)
         {
             errorInfo = new ErrorInfo { Category = category, Property = property, Error = error, Hint = hint };
-            _errors.Add(errorInfo);
+            errors.Add(errorInfo);
         }
 
         errorInfo.AddIdentifier(firstName, surname, dob, nino, value);
+        Errors = errors.ToArray();
     }
     
     public ErrorInfo[] GetErrors(string category)
     {
-        return _errors.Where(e => e.Category == category).OrderBy(e => e.Property).ToArray();
+        return Errors.Where(e => e.Category == category).OrderBy(e => e.Property).ToArray();
     }
 
     public ErrorInfo? GetError(string id)
     {
-        return _errors.FirstOrDefault(e => e.Id == id);
+        return Errors.FirstOrDefault(e => e.Id == id);
     }
 
     public void ClearErrors()
     {
         Filename = string.Empty;
-        _errors.Clear();
+        Errors = [];
     }
     
     public override void CopyTo(PageModel target)
