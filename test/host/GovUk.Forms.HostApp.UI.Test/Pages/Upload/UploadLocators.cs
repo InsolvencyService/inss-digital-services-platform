@@ -15,5 +15,6 @@ public class UploadLocators
     {
         public const string UploadForm = "#Contents";
         public const string FileInput = "input[type='file']";
+        public const string UploadStatus = ".govuk-file-upload-button__status";
     }
 }

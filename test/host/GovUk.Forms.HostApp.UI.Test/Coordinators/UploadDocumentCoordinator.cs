@@ -46,8 +46,8 @@ public class UploadDocumentCoordinator(
         string fileName = Path.GetFileName(filePath);
 
         await uploadDocumentPage.UploadFileAsync(filePath);
-        scenarioContext.Set(fileName, "UploadedFileName");
-        scenarioContext.Set(filePath, "UploadedFilePath");
+        scenarioContext.Set(fileName, ScenarioConstant.UploadedFileName);
+        scenarioContext.Set(filePath, ScenarioConstant.UploadedFilePath);
 
         outputHelper.WriteLine($"Uploading file: {fileName}");
         outputHelper.WriteLine($"Full path: {filePath}");
@@ -56,7 +56,7 @@ public class UploadDocumentCoordinator(
 
     public async Task VerifyThatFileIsUploadedAsync()
     {
-        string expectedFileName = scenarioContext.Get<string>("UploadedFileName");
+        string expectedFileName = scenarioContext.Get<string>(ScenarioConstant.UploadedFileName);
 
         string actualUploadedFileText =
             await uploadDocumentPage.GetUploadedFileNameAsync();
@@ -67,7 +67,7 @@ public class UploadDocumentCoordinator(
 
     public async Task VerifyOnlyOneFileUploadedAsync()
     {
-        string expectedFileName = scenarioContext.Get<string>("UploadedFileName");
+        string expectedFileName = scenarioContext.Get<string>(ScenarioConstant.UploadedFileName);
 
         IReadOnlyList<string> uploadedFiles = await uploadDocumentPage.GetUploadedFileNamesAsync();
 

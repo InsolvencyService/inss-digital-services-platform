@@ -31,7 +31,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLoactors.ContinueButton });
     private ILocator FileUploadInput => Page.Locator(UploadLocators.Selectors.FileInput);
     private ILocator BetaText => Page.GetByText(SharedLoactors.Beta, new() { Exact = true });
-    private ILocator UploadedFileStatus => Page.Locator(".govuk-file-upload-button__status");
+    private ILocator UploadedFileStatus => Page.Locator(UploadLocators.Selectors.UploadStatus);
 
     protected override async Task PageContentLoadedAsync()
     {

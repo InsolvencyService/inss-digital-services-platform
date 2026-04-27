@@ -36,7 +36,7 @@ public class UploadDocumentsSteps
     [When("I upload the same file again")]
     public async Task WhenIUploadTheSameFileAgain()
     {
-        string filePath = _scenarioContext.Get<string>("UploadedFilePath");
+        string filePath = _scenarioContext.Get<string>(ScenarioConstant.UploadedFilePath);
         await _uploadDocumentCoordinator.UploadFileAsync(filePath);
     }
 

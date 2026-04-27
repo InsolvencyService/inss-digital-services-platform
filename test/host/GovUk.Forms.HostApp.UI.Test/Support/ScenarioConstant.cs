@@ -11,4 +11,8 @@ public class ScenarioConstant
     // Test user credentials for login
     public const string EmailAddress = "test@gmail.com";
     public const string Password = "password";
+
+
+    public const string UploadedFilePath = "UploadedFilePathail";
+    public const string UploadedFileName = "UploadedFileName";
 }
