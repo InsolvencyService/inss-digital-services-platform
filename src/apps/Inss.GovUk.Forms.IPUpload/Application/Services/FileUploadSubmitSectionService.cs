@@ -1,6 +1,6 @@
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain;
-using Inss.GovUk.Forms.IPUpload.Infrastructure.Clients;
+using Inss.GovUk.Forms.IPUpload.Application.Clients;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.Services;
 

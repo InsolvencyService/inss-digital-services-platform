@@ -168,6 +168,7 @@ public sealed class Flowchart : IFlowchart
     {
         if (currentPageNodeId != nextNodeId)
         {
+            // TODO: Bug - we need to use the flowchart nodes to decide what to reset in case the page order is not correct
             section.Pages.ResetDownstream(targetPage);
         }
         else

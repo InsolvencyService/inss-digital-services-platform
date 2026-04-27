@@ -75,8 +75,8 @@ public static class AuthenticationBuilderExtensions
                     string audienceEndpoint = $"{identityProviderOptions.Value.Authority}/token";
 
                     Dictionary<string, object> clientAssertionClaims = BuildClientAssertionClaims(clientId, audienceEndpoint);
-                    string key = File.ReadAllText(identityProviderOptions.Value.JwtPrivateKey);
-                    string clientAssertionToken = CreateJwtSecurityToken(clientId, audienceEndpoint, key, jwtExpiryMinutes, clientAssertionClaims);
+                    string clientAssertionToken = CreateJwtSecurityToken(
+                        clientId, audienceEndpoint, identityProviderOptions.Value.JwtPrivateKey, jwtExpiryMinutes, clientAssertionClaims);
 
                     if (context.TokenEndpointRequest is not null)
                     {
