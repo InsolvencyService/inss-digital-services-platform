@@ -3,6 +3,8 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Validating;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 using Inss.GovUk.Forms.IPUpload.Domain;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using Xunit;
 
 namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
@@ -12,7 +14,8 @@ public class FileUploadFlowNodeValidatorTests
     [Fact]
     public async Task UnsupportedFilenameExtension_ValidateAsync_ReturnsErrorDetails()
     {
-        FileUploadFlowNodeValidator validator = new();
+        ILogger<FileUploadFlowNodeValidator> logger = Substitute.For<ILogger<FileUploadFlowNodeValidator>>();
+        FileUploadFlowNodeValidator validator = new(logger);
         XmlFileUploadModel xmlFileUpload = new() { Filename = "upload.txt" };
         FlowNode node = new() { Id = "NodeId1", PagePath = xmlFileUpload.Path };
         ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = xmlFileUpload };

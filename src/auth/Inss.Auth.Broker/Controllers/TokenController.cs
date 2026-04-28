@@ -19,7 +19,8 @@ public class TokenController : Controller
 
     public TokenController(
         IAuthCodeStoreProvider authCodeStoreProvider, 
-        ITokenSecurityProvider tokenSecurityProvider, IOptions<BrokerOptions> brokerOptions)
+        ITokenSecurityProvider tokenSecurityProvider, 
+        IOptions<BrokerOptions> brokerOptions)
     {
         _authCodeStoreProvider = authCodeStoreProvider;
         _tokenSecurityProvider = tokenSecurityProvider;
@@ -66,7 +67,7 @@ public class TokenController : Controller
         
         var idToken = tokenHandler.CreateJwtSecurityToken(
             issuer: issuer,
-            audience: "123",
+            audience: _brokerOptions.Value.ClientId,
             subject: new ClaimsIdentity(authCode.Principal.Claims),
             expires: DateTime.UtcNow.AddMinutes(_brokerOptions.Value.TokenExpiresInMinutes),
             signingCredentials: signingCredentials
@@ -85,7 +86,7 @@ public class TokenController : Controller
             access_token = tokenHandler.WriteToken(accessToken),
             id_token = tokenHandler.WriteToken(idToken),
             token_type = "Bearer",
-            expires_in = 1800 // TODO: Config
+            expires_in = DateTime.UtcNow.AddMinutes(_brokerOptions.Value.TokenExpiresInMinutes),
         });
     }
     

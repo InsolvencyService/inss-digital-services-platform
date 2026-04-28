@@ -20,11 +20,22 @@
         @await Html.PartialAsync("_BackButton")
     }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            @RenderBody()
+    @if (ViewData.GetFullWidthLayout())
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @RenderBody()
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                @RenderBody()
+            </div>
+        </div>
+    }
 </div>
 
 @* ReSharper disable once Razor.SectionNotResolved *@

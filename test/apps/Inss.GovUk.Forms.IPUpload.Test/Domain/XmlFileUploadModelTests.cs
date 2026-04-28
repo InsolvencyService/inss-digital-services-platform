@@ -1,4 +1,3 @@
-using System.Xml.Linq;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Xunit;
 
@@ -7,7 +6,7 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Domain;
 public class XmlFileUploadModelTests
 {
     [Fact]
-    public void Base64XmlAsString_GetXml_ReturnsValidXmlDocument()
+    public void RP14ASpreadsheetBase64XmlAsString_GetXml_ReturnsObject()
     {
         XmlFileUploadModel xmlFileUpload = new()
         {
@@ -33,8 +32,9 @@ public class XmlFileUploadModelTests
                        "eWVlPg0KPC9uczE6UlAxNEE+"
         };
 
-        XDocument document = xmlFileUpload.GetXml();
+        object rp14A = xmlFileUpload.GetRedundancyPaymentObject();
 
-        Assert.NotNull(document.Root);
+        Assert.NotNull(rp14A);
+        Assert.IsType<Inss.GovUk.Forms.IPUpload.Domain.Spreadsheet.RP14A>(rp14A);
     }
 }

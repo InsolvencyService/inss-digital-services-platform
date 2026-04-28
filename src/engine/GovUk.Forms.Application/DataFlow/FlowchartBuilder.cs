@@ -29,6 +29,13 @@ public sealed class FlowchartBuilder
         return new FlowNodeBuilder(this, node, _services);
     }
     
+    public FlowNodeBuilder AddSpurNode(NodeId nodeId, ContentPath pagePath, NodeId nextNodeId, NodeId spurNodeId)
+    {
+        FlowNode node = new() { Id = nodeId, PagePath = pagePath, NextNodes = [nextNodeId, spurNodeId] };
+        _nodes.Add(node);
+        return new FlowNodeBuilder(this, node, _services);
+    }
+    
     public EndFlowNodeBuilder AddEndNode(NodeId nodeId, ContentPath pagePath)
     {
         FlowNode node = new() { Id = nodeId, PagePath = pagePath };

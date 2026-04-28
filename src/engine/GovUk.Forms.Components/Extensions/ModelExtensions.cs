@@ -11,12 +11,12 @@ public static class ModelExtensions
             return content is PageModel;
         }
 
-        public string? GetSubmitButtonText()
+        public string? GetButtonText()
         {
             return content switch
             {
-                FormModel => "Submit form",
-                PageModel page => !page.IsLocked() ? page.MetaData.SubmitButtonText  : null,
+                FormModel => "Submit form", // TODO: Move to form and add metadata support
+                PageModel page => page.GetButtonText(),
                 _ => "Save and continue"
             };
         }
