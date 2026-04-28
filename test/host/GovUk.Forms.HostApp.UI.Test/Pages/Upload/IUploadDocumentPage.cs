@@ -10,5 +10,4 @@ public interface IUploadDocumentPage
     Task UploadFileAsync(string filePath);
     Task<string> GetUploadedFileNameAsync();
     Task<IReadOnlyList<string>> GetUploadedFileNamesAsync();
-    Task<string> CapturePageVisualAsync(string name);
 }

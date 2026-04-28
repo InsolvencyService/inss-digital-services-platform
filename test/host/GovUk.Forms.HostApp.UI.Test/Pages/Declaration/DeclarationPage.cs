@@ -53,18 +53,4 @@ public class DeclarationPage : BasePage, IDeclarationPage
         await PageContentLoadedAsync();
         await AgreeAndContinueButton.ClickAsync();
     }
-
-    public async Task<string> CaptureVisualAsync()
-    {
-        await PageContentLoadedAsync();
-        return await _commonPage.CaptureVisualAsync(Page, ScenarioConstant.DeclarationPage);
-
-    }
-
-    public async Task<string> CapturePageVisualAsync(string name)
-    {
-        await PageContentLoadedAsync();
-        return await _commonPage.CaptureVisualAsync(Page, name);
-
-    }
 }

@@ -2,6 +2,7 @@
 using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Extensions;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
+using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
@@ -12,7 +13,9 @@ public class UploadDocumentCoordinator(
     ScenarioContext scenarioContext,
     IReqnrollOutputHelper outputHelper,
     IAllureReportingHelper allure,
-    IPlaywrightDriver playwrightDriver) : BaseCoordinator
+    IPlaywrightDriver playwrightDriver,
+    ICommonPage commonPage,
+    TestArtifacts testArtifacts) : BaseCoordinator(testArtifacts)
 {
 
     public async Task VerifyUploadDocumentPageIsDisplayedAsync()
@@ -98,7 +101,9 @@ public class UploadDocumentCoordinator(
 
     public async Task<string> CaptureUploadDocumentPageVisualAsync()
     {
-        return await CapturePageVisualAsync(uploadDocumentPage.CapturePageVisualAsync, ScenarioConstant.UploadPage);
+        return await CapturePageVisualAsync(
+         () => commonPage.CaptureVisualAsync(playwrightDriver.Page),
+         ScenarioConstant.UploadPage);
     }
 
     public async Task ExpandCommonIssuesWhenUploadingRP14AFormsAsync()

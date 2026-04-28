@@ -26,23 +26,15 @@ public class CommonPage : ICommonPage
     }
 
 
-    public async Task<string> CaptureVisualAsync(IPage page, string screenshotName)
+    public async Task<byte[]> CaptureVisualAsync(IPage page)
     {
-        string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
-        string visualFolder = Path.Combine(projectRoot, "VisualInputs");
+        ArgumentNullException.ThrowIfNull(page);
 
-        Directory.CreateDirectory(visualFolder);
-
-        string screenshotPath = Path.Combine(visualFolder, $"{screenshotName}.png");
-
-        await page.ScreenshotAsync(new()
+        return await page.ScreenshotAsync(new()
         {
-            Path = screenshotPath,
             FullPage = true,
             Animations = ScreenshotAnimations.Disabled
         });
-
-        return screenshotPath;
     }
 
 

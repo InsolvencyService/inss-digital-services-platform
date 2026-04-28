@@ -82,11 +82,4 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     {
         return await UploadedFileStatus.AllInnerTextsAsync();
     }
-
-    public async Task<string> CapturePageVisualAsync(string name)
-    {
-        await PageContentLoadedAsync();
-        return await _commonPage.CaptureVisualAsync(Page, name);
-
-    }
 }

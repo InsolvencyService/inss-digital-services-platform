@@ -6,6 +6,5 @@ public interface IDeclarationPage
     Task<IPage> ClickOnSection187LinkAsync();
     Task ClickOnBackButtonAsync();
     Task ClickOnAgreeAndContinueButtonAsync();
-    Task<string> CapturePageVisualAsync(string name);
 }
 

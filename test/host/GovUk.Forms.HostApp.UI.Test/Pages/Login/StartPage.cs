@@ -63,12 +63,6 @@ public class StartPage : BasePage, IStartPage
         await Expect(UploadRedundancyPaymentFormsLink).ToBeVisibleAsync();
         await Expect(OnceLoggedInText).ToBeVisibleAsync();
     }
-    public async Task<string> CaptureStartPageVisualAsync(string name)
-    {
-        await PageContentLoadedAsync();
-        return await _commonPage.CaptureVisualAsync(Page, name);
-
-    }
     public async Task ClickOnFooterLinkAsync(string linkText)
     {
         _scenarioContext.Set(Page);

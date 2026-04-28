@@ -1,4 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Pages;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Helpers;
+using GovUk.Forms.HostApp.UI.Test.Pages;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Pages.Login;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -10,8 +12,10 @@ public class StartPageCoordinator(
     IStartPage startPage,
     ISignInPage signInPage,
     ICommonPage commonPage,
+    IPlaywrightDriver playwrightDriver,
     ScenarioContext scenarioContext,
-    DirectorConductReportingServicePage conductReportingServicePage) : BaseCoordinator
+    TestArtifacts testArtifacts,
+    DirectorConductReportingServicePage conductReportingServicePage) : BaseCoordinator(testArtifacts)
 {
 
     public async Task VerifyStartPageIsDisplayedAsync()
@@ -48,7 +52,9 @@ public class StartPageCoordinator(
 
     public async Task<string> CaptureStartPageVisualAsync()
     {
-        return await CapturePageVisualAsync(startPage.CaptureStartPageVisualAsync, ScenarioConstant.StartPage);
+        return await CapturePageVisualAsync(
+            () => commonPage.CaptureVisualAsync(playwrightDriver.Page),
+            ScenarioConstant.StartPage);
     }
 
     public async Task ClickOnFooterLinkAsync(string linkText)

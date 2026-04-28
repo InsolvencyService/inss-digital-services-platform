@@ -72,7 +72,7 @@ public class DeclarationSteps
     [Then("I will see the terms I need to agree to")]
     public async Task ThenIWillSeeTheTermsINeedToAgreeTo()
     {
-        string screenshotPath = await _declarationCoordinator.CaptureDeclarationPageVisualAsync();
+        string screenshotPath = await _declarationCoordinator.CaptureDeclarationVisualAsync();
         await VerifyFile(screenshotPath)
             .UseDirectory(ScenarioConstant.SnapShots)
             .UseFileName(ScenarioConstant.DeclarationPage); ;

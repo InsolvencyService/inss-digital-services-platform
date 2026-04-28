@@ -6,6 +6,5 @@ public interface IStartPage
     Task<IPage> ClickOnFeedbackAsync();
     Task<string> GetHeadingTextAsync();
     Task WaitForPageToLoadAsync();
-    Task<string> CaptureStartPageVisualAsync(string name);
     Task ClickOnFooterLinkAsync(string linkText);
 }

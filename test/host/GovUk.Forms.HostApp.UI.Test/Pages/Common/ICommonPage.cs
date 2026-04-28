@@ -3,7 +3,7 @@
 public interface ICommonPage
 {
     Task<IPage> OpenNewTabAndVerifyAsync(IBrowserContext browserContext, Func<Task> triggerAction, string? expectedUrlPart = null);
-    Task<string> CaptureVisualAsync(IPage page, string screenshotName);
+    Task<byte[]> CaptureVisualAsync(IPage page);
     Task<IResponse> PageGoForwardAsync(IPage page, PageGoForwardOptions? options = null);
     Task<IResponse> PageGoBackAsync(IPage page, PageGoBackOptions? options = null);
 }

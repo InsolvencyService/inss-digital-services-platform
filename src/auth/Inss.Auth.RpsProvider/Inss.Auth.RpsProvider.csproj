@@ -21,9 +21,5 @@
       <_ContentIncludedByDefault Remove="Views\Shared\_LayoutFooter.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Shared\_LayoutHeader.cshtml" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Properties\" />
-    </ItemGroup>
-    
+	
 </Project>

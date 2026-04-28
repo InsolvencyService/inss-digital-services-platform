@@ -63,8 +63,8 @@ public class StartPageSteps
         string screenshotPath = await _startPageCoordinator.CaptureStartPageVisualAsync();
 
         await VerifyFile(screenshotPath)
-        .UseDirectory(ScenarioConstant.SnapShots)
-        .UseFileName(ScenarioConstant.StartPage); ;
+            .UseDirectory(ScenarioConstant.SnapShots)
+            .UseFileName(ScenarioConstant.StartPage);
     }
 
     [Then("a new page should open with title {string} with url containing {string}")]

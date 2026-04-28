@@ -1,8 +1,33 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
+﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
 
-public class BaseCoordinator
+namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
+
+public abstract class BaseCoordinator
 {
-    public static async Task<T> NavigateAsync<T>(Func<Task<T>> navigationAction)
+    protected TestArtifacts TestArtifacts { get; }
+
+    protected BaseCoordinator(TestArtifacts testArtifacts)
+    {
+        TestArtifacts = testArtifacts ?? throw new ArgumentNullException(nameof(testArtifacts));
+    }
+
+    protected async Task<string> CapturePageVisualAsync(
+     Func<Task<byte[]>> captureAction,
+     string name)
+    {
+        ArgumentNullException.ThrowIfNull(captureAction);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        byte[] screenshot = await captureAction();
+
+        string path = TestArtifacts.GetScreenshotPath(name);
+
+        await File.WriteAllBytesAsync(path, screenshot);
+
+        return path;
+    }
+
+    protected static async Task<T> NavigateAsync<T>(Func<Task<T>> navigationAction)
         where T : class
     {
         ArgumentNullException.ThrowIfNull(navigationAction);
@@ -12,10 +37,5 @@ public class BaseCoordinator
         return page ?? throw new InvalidOperationException("Navigation did not return a valid page.");
     }
 
-    public static async Task<string> CapturePageVisualAsync(
-       Func<string, Task<string>> captureAction,
-       string name)
-    {
-        return await captureAction(name);
-    }
+
 }
