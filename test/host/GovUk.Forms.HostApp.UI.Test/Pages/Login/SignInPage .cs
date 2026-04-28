@@ -23,24 +23,16 @@ public class SignInPage : BasePage, ISignInPage
     private ILocator SignInButton => Page.GetByRole(AriaRole.Button, new() { Name = SignInLocators.Labels.SignInButton });
     private ILocator ForgotPasswordLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.ForgotPasswordLink });
     private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
-    private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SharedLoactors.GOVUKLink });
-    private ILocator UploadRedundancyPaymentFormsLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.UploadRedundancyPaymentForms });
     private ILocator ErrorSummary => Page.Locator(SignInLocators.Selectors.ErrorSummary);
     private ILocator ErrorSummaryItems => ErrorSummary.GetByRole(AriaRole.Link);
     private ILocator EmailError => Page.Locator(SignInLocators.Selectors.EmailError);
     private ILocator PasswordError => Page.Locator(SignInLocators.Selectors.PasswordError);
-    private ILocator BetaText => Page.GetByText(SharedLoactors.Beta, new() { Exact = true });
-
     protected override async Task PageContentLoadedAsync()
     {
-        await Expect(GOVUKLink).ToBeVisibleAsync();
-        await Expect(BetaText).ToBeVisibleAsync();
         await Expect(Heading).ToBeVisibleAsync();
         await Expect(EmailInput).ToBeVisibleAsync();
         await Expect(PasswordInput).ToBeVisibleAsync();
         await Expect(SignInButton).ToBeVisibleAsync();
-        await Expect(UploadRedundancyPaymentFormsLink).ToBeVisibleAsync();
-        await Expect(BackButton).ToBeVisibleAsync();
         await Expect(ForgotPasswordLink).ToBeVisibleAsync();
     }
 

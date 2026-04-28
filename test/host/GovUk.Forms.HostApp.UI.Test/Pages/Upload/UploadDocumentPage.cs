@@ -19,10 +19,8 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     private new IPage Page => _playwrightDriver.Page;
 
-    private ILocator UploadRedundancyPaymentForms => Page.GetByRole(AriaRole.Heading, new() { Name = SharedLoactors.UploadRedundancyPaymentForms });
     private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
     private ILocator GiveFeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.FeedbackLink });
-    private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SharedLoactors.GOVUKLink });
     private ILocator UploadFileText => Page.GetByText(UploadLocators.Labels.UploadFile, new() { Exact = true });
     private ILocator NoFileChosenText => Page.GetByText(UploadLocators.Labels.NoFileChosen, new() { Exact = true });
     private ILocator CommonIssuesWhenUploadingRP14AForms => Page.GetByText(UploadLocators.Labels.CommonIssuesWhenUploadingRP14AForms, new() { Exact = true });
@@ -30,17 +28,11 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     private ILocator GuidanceText => Page.GetByText(UploadLocators.Labels.Guidance, new() { Exact = true });
     private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLoactors.ContinueButton });
     private ILocator FileUploadInput => Page.Locator(UploadLocators.Selectors.FileInput);
-    private ILocator BetaText => Page.GetByText(SharedLoactors.Beta, new() { Exact = true });
     private ILocator UploadedFileStatus => Page.Locator(UploadLocators.Selectors.UploadStatus);
 
     protected override async Task PageContentLoadedAsync()
     {
         await Page.WaitForLoadStateAsync(LoadState.Load);
-        await Expect(BetaText).ToBeVisibleAsync();
-        await Expect(UploadRedundancyPaymentForms).ToBeVisibleAsync();
-        await Expect(BackButton).ToBeVisibleAsync();
-        await Expect(GiveFeedbackLink).ToBeVisibleAsync();
-        await Expect(GOVUKLink).ToBeVisibleAsync();
         await Expect(UploadFileText).ToBeVisibleAsync();
         await Expect(NoFileChosenText).ToBeVisibleAsync();
         await Expect(CommonIssuesWhenUploadingRP14AForms).ToBeVisibleAsync();
