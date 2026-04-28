@@ -89,4 +89,17 @@ public sealed class TestArtifacts
             ? "artifact"
             : value;
     }
+
+    public string GetVisualInputPath(string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        string visualInputsDirectory = Path.Combine(Folder, "visual-inputs");
+
+        Directory.CreateDirectory(visualInputsDirectory);
+
+        return Path.Combine(
+            visualInputsDirectory,
+            $"{Sanitize(name)}.png");
+    }
 }

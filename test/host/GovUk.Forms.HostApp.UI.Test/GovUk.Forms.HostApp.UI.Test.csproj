@@ -21,6 +21,7 @@
     <PackageReference Include="Reqnroll.ExternalData" />
     <PackageReference Include="Reqnroll.Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Reqnroll.NUnit" />
+    <PackageReference Include="Verify.NUnit" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Hook\" />
-    <Folder Include="Features\" />
   </ItemGroup>
 
   <ItemGroup>

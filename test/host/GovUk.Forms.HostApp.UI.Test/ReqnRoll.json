@@ -6,5 +6,10 @@
       "outputFileTitle": "GovUk.Forms.HostApp.UI.Tests",
       "historyPath": "History/*.ndjson"
     }
-  }
+  },
+  "plugins": [
+    {
+      "name": "Allure.Reqnroll"
+    }
+  ]
 }
