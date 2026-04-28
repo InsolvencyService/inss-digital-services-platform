@@ -7,9 +7,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Pages.Login;
 public class SignInPage : BasePage, ISignInPage
 {
     private readonly IPlaywrightDriver _playwrightDriver;
-    public SignInPage(IPlaywrightDriver playwrightDriver)
+    private readonly ScenarioContext _scenarioContext;
+    public SignInPage(IPlaywrightDriver playwrightDriver, ScenarioContext scenarioContext)
     {
         _playwrightDriver = playwrightDriver;
+        _scenarioContext = scenarioContext;
     }
 
     private new IPage Page => _playwrightDriver.Page;
@@ -72,6 +74,7 @@ public class SignInPage : BasePage, ISignInPage
 
     public async Task SignInAsync(string email, string password)
     {
+        _scenarioContext.Set(Page);
         await WaitForPageToLoadAsync();
         await EnterCredentialsAsync(email, password);
         await SubmitAsync();

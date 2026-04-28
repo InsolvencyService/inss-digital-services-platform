@@ -1,5 +1,7 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Builders;
+using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Extensions;
+using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
@@ -8,12 +10,20 @@ namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 public class UploadDocumentCoordinator(
     IUploadDocumentPage uploadDocumentPage,
     ScenarioContext scenarioContext,
-    IReqnrollOutputHelper outputHelper) : BaseCoordinator
+    IReqnrollOutputHelper outputHelper,
+    IAllureReportingHelper allure,
+    IPlaywrightDriver playwrightDriver) : BaseCoordinator
 {
 
     public async Task VerifyUploadDocumentPageIsDisplayedAsync()
     {
-        await uploadDocumentPage.WaitForPageToLoadAsync();
+        await allure.StepAsync("File Upload Page", async () =>
+        {
+            await uploadDocumentPage.WaitForPageToLoadAsync();
+            await allure.AttachScreenshotAsync(
+                    playwrightDriver.Page,
+                    "Upload File Page");
+        });
     }
 
     public async Task ClickOnContinueButtonAsync()
@@ -28,7 +38,13 @@ public class UploadDocumentCoordinator(
 
     public async Task UploadFileAsync(string file)
     {
-        await uploadDocumentPage.UploadFileAsync(file);
+        await allure.StepAsync("File Upload", async () =>
+        {
+            await uploadDocumentPage.UploadFileAsync(file);
+            await allure.AttachScreenshotAsync(
+                    playwrightDriver.Page,
+                    "After Upload File");
+        });
     }
 
     public async Task NavigateToFeedbackPageAsync()
@@ -52,6 +68,8 @@ public class UploadDocumentCoordinator(
         outputHelper.WriteLine($"Uploading file: {fileName}");
         outputHelper.WriteLine($"Full path: {filePath}");
         outputHelper.AddAttachmentAsLink(filePath);
+        allure.AttachFile(filePath, "Uploaded RP14a File");
+
     }
 
     public async Task VerifyThatFileIsUploadedAsync()

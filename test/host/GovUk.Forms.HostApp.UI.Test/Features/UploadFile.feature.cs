@@ -162,11 +162,13 @@ await this.FeatureBackgroundAsync();
         [global::NUnit.Framework.DescriptionAttribute("Prevent uploading the same file twice")]
         [global::NUnit.Framework.CategoryAttribute("functional")]
         [global::NUnit.Framework.CategoryAttribute("upload")]
+        [global::NUnit.Framework.CategoryAttribute("addVideo")]
         public async global::System.Threading.Tasks.Task PreventUploadingTheSameFileTwice()
         {
             string[] tagsOfScenario = new string[] {
                     "functional",
-                    "upload"};
+                    "upload",
+                    "addVideo"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Prevent uploading the same file twice", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);

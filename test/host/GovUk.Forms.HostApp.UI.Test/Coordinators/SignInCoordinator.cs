@@ -1,8 +1,14 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Pages.Login;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Helpers;
+using GovUk.Forms.HostApp.UI.Test.Pages.Login;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 
-public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
+public class SignInCoordinator(
+    ISignInPage signInPage,
+    IStartPage startPage,
+    IAllureReportingHelper allure,
+    IPlaywrightDriver playwrightDriver)
 {
     public async Task NavigateToSignInPageAsync()
     {
@@ -12,7 +18,20 @@ public class SignInCoordinator(ISignInPage signInPage, IStartPage startPage)
 
     public async Task SignInToServiceAsync(string email, string password)
     {
-        await signInPage.SignInAsync(email, password);
+        await allure.StepAsync("Sign in user", async () =>
+        {
+
+            allure.AddParameter("Email", email);
+            await EnterCredentialsAsync(email, password);
+            await allure.AttachScreenshotAsync(
+             playwrightDriver.Page,
+             "Before sign in");
+
+            await ClickSignInButtonAsync();
+            await allure.AttachScreenshotAsync(
+                    playwrightDriver.Page,
+                    "After sign in");
+        });
     }
 
     public async Task EnterCredentialsAsync(string email, string password)

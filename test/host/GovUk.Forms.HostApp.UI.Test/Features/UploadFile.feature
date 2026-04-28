@@ -11,7 +11,7 @@ Scenario: Upload a valid RP14A file successfully
   When I upload a valid RP14A file
   Then the uploaded file should appear in the file list
 
- @functional @upload
+ @functional @upload @addVideo
 Scenario: Prevent uploading the same file twice
   When I upload a valid RP14A file
   And I upload the same file again

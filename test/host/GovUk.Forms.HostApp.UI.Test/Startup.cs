@@ -23,6 +23,7 @@ public static class Startup
             return new TestArtifacts(testName, environment, workDirectory);
         });
         services.AddScoped<IPlaywrightDriver, PlaywrightDriver>();
+        services.AddScoped<IAllureReportingHelper, AllureReportingHelper>();
         services.AddPageObjects();
         services.AddCoordinators();
         return services;
