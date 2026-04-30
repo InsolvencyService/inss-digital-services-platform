@@ -1,5 +1,6 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -8,23 +9,14 @@ namespace GovUk.Forms.HostApp.UI.Test.Steps;
 public class UploadDocumentsSteps
 {
     private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
-    private readonly CommonCoordinator _commonCoordinator;
     private readonly ScenarioContext _scenarioContext;
 
     public UploadDocumentsSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
-        CommonCoordinator commonCoordinator,
         ScenarioContext scenarioContext)
     {
         _uploadDocumentCoordinator = uploadDocumentCoordinator;
-        _commonCoordinator = commonCoordinator;
         _scenarioContext = scenarioContext;
-    }
-
-    [Given("I am on the upload page")]
-    public async Task GivenIAmOnTheUploadPage()
-    {
-        await _commonCoordinator.VerifyThatUploadDocumentPageIsDisplayedAsync();
     }
 
     [When("I upload a valid RP14A file")]
@@ -44,6 +36,12 @@ public class UploadDocumentsSteps
     public async Task WhenIExpandTheCommonIssuesSection()
     {
         await _uploadDocumentCoordinator.ExpandCommonIssuesWhenUploadingRP14AFormsAsync();
+    }
+
+    [When("I click the continue button without selecting a file")]
+    public async Task WhenIClickTheContinueButtonWithoutSelectingAFile()
+    {
+        await _uploadDocumentCoordinator.ClickOnContinueButtonAsync();
     }
 
     [Then("the uploaded file should appear in the file list")]
@@ -76,5 +74,15 @@ public class UploadDocumentsSteps
             .UseDirectory(ScenarioConstant.SnapShots)
             .UseFileName(ScenarioConstant.UploadPageWithCommonIssuesSection);
     }
+
+    [Then("I should see the file upload error {string}")]
+    public async Task ThenIShouldSeeTheFileUploadError(string errorMessage)
+    {
+        await _uploadDocumentCoordinator.VerifyInvalidFileExtensionErrorAsync(
+        new UploadFileError(
+        SummaryTitle: "There is a problem",
+        ErrorMessage: errorMessage));
+    }
+
 
 }

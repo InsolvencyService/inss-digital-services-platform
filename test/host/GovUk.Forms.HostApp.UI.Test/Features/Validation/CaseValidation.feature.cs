@@ -11,27 +11,27 @@
 #region Designer generated code
 #pragma warning disable
 using Reqnroll;
-namespace GovUk.Forms.HostApp.UI.Test.Features
+namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 {
     
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::NUnit.Framework.TestFixtureAttribute()]
-    [global::NUnit.Framework.DescriptionAttribute("Upload Documents")]
+    [global::NUnit.Framework.DescriptionAttribute("Case Validation")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
-    [global::NUnit.Framework.CategoryAttribute("MEDS-1063")]
-    public partial class UploadDocumentsFeature
+    public partial class CaseValidationFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
-        private static string[] featureTags = new string[] {
-                "MEDS-1063"};
+        private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features", "Upload Documents", "A short summary of the feature", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Case Validation", "  As an Insolvency Practitioner user\r\n  I want RP14A validation to run before sub" +
+                "mission to Dynamics\r\n  So that I can fix errors immediately and avoid delayed re" +
+                "jection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
-#line 1 "UploadFile.feature"
+#line 1 "CaseValidation.feature"
 #line hidden
         
         [global::NUnit.Framework.OneTimeSetUpAttribute()]
@@ -107,35 +107,31 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         
         public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
         {
-#line 6
-#line hidden
 #line 7
+#line hidden
+#line 8
   await testRunner.GivenAsync("I am on the upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/UploadFile.feature.ndjson", 7);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/CaseValidation.feature.ndjson", 6);
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Upload a valid RP14A file successfully")]
-        [global::NUnit.Framework.CategoryAttribute("functional")]
-        [global::NUnit.Framework.CategoryAttribute("upload")]
-        [global::NUnit.Framework.CategoryAttribute("Addvideo")]
-        public async global::System.Threading.Tasks.Task UploadAValidRP14AFileSuccessfully()
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Show validation error when case reference is missing")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        public async global::System.Threading.Tasks.Task RP14AShowValidationErrorWhenCaseReferenceIsMissing()
         {
             string[] tagsOfScenario = new string[] {
-                    "functional",
-                    "upload",
-                    "Addvideo"};
+                    "regression"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Upload a valid RP14A file successfully", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Show validation error when case reference is missing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 10
+#line 11
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -145,110 +141,35 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 6
+#line 7
 await this.FeatureBackgroundAsync();
-#line hidden
-#line 11
-  await testRunner.WhenAsync("I upload a valid RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 12
-  await testRunner.ThenAsync("the uploaded file should appear in the file list", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+  await testRunner.GivenAsync("the RP14A contains an employee row with no case reference", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 13
+  await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 14
+  await testRunner.ThenAsync("I should see the validation error \"1 missing a case reference\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Prevent uploading the same file twice")]
-        [global::NUnit.Framework.CategoryAttribute("functional")]
-        [global::NUnit.Framework.CategoryAttribute("upload")]
-        [global::NUnit.Framework.CategoryAttribute("addVideo")]
-        public async global::System.Threading.Tasks.Task PreventUploadingTheSameFileTwice()
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Show validation error when case reference format is invalid")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        public async global::System.Threading.Tasks.Task RP14AShowValidationErrorWhenCaseReferenceFormatIsInvalid()
         {
             string[] tagsOfScenario = new string[] {
-                    "functional",
-                    "upload",
-                    "addVideo"};
+                    "regression"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Prevent uploading the same file twice", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Show validation error when case reference format is invalid", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 15
-this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 6
-await this.FeatureBackgroundAsync();
-#line hidden
-#line 16
-  await testRunner.WhenAsync("I upload a valid RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
 #line 17
-  await testRunner.AndAsync("I upload the same file again", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 18
-  await testRunner.ThenAsync("the file list should contain only one instance of that file", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Verify Upload Document Page visual snapshot")]
-        [global::NUnit.Framework.CategoryAttribute("visual")]
-        [global::NUnit.Framework.CategoryAttribute("smoke")]
-        public async global::System.Threading.Tasks.Task VerifyUploadDocumentPageVisualSnapshot()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "visual",
-                    "smoke"};
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify Upload Document Page visual snapshot", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 21
-this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 6
-await this.FeatureBackgroundAsync();
-#line hidden
-#line 22
-  await testRunner.ThenAsync("the upload document page should match the visual snapshot", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Verify Common issues when uploading RP14/A forms Contents")]
-        [global::NUnit.Framework.CategoryAttribute("functional")]
-        [global::NUnit.Framework.CategoryAttribute("visual")]
-        public async global::System.Threading.Tasks.Task VerifyCommonIssuesWhenUploadingRP14AFormsContents()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "functional",
-                    "visual"};
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Verify Common issues when uploading RP14/A forms Contents", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 26
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -258,34 +179,77 @@ await this.FeatureBackgroundAsync();
             else
             {
                 await this.ScenarioStartAsync();
-#line 6
+#line 7
 await this.FeatureBackgroundAsync();
 #line hidden
-#line 27
- await testRunner.WhenAsync("I expand the common issues section", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 18
+  await testRunner.GivenAsync("the RP14A contains a case reference \"AB12345678\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 28
- await testRunner.ThenAsync("the common issues section should display the correct content", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 19
+  await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 20
+  await testRunner.ThenAsync("I should see the validation error \"1 invalid case reference format\" with the hint" +
+                        " \"Format is CN12345678\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Display error when submitting without uploading a file")]
-        [global::NUnit.Framework.IgnoreAttribute("Ignored scenario")]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A display error for case reference longer than 12 characters")]
         [global::NUnit.Framework.CategoryAttribute("regression")]
-        public async global::System.Threading.Tasks.Task DisplayErrorWhenSubmittingWithoutUploadingAFile()
+        public async global::System.Threading.Tasks.Task RP14ADisplayErrorForCaseReferenceLongerThan12Characters()
         {
             string[] tagsOfScenario = new string[] {
-                    "ignore",
                     "regression"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error when submitting without uploading a file", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A display error for case reference longer than 12 characters", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 31
+#line 23
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 7
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 24
+  await testRunner.GivenAsync("the RP14A contains a case reference \"CN12345678901\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 25
+  await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 26
+  await testRunner.ThenAsync("I should see the validation error \"1 too long case reference\" with the hint \"Up t" +
+                        "o 12 characters are allowed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Display error when case reference is not found in RPS")]
+        [global::NUnit.Framework.IgnoreAttribute("Ignored scenario")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        public async global::System.Threading.Tasks.Task DisplayErrorWhenCaseReferenceIsNotFoundInRPS()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "ignore"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error when case reference is not found in RPS", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 30
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -295,14 +259,21 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 6
+#line 7
 await this.FeatureBackgroundAsync();
 #line hidden
+#line 31
+  await testRunner.GivenAsync("the RP14A contains a valid format case reference", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
 #line 32
-  await testRunner.WhenAsync("I click the continue button without selecting a file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+  await testRunner.AndAsync("the case reference does not exist in RPS", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 33
-  await testRunner.ThenAsync("I should see the file upload error \"The file must end with an XML extension\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+  await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 34
+  await testRunner.ThenAsync("I should see the validation error \"[COUNT] case reference have not been matched i" +
+                        "n our system\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

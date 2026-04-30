@@ -26,3 +26,8 @@ Scenario: Verify Upload Document Page visual snapshot
   Scenario: Verify Common issues when uploading RP14/A forms Contents
 	When I expand the common issues section
 	Then the common issues section should display the correct content
+
+@ignore @regression
+Scenario: Display error when submitting without uploading a file
+  When I click the continue button without selecting a file
+  Then I should see the file upload error "The file must end with an XML extension"

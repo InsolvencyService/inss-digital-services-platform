@@ -237,7 +237,8 @@ public static class TestValidator
         Type[] allowedStepDependencies =
         [
             typeof(ScenarioContext),
-        typeof(FeatureContext)
+             typeof(FeatureContext),
+             typeof(IReqnrollOutputHelper)
         ];
 
         IEnumerable<Type> stepTypes = assembly.GetTypes()
@@ -275,10 +276,15 @@ public static class TestValidator
                     continue;
                 }
 
-                throw new InvalidOperationException(
-                    $"Step definition '{stepType.FullName}' has invalid dependency '{param.ParameterType.FullName}'.\n\n" +
-                    "Steps may only depend on Coordinators, ScenarioContext, or FeatureContext.\n\n" +
+                string message = string.Join(
+                    Environment.NewLine,
+                    $"Step definition '{stepType.FullName}' has invalid dependency '{param.ParameterType.FullName}'.",
+                    string.Empty,
+                    "Steps may only depend on Coordinators, ScenarioContext, or FeatureContext.",
+                    string.Empty,
                     "Please move page/business flow logic into a Coordinator.");
+
+                throw new InvalidOperationException(message);
             }
         }
     }

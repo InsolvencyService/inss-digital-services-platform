@@ -76,6 +76,8 @@ public abstract class BaseTestConfig
             if (!page.IsClosed)
             {
                 await page.CloseAsync();
+                // remove when we have implemented logout
+                await browserContext.ClearCookiesAsync();
             }
 
             if (failed && video is not null)

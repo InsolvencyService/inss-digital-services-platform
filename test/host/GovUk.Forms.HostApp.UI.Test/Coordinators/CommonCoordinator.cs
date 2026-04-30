@@ -9,10 +9,10 @@ public class CommonCoordinator(
     UploadDocumentCoordinator uploadDocument)
 {
 
-    public async Task VerifyThatUploadDocumentPageIsDisplayedAsync()
+    public async Task VerifyThatUploadDocumentPageIsDisplayedAsync(string emailAddress = ScenarioConstant.EmailAddress, string password = ScenarioConstant.Password)
     {
         await startPageCoordinator.NavigateToLoginPageAsync();
-        await signInCoordinator.SignInToServiceAsync(ScenarioConstant.EmailAddress, ScenarioConstant.Password);
+        await signInCoordinator.SignInToServiceAsync(emailAddress, password);
         await declarationCoordinator.VerifyDeclarationPageIsDisplayedAsync();
         await declarationCoordinator.NavigateToUploadAFilePageAsync();
         await uploadDocument.VerifyUploadDocumentPageIsDisplayedAsync();

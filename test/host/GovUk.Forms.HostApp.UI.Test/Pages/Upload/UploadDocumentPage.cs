@@ -2,6 +2,7 @@
 using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
@@ -29,10 +30,18 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLoactors.ContinueButton });
     private ILocator FileUploadInput => Page.Locator(UploadLocators.Selectors.FileInput);
     private ILocator UploadedFileStatus => Page.Locator(UploadLocators.Selectors.UploadStatus);
+    private ILocator ErrorSummary => Page.Locator(".govuk-error-summary");
+    private ILocator ErrorSummaryTitle => ErrorSummary.GetByRole(AriaRole.Heading, new() { Name = "There is a problem" });
+    private ILocator ErrorSummaryLink => ErrorSummary.GetByRole(AriaRole.Link);
+    private ILocator UploadFileFormGroup => Page.Locator(".govuk-form-group.govuk-form-group--error");
+    private ILocator UploadFileErrorMessage => Page.Locator("#Contents-error");
+    private ILocator UploadFileInput => Page.Locator("#Contents");
+
 
     protected override async Task PageContentLoadedAsync()
     {
-        await Page.WaitForLoadStateAsync(LoadState.Load);
+        await Page.WaitForLoadStateAsync(LoadState.Load,
+            new() { Timeout = ScenarioConstant.ElementTimeout });
         await Expect(UploadFileText).ToBeVisibleAsync();
         await Expect(NoFileChosenText).ToBeVisibleAsync();
         await Expect(CommonIssuesWhenUploadingRP14AForms).ToBeVisibleAsync();
@@ -45,6 +54,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     public async Task ClickOnContinueButtonAsync()
     {
         await ContinueButton.ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = ScenarioConstant.ElementTimeout });
     }
     public async Task ClickOnBackButtonAsync()
     {
@@ -81,5 +91,21 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     public async Task<IReadOnlyList<string>> GetUploadedFileNamesAsync()
     {
         return await UploadedFileStatus.AllInnerTextsAsync();
+    }
+
+    public async Task VerifyUploadFileErrorAsync(UploadFileError expected)
+    {
+        await Expect(ErrorSummary).ToBeVisibleAsync();
+        await Expect(ErrorSummaryTitle).ToBeVisibleAsync();
+
+        await Expect(ErrorSummaryLink).ToHaveTextAsync(expected.ErrorMessage);
+        await Expect(UploadFileFormGroup).ToBeVisibleAsync();
+        await Expect(UploadFileErrorMessage).ToContainTextAsync(expected.ErrorMessage);
+    }
+
+    public async Task ClickErrorSummaryLinkAsync()
+    {
+        await ErrorSummaryLink.ClickAsync();
+        await Expect(UploadFileInput).ToBeFocusedAsync();
     }
 }

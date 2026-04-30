@@ -6,4 +6,8 @@ public class TestData
     {
         public string Message { get; set; } = string.Empty;
     }
+
+    public sealed record UploadFileError(
+    string SummaryTitle,
+    string ErrorMessage);
 }
