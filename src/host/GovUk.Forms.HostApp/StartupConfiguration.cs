@@ -1,8 +1,8 @@
 using System.Security.Cryptography;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Components.Extensions;
-using GovUk.Forms.Components.Handlers;
 using GovUk.Forms.Components.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -25,7 +25,7 @@ public class StartupConfiguration : IHostingStartup
         {
             BrokerOptions brokerOptions = new();
             context.Configuration.GetSection("Broker").Bind(brokerOptions);
-            
+
             services.AddSingleton<IAuthenticationProvider>(_ =>
             {
                 return brokerOptions.IdentityProvider switch
@@ -49,31 +49,34 @@ public class StartupConfiguration : IHostingStartup
                     _ => new AnonymousUserSessionProvider(accessor)
                 };
             });
-            
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                })
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
-                {
-                    ConfigureBaseOptions(options, brokerOptions);
 
-                    ConfigureTokenValidation(options, brokerOptions);
-
-                    options.Events = new OpenIdConnectEvents
+            if (brokerOptions.IdentityProvider is not null)
+            {
+                services.AddAuthentication(options =>
                     {
-                        OnRedirectToIdentityProvider = HandleProviderRedirect,
-                        OnAuthenticationFailed = HandleAuthenticationFailed,
-                        OnRedirectToIdentityProviderForSignOut = HandleProviderRedirectForSignOut
-                    };
-                });
-            
+                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    })
+                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                    {
+                        ConfigureBaseOptions(options, brokerOptions);
+
+                        ConfigureTokenValidation(options, brokerOptions);
+
+                        options.Events = new OpenIdConnectEvents
+                        {
+                            OnRedirectToIdentityProvider = HandleProviderRedirect,
+                            OnAuthenticationFailed = HandleAuthenticationFailed,
+                            OnRedirectToIdentityProviderForSignOut = HandleProviderRedirectForSignOut
+                        };
+                    });
+            }
+
             services.AddSingleton<IAuthorizationHandler, DynamicAccessHandler>();
-            services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddAuthorizationBuilder()
                 .AddPolicy("DynamicAccessPolicy", policy => policy.Requirements.Add(new DynamicAccessRequirement()));
+            services.AddOpenTelemetry().UseAzureMonitor();
         });
     }
     
@@ -100,6 +103,7 @@ public class StartupConfiguration : IHostingStartup
         options.ProtocolValidator.RequireNonce = false;
                     
         RSA rsa = RSA.Create();
+        
         rsa.ImportFromPem(brokerOptions.JwtPublicKey);
                     
         options.TokenValidationParameters = new TokenValidationParameters

@@ -50,6 +50,7 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<ITypeNameResolver, TypeNameResolver>();
             services.AddHttpClient();
             services.AddGovUkFrontend();
+            services.AddHealthChecks();
         });
         
         builder.Configure(app =>
@@ -63,23 +64,17 @@ public class StartupConfiguration : IHostingStartup
             }
             */
             
-            app.UseGovUkFrontend();
-            
             app.UseExceptionHandler("/error");
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
-            
+            app.UseGovUkFrontend();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            
+            app.UseHealthChecks("/health");
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                        name: "error",
-                        pattern: "/error",
-                        defaults: new { controller = "Error", action = "Index" })
-                    .WithStaticAssets();
+                endpoints.MapControllers();
 
                 IServiceProvider serviceProvider = endpoints.ServiceProvider;
                 

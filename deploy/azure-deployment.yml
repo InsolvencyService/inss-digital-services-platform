@@ -1,0 +1,119 @@
+parameters:
+  - name: environment
+    type: string
+    default: 'Dev'
+  - name: location
+    type: string
+  - name: azureSubscription
+    type: string
+    
+jobs:
+  - deployment:
+    variables:
+      resourceGroupName: rg-platform-${{ parameters.location }}-${{ lower(parameters.environment) }}
+      ipUploadAppName: app-ipupload-${{ parameters.location }}-${{ lower(parameters.environment) }}
+      brokerAppName: app-broker-${{ parameters.location }}-${{ lower(parameters.environment) }}
+      rpsAppName: app-rps-${{ parameters.location }}-${{ lower(parameters.environment) }}
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: AzureRmWebAppDeployment@4
+              displayName: Deploy RPS Provider App
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appType: 'webApp'
+                WebAppName: ${{ variables.rpsAppName }}
+                resourceGroupName: ${{ variables.resourceGroupName }}
+                package: '$(Pipeline.Workspace)/**/Inss.Auth.RpsProvider.zip'
+                deployToSlotOrASE: false
+                slotName: 'production'
+            
+            - task: AzureRmWebAppDeployment@4
+              displayName: Deploy Broker Host App
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appType: 'webApp'
+                WebAppName: ${{ variables.brokerAppName }}
+                resourceGroupName: ${{ variables.resourceGroupName }}
+                package: '$(Pipeline.Workspace)/**/Inss.Auth.Broker.zip'
+                deployToSlotOrASE: false
+                slotName: 'production'
+
+            - task: AzureRmWebAppDeployment@4
+              displayName: Deploy IP Upload Host App
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appType: 'webApp'
+                WebAppName: ${{ variables.ipUploadAppName }}
+                resourceGroupName: ${{ variables.resourceGroupName }}
+                package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
+                deployToSlotOrASE: false
+                slotName: 'production'
+
+            #- task: AzureAppServiceManage@0
+            #  displayName: Start Staging Slot
+            #  inputs:
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    Action: 'Start Azure App Service'
+            #    WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+            #    resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
+            #    SpecifySlotOrASE: true
+            #    Slot: 'staging'
+
+            #- task: AzureAppServiceManage@0
+            #  displayName: Start Production Slot
+            #  inputs:
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    Action: 'Start Azure App Service'
+            #    WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+            #    resourceGroupName: 'rg-platform-temp' #'rg-dsp-prototype' #'rg-platform-${{ lower(parameters.environment) }}'
+            #    SpecifySlotOrASE: true
+            #    Slot: 'Production'
+
+            #- task: PowerShell@2
+            #  displayName: 'Performing Health Check - Staging'
+            #  inputs:
+            #    failOnStderr: true
+            #    targetType: 'filePath'
+            #    filePath: $(System.DefaultWorkingDirectory)/powershell/InvokeRequestWithRetry.ps1
+            #    arguments: > # Use this to avoid newline characters in multi-line string
+            #      -URI "https://app-ipupload-${{ lower(parameters.environment) }}-staging.azurewebsites.net/"
+            #      -Method "${{ parameters.method }}"
+            #      -Retries ${{ parameters.retries }}
+            #      -SecondsDelay ${{ parameters.secondsDelay }}
+            #      -TimeoutSec ${{ parameters.timeoutSec }}
+
+            #- task: AzureAppServiceManage@0
+            #  displayName: Swap Staging Slot into Production
+            #  inputs:
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    Action: 'Swap Slots'
+            #    WebAppName: 'app-ipupload-${{ lower(parameters.environment) }}'
+            #    resourceGroupName: 'rg-platform-temp' #'rg-platform-${{ lower(parameters.environment) }}'
+            #    SourceSlot: 'staging'
+            #    SwapWithProduction: true
+            
+            ##          - task: PowerShell@2
+            ##            displayName: 'Performing Health Check - Production'
+            ##            inputs:
+            ##              failOnStderr: true
+            ##              targetType: 'filePath'
+            ##              filePath: $(System.DefaultWorkingDirectory)/powershell/InvokeRequestWithRetry.ps1
+            ##              arguments: > # Use this to avoid newline characters in multi-line string
+            ##                -URI "https://app-${{ parameters.location }}-${{ lower(parameters.environment) }}-ce-calcengine.azurewebsites.net/api/health/ping"
+            ##                -Method "${{ parameters.method }}"
+            ##                -Retries ${{ parameters.retries }}
+            ##                -SecondsDelay ${{ parameters.secondsDelay }}
+            ##                -TimeoutSec ${{ parameters.timeoutSec }}
+
+            # TODO: Fails
+            #- task: AzureAppServiceManage@0
+            #  displayName: Stop Staging Slot
+            #  inputs:
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    Action: 'Stop Azure App Service'

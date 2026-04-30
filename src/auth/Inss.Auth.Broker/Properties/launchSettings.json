@@ -9,6 +9,7 @@
       "applicationUrl": "https://localhost:7073",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=your-key-here",
         "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;Inss.Auth.Broker"
       }
     }
