@@ -7,6 +7,10 @@ public static class RegisterCoordinators
 {
     public static void AddCoordinators(this IServiceCollection services)
     {
-        services.AddScoped<DemoCoordinator>();
+        services.AddScoped<DeclarationCoordinator>();
+        services.AddScoped<SignInCoordinator>();
+        services.AddScoped<StartPageCoordinator>();
+        services.AddScoped<UploadDocumentCoordinator>();
+        services.AddScoped<CommonCoordinator>();
     }
 }

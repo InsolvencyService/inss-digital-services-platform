@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Pages;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
 
 
 public class Section187Page : BasePage, ISection187Page
@@ -8,7 +8,7 @@ public class Section187Page : BasePage, ISection187Page
         await Expect(Page).ToHaveTitleAsync("Employment Rights Act 1996");
     }
 
-    public async Task VerifySection187PageContentAsync()
+    public async Task VerifyThatSection187PageIsDisplayedAsync()
     {
         await PageContentLoadedAsync();
     }

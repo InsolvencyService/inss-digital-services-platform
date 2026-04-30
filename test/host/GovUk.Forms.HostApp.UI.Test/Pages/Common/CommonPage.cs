@@ -24,4 +24,30 @@ public class CommonPage : ICommonPage
 
         return newPage;
     }
+
+
+    public async Task<byte[]> CaptureVisualAsync(IPage page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+
+        return await page.ScreenshotAsync(new()
+        {
+            FullPage = true,
+            Animations = ScreenshotAnimations.Disabled
+        });
+    }
+
+
+    public async Task<IResponse> PageGoForwardAsync(IPage page, PageGoForwardOptions? options = null)
+    {
+        IResponse? response = await page.GoForwardAsync(options);
+
+        return response ?? throw new InvalidOperationException("No response received when navigating forward.");
+    }
+
+    public async Task<IResponse> PageGoBackAsync(IPage page, PageGoBackOptions? options = null)
+    {
+        IResponse? response = await page.GoBackAsync(options);
+        return response ?? throw new InvalidOperationException("No response received when navigating back.");
+    }
 }
