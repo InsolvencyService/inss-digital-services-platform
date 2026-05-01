@@ -30,12 +30,12 @@ public class FlowchartTests
     
     public FlowchartTests()
     {
-        NodeId fullNameId = NodeId.New();
-        NodeId addressId = NodeId.New();
-        NodeId ageId = NodeId.New();
-        NodeId salaryId = NodeId.New();
-        NodeId bankAccountId = NodeId.New();
-        NodeId summaryId = NodeId.New();
+        NodeId fullNameId = "FullName";
+        NodeId addressId = "Address";
+        NodeId ageId = "Age";
+        NodeId salaryId = "Salary";
+        NodeId bankAccountId = "BankAccount";
+        NodeId summaryId = "Summary";
     
         _form = TestFormModels.CreateWithYourDetailsSection();
         _yourDetails = _form.Sections[0];

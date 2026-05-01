@@ -15,12 +15,12 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
-        NodeId declarationId = NodeId.New();
-        NodeId fileUploadId = NodeId.New();
-        NodeId fileUploadErrorId = NodeId.New();
-        NodeId fileUploadErrorDetailsId = NodeId.New();
-        NodeId summaryId = NodeId.New();
-        NodeId postSubmitSuccessId = NodeId.New();
+        NodeId declarationId = "Declaration";
+        NodeId fileUploadId = "FileUpload";
+        NodeId fileUploadErrorId = "FileUploadErrors";
+        NodeId fileUploadErrorDetailsId = "FileUploadErrorDetails";
+        NodeId summaryId = "Summary";
+        NodeId postSubmitSuccessId = "PostSubmit";
         WebRoot webRoot = new();
         
         FormModel form = GetForm(services, webRoot.Root);

@@ -13,8 +13,8 @@ public sealed class YourBankruptcyFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
-        NodeId bankruptcyDateId = NodeId.New();
-        NodeId summaryId = NodeId.New();
+        NodeId bankruptcyDateId = "BankruptcyDate";
+        NodeId summaryId = "Summary";
         WebRoot webRoot = new();
         
         FormModel form = GetForm(services, webRoot.Root);
