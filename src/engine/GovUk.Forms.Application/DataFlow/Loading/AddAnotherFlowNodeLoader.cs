@@ -3,15 +3,15 @@ using GovUk.Forms.Domain.Primitives;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
 
-public sealed class AddAnotherFlowNodeLoader : IFlowNodeLoader
+public class AddAnotherFlowNodeLoader : IFlowNodeLoader
 {
     private const int FirstWorkingPageNodeIdIndex = 0;
     
-    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public virtual ValueTask<NodeId?> LoadAsync(LoadContext context)
     {
         AddAnotherModel addAnother = context.Page.As<AddAnotherModel>();
         AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(addAnother.MetaData.Group);
-            groupInfo.Remove.LinkedToNode = context.Nodes.First(n => n.PagePath == groupInfo.Remove.Path).Id; // TODO: Context helper
+        groupInfo.Remove.LinkedToNode = context.Nodes.First(n => n.PagePath == groupInfo.Remove.Path).Id; // TODO: Context helper
         
         if (addAnother.Items.Count == 0)
         {
@@ -29,7 +29,7 @@ public sealed class AddAnotherFlowNodeLoader : IFlowNodeLoader
             summary.Add(new AddAnotherModel.AddAnotherSummaryModel
             {
                 Value = string.Join(Environment.NewLine, summaryInfo),
-                ChangeUrl = $"{groupInfo.CheckAnswers.Path}/?state={setIndex}",
+                ChangeUrl = GetChangeUrl(groupInfo, setIndex),
                 RemoveUrl = $"{groupInfo.Remove.Path}/?state={setIndex}"
             });
 
@@ -40,5 +40,15 @@ public sealed class AddAnotherFlowNodeLoader : IFlowNodeLoader
         addAnother.GroupLength = groupInfo.WorkingPages.Count;
 
         return ValueTask.FromResult<NodeId?>(null);
+    }
+
+    private static string GetChangeUrl(AddAnotherGroup groupInfo, int setIndex)
+    {
+        if (groupInfo.CheckAnswers is not null)
+        {
+            return $"{groupInfo.CheckAnswers.Path}/?state={setIndex}";
+        }
+
+        return groupInfo.WorkingPages[0].Path;
     }
 }
