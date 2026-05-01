@@ -4,7 +4,7 @@ namespace Inss.Auth.Broker.Application.Providers;
 
 public interface IAuthCodeStoreProvider
 {
-    Task StoreAsync(string code, AuthCode user);
-    Task<AuthCode?>  GetAsync(string code);
-    Task RemoveAsync(string code);
+    Task StoreAsync(AuthCode authCode);
+    Task<AuthCode?>  GetAsync(string id);
+    Task RemoveAsync(string id);
 }
