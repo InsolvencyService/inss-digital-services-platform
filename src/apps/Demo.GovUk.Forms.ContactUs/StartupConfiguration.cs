@@ -1,3 +1,4 @@
+using Demo.GovUk.Forms.ContactUs.Builders;
 using GovUk.Forms.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +16,8 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
-            //YourDetailsFlowchart flowchartBuilder = new();
-            //flowchartBuilder.Construct(services);
+            ContactUsFlowchart flowchartBuilder = new();
+            flowchartBuilder.Construct(services);
         });
     }
 }

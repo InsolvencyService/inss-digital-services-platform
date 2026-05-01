@@ -30,6 +30,7 @@
   </Folder>
   <Folder Name="/test/" />
   <Folder Name="/test/apps/">
+    <Project Path="test/apps/Demo.GovUk.Forms.ContactUs.Test/Demo.GovUk.Forms.ContactUs.Test.csproj" />
     <Project Path="test\apps\Demo.GovUk.Forms.AboutYou.Test\Demo.GovUk.Forms.AboutYou.Test.csproj" />
     <Project Path="test\apps\Demo.GovUk.Forms.Bankruptcy.Test\Demo.GovUk.Forms.Bankruptcy.Test.csproj" />
     <Project Path="test\apps\Demo.GovUk.Forms.Business.Test\Demo.GovUk.Forms.Business.Test.csproj" />

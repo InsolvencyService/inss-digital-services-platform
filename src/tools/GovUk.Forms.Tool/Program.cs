@@ -2,6 +2,7 @@
 using Demo.GovUk.Forms.AboutYou.Factories;
 using Demo.GovUk.Forms.Bankruptcy.Factories;
 using Demo.GovUk.Forms.Business.Factories;
+using Demo.GovUk.Forms.ContactUs.Factories;
 using GovUk.Forms.Components.Factories;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Serialization;
@@ -13,7 +14,8 @@ List<Assembly> _ =
     typeof(AboutYouFormFactory).Assembly,
     typeof(BankruptcyFormFactory).Assembly,
     typeof(IPUploadFormFactory).Assembly,
-    typeof(BusinessFormFactory).Assembly
+    typeof(BusinessFormFactory).Assembly,
+    typeof(ContactUsFormFactory).Assembly
 ];
 
 if (Directory.Exists("Forms"))
