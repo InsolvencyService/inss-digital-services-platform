@@ -1,5 +1,4 @@
 using System.Globalization;
-using GovUk.Forms.Domain.Enums;
 using Xunit;
 
 namespace GovUk.Forms.Domain.Test;
@@ -27,7 +26,7 @@ public class PageModelTests
         AddressModel address = section.Pages.GetFirstOf<AddressModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         address.ReturnUrl = summary.Path;
-        address.EditMode = PageEditTypes.Saved;
+        address.SetCompleted();
 
         address.ClearValues();
 
@@ -37,7 +36,7 @@ public class PageModelTests
         Assert.Null(address.County);
         Assert.Empty(address.Postcode);
         Assert.Null(address.ReturnUrl);
-        Assert.Equal(PageEditTypes.NotStarted, address.EditMode);
+        Assert.Null(address.CompletedDate);
     }
 
     [Fact]
@@ -101,18 +100,6 @@ public class PageModelTests
         Assert.Equal(address.County, cloneOf.County);
         Assert.Equal(address.Postcode, cloneOf.Postcode);
     }
-
-    [Fact]
-    public void ForPageNotStarted_TransitionToEdit_SetsEditingMode()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
-        address.EditMode = PageEditTypes.NotStarted;
-        
-        address.TransitionToEdit("/form");
-        
-        Assert.Equal(PageEditTypes.Editing, address.EditMode);
-    }
     
     [Fact]
     public void ForPageWithPreviousPagePath_TransitionToEdit_DoesNotOverridePreviousPagePath()
@@ -135,41 +122,5 @@ public class PageModelTests
         address.TransitionToEdit("/form");
         
         Assert.Equal("/form", address.PreviousPagePath);
-    }
-    
-    [Fact]
-    public void NotLockedPage_IsLocked_ReturnsFalse()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
-        address.EditMode = PageEditTypes.Saved;
-        
-        bool isLocked = address.IsLocked();
-        
-        Assert.False(isLocked);
-    }
-    
-    [Fact]
-    public void LockedPage_IsLocked_ReturnsTrue()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
-        address.EditMode = PageEditTypes.Locked;
-        
-        bool isLocked = address.IsLocked();
-        
-        Assert.True(isLocked);
-    }
-    
-    [Fact]
-    public void SavedAndLockedPage_IsLocked_ReturnsTrue()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
-        address.EditMode = PageEditTypes.Saved | PageEditTypes.Locked;
-        
-        bool isLocked = address.IsLocked();
-        
-        Assert.True(isLocked);
     }
 }

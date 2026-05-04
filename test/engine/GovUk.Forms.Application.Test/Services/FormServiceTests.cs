@@ -3,7 +3,6 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -109,7 +108,7 @@ public class FormServiceTests
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(true);
         BuildForService();
-        _section.State = SectionStateTypes.Completed;
+        _section.SetCompleted();
         SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
         
         (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(summary.Path, NoState);

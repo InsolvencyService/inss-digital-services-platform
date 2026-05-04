@@ -1,9 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using GovUk.Forms.Application.Services;
 using GovUk.Forms.Components;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Options;
-using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Builders;
@@ -26,8 +24,6 @@ public class StartupConfiguration : IHostingStartup
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
             
-            services.AddKeyedSingleton<ISubmitSectionService, FileUploadSubmitSectionService>(
-                new ContentPath($"{webRoot.Root}/redundancy-payment"));
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
             
             ExternalApiOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<ExternalApiOptions>()!;

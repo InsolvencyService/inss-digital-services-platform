@@ -2,7 +2,6 @@ using System.Globalization;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Enums;
 using Xunit;
 
 namespace GovUk.Forms.Application.Test.DataFlow.Loading;
@@ -94,7 +93,7 @@ public class SectionSummaryFlowNodeLoaderTests
     public async Task CompletedSection_LoadAsync_DoesNotPopulateChangeUrlInSummary()
     {
         SectionModel section = _form.Sections.First();
-        section.State = SectionStateTypes.Completed;
+        section.SetCompleted();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = summary.Path, NextNodes = ["NodeId2"] };
         LoadContext context = new()
@@ -124,12 +123,12 @@ public class SectionSummaryFlowNodeLoaderTests
         AddAnotherModel addAnother = groupInfo.AddAnother;
         FullNameModel fullName = groupInfo.WorkingPages.GetFirstOf<FullNameModel>();
         fullName.Value = "Homer Simpson";
-        fullName.EditMode = PageEditTypes.Saved;
+        fullName.SetCompleted();
         AgeModel age = groupInfo.WorkingPages.GetFirstOf<AgeModel>();
         age.Value = 45;
-        age.EditMode = PageEditTypes.Saved;
+        age.SetCompleted();
         addAnother.Items.AddRange([fullName.Clone(), age.Clone()]);
-        addAnother.EditMode = PageEditTypes.Saved;
+        addAnother.SetCompleted();
         return addAnother;
     }
 }

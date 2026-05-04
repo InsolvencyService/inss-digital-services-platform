@@ -1,5 +1,4 @@
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Primitives;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
@@ -38,7 +37,7 @@ public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
                 {
                     Title = savedPage.Title,
                     Values = savedPage.GetSummaryInfo(),
-                    ChangeUrl = context.Section.State == SectionStateTypes.InProgress ? savedPage.Path : null
+                    ChangeUrl = context.Section.StartedDate is not null ? savedPage.Path : null
                 });
             }
         }
