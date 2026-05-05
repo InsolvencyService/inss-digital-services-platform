@@ -50,18 +50,22 @@ public class StartupConfiguration : IHostingStartup
             context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
             
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
-            services.AddSingleton<IAuthCodeStoreProvider>(_ =>
+            services.AddSingleton<IAuthCodeStoreProvider>(p =>
             {
+                ILogger logger = p.GetRequiredService<ILogger>();
+                logger.LogInformation("Logging the Cosmos settings: {Connection} {Database} {Container}", cosmosDbOptions.ConnectionString, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
                 if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString) ||
                     !string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
                 {
-                    CosmosClientOptions options = new() { Serializer = new CosmosFormCosmosSerializer() };
+                    logger.LogInformation("Logging use of cosmos provider");
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
                     CosmosClient client = cosmosDbOptions.ConnectionString is not null
                         ? new CosmosClient(cosmosDbOptions.ConnectionString, options)
                         : new CosmosClient(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
                     return new CosmosAuthCodeStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
                 }
 
+                logger.LogInformation("Logging use of fallback provider");
                 return new TestAuthCodeStoreProvider();
             });
             services.AddOpenTelemetry().UseAzureMonitor();
