@@ -27,7 +27,6 @@ public sealed class FlowchartValidator
         else
         {
             ValidateNodePageAssociations(flowchartErrors, section);
-            ValidateStaticHtmlNodes(flowchartErrors, section, serviceProvider);
             ValidateAddAnotherPageAssociations(flowchartErrors, section, serviceProvider);
             ValidateCheckAnswersPageAssociations(flowchartErrors, section, serviceProvider);
             ValidateAddAnotherWorkingPageAssociations(flowchartErrors, section, serviceProvider);
@@ -49,25 +48,6 @@ public sealed class FlowchartValidator
             if (associatedPage is null)
             {
                 flowchartErrors.Add($"Unable to find the page in the section for path {node.PagePath}.");
-            }
-        }
-    }
-    
-    private void ValidateStaticHtmlNodes(List<string> flowchartErrors, SectionModel section, IServiceProvider serviceProvider)
-    {
-        foreach (FlowNode node in _nodes)
-        {
-            PageModel? associatedPage = section.Pages.GetAllPathPages().FindPage(node.PagePath);
-
-            if (associatedPage is not StaticHtmlModel)
-            {
-                continue;
-            }
-
-            if (serviceProvider.GetKeyedService<IFlowNodeLoader>(node.Id) is not StaticHtmlFlowNodeLoader)
-            {
-                flowchartErrors.Add(
-                    $"Unable to find required static HTML loader for node with Id {node.Id} for page path {node.PagePath}.");
             }
         }
     }

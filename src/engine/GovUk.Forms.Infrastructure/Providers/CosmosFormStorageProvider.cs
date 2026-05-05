@@ -75,4 +75,11 @@ public sealed class CosmosFormStorageProvider : IFormStorageProvider
         Container? container = database.GetContainer(_containerName);
         await container.UpsertItemAsync(form, new PartitionKey(form.Path));
     }
+    
+    public async Task RemoveAsync(string sessionId, FormModel form)
+    {
+        Database? database = _cosmosClient.GetDatabase(_databaseName);
+        Container? container = database.GetContainer(_containerName);
+        await container.DeleteItemAsync<FormModel>(sessionId, new PartitionKey(form.Path));
+    }
 }

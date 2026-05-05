@@ -36,9 +36,9 @@ public sealed class FlowchartBuilder
         return new FlowNodeBuilder(this, node, _services);
     }
     
-    public EndFlowNodeBuilder AddEndNode(NodeId nodeId, ContentPath pagePath)
+    public EndFlowNodeBuilder AddEndNode(NodeId nodeId, ContentPath pagePath, params NodeId[] nextNodeIds)
     {
-        FlowNode node = new() { Id = nodeId, PagePath = pagePath };
+        FlowNode node = new() { Id = nodeId, PagePath = pagePath, NextNodes = nextNodeIds };
         _nodes.Add(node);
         return new EndFlowNodeBuilder(_section, _nodes, node, _services);
     }

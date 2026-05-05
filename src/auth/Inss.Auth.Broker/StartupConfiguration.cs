@@ -50,7 +50,7 @@ public class StartupConfiguration : IHostingStartup
             context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
             
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
-            services.AddSingleton<IAuthCodeStoreProvider>(p =>
+            services.AddSingleton<IAuthCodeStoreProvider>(_ =>
             {
                 if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString) ||
                     !string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))

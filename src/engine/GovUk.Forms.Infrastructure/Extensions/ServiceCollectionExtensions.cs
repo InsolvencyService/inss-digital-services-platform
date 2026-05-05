@@ -35,8 +35,7 @@ public static class ServiceCollectionExtensions
 
                 return new TestFormStorageProvider();
             });
-
-            services.AddSingleton<IStaticContentProvider, TestStaticContentProvider>();
+            
             services.AddSingleton<IFormProvider, TestFormProvider>();
             return services;
         }

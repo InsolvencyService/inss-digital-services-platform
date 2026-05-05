@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,29 +8,18 @@ namespace GovUk.Forms.Application.Services;
 
 public sealed class FormService : IFormService
 {
-    private readonly IFormStorageProvider _formStorageProvider;
-    private readonly IUserSessionProvider _userSessionProvider;
-    private readonly ISubmitFormService _submitFormService;
-    private readonly IFormProvider _formProvider;
+    private readonly IUserFormService _userFormService;
     private readonly IServiceProvider _serviceProvider;
 
-    public FormService(
-        IFormStorageProvider formStorageProvider, 
-        IUserSessionProvider userSessionProvider,
-        ISubmitFormService submitFormService,
-        IFormProvider formProvider,
-        IServiceProvider serviceProvider)
+    public FormService(IUserFormService userFormService, IServiceProvider serviceProvider)
     {
-        _formStorageProvider = formStorageProvider;
-        _userSessionProvider = userSessionProvider;
-        _submitFormService = submitFormService;
-        _formProvider = formProvider;
+        _userFormService = userFormService;
         _serviceProvider = serviceProvider;
     }
     
     public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(ContentPath path, string? state)
     {
-        FormModel form = await GetFormAsync(path);
+        FormModel form = await _userFormService.GetAsync(path);
         
         try
         {
@@ -54,14 +42,13 @@ public sealed class FormService : IFormService
         }
         finally
         {
-            string userSessionId = await _userSessionProvider.ResolveAsync();
-            await _formStorageProvider.SaveAsync(userSessionId, form);
+            await _userFormService.SaveAsync(form);
         }
     }
     
     public async Task<ValidationResult[]> ValidateAsync(ContentModel postedContent)
     {
-        FormModel form = await GetFormAsync(postedContent.Path);
+        FormModel form = await _userFormService.GetAsync(postedContent.Path);
         
         if (postedContent is PageModel page)
         {
@@ -83,8 +70,7 @@ public sealed class FormService : IFormService
     
     public async Task<ContentPath> SaveAsync(ContentModel postedContent)
     {
-        FormModel form = await GetFormAsync(postedContent.Path);
-        string userSessionId = await _userSessionProvider.ResolveAsync();
+        FormModel form = await _userFormService.GetAsync(postedContent.Path);
         
         try
         {
@@ -97,38 +83,13 @@ public sealed class FormService : IFormService
 
             FormModel submittableForm = form.GetSubmittable();
 
-            await _submitFormService.SubmitAsync(submittableForm, userSessionId);
+            await _userFormService.SubmitAsync(submittableForm);
             
             return submittableForm.Path;
         }
         finally
         {
-            await _formStorageProvider.SaveAsync(userSessionId, form);
+            await _userFormService.SaveAsync(form);
         }
-    }
-
-    private async Task<FormModel> GetFormAsync(ContentPath path)
-    {
-        ContentPath formPath = path.GetRoot();
-        string userSessionId = await _userSessionProvider.ResolveAsync();
-        
-        if (!await _formStorageProvider.ExistsAsync(formPath, userSessionId))
-        {
-            FormModel form = _formProvider.Create(formPath);
-            form.Id = userSessionId;
-            
-            foreach (SectionModel section in form.Sections)
-            {
-                IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                flowchart.TransitionPageToStart(section.FirstPage);
-            }
-            
-            IFormPrePopulationService formPrePopulationService = 
-                _serviceProvider.GetService<IFormPrePopulationService>() ?? NoopFormPrePopulationService.Default;
-            await formPrePopulationService.PrePopulateAsync(form, userSessionId);
-            await _formStorageProvider.SaveAsync(userSessionId, form);
-        }
-
-        return await _formStorageProvider.GetAsync(formPath, userSessionId);
     }
 }

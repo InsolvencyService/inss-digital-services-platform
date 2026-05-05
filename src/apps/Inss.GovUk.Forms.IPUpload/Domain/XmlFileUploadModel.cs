@@ -51,6 +51,7 @@ public sealed class XmlFileUploadModel : PageModel
         base.ClearValues();
         Filename = string.Empty;
         Contents = string.Empty;
+        Length = 0;
     }
     
     private XDocument GetXml()

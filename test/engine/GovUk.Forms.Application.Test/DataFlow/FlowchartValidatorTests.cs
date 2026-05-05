@@ -20,8 +20,6 @@ public class FlowchartValidatorTests
     private readonly NodeId _addressNodeId = "Address";
     private readonly NodeId _salaryNodeId = "Salary";
     private readonly NodeId _bankAccountNodeId = "BankAccount";
-    private readonly NodeId _declarationNodeId = "Declaration";
-    private readonly NodeId _uploadFileNodeId = "FileUpload";
     private readonly NodeId _summaryNodeId = "Summary";
     
     public FlowchartValidatorTests()
@@ -52,22 +50,6 @@ public class FlowchartValidatorTests
             () => flowchartValidator.Validate(section, _services.BuildServiceProvider()));
         
         Assert.Contains("Unable to find the page in the section for path /example/section/page.", exception.Message);
-    }
-    
-    [Fact]
-    public void MissingStaticLoader_Validate_ThrowsException()
-    {
-        SectionModel section = TestSectionModels.CreateStaticSection();
-        FlowNode declarationNode = CreateFlowNode(_declarationNodeId, section.Pages[0].Path, _uploadFileNodeId);
-        FlowNode summaryNode = CreateFlowNode(_summaryNodeId, section.Pages[1].Path);
-        FlowchartValidator flowchartValidator = new([declarationNode, summaryNode]);
-        
-        FlowchartException exception = Assert.Throws<FlowchartException>(
-            () => flowchartValidator.Validate(section, _services.BuildServiceProvider()));
-        
-        Assert.Contains(
-            $"Unable to find required static HTML loader for node with Id " +
-            $"{_declarationNodeId} for page path {section.Pages[0].Path}.", exception.Message);
     }
     
     [Fact]
