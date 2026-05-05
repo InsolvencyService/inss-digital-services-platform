@@ -2,7 +2,7 @@ using GovUk.Forms.Domain;
 
 namespace GovUk.Forms.Components.Extensions;
 
-public static class ModelExtensions
+public static class ContentModelExtensions
 {
     extension(ContentModel content)
     {
@@ -20,5 +20,5 @@ public static class ModelExtensions
                 _ => "Save and continue"
             };
         }
-}
+    }
 }

@@ -5,8 +5,8 @@
     {
         <govuk-task-list-item 
             name="@(section.Title)" 
-            is-complete="@(section.State == SectionStateTypes.Completed)" 
-            state="@(section.State.Description())" 
+            is-complete="@(section.IsComplete)" 
+            state="@(section.GetState())" 
             url="@(section.FirstPage.Path)" />
     }
 </govuk-task-list>

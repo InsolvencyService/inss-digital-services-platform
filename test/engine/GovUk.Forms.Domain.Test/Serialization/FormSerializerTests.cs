@@ -1,5 +1,4 @@
 using System.Text.Json;
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Serialization;
 using Xunit;
 
@@ -16,7 +15,6 @@ public class FormSerializerTests
 
         JsonDocument doc = JsonDocument.Parse(json);
         Assert.True(FindPropertyValues(doc.RootElement, "title", "Your Details"));
-        Assert.True(FindPropertyValues(doc.RootElement, "state", "NotStarted"));
     }
     
     [Fact]
@@ -34,7 +32,7 @@ public class FormSerializerTests
         Assert.True(FindPropertyValues(doc.RootElement, "path", "/form/your-details/your-fullname"));
         Assert.True(FindPropertyValues(doc.RootElement, "viewName", "_FullName"));
         Assert.True(FindPropertyValues(doc.RootElement, "typeName", "GovUk.Forms.Domain.FullNameModel"));
-        Assert.True(FindPropertyValues(doc.RootElement, "editMode", "NotStarted"));
+        Assert.True(FindPropertyValues(doc.RootElement, "completedDate", null));
     }
     
     [Fact]
@@ -56,7 +54,7 @@ public class FormSerializerTests
         Assert.True(FindPropertyValues(doc.RootElement, "path", "/form/your-details/your-address"));
         Assert.True(FindPropertyValues(doc.RootElement, "viewName", "_FullName"));
         Assert.True(FindPropertyValues(doc.RootElement, "typeName", "GovUk.Forms.Domain.AddressModel"));
-        Assert.True(FindPropertyValues(doc.RootElement, "editMode", "NotStarted"));
+        Assert.True(FindPropertyValues(doc.RootElement, "completedDate", null));
     }
 
     [Fact]
@@ -78,7 +76,6 @@ public class FormSerializerTests
         SectionModel section = form.Sections.First();
         Assert.Equal("/form/your-details", section.Path);
         Assert.Equal("Your Details", section.Title);
-        Assert.Equal(SectionStateTypes.InProgress, section.State);
     }
     
     [Fact]
@@ -91,7 +88,6 @@ public class FormSerializerTests
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();
         Assert.Equal("/form/your-details/your-fullname", fullName.Path);
         Assert.Equal("Homer Simpson", fullName.Value);
-        Assert.Equal(PageEditTypes.Editing, fullName.EditMode);
     }
     
     [Fact]
@@ -108,7 +104,7 @@ public class FormSerializerTests
         Assert.Equal("Treetown", address.TownCity);
         Assert.Equal("Oak County", address.County);
         Assert.Equal("TN33 0DN", address.Postcode);
-        Assert.Equal(PageEditTypes.NotStarted, address.EditMode);
+        Assert.Null(address.CompletedDate);
     }
     
     [Fact]
@@ -127,7 +123,7 @@ public class FormSerializerTests
         Assert.True(FindPropertyValues(doc.RootElement, "path", "/form/your-details/your-fullname"));
         Assert.True(FindPropertyValues(doc.RootElement, "viewName", "_FullName"));
         Assert.True(FindPropertyValues(doc.RootElement, "typeName", "GovUk.Forms.Domain.FullNameModel"));
-        Assert.True(FindPropertyValues(doc.RootElement, "editMode", "NotStarted"));
+        Assert.True(FindPropertyValues(doc.RootElement, "completedDate", null));
     }
     
     [Fact]
@@ -140,7 +136,7 @@ public class FormSerializerTests
         Assert.Equal("/form/your-details/your-fullname", fullName.Path);
         Assert.Equal("_FullName", fullName.ViewName);
         Assert.Null(fullName.ReturnUrl);
-        Assert.Equal(PageEditTypes. NotStarted, fullName.EditMode);
+        Assert.Null(fullName.CompletedDate);
     }
     
     private static bool FindPropertyValues(JsonElement element, string propertyName, string? propertyValue)
@@ -196,11 +192,12 @@ public class FormSerializerTests
         {
           ""sections"" : [ {
             ""title"" : ""Your Details"",
-            ""state"" : ""InProgress"",
+            ""StartedDate"" : ""2026-05-01T09:00:00Z"",
+            ""completedDate"" : null,
             ""pages"" : [ {
               ""$type"" : ""FullNameModel"",
               ""value"" : ""Homer Simpson"",
-              ""editMode"" : ""Editing"",
+              ""completedDate"": null,
               ""title"" : ""Your Name"",
               ""returnUrl"" : null,
               ""id"" : ""70a36a67-4db5-4d11-a4c5-0769497e2221"",
@@ -215,7 +212,7 @@ public class FormSerializerTests
               ""county"" : ""Oak County"",
               ""question"" : ""What is your address?"",
               ""postcode"" : ""TN33 0DN"",
-              ""editMode"" : ""NotStarted"",
+              ""completedDate"": null,
               ""title"" : ""Your Address"",
               ""returnUrl"" : null,
               ""id"" : ""390a79cc-1dad-467e-ac08-d091dc9a44d3"",
@@ -239,7 +236,7 @@ public class FormSerializerTests
         {
           ""$type"" : ""FullNameModel"",
           ""value"" : ""Homer Simpson"",
-          ""editMode"" : ""NotStarted"",
+          ""completedDate"": null,
           ""title"" : ""Your Name"",
           ""returnUrl"" : null,
           ""group"" : null,

@@ -1,4 +1,3 @@
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Exceptions;
 using GovUk.Forms.Domain.Primitives;
 
@@ -41,7 +40,7 @@ public sealed class PageModelList : List<PageModel>
             {
                 foreach (PageModel subPage in groupPage.SavablePages)
                 {
-                    if ((subPage.EditMode & PageEditTypes.Saved) is PageEditTypes.Saved)
+                    if (subPage.CompletedDate is not null)
                     {
                         savedPageList.Add(subPage);
                     }
@@ -49,7 +48,7 @@ public sealed class PageModelList : List<PageModel>
             }
             else
             {
-                if ((page.EditMode & PageEditTypes.Saved) == PageEditTypes.Saved)
+                if (page.CompletedDate is not null)
                 {
                     savedPageList.Add(page);
                 }

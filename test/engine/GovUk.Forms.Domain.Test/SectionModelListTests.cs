@@ -1,4 +1,3 @@
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Exceptions;
 using Xunit;
 
@@ -55,12 +54,12 @@ public class SectionModelListTests
     }
     
     [Fact]
-    public void SectionNotStarted_TransitionToInProgress_SetsSectionInProgress()
+    public void SectionNotStarted_SetInProgress_SetsSectionStarted()
     {
-        SectionModel section = new() { Title = "Section1", State = SectionStateTypes.NotStarted };
+        SectionModel section = new() { Title = "Section1", StartedDate = null };
 
-        section.TransitionToInProgress();
+        section.SetInProgress();
         
-        Assert.Equal(SectionStateTypes.InProgress, section.State);
+        Assert.NotNull(section.StartedDate);
     }
 }

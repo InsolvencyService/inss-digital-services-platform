@@ -84,8 +84,6 @@ public static class FormSerializer
         options.Converters.Add(new ContentIdJsonConverter());
         options.Converters.Add(new ContentPathJsonConverter());
         options.Converters.Add(new NodeIdJsonConverter());
-        options.Converters.Add(new PageEditTypeJsonConverter());
-        options.Converters.Add(new SectionStateTypeJsonConverter());
         options.Converters.Add(new GroupIdJsonConverter());
         options.Converters.Add(new SubmitTypeJsonConverter());
         options.Converters.Add(new LabelSizesJsonConverter());

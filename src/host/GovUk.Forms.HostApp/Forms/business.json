@@ -2,7 +2,6 @@
   "sections": [
     {
       "title": "Employee Details",
-      "state": "NotStarted",
       "pages": [
         {
           "$type": "AddAnotherGroup",
@@ -10,7 +9,6 @@
             {
               "$type": "FullNameModel",
               "value": "",
-              "editMode": "NotStarted",
               "title": "Employee name",
               "returnUrl": null,
               "metaData": {
@@ -22,17 +20,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "fbb75d3d-85a6-4db9-9009-c28384e44ace",
+              "completedDate": null,
+              "id": "376628d2-3ec5-4d3a-92c7-52f1abc6dc88",
               "path": "/business/your-employee-details/employee-name",
               "viewName": "_FullName",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.FullNameModel"
             },
             {
               "$type": "AgeModel",
               "value": 0,
-              "editMode": "NotStarted",
               "title": "Employee age",
               "returnUrl": null,
               "metaData": {
@@ -44,10 +43,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "8f1aece4-eeae-42c4-9fa4-2ab6c4e255f1",
+              "completedDate": null,
+              "id": "77c21677-66e7-47e5-b94f-131a8e3519a5",
               "path": "/business/your-employee-details/employee-age",
               "viewName": "_Age",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AgeModel"
             }
@@ -60,7 +61,7 @@
               "question": null,
               "hint": null,
               "groupLength": 0,
-              "editMode": "NotStarted",
+              "canAddAnother": true,
               "title": "Employee details",
               "returnUrl": null,
               "metaData": {
@@ -72,10 +73,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "3453ba15-41aa-486e-aae5-52fa1ad4452f",
+              "completedDate": null,
+              "id": "788ee3b3-fdab-42df-9574-c4a971c08e2a",
               "path": "/business/your-employee-details/add-another-employee",
               "viewName": "_AddAnother",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AddAnotherModel"
             }
@@ -83,7 +86,6 @@
           "submittablePages": [],
           "checkAnswers": {
             "information": "Check your answers before continuing",
-            "editMode": "NotStarted",
             "title": "Check employee details",
             "returnUrl": null,
             "metaData": {
@@ -95,10 +97,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "7ee6f2c3-77cb-4db5-b7b1-2dec84230ff8",
+            "completedDate": null,
+            "id": "d0ba4f2b-6d85-412f-a07b-653f6bc38f27",
             "path": "/business/your-employee-details/check-employee-details",
             "viewName": "_CheckAnswers",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.CheckAnswersModel"
           },
@@ -108,7 +112,7 @@
             "question": null,
             "hint": null,
             "groupLength": 0,
-            "editMode": "NotStarted",
+            "canAddAnother": true,
             "title": "Employee details",
             "returnUrl": null,
             "metaData": {
@@ -120,10 +124,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "3453ba15-41aa-486e-aae5-52fa1ad4452f",
+            "completedDate": null,
+            "id": "788ee3b3-fdab-42df-9574-c4a971c08e2a",
             "path": "/business/your-employee-details/add-another-employee",
             "viewName": "_AddAnother",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.AddAnotherModel"
           },
@@ -132,7 +138,6 @@
             "removeHint": "Select one option",
             "removeConfirmed": false,
             "setIndex": -1,
-            "editMode": "NotStarted",
             "title": "Remove employee details",
             "returnUrl": null,
             "metaData": {
@@ -144,10 +149,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "4818cbd1-9b66-4317-b28f-2fada596139d",
+            "completedDate": null,
+            "id": "b954c852-b0b8-4959-963e-0df3ec3dcd36",
             "path": "/business/your-employee-details/remove-employee-details",
             "viewName": "_Remove",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.RemoveModel"
           },
@@ -155,7 +162,6 @@
             {
               "$type": "FullNameModel",
               "value": "",
-              "editMode": "NotStarted",
               "title": "Employee name",
               "returnUrl": null,
               "metaData": {
@@ -167,17 +173,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "fbb75d3d-85a6-4db9-9009-c28384e44ace",
+              "completedDate": null,
+              "id": "376628d2-3ec5-4d3a-92c7-52f1abc6dc88",
               "path": "/business/your-employee-details/employee-name",
               "viewName": "_FullName",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.FullNameModel"
             },
             {
               "$type": "AgeModel",
               "value": 0,
-              "editMode": "NotStarted",
               "title": "Employee age",
               "returnUrl": null,
               "metaData": {
@@ -189,17 +196,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "8f1aece4-eeae-42c4-9fa4-2ab6c4e255f1",
+              "completedDate": null,
+              "id": "77c21677-66e7-47e5-b94f-131a8e3519a5",
               "path": "/business/your-employee-details/employee-age",
               "viewName": "_Age",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AgeModel"
             },
             {
               "$type": "CheckAnswersModel",
               "information": "Check your answers before continuing",
-              "editMode": "NotStarted",
               "title": "Check employee details",
               "returnUrl": null,
               "metaData": {
@@ -211,10 +219,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "7ee6f2c3-77cb-4db5-b7b1-2dec84230ff8",
+              "completedDate": null,
+              "id": "d0ba4f2b-6d85-412f-a07b-653f6bc38f27",
               "path": "/business/your-employee-details/check-employee-details",
               "viewName": "_CheckAnswers",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.CheckAnswersModel"
             },
@@ -224,7 +234,6 @@
               "removeHint": "Select one option",
               "removeConfirmed": false,
               "setIndex": -1,
-              "editMode": "NotStarted",
               "title": "Remove employee details",
               "returnUrl": null,
               "metaData": {
@@ -236,10 +245,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "4818cbd1-9b66-4317-b28f-2fada596139d",
+              "completedDate": null,
+              "id": "b954c852-b0b8-4959-963e-0df3ec3dcd36",
               "path": "/business/your-employee-details/remove-employee-details",
               "viewName": "_Remove",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.RemoveModel"
             },
@@ -250,7 +261,7 @@
               "question": null,
               "hint": null,
               "groupLength": 0,
-              "editMode": "NotStarted",
+              "canAddAnother": true,
               "title": "Employee details",
               "returnUrl": null,
               "metaData": {
@@ -262,15 +273,16 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "3453ba15-41aa-486e-aae5-52fa1ad4452f",
+              "completedDate": null,
+              "id": "788ee3b3-fdab-42df-9574-c4a971c08e2a",
               "path": "/business/your-employee-details/add-another-employee",
               "viewName": "_AddAnother",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AddAnotherModel"
             }
           ],
-          "editMode": "NotStarted",
           "title": "",
           "returnUrl": null,
           "metaData": {
@@ -282,16 +294,17 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "c86a0c21-dc12-4acc-9f2d-e00e07ef8b72",
+          "completedDate": null,
+          "id": "303ebab3-110b-49c8-97c6-96fa3a44466c",
           "path": "/",
           "viewName": "_AddAnotherGroup",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.AddAnotherGroup"
         },
         {
           "$type": "SummaryModel",
-          "editMode": "NotStarted",
           "title": "Employee summary",
           "returnUrl": null,
           "metaData": {
@@ -303,24 +316,28 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "a64d31de-f8e2-467e-8941-496a213e981b",
+          "completedDate": null,
+          "id": "917629d9-15ef-4cb0-ba40-b4101645b758",
           "path": "/business/your-employee-details/summary",
           "viewName": "_Summary",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "id": "d7e3ae3c-4f72-4319-b421-fd62bae141af",
+      "startedDate": null,
+      "completedDate": null,
+      "id": "01a1db0a-7de5-48e3-a3eb-994003e316d2",
       "path": "/business/your-employee-details",
       "viewName": "_Section",
       "encodingType": null,
+      "fullWidthLayout": false,
       "submitType": "Form",
       "typeName": "GovUk.Forms.Domain.SectionModel"
     },
     {
       "title": "Creditors and Debtors",
-      "state": "NotStarted",
       "pages": [
         {
           "$type": "AddAnotherGroup",
@@ -328,7 +345,6 @@
             {
               "$type": "FullNameModel",
               "value": "",
-              "editMode": "NotStarted",
               "title": "Creditor name",
               "returnUrl": null,
               "metaData": {
@@ -340,17 +356,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "e78bcb27-00db-48f7-84f4-32a9c250067d",
+              "completedDate": null,
+              "id": "21aba23a-9b3e-4321-a537-502ec0c2f5e6",
               "path": "/business/your-creditors-and-debtors/creditor-name",
               "viewName": "_FullName",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.FullNameModel"
             },
             {
               "$type": "MoneyModel",
               "amount": 0,
-              "editMode": "NotStarted",
               "title": "Amount owned to creditor",
               "returnUrl": null,
               "metaData": {
@@ -362,10 +379,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "17a002a1-4ed5-42cd-8a24-fe6e2ea23afd",
+              "completedDate": null,
+              "id": "5dd5b17e-41d1-46ad-885b-faa54a9c7e3b",
               "path": "/business/your-creditors-and-debtors/amount-owned-to-creditor",
               "viewName": "_Money",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.MoneyModel"
             }
@@ -378,7 +397,7 @@
               "question": null,
               "hint": null,
               "groupLength": 0,
-              "editMode": "NotStarted",
+              "canAddAnother": true,
               "title": "Creditor details",
               "returnUrl": null,
               "metaData": {
@@ -390,10 +409,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "f6bb7fdc-5a86-4717-b6d8-08f97adcadea",
+              "completedDate": null,
+              "id": "cb4adbae-1568-4919-bf06-6aa97afbe91b",
               "path": "/business/your-creditors-and-debtors/add-another-creditor",
               "viewName": "_AddAnother",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AddAnotherModel"
             }
@@ -401,7 +422,6 @@
           "submittablePages": [],
           "checkAnswers": {
             "information": "Check your answers before continuing",
-            "editMode": "NotStarted",
             "title": "Check creditor details",
             "returnUrl": null,
             "metaData": {
@@ -413,10 +433,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "c5498d49-6687-4017-bcf5-578264d77189",
+            "completedDate": null,
+            "id": "ae558e80-b3ac-4dad-b08a-47611c9f91d5",
             "path": "/business/your-creditors-and-debtors/check-creditor-details",
             "viewName": "_CheckAnswers",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.CheckAnswersModel"
           },
@@ -426,7 +448,7 @@
             "question": null,
             "hint": null,
             "groupLength": 0,
-            "editMode": "NotStarted",
+            "canAddAnother": true,
             "title": "Creditor details",
             "returnUrl": null,
             "metaData": {
@@ -438,10 +460,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "f6bb7fdc-5a86-4717-b6d8-08f97adcadea",
+            "completedDate": null,
+            "id": "cb4adbae-1568-4919-bf06-6aa97afbe91b",
             "path": "/business/your-creditors-and-debtors/add-another-creditor",
             "viewName": "_AddAnother",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.AddAnotherModel"
           },
@@ -450,7 +474,6 @@
             "removeHint": "Select one option",
             "removeConfirmed": false,
             "setIndex": -1,
-            "editMode": "NotStarted",
             "title": "Remove creditor details",
             "returnUrl": null,
             "metaData": {
@@ -462,10 +485,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "5acf58fe-ec0d-4c30-8c8f-37346a81b829",
+            "completedDate": null,
+            "id": "8d92404b-4627-48dd-b4cb-727442fad431",
             "path": "/business/your-creditors-and-debtors/remove-creditor-details",
             "viewName": "_Remove",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.RemoveModel"
           },
@@ -473,7 +498,6 @@
             {
               "$type": "FullNameModel",
               "value": "",
-              "editMode": "NotStarted",
               "title": "Creditor name",
               "returnUrl": null,
               "metaData": {
@@ -485,17 +509,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "e78bcb27-00db-48f7-84f4-32a9c250067d",
+              "completedDate": null,
+              "id": "21aba23a-9b3e-4321-a537-502ec0c2f5e6",
               "path": "/business/your-creditors-and-debtors/creditor-name",
               "viewName": "_FullName",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.FullNameModel"
             },
             {
               "$type": "MoneyModel",
               "amount": 0,
-              "editMode": "NotStarted",
               "title": "Amount owned to creditor",
               "returnUrl": null,
               "metaData": {
@@ -507,17 +532,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "17a002a1-4ed5-42cd-8a24-fe6e2ea23afd",
+              "completedDate": null,
+              "id": "5dd5b17e-41d1-46ad-885b-faa54a9c7e3b",
               "path": "/business/your-creditors-and-debtors/amount-owned-to-creditor",
               "viewName": "_Money",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.MoneyModel"
             },
             {
               "$type": "CheckAnswersModel",
               "information": "Check your answers before continuing",
-              "editMode": "NotStarted",
               "title": "Check creditor details",
               "returnUrl": null,
               "metaData": {
@@ -529,10 +555,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "c5498d49-6687-4017-bcf5-578264d77189",
+              "completedDate": null,
+              "id": "ae558e80-b3ac-4dad-b08a-47611c9f91d5",
               "path": "/business/your-creditors-and-debtors/check-creditor-details",
               "viewName": "_CheckAnswers",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.CheckAnswersModel"
             },
@@ -542,7 +570,6 @@
               "removeHint": "Select one option",
               "removeConfirmed": false,
               "setIndex": -1,
-              "editMode": "NotStarted",
               "title": "Remove creditor details",
               "returnUrl": null,
               "metaData": {
@@ -554,10 +581,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "5acf58fe-ec0d-4c30-8c8f-37346a81b829",
+              "completedDate": null,
+              "id": "8d92404b-4627-48dd-b4cb-727442fad431",
               "path": "/business/your-creditors-and-debtors/remove-creditor-details",
               "viewName": "_Remove",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.RemoveModel"
             },
@@ -568,7 +597,7 @@
               "question": null,
               "hint": null,
               "groupLength": 0,
-              "editMode": "NotStarted",
+              "canAddAnother": true,
               "title": "Creditor details",
               "returnUrl": null,
               "metaData": {
@@ -580,15 +609,16 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "f6bb7fdc-5a86-4717-b6d8-08f97adcadea",
+              "completedDate": null,
+              "id": "cb4adbae-1568-4919-bf06-6aa97afbe91b",
               "path": "/business/your-creditors-and-debtors/add-another-creditor",
               "viewName": "_AddAnother",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AddAnotherModel"
             }
           ],
-          "editMode": "NotStarted",
           "title": "",
           "returnUrl": null,
           "metaData": {
@@ -600,10 +630,12 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "b95f57aa-8149-4641-9ab0-ee8c5717a6b5",
+          "completedDate": null,
+          "id": "afbb60d7-54da-4db8-b3a8-ff44bfacbe68",
           "path": "/",
           "viewName": "_AddAnotherGroup",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.AddAnotherGroup"
         },
@@ -613,7 +645,6 @@
             {
               "$type": "FullNameModel",
               "value": "",
-              "editMode": "NotStarted",
               "title": "Debtor name",
               "returnUrl": null,
               "metaData": {
@@ -625,17 +656,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "36adf0d9-11f1-40f6-b4a2-2aaaa5faa4f4",
+              "completedDate": null,
+              "id": "6b4391da-b405-4d4d-b248-9063b87716ca",
               "path": "/business/your-creditors-and-debtors/debtor-name",
               "viewName": "_FullName",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.FullNameModel"
             },
             {
               "$type": "MoneyModel",
               "amount": 0,
-              "editMode": "NotStarted",
               "title": "Amount owned by the debtor",
               "returnUrl": null,
               "metaData": {
@@ -647,10 +679,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "781c7987-ea51-46c2-aca7-88d25b0d5f4b",
+              "completedDate": null,
+              "id": "608855f3-0d08-40cb-a9b4-87ea7f888ccc",
               "path": "/business/your-creditors-and-debtors/amount-owned-by-debtor",
               "viewName": "_Money",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.MoneyModel"
             }
@@ -663,7 +697,7 @@
               "question": null,
               "hint": null,
               "groupLength": 0,
-              "editMode": "NotStarted",
+              "canAddAnother": true,
               "title": "Debtor details",
               "returnUrl": null,
               "metaData": {
@@ -675,10 +709,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "dc56541b-4d04-4c3d-913b-e3fbf70a7696",
+              "completedDate": null,
+              "id": "ce85c5e9-5642-4c9a-8047-084a40bf1ef3",
               "path": "/business/your-creditors-and-debtors/add-another-debtor",
               "viewName": "_AddAnother",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AddAnotherModel"
             }
@@ -686,7 +722,6 @@
           "submittablePages": [],
           "checkAnswers": {
             "information": "Check your answers before continuing",
-            "editMode": "NotStarted",
             "title": "Check debtor details",
             "returnUrl": null,
             "metaData": {
@@ -698,10 +733,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "58190055-9876-4d9f-aac2-1e228e98f3be",
+            "completedDate": null,
+            "id": "bda3702d-ffa7-4ecb-8cb5-db5191d5d021",
             "path": "/business/your-creditors-and-debtors/check-debtor-details",
             "viewName": "_CheckAnswers",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.CheckAnswersModel"
           },
@@ -711,7 +748,7 @@
             "question": null,
             "hint": null,
             "groupLength": 0,
-            "editMode": "NotStarted",
+            "canAddAnother": true,
             "title": "Debtor details",
             "returnUrl": null,
             "metaData": {
@@ -723,10 +760,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "dc56541b-4d04-4c3d-913b-e3fbf70a7696",
+            "completedDate": null,
+            "id": "ce85c5e9-5642-4c9a-8047-084a40bf1ef3",
             "path": "/business/your-creditors-and-debtors/add-another-debtor",
             "viewName": "_AddAnother",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.AddAnotherModel"
           },
@@ -735,7 +774,6 @@
             "removeHint": "Select one option",
             "removeConfirmed": false,
             "setIndex": -1,
-            "editMode": "NotStarted",
             "title": "Remove debtor details",
             "returnUrl": null,
             "metaData": {
@@ -747,10 +785,12 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "bdb6169c-5d2a-437b-b9ba-20b41e85e861",
+            "completedDate": null,
+            "id": "382f19f8-1bb1-4854-a1af-3cf272699245",
             "path": "/business/your-creditors-and-debtors/remove-debtor-details",
             "viewName": "_Remove",
             "encodingType": null,
+            "fullWidthLayout": false,
             "submitType": "Form",
             "typeName": "GovUk.Forms.Domain.RemoveModel"
           },
@@ -758,7 +798,6 @@
             {
               "$type": "FullNameModel",
               "value": "",
-              "editMode": "NotStarted",
               "title": "Debtor name",
               "returnUrl": null,
               "metaData": {
@@ -770,17 +809,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "36adf0d9-11f1-40f6-b4a2-2aaaa5faa4f4",
+              "completedDate": null,
+              "id": "6b4391da-b405-4d4d-b248-9063b87716ca",
               "path": "/business/your-creditors-and-debtors/debtor-name",
               "viewName": "_FullName",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.FullNameModel"
             },
             {
               "$type": "MoneyModel",
               "amount": 0,
-              "editMode": "NotStarted",
               "title": "Amount owned by the debtor",
               "returnUrl": null,
               "metaData": {
@@ -792,17 +832,18 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "781c7987-ea51-46c2-aca7-88d25b0d5f4b",
+              "completedDate": null,
+              "id": "608855f3-0d08-40cb-a9b4-87ea7f888ccc",
               "path": "/business/your-creditors-and-debtors/amount-owned-by-debtor",
               "viewName": "_Money",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.MoneyModel"
             },
             {
               "$type": "CheckAnswersModel",
               "information": "Check your answers before continuing",
-              "editMode": "NotStarted",
               "title": "Check debtor details",
               "returnUrl": null,
               "metaData": {
@@ -814,10 +855,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "58190055-9876-4d9f-aac2-1e228e98f3be",
+              "completedDate": null,
+              "id": "bda3702d-ffa7-4ecb-8cb5-db5191d5d021",
               "path": "/business/your-creditors-and-debtors/check-debtor-details",
               "viewName": "_CheckAnswers",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.CheckAnswersModel"
             },
@@ -827,7 +870,6 @@
               "removeHint": "Select one option",
               "removeConfirmed": false,
               "setIndex": -1,
-              "editMode": "NotStarted",
               "title": "Remove debtor details",
               "returnUrl": null,
               "metaData": {
@@ -839,10 +881,12 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "bdb6169c-5d2a-437b-b9ba-20b41e85e861",
+              "completedDate": null,
+              "id": "382f19f8-1bb1-4854-a1af-3cf272699245",
               "path": "/business/your-creditors-and-debtors/remove-debtor-details",
               "viewName": "_Remove",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.RemoveModel"
             },
@@ -853,7 +897,7 @@
               "question": null,
               "hint": null,
               "groupLength": 0,
-              "editMode": "NotStarted",
+              "canAddAnother": true,
               "title": "Debtor details",
               "returnUrl": null,
               "metaData": {
@@ -865,15 +909,16 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "dc56541b-4d04-4c3d-913b-e3fbf70a7696",
+              "completedDate": null,
+              "id": "ce85c5e9-5642-4c9a-8047-084a40bf1ef3",
               "path": "/business/your-creditors-and-debtors/add-another-debtor",
               "viewName": "_AddAnother",
               "encodingType": null,
+              "fullWidthLayout": false,
               "submitType": "Form",
               "typeName": "GovUk.Forms.Domain.AddAnotherModel"
             }
           ],
-          "editMode": "NotStarted",
           "title": "",
           "returnUrl": null,
           "metaData": {
@@ -885,16 +930,17 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "d9526a62-f8f1-4aa1-b16c-3ce4651880a1",
+          "completedDate": null,
+          "id": "fbd77431-37d9-4f92-bb42-0b90a3351e3c",
           "path": "/",
           "viewName": "_AddAnotherGroup",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.AddAnotherGroup"
         },
         {
           "$type": "SummaryModel",
-          "editMode": "NotStarted",
           "title": "Creditors and debtors summary",
           "returnUrl": null,
           "metaData": {
@@ -906,27 +952,34 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "208b7aef-d4dd-4634-b2e8-00952970c4ba",
+          "completedDate": null,
+          "id": "a831fbc3-52cd-42a1-8659-f467345b4f6a",
           "path": "/business/your-creditors-and-debtors/summary",
           "viewName": "_Summary",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "id": "f1cbf45e-7254-4fb7-982d-1f8b7a37e1c0",
+      "startedDate": null,
+      "completedDate": null,
+      "id": "1fd6b17c-71c4-4e1b-8ee8-2a8bb1ae39c3",
       "path": "/business/your-creditors-and-debtors",
       "viewName": "_Section",
       "encodingType": null,
+      "fullWidthLayout": false,
       "submitType": "Form",
       "typeName": "GovUk.Forms.Domain.SectionModel"
     }
   ],
   "canSubmit": false,
-  "id": "777a95db-13f9-40c3-80e6-f38f3f223f6e",
+  "createdDate": "2026-05-04T09:55:29.033752+01:00",
+  "id": "b78ac9c6-5fc1-48b0-8e67-9a4931f84147",
   "path": "/business",
   "viewName": "_Form",
   "encodingType": null,
+  "fullWidthLayout": false,
   "submitType": "Form",
   "typeName": "GovUk.Forms.Domain.FormModel"
 }

@@ -1,4 +1,3 @@
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Exceptions;
 using Xunit;
 
@@ -34,7 +33,7 @@ public class PageModelListTests
 
         ModelException exception = Assert.Throws<ModelException>(() => section.Pages.GetPage("/unknown"));
         
-        Assert.Equal($"Unable to find page for path /unknown.", exception.Message);
+        Assert.Equal("Unable to find page for path /unknown.", exception.Message);
     }
     
     [Fact]
@@ -119,14 +118,14 @@ public class PageModelListTests
     }
     
     [Fact]
-    public void SomeSavedPages_GetCompletedPages_ReturnsSavedOrLockedOnly()
+    public void SomeSavedPages_GetCompletedPages_ReturnsCompletedOnly()
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         TestSectionDefaults.YourDetails(section);
         BankAccountModel bankAccount = section.Pages.GetFirstOf<BankAccountModel>();
-        bankAccount.EditMode = PageEditTypes.Editing;
+        bankAccount.TransitionToEdit("/");
         AgeModel age = section.Pages.GetFirstOf<AgeModel>();
-        age.EditMode = PageEditTypes.Saved | PageEditTypes.Locked;
+        age.SetCompleted();
         
         PageModelList savedPages = section.Pages.GetCompletedPages();
 

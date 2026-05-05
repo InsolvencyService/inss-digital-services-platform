@@ -17,7 +17,8 @@ public static class TestSectionModels
                 new XmlFileUploadModel { Title = "Your Home Value", Path = "/form/ip-upload/upload" },
                 new IPUploadXmlErrorsModel { Title = "IP upload errors", Path = "/form/ip-upload/errors" },
                 new IPUploadXmlErrorDetailsModel {Title = "IP upload error details", Path = "/form/ip-upload/error-details"},
-                new SummaryModel { Title = "Summary", Path = "/form/ip-upload/summary" }
+                new SummaryModel { Title = "Summary", Path = "/form/ip-upload/summary" },
+                new PostSubmitSuccessModel{ Title = "Submitted", Path = "/form/ip-upload/submitted" }
             ]
         };
     }
