@@ -14,11 +14,11 @@ public sealed class ContactUsFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
-        NodeId fullNameId = NodeId.New();
-        NodeId fileUploadId = NodeId.New();
-        NodeId addAnotherId = NodeId.New();
-        NodeId removeId = NodeId.New();
-        NodeId summaryId = NodeId.New();
+        NodeId fullNameId = "FullName";
+        NodeId fileUploadId = "FileUpload";
+        NodeId addAnotherId = "AddAnother";
+        NodeId removeId = "Remove";
+        NodeId summaryId = "Summary";
         WebRoot webRoot = new();
         
         FormModel form = GetForm(services, webRoot.Root);

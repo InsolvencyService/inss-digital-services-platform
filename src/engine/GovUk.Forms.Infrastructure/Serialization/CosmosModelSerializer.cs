@@ -5,7 +5,7 @@ using Microsoft.Azure.Cosmos;
 namespace GovUk.Forms.Infrastructure.Serialization;
 
 [ExcludeFromCodeCoverage]
-public sealed class CosmosFormCosmosSerializer : CosmosSerializer
+public sealed class CosmosModelSerializer : CosmosSerializer
 {
     public override T FromStream<T>(Stream stream)
     {

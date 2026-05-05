@@ -12,12 +12,12 @@ public sealed class YourEmployeesFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
-        NodeId fullNameId = NodeId.New();
-        NodeId ageId = NodeId.New();
-        NodeId checkDetailsId = NodeId.New();
-        NodeId addAnotherId = NodeId.New();
-        NodeId removeId = NodeId.New();
-        NodeId summaryId = NodeId.New();
+        NodeId fullNameId = "EmployeeFullName";
+        NodeId ageId = "EmployeeAge";
+        NodeId checkDetailsId = "CheckEmployeeDetails";
+        NodeId addAnotherId = "AddAnotherEmployee";
+        NodeId removeId = "RemoveEmployee";
+        NodeId summaryId = "Summary";
         WebRoot webRoot = new();
             
         FormModel form = GetForm(services, webRoot.Root);

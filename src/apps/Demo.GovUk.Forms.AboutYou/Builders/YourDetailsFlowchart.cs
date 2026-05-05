@@ -14,15 +14,15 @@ public sealed class YourDetailsFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
-        NodeId fullNameId = NodeId.New();
-        NodeId addressId = NodeId.New();
-        NodeId contactDetailsId = NodeId.New();
-        NodeId ageId = NodeId.New();
-        NodeId salaryId = NodeId.New();
-        NodeId bankAccountId = NodeId.New();
-        NodeId ownHomeId = NodeId.New();
-        NodeId homeValueId = NodeId.New();
-        NodeId summaryId = NodeId.New();
+        NodeId fullNameId = "FullName";
+        NodeId addressId = "Address";
+        NodeId contactDetailsId = "ContactDetails";
+        NodeId ageId = "Age";
+        NodeId salaryId = "Salary";
+        NodeId bankAccountId = "BankAccount";
+        NodeId ownHomeId = "OwnsHome";
+        NodeId homeValueId = "HomeValue";
+        NodeId summaryId = "Summary";
         WebRoot webRoot = new();
         
         FormModel form = GetForm(services, webRoot.Root);

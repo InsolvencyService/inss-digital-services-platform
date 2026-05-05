@@ -13,17 +13,17 @@ public sealed class YourCreditorsAndDebtorsFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
-        NodeId creditorFullNameId = NodeId.New();
-        NodeId creditorAmountId = NodeId.New();
-        NodeId checkCreditorDetailsId = NodeId.New();
-        NodeId removeCreditorDetailsId = NodeId.New();
-        NodeId addAnotherId = NodeId.New();
-        NodeId debtorFullNameId = NodeId.New();
-        NodeId debtorAmountId = NodeId.New();
-        NodeId checkDebtorDetailsId = NodeId.New();
-        NodeId removeDebtorDetailsId = NodeId.New();
-        NodeId addAnotherDebtorId = NodeId.New();
-        NodeId summaryId = NodeId.New();
+        NodeId creditorFullNameId = "CreditorFullName";
+        NodeId creditorAmountId = "CreditorAmount";
+        NodeId checkCreditorDetailsId = "CheckCreditorDetails";
+        NodeId removeCreditorDetailsId = "RemoveCreditorDetails";
+        NodeId addAnotherId = "AddAnotherCreditor";
+        NodeId debtorFullNameId = "DebtorFullName";
+        NodeId debtorAmountId = "DebtorAmount";
+        NodeId checkDebtorDetailsId = "CheckDebtorDetails";
+        NodeId removeDebtorDetailsId = "RemoveDebtorDetails";
+        NodeId addAnotherDebtorId = "AddAnotherDebtor";
+        NodeId summaryId = "Summary";
         WebRoot webRoot = new();
         
         FormModel form = GetForm(services, webRoot.Root);

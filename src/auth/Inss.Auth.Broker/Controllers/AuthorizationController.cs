@@ -23,13 +23,13 @@ public class AuthorizationController : Controller
     {
         // TODO: Some validation for the caller!!
         
-        var issuer = $"{Request.Scheme}://{Request.Host}";
-        var clientId = Request.Query["client_id"].ToString();
-        var redirectUri = Request.Query["redirect_uri"].ToString();
-        var state = Request.Query["state"].ToString();
-        var loginHint = Request.Query["login_hint"].ToString();
-        var codeChallenge = Request.Query["code_challenge"].ToString();
-        var codeChallengeMethod = Request.Query["code_challenge_method"].ToString();
+        string issuer = $"{Request.Scheme}://{Request.Host}";
+        string clientId = Request.Query["client_id"].ToString();
+        string redirectUri = Request.Query["redirect_uri"].ToString();
+        string state = Request.Query["state"].ToString();
+        string loginHint = Request.Query["login_hint"].ToString();
+        string codeChallenge = Request.Query["code_challenge"].ToString();
+        string codeChallengeMethod = Request.Query["code_challenge_method"].ToString();
         
         if (clientId != _options.Value.ClientId || string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(codeChallenge))
         {
@@ -62,27 +62,27 @@ public class AuthorizationController : Controller
             return Unauthorized();
         }
         
-        var authProps = result.Properties;
-        var clientRedirectUri = authProps?.Items["client_redirect_uri"];
-        var clientState = authProps?.Items["client_state"];
-        var clientCodeChallenge = authProps?.Items["client_code_challenge"]!;
-        var clientCodeChallengeMethod = authProps?.Items["client_code_challenge_method"]!;
+        AuthenticationProperties? authProps = result.Properties;
+        string? clientRedirectUri = authProps?.Items["client_redirect_uri"];
+        string? clientState = authProps?.Items["client_state"];
+        string clientCodeChallenge = authProps?.Items["client_code_challenge"]!;
+        string clientCodeChallengeMethod = authProps?.Items["client_code_challenge_method"]!;
 
         if (string.IsNullOrEmpty(clientRedirectUri))
         {
             return BadRequest("Missing stored client redirect URI");
         }
 
-        var code = Guid.NewGuid().ToString("N");
-        
-        await _authCodeStoreProvider.StoreAsync(code, new AuthCode
+        AuthCode authCode = new()
         {
-            Principal = result.Principal,
+            Id = Guid.NewGuid().ToString("N"),
             CodeChallenge = clientCodeChallenge,
             CodeChallengeMethod = clientCodeChallengeMethod
-        });
+        };
+        authCode.AddClaimsPrincipal(result.Principal);
+        await _authCodeStoreProvider.StoreAsync(authCode);
         
-        var finalRedirect = $"{clientRedirectUri}?code={code}&state={clientState}";
+        var finalRedirect = $"{clientRedirectUri}?code={authCode.Id}&state={clientState}";
         return Redirect(finalRedirect);
     }
 }
