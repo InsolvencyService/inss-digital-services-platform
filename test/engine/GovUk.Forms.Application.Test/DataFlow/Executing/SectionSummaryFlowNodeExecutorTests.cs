@@ -1,7 +1,6 @@
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Primitives;
 using Xunit;
 
@@ -37,7 +36,7 @@ public class SectionSummaryFlowNodeExecutorTests
     {
         FormModel form = TestFormModels.CreateWithAddAnotherSection();
         SectionModel section = form.Sections[0];
-        section.State = SectionStateTypes.InProgress;
+        section.SetInProgress();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId2", PagePath = summary.Path};
         ExecuteContext context = new()
@@ -51,30 +50,6 @@ public class SectionSummaryFlowNodeExecutorTests
 
         await _executor.ExecuteAsync(context);
 
-        Assert.Equal(SectionStateTypes.Completed, section.State);
-    }
-    
-    [Fact]
-    public async Task SummaryPageCompleted_ExecuteAsync_SetsEachPageLocked()
-    {
-        FormModel form = TestFormModels.CreateWithAddAnotherSection();
-        SectionModel section = form.Sections[0];
-        section.State = SectionStateTypes.InProgress;
-        SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
-        FlowNode node = new() { Id = "NodeId2", PagePath = summary.Path};
-        ExecuteContext context = new()
-        {
-            Nodes = [node],
-            CurrentNode = node,
-            Form = form,
-            Section = section,
-            UpdatedPage = summary
-        };
-
-        await _executor.ExecuteAsync(context);
-
-        PageModel[] unlockedPages = section.Pages.GetCompletedPages().Where(
-            p => (p.EditMode & PageEditTypes.Locked) != PageEditTypes.Locked).ToArray();
-        Assert.Empty(unlockedPages);
+        Assert.NotNull(section.CompletedDate);
     }
 }

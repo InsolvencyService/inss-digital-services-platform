@@ -2,12 +2,10 @@
   "sections": [
     {
       "title": "Send Us Files",
-      "state": "NotStarted",
       "pages": [
         {
           "$type": "FullNameModel",
           "value": "",
-          "editMode": "NotStarted",
           "title": "Your name",
           "returnUrl": null,
           "metaData": {
@@ -19,7 +17,8 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "a987201c-6f94-4ca7-a217-e7ec0674cde9",
+          "completedDate": null,
+          "id": "d996d8e0-abf7-448a-90d8-f46795bed3fc",
           "path": "/contact-us/send-us-files/your-name",
           "viewName": "_FullName",
           "encodingType": null,
@@ -36,7 +35,6 @@
               "contents": null,
               "length": 0,
               "sizeInMb": 0,
-              "editMode": "NotStarted",
               "title": "Upload file",
               "returnUrl": null,
               "metaData": {
@@ -48,7 +46,8 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "2c6d86ea-24f6-4436-8156-7e2e757b77d8",
+              "completedDate": null,
+              "id": "0dff426f-3830-4594-b038-12e42e07a741",
               "path": "/contact-us/send-us-files/upload-file",
               "viewName": "_FileUpload",
               "encodingType": "multipart/form-data",
@@ -66,7 +65,6 @@
               "hint": null,
               "groupLength": 0,
               "canAddAnother": true,
-              "editMode": "NotStarted",
               "title": "Uploaded files",
               "returnUrl": null,
               "metaData": {
@@ -78,7 +76,8 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "4ab5f63e-82c1-4c82-ae29-a8bf0446adef",
+              "completedDate": null,
+              "id": "860969f2-7489-4184-8888-4012de4b509c",
               "path": "/contact-us/send-us-files/add-another-file",
               "viewName": "_AddAnother",
               "encodingType": null,
@@ -96,7 +95,6 @@
             "hint": null,
             "groupLength": 0,
             "canAddAnother": true,
-            "editMode": "NotStarted",
             "title": "Uploaded files",
             "returnUrl": null,
             "metaData": {
@@ -108,7 +106,8 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "4ab5f63e-82c1-4c82-ae29-a8bf0446adef",
+            "completedDate": null,
+            "id": "860969f2-7489-4184-8888-4012de4b509c",
             "path": "/contact-us/send-us-files/add-another-file",
             "viewName": "_AddAnother",
             "encodingType": null,
@@ -121,7 +120,6 @@
             "removeHint": "Select one option",
             "removeConfirmed": false,
             "setIndex": -1,
-            "editMode": "NotStarted",
             "title": "Remove uploaded file",
             "returnUrl": null,
             "metaData": {
@@ -133,7 +131,8 @@
             },
             "linkedToNode": "",
             "previousPagePath": "/",
-            "id": "7fc249b3-afe3-4e47-bb98-084cb38db29d",
+            "completedDate": null,
+            "id": "36712ff3-92d3-47f9-952f-13e62de1437a",
             "path": "/contact-us/send-us-files/remove-uploaded-file",
             "viewName": "_Remove",
             "encodingType": null,
@@ -148,7 +147,6 @@
               "contents": null,
               "length": 0,
               "sizeInMb": 0,
-              "editMode": "NotStarted",
               "title": "Upload file",
               "returnUrl": null,
               "metaData": {
@@ -160,7 +158,8 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "2c6d86ea-24f6-4436-8156-7e2e757b77d8",
+              "completedDate": null,
+              "id": "0dff426f-3830-4594-b038-12e42e07a741",
               "path": "/contact-us/send-us-files/upload-file",
               "viewName": "_FileUpload",
               "encodingType": "multipart/form-data",
@@ -174,7 +173,6 @@
               "removeHint": "Select one option",
               "removeConfirmed": false,
               "setIndex": -1,
-              "editMode": "NotStarted",
               "title": "Remove uploaded file",
               "returnUrl": null,
               "metaData": {
@@ -186,7 +184,8 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "7fc249b3-afe3-4e47-bb98-084cb38db29d",
+              "completedDate": null,
+              "id": "36712ff3-92d3-47f9-952f-13e62de1437a",
               "path": "/contact-us/send-us-files/remove-uploaded-file",
               "viewName": "_Remove",
               "encodingType": null,
@@ -202,7 +201,6 @@
               "hint": null,
               "groupLength": 0,
               "canAddAnother": true,
-              "editMode": "NotStarted",
               "title": "Uploaded files",
               "returnUrl": null,
               "metaData": {
@@ -214,7 +212,8 @@
               },
               "linkedToNode": "",
               "previousPagePath": "/",
-              "id": "4ab5f63e-82c1-4c82-ae29-a8bf0446adef",
+              "completedDate": null,
+              "id": "860969f2-7489-4184-8888-4012de4b509c",
               "path": "/contact-us/send-us-files/add-another-file",
               "viewName": "_AddAnother",
               "encodingType": null,
@@ -223,7 +222,6 @@
               "typeName": "GovUk.Forms.Domain.AddAnotherModel"
             }
           ],
-          "editMode": "NotStarted",
           "title": "",
           "returnUrl": null,
           "metaData": {
@@ -235,7 +233,8 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "4abdfc6b-f3ad-4ef9-b518-0587705b2f6e",
+          "completedDate": null,
+          "id": "0cfb8815-e3b0-4e8e-9896-fa735687df52",
           "path": "/",
           "viewName": "_AddAnotherGroup",
           "encodingType": null,
@@ -245,7 +244,6 @@
         },
         {
           "$type": "SummaryModel",
-          "editMode": "NotStarted",
           "title": "Contact us summary",
           "returnUrl": null,
           "metaData": {
@@ -257,7 +255,8 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "40a8fab4-f801-454e-a8fa-0e7d61235290",
+          "completedDate": null,
+          "id": "c3d8cfb7-5936-40fb-952b-f41d335346cd",
           "path": "/contact-us/send-us-files/summary",
           "viewName": "_Summary",
           "encodingType": null,
@@ -266,7 +265,9 @@
           "typeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "id": "2e92a9e3-0b6a-46f1-91d7-8e12385393a8",
+      "startedDate": null,
+      "completedDate": null,
+      "id": "4f016189-10a1-467b-8ad0-a4a5cb5c2bdd",
       "path": "/contact-us/send-us-files",
       "viewName": "_Section",
       "encodingType": null,
@@ -276,7 +277,8 @@
     }
   ],
   "canSubmit": false,
-  "id": "76525322-0915-478a-aba6-ef07efdc702c",
+  "createdDate": "2026-05-04T09:55:29.035864+01:00",
+  "id": "337c1685-7f24-4169-beca-26a2ed9e490f",
   "path": "/contact-us",
   "viewName": "_Form",
   "encodingType": null,

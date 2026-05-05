@@ -1,5 +1,4 @@
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
@@ -52,7 +51,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .Next()
             .AddTransitionNode(summaryId, summary.Path, postSubmitSuccessId)
             .WithLoader<SectionSummaryFlowNodeLoader>()
-            .WithExecutor<SubmitSectionFlowNodeExecutor>()
+            .WithExecutor<SubmitFileUploadFlowNodeExecutor>()
             .Next()
             .AddEndNode(postSubmitSuccessId, postSubmitSuccess.Path)
             .BuildAndRegister();
