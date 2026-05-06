@@ -4,6 +4,8 @@ using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GovUk.Forms.Components.Controllers;
@@ -50,5 +52,12 @@ public class FormController : Controller
 
         ContentPath redirectTo = await _formService.SaveAsync(postedContent);
         return Redirect(redirectTo);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> LogOut()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return Redirect("/");
     }
 }
