@@ -72,6 +72,7 @@ public class StartupConfiguration : IHostingStartup
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseHealthChecks("/health");
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -101,6 +102,12 @@ public class StartupConfiguration : IHostingStartup
                     }
                 }
             
+                endpoints.MapControllerRoute(
+                        name: "FormSignOut",
+                        pattern: "sign-out",
+                        defaults: new { controller = "Form", action = "LogOut" })
+                    .WithStaticAssets();
+                
                 endpoints.MapControllerRoute(
                         name: "default",
                         pattern: "{controller=Start}/{action=Index}/{id?}")

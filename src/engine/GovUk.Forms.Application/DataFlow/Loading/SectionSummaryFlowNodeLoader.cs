@@ -13,6 +13,8 @@ public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
         
         foreach (PageModel savedPage in savedPages)
         {
+            savedPage.ReturnUrl = summary.Path;
+            
             if (savedPage is AddAnotherModel addAnother)
             {
                 AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(addAnother.MetaData.Group);
