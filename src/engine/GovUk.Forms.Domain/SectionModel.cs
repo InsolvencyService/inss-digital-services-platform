@@ -25,7 +25,7 @@ public class SectionModel : ContentModel
             return Pages[0] is GroupPageModel groupPage ? groupPage.Pages[0] : Pages[0];
         }
     }
-
+    
     public void SetInProgress()
     {
         StartedDate ??= DateTimeOffset.Now;

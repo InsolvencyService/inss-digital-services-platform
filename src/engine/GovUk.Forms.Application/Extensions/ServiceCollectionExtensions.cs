@@ -9,8 +9,9 @@ public static class ServiceCollectionExtensions
     {
         public IServiceCollection AddApplication()
         {
-            services.AddSingleton<IFormService, FormService>();
-            services.AddSingleton<ISubmitFormService, SubmitFormService>();
+            services.AddTransient<IFormService, FormService>();
+            services.AddTransient<IUserFormService, UserFormService>();
+            services.AddTransient<ISubmitFormService, SubmitFormService>();
             return services;
         }
     }

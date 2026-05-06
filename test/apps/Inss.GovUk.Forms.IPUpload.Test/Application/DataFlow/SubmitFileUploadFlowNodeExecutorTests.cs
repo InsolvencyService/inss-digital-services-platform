@@ -31,7 +31,8 @@ public class SubmitFileUploadFlowNodeExecutorTests
             CurrentNode = _node,
             Form = _form,
             Section = _section,
-            UpdatedPage = new IPUploadDeclarationModel { Path = summary.Path }
+            UpdatedPage = new IPUploadDeclarationModel { Path = summary.Path },
+            FinalExecuteStep = true
         };
         _submitIPUploadSectionClient = Substitute.For<ISubmitIPUploadSectionClient>();
         _submitFileUploadFlowNodeExecutor = new SubmitFileUploadFlowNodeExecutor(_submitIPUploadSectionClient);

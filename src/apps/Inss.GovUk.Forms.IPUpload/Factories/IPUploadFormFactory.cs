@@ -3,7 +3,6 @@ using GovUk.Forms.Components.Factories;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Enums;
 using Inss.GovUk.Forms.IPUpload.Domain;
-using XmlFileUploadModel = Inss.GovUk.Forms.IPUpload.Domain.XmlFileUploadModel;
 
 namespace Inss.GovUk.Forms.IPUpload.Factories;
 
@@ -20,7 +19,7 @@ public sealed class IPUploadFormFactory : IFormFactory
             .AddPage<IPUploadXmlErrorsModel>("IP upload errors", "upload-errors", submitButtonText: "Continue")
             .AddPage<IPUploadXmlErrorDetailsModel>("IP upload error details", "upload-error-details")
             .AddPage<SummaryModel>("Redundancy payment summary", "summary", question: "Check your answers before submitting the form", submitButtonText: "Submit", description: "Your form has passed initial validation.")
-            .EndSection<PostSubmitSuccessModel>("Submitted", "submit-completed")
+            .EndSection<PostSubmitModel>("Submitted", "submit-completed", submitButtonText: "Upload another form")
 
             .ValidateAndComplete();
     }

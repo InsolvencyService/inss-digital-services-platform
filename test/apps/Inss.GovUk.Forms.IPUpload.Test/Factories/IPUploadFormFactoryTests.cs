@@ -43,7 +43,7 @@ public class IPUploadFormFactoryTests
         AssertSectionPage<IPUploadXmlErrorsModel>(redundancyPayment, "IP upload errors", "/ip-upload/redundancy-payment/upload-errors");
         AssertSectionPage<IPUploadXmlErrorDetailsModel>(redundancyPayment, "IP upload error details", "/ip-upload/redundancy-payment/upload-error-details");
         AssertSectionPage<SummaryModel>(redundancyPayment, "Redundancy payment summary", "/ip-upload/redundancy-payment/summary");
-        AssertSectionPage<PostSubmitSuccessModel>(redundancyPayment, "Submitted", "/ip-upload/redundancy-payment/submit-completed");
+        AssertSectionPage<PostSubmitModel>(redundancyPayment, "Submitted", "/ip-upload/redundancy-payment/submit-completed");
     }
     
     private static void AssertSectionPage<TPage>(SectionModel section, string title, string path) where TPage : PageModel

@@ -33,6 +33,13 @@ public sealed class TestFormStorageProvider : IFormStorageProvider
         return Task.CompletedTask;
     }
 
+    public Task RemoveAsync(string sessionId, FormModel form)
+    {
+        string key = GetKey(form.Path, sessionId);
+        _cache.TryRemove(key, out FormModel? _);
+        return Task.CompletedTask;
+    }
+    
     private static string GetKey(ContentPath path, string sessionId)
     {
         return $"{path}-{sessionId}";
