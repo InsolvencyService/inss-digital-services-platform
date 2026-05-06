@@ -41,10 +41,10 @@ public abstract class BaseTestConfig
     }
 
     public async Task BrowserTearDownAsync(
-        ScenarioContext scenarioContext,
-        IReqnrollOutputHelper outputHelper,
-        IBrowserContext browserContext,
-        IPage page)
+    ScenarioContext scenarioContext,
+    IReqnrollOutputHelper outputHelper,
+    IBrowserContext browserContext,
+    IPage page)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
         ArgumentNullException.ThrowIfNull(outputHelper);
@@ -57,7 +57,6 @@ public abstract class BaseTestConfig
             return;
         }
 
-        IVideo? video = page.Video;
         bool failed = scenarioContext.ScenarioExecutionStatus == ScenarioExecutionStatus.TestError;
 
         try
@@ -72,20 +71,6 @@ public abstract class BaseTestConfig
             {
                 await HandleFailureAsync(outputHelper);
             }
-
-            if (!page.IsClosed)
-            {
-                await page.CloseAsync();
-                // remove when we have implemented logout
-                await browserContext.ClearCookiesAsync();
-            }
-
-            if (failed && video is not null)
-            {
-                await SaveVideoAsync(outputHelper, video);
-            }
-
-            AttachArtifacts(outputHelper);
         }
         catch (Exception ex)
         {
@@ -289,28 +274,6 @@ public abstract class BaseTestConfig
         {
             throw new InvalidOperationException(
                 $"Navigation failed: {response.Status} {response.StatusText} ({baseUrl})");
-        }
-    }
-
-    private void AttachArtifacts(IReqnrollOutputHelper outputHelper)
-    {
-        ArgumentNullException.ThrowIfNull(outputHelper);
-
-        if (TestArtifacts is null)
-        {
-            return;
-        }
-
-        AttachIfExists(outputHelper, TestArtifacts.ConsoleLogPath);
-        AttachIfExists(outputHelper, TestArtifacts.FailureLogPath);
-        AttachIfExists(outputHelper, TestArtifacts.TracePath);
-    }
-
-    private static void AttachIfExists(IReqnrollOutputHelper outputHelper, string path)
-    {
-        if (File.Exists(path))
-        {
-            outputHelper.AddAttachment(path);
         }
     }
 

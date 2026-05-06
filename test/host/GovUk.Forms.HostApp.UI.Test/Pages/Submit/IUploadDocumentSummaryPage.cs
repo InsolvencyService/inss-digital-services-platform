@@ -2,7 +2,7 @@
 
 public interface IUploadDocumentSummaryPage
 {
-    Task VerifyPageIsDisplayedAsync();
+    Task WaitForPageToLoadAsync();
     Task VerifyUploadedDocumentAsync(string expectedFileName);
     Task ClickChangeAsync();
     Task ClickSubmitAsync();

@@ -4,7 +4,7 @@ Feature: Upload Documents
 A short summary of the feature
 
 Background: 
-  Given I am on the upload page
+  Given I am on the upload page as a "Admin" user
 
 @functional @upload @Addvideo
 Scenario: Upload a valid RP14A file successfully

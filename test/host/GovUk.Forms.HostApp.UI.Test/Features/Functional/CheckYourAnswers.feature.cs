@@ -11,27 +11,25 @@
 #region Designer generated code
 #pragma warning disable
 using Reqnroll;
-namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
+namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
 {
     
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::NUnit.Framework.TestFixtureAttribute()]
-    [global::NUnit.Framework.DescriptionAttribute("Employer Validation")]
+    [global::NUnit.Framework.DescriptionAttribute("CheckYourAnswers")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
-    public partial class EmployerValidationFeature
+    public partial class CheckYourAnswersFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employer Validation", "  As an Insolvency Practitioner user\r\n  I want RP14A validation to run before sub" +
-                "mission to Dynamics\r\n  So that I can fix errors immediately and avoid delayed re" +
-                "jection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Functional", "CheckYourAnswers", "A short summary of the feature", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
-#line 1 "EmployerValidation.feature"
+#line 1 "CheckYourAnswers.feature"
 #line hidden
         
         [global::NUnit.Framework.OneTimeSetUpAttribute()]
@@ -105,48 +103,24 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             await testRunner.CollectScenarioErrorsAsync();
         }
         
-        public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
-        {
-#line 7
-#line hidden
-#line 8
-    await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-        }
-        
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/EmployerValidation.feature.ndjson", 4);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Functional/CheckYourAnswers.feature.ndjson", 3);
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Employer name length boundary validation")]
-        [global::NUnit.Framework.CategoryAttribute("regression")]
-        [global::NUnit.Framework.CategoryAttribute("validation")]
-        [global::NUnit.Framework.CategoryAttribute("rp14a")]
-        [global::NUnit.Framework.TestCaseAttribute("99", "accepted", "none", "none", "0", null)]
-        [global::NUnit.Framework.TestCaseAttribute("100", "rejected", "1 invalid length of the employer name", "Maximum of 99 characters allowed", "1", null)]
-        public async global::System.Threading.Tasks.Task EmployerNameLengthBoundaryValidation(string length, string outcome, string summaryBehaviour, string detailsBehaviour, string @__pickleIndex, string[] exampleTags)
+        [global::NUnit.Framework.DescriptionAttribute("[scenario name]")]
+        [global::NUnit.Framework.CategoryAttribute("tag1")]
+        public async global::System.Threading.Tasks.Task ScenarioName()
         {
-            string[] @__tags = new string[] {
-                    "regression",
-                    "validation",
-                    "rp14a"};
-            if ((exampleTags != null))
-            {
-                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
-            }
-            string[] tagsOfScenario = @__tags;
+            string[] tagsOfScenario = new string[] {
+                    "tag1"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("length", length);
-            argumentsOfScenario.Add("outcome", outcome);
-            argumentsOfScenario.Add("summaryBehaviour", summaryBehaviour);
-            argumentsOfScenario.Add("detailsBehaviour", detailsBehaviour);
-            string pickleIndex = @__pickleIndex;
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Employer name length boundary validation", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "0";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("[scenario name]", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 11
+#line 6
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -157,22 +131,13 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 7
-await this.FeatureBackgroundAsync();
+ await testRunner.GivenAsync("[context]", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 12
-  await testRunner.GivenAsync(string.Format("I have uploaded an RP14A file with employer name of length {0}", length), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line 8
+ await testRunner.WhenAsync("[action]", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 13
-  await testRunner.WhenAsync("I submit the RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 14
-  await testRunner.ThenAsync(string.Format("the submission should be \"{0}\"", outcome), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 15
-  await testRunner.AndAsync(string.Format("the error summary should \"{0}\" with \"{1}\"", summaryBehaviour, detailsBehaviour), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 16
-  await testRunner.AndAsync("I should be able to view error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line 9
+ await testRunner.ThenAsync("[outcome]", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

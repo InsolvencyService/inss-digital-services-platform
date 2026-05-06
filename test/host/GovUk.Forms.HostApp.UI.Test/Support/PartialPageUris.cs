@@ -7,4 +7,5 @@ public class PartialPageUris
     public const string DirectorConductReportingServicePage = "/DirectorConductReportingService";
     public const string UploadPage = "/upload-document";
     public const string UploadErrorDetails = "/upload-error-details";
+    public const string UploadError = "/upload-errors";
 }

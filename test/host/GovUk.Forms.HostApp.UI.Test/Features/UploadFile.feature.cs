@@ -110,7 +110,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
 #line 6
 #line hidden
 #line 7
-  await testRunner.GivenAsync("I am on the upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+  await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
         

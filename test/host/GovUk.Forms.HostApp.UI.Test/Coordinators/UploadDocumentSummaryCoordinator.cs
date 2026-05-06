@@ -9,7 +9,7 @@ public class UploadDocumentSummaryCoordinator(
 {
     public async Task VerifySummaryPageIsDisplayedAsync()
     {
-        await summaryPage.VerifyPageIsDisplayedAsync();
+        await summaryPage.WaitForPageToLoadAsync();
 
         string uploadedFileName =
             scenarioContext.Get<string>(ScenarioConstant.UploadedFileName);

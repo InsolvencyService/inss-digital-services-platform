@@ -31,12 +31,6 @@ public class UploadDocumentSummaryPage : BasePage, IUploadDocumentSummaryPage
         await Page.WaitForLoadStateAsync(
             LoadState.Load,
             new() { Timeout = ScenarioConstant.ElementTimeout });
-
-        await VerifyPageIsDisplayedAsync();
-    }
-
-    public async Task VerifyPageIsDisplayedAsync()
-    {
         await Expect(PageHeading).ToBeVisibleAsync();
         await Expect(InitialValidationMessage).ToBeVisibleAsync();
         await Expect(UploadedDocumentRow).ToBeVisibleAsync();

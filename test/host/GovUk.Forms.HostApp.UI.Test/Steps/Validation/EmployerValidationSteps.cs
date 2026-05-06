@@ -6,15 +6,15 @@ using System.Globalization;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
-[Scope(Feature = "Employe Validation")]
+[Scope(Feature = "Employer Validation")]
 [Binding]
-public class EmployeValidationSteps
+public class EmployerValidationSteps
 {
     private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
     private readonly UploadErrorDetailsCoordinator _uploadErrorDetailsCoordinator;
     private readonly UploadDocumentSummaryCoordinator _uploadDocumentSummaryCoordinator;
     private readonly ScenarioContext _scenarioContext;
-    public EmployeValidationSteps(
+    public EmployerValidationSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
         UploadErrorDetailsCoordinator uploadErrorDetailsCoordinator,
         UploadDocumentSummaryCoordinator uploadDocumentSummaryCoordinator,
@@ -46,35 +46,38 @@ public class EmployeValidationSteps
     public async Task ThenSubmissionShouldBe(string outcome)
     {
         _scenarioContext.Set(outcome, ScenarioConstant.SubmissionOutcome);
-        switch (outcome)
+
+        switch (outcome.ToLowerInvariant())
         {
             case "accepted":
-                await _uploadDocumentSummaryCoordinator.VerifySummaryPageIsDisplayedAsync();
-                break;
+                await _uploadDocumentSummaryCoordinator
+                    .VerifySummaryPageIsDisplayedAsync();
+                return;
 
             case "rejected":
-                await _uploadErrorDetailsCoordinator.VerifyUploadErrorsPageIsDisplyedAsync();
-                break;
+                await _uploadErrorDetailsCoordinator
+                    .VerifyUploadErrorPageIsDisplayedAsync();
+                return;
 
             default:
                 throw new ArgumentOutOfRangeException(
                     nameof(outcome),
                     outcome,
-                    "Outcome must be accepted or rejected.");
+                    "Outcome must be 'accepted' or 'rejected'.");
         }
     }
 
     [Then("the error summary should {string} with {string}")]
-    public async Task ThenTheErrorSummaryShouldWith(string summaryBehaviour, string detailsBehaviour)
+    public async Task ThenTheErrorSummaryShouldWith(
+    string summaryBehaviour,
+    string detailsBehaviour)
     {
-        if (summaryBehaviour.StartsWith("not contain", StringComparison.OrdinalIgnoreCase))
+        string outcome =
+            _scenarioContext.Get<string>(ScenarioConstant.SubmissionOutcome);
+
+        if (outcome.Equals("accepted", StringComparison.OrdinalIgnoreCase))
         {
-            await _uploadErrorDetailsCoordinator
-                .VerifyErrorDetailsDoesNotContainAsync(summaryBehaviour);
-
-            await _uploadErrorDetailsCoordinator
-                .VerifyErrorDetailsDoesNotContainAsync(detailsBehaviour);
-
+            await _uploadDocumentSummaryCoordinator.VerifySummaryPageIsDisplayedAsync();
             return;
         }
 
@@ -82,9 +85,9 @@ public class EmployeValidationSteps
             Category: "Employer",
             ErrorType: "Employer name",
             ErrorMessage: summaryBehaviour,
-            HintText: detailsBehaviour
-        );
+            HintText: detailsBehaviour);
 
+        _scenarioContext.Set(expectedError);
         _scenarioContext.Set(summaryBehaviour, ScenarioConstant.ErrorMessage);
 
         await _uploadErrorDetailsCoordinator
@@ -102,31 +105,25 @@ public class EmployeValidationSteps
             return;
         }
 
-        string errorMessage = _scenarioContext.Get<string>(ScenarioConstant.ErrorMessage);
-        string employerName = _scenarioContext.Get<string>("EmployerName");
+        UploadErrorSummary expectedError =
+            _scenarioContext.Get<UploadErrorSummary>();
 
-        UploadErrorSummary expectedError = new(
-            Category: "Employer",
-            ErrorType: "Employer name",
-            ErrorMessage: errorMessage
-        );
+        string employerName =
+            _scenarioContext.Get<string>("EmployerName");
 
-        await _uploadErrorDetailsCoordinator.OpenErrorDetailsAsync(expectedError);
-
-        await _uploadErrorDetailsCoordinator.VerifyEmployerErrorSummaryIsDisplayedAsync();
-
-        await _uploadErrorDetailsCoordinator.VerifyEmployeeErrorMessageSummaryAsync(
-            new AffectedEmployee
-            {
-                Forename = ScenarioConstant.Forname,
-                Surname = ScenarioConstant.Surname,
-
-                DateOfBirth = DateTime
+        AffectedEmployee affectedEmployee = new()
+        {
+            Forename = ScenarioConstant.Forname,
+            Surname = ScenarioConstant.Surname,
+            DateOfBirth = DateTime
                 .ParseExact(ScenarioConstant.DOB, "yyyy-MM-dd", CultureInfo.InvariantCulture)
                 .ToString("d/M/yyyy", CultureInfo.InvariantCulture),
-                NiNumber = ScenarioConstant.NationalInsuranceNumber,
-                CellValue = employerName
-            });
+            NiNumber = ScenarioConstant.NationalInsuranceNumber,
+            CellValue = employerName
+        };
+
+        await _uploadErrorDetailsCoordinator
+            .VerifyEmployerNameErrorDetailsAsync(expectedError, affectedEmployee);
     }
 
 

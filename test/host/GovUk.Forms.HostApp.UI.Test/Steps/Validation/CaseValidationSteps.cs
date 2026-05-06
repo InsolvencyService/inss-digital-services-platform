@@ -57,4 +57,11 @@ public class CaseValidationSteps
         );
         await _uploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
     }
+
+    [Then("I should be able to view error details")]
+    public static async Task ThenIShouldBeAbleToViewErrorDetails()
+    {
+
+    }
+
 }

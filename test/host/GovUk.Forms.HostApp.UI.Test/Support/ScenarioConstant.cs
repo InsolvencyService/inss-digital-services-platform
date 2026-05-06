@@ -6,6 +6,7 @@ public class ScenarioConstant
     public const string SnapShots = nameof(SnapShots);
     public const string DeclarationPage = nameof(DeclarationPage);
     public const string UploadPage = nameof(UploadPage);
+    public const string UploadPageWithWarning = nameof(UploadPageWithWarning);
     public const string UploadPageWithCommonIssuesSection = nameof(UploadPageWithCommonIssuesSection);
 
     // Test user credentials for login

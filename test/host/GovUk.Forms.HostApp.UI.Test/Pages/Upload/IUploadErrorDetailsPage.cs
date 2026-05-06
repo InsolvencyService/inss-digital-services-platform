@@ -9,5 +9,14 @@ public interface IUploadErrorDetailsPage
     Task VerifyAffectedEmployeeTableHeadersAsync();
     Task WaitForPageToLoadAsync();
     Task VerifyErrorDetailsDoesNotContainAsync(string text);
-    Task EmployerErrorSummaryIsDisplayedAsync();
+    Task VerifyEmployerErrorSummaryIsDisplayedAsync();
+    Task VerifyEmployeeErrorSummaryIsDisplayedAsync();
+    Task<int> GetColumnIndexAsync(string columnName);
+    Task VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync();
+    Task VerifyMultipleAffectedEmployeeAsync(AffectedEmployee employee);
+    Task VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync();
+    Task VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync();
+    Task VerifyEmploymentDatesHeaderIsDisplayedAsync();
+    Task ClickBackButtonAsync();
+    Task VerifyArrearsOfPayDatesHeaderIsDisplayedAsync();
 }

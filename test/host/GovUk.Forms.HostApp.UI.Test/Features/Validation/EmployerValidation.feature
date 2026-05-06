@@ -1,11 +1,11 @@
-﻿Feature: Employe Validation
+﻿Feature: Employer Validation
 
   As an Insolvency Practitioner user
   I want RP14A validation to run before submission to Dynamics
   So that I can fix errors immediately and avoid delayed rejection
 
 Background: 
-  Given I am on the upload page
+    Given I am on the upload page as a "Admin" user
 
 @regression @validation @rp14a
 Scenario Outline: Employer name length boundary validation
@@ -16,6 +16,6 @@ Scenario Outline: Employer name length boundary validation
   And I should be able to view error details
 
 Examples:
-  | length | outcome  | summaryBehaviour                                | detailsBehaviour                     |
-  |     99 | accepted | not contain invalid length of the employer name | not contain Maximum of 99 characters |
-  |    100 | rejected | 1 invalid length of the employer name           | Maximum of 99 characters allowed     |
+  | length | outcome  | summaryBehaviour                      | detailsBehaviour                 |
+  |     99 | accepted | none                                  | none                             |
+  |    100 | rejected | 1 invalid length of the employer name | Maximum of 99 characters allowed |

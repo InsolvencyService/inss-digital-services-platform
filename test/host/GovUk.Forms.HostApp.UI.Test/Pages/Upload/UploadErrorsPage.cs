@@ -1,7 +1,9 @@
 ﻿
 using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Extensions;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using System.Globalization;
 
 namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
@@ -77,5 +79,31 @@ public class UploadErrorsPage : BasePage, IUploadErrorsPage
     public async Task ClickContinueAsync()
     {
         await ContinueButton.ClickAsync();
+    }
+
+    public async Task<int> GetErrorCountAsync(string errorKey)
+    {
+        string text = await Page
+            .GetByText(errorKey)
+            .First
+            .InnerTextAsync();
+
+        return int.Parse(
+            text.Split(' ')[0],
+            CultureInfo.InvariantCulture);
+    }
+
+    public async Task VerifyErrorMessageAsync(string expectedError)
+    {
+        await Page
+            .GetByText(expectedError, new() { Exact = true })
+            .ShouldBeVisibleAsync();
+    }
+
+    public async Task VerifyHintAsync(string expectedHint)
+    {
+        await Page
+            .GetByText(expectedHint, new() { Exact = true })
+            .ShouldBeVisibleAsync();
     }
 }

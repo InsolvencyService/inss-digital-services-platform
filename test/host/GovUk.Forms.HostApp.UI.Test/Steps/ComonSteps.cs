@@ -1,4 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Coordinators;
+﻿using GovUk.Forms.HostApp.UI.Test.Builders;
+using GovUk.Forms.HostApp.UI.Test.Coordinators;
+using GovUk.Forms.HostApp.UI.Test.Models;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -16,6 +18,14 @@ public sealed class ComonSteps
     public async Task GivenIAmOnTheUploadPage()
     {
         await _commonCoordinator.VerifyThatUploadDocumentPageIsDisplayedAsync();
+    }
+
+    [Given(@"I am on the upload page as a ""(.*)"" user")]
+    public async Task GivenIAmOnTheUploadPageAsUser(string userType)
+    {
+        TestUser user = UserFactory.GetUser(userType);
+
+        await _commonCoordinator.VerifyThatUploadDocumentPageIsDisplayedAsync(user);
     }
 
 }

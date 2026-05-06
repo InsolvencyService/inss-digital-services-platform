@@ -10,4 +10,7 @@ public interface IUploadErrorsPage
     Task VerifyErrorSummaryAsync(UploadErrorSummary expected);
     Task ClickOnViewDetailsAsync(UploadErrorSummary expected);
     Task VerifyUploadedFileNameAsync(string expectedFileName);
+    Task<int> GetErrorCountAsync(string errorKey);
+    Task VerifyErrorMessageAsync(string expectedError);
+    Task VerifyHintAsync(string expectedHint);
 }
