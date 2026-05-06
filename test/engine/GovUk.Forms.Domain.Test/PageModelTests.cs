@@ -100,27 +100,4 @@ public class PageModelTests
         Assert.Equal(address.County, cloneOf.County);
         Assert.Equal(address.Postcode, cloneOf.Postcode);
     }
-    
-    [Fact]
-    public void ForPageWithPreviousPagePath_TransitionToEdit_DoesNotOverridePreviousPagePath()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
-        address.PreviousPagePath = "/form/section/fullname";
-        
-        address.TransitionToEdit("/form");
-        
-        Assert.Equal("/form/section/fullname", address.PreviousPagePath);
-    }
-    
-    [Fact]
-    public void ForPageWithNoPreviousPagePath_TransitionToEdit_SetsPreviousPagePath()
-    {
-        SectionModel section = TestSectionModels.CreateYourDetailsSection();
-        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
-        
-        address.TransitionToEdit("/form");
-        
-        Assert.Equal("/form", address.PreviousPagePath);
-    }
 }

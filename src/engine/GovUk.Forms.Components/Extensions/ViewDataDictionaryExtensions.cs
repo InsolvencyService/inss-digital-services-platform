@@ -15,7 +15,10 @@ public static class ViewDataDictionaryExtensions
 
         public void AddBackButton(string? path)
         {
-            viewData[BackButtonKey] = path;
+            if (path is not null)
+            {
+                viewData[BackButtonKey] = path;
+            }
         }
 
         public string? GetBackButton()

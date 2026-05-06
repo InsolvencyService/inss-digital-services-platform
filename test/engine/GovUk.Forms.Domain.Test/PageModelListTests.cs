@@ -123,7 +123,7 @@ public class PageModelListTests
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         TestSectionDefaults.YourDetails(section);
         BankAccountModel bankAccount = section.Pages.GetFirstOf<BankAccountModel>();
-        bankAccount.TransitionToEdit("/");
+        bankAccount.CompletedDate = null;
         AgeModel age = section.Pages.GetFirstOf<AgeModel>();
         age.SetCompleted();
         

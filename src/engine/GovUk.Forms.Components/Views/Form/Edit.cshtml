@@ -2,6 +2,7 @@
 
 @{
     string? buttonText = Model.GetButtonText();
+    PageModel? page = Model as PageModel;
 }
 
 @using (Html.BeginForm(Model))
@@ -13,11 +14,15 @@
     @Html.HiddenFor(m => m.ViewName)
     @Html.HiddenFor(m => m.FullWidthLayout)
 
-    if (Model.IsPageModel())
+    if (page is not null)
     {
-        @Html.HiddenFor(m => ((PageModel)m).LinkedToNode.Value)
-        @Html.HiddenFor(m => ((PageModel)m).MetaData.Group.Value)
-        @Html.HiddenFor(m => ((PageModel)m).PreviousPagePath.Value)
+        @Html.HiddenFor(m => page.LinkedToNode.Value)
+        @Html.HiddenFor(m => page.MetaData.Group.Value)
+
+        @if (page.PreviousPagePath is not null)
+        {
+            @Html.HiddenFor(m => page.PreviousPagePath.Value)
+        }
     }
     
     @await Html.PartialAsync(Model.ViewName, Model)

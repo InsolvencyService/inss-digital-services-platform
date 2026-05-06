@@ -23,7 +23,7 @@ public class FormController : Controller
     public async Task<IActionResult> Edit(string? state = null)
     {
         (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(new ContentPath(Request.Path), state);
-        ViewData.AddBackButton(result.Content is PageModel page ? page.PreviousPagePath.Value : null);
+        ViewData.AddBackButton(result.Content is PageModel { PreviousPagePath: not null } page ? page.PreviousPagePath.Value : null);
         ViewData.AddFullWidthLayout(result.Content?.FullWidthLayout == true);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
@@ -43,7 +43,7 @@ public class FormController : Controller
                 }
             }
 
-            ViewData.AddBackButton(postedContent is PageModel page ? page.PreviousPagePath.Value : null);
+            ViewData.AddBackButton(postedContent is PageModel { PreviousPagePath: not null } page ? page.PreviousPagePath.Value : null);
             ViewData.AddFullWidthLayout(postedContent.FullWidthLayout);
             return View(postedContent);
         }
