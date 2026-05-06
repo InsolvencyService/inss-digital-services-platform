@@ -6,11 +6,6 @@ public static class ContentModelExtensions
 {
     extension(ContentModel content)
     {
-        public bool IsPageModel()
-        {
-            return content is PageModel;
-        }
-
         public string? GetButtonText()
         {
             return content switch

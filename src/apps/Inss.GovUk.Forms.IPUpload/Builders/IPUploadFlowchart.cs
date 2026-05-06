@@ -52,7 +52,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .WithExecutor<SubmitFileUploadFlowNodeExecutor>()
             .Next()
             .AddEndNode(postSubmitSuccessId, postSubmit.Path, declarationId)
-           
+            .WithLoader<PostSubmitFlowNodeLoader>()
             .WithExecutor<PostSubmitFlowNodeExecutor>()
             .BuildAndRegister();
     }

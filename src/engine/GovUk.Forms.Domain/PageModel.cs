@@ -13,7 +13,7 @@ public abstract class PageModel : ContentModel
 
     public NodeId LinkedToNode { get; set; } = NodeId.Empty;
 
-    public ContentPath PreviousPagePath { get; set; } = "/";
+    public ContentPath? PreviousPagePath { get; set; }
     
     public DateTimeOffset? CompletedDate { get; set; }
     
@@ -33,16 +33,6 @@ public abstract class PageModel : ContentModel
     {
         string json = FormSerializer.SerializePage(this);
         return FormSerializer.DeserializePage(json, GetType());
-    }
-
-    public void TransitionToEdit(ContentPath previousPagePath)
-    {
-        CompletedDate = null;
-        
-        if (PreviousPagePath.IsEmpty()) 
-        {
-            PreviousPagePath = previousPagePath;
-        }
     }
 
     public void SetCompleted()

@@ -51,8 +51,6 @@ public sealed class Flowchart : IFlowchart
             pageAssociatedToNode.LinkedToNode = nextNodeId;
         }
 
-        ContentPath previousPagePath = form.Sections.Count > 1 ? form.Path : "/";
-        pageAssociatedToNode.TransitionToEdit(previousPagePath);
         section.SetInProgress();
 
         return await ValueTask.FromResult(pageAssociatedToNode.Path);
