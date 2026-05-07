@@ -9,7 +9,10 @@ public sealed class BrokerOptions
     public string ClientId { get; init; }
     
     [Required]
+    public string JwtPublicKey { get; init; }
+    
+    [Required]
     public string JwtPrivateKey { get; init; }
-
+    
     public int TokenExpiresInMinutes { get; init; } = 30;
 }

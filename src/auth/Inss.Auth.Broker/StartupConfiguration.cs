@@ -8,6 +8,7 @@ using Inss.Auth.Broker.Extensions;
 using Inss.Auth.Broker.Infrastructure.Providers;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Azure.Cosmos;
 
 [assembly: HostingStartup(typeof(StartupConfiguration))]
@@ -40,7 +41,11 @@ public class StartupConfiguration : IHostingStartup
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
             
-            services.AddAuthentication(options => { options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; })
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                })
                 .AddCookie()
                 .AddOneLogin()
                 .AddRps()

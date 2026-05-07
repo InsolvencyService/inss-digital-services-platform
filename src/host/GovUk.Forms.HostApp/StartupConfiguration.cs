@@ -5,6 +5,7 @@ using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Options;
 using GovUk.Forms.Infrastructure.Providers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -64,6 +65,10 @@ public class StartupConfiguration : IHostingStartup
 
                         ConfigureTokenValidation(options, brokerOptions);
 
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                        
+                        options.ClaimActions.MapAll();
+                        
                         options.Events = new OpenIdConnectEvents
                         {
                             OnRedirectToIdentityProvider = HandleProviderRedirect,
@@ -109,7 +114,9 @@ public class StartupConfiguration : IHostingStartup
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
+            ValidIssuer = brokerOptions.Authority,
             ValidateAudience = true,
+            ValidAudience = brokerOptions.ClientId,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new RsaSecurityKey(rsa)
