@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inss.Auth.RpsProvider.Controllers;
@@ -6,16 +7,9 @@ namespace Inss.Auth.RpsProvider.Controllers;
 public class SessionController : Controller
 {
     [HttpGet("/connect/endsession")]
-    public IActionResult EndSession()
+    public async Task<IActionResult> EndSession()
     {
-        SignOut(CookieAuthenticationDefaults.AuthenticationScheme);
-        var postLogoutRedirectUri = Request.Query["post_logout_redirect_uri"];
-        
-        if (!string.IsNullOrEmpty(postLogoutRedirectUri))
-        {
-            return Redirect(postLogoutRedirectUri!);
-        }
-
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return Ok("You have been logged out.");
     }
 }
