@@ -76,7 +76,6 @@ stages:
         artifactName: 'WebApps'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
- Disabled for demo      
 - stage: DeployDev
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn: BuildTest
