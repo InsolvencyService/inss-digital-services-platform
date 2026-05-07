@@ -75,16 +75,17 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'WebApps'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-      
-- stage: DeployDev
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  dependsOn: BuildTest
-  displayName: 'Deploy to Dev'
-  variables:
-    - group: Platform-Dev
-  jobs:
-    - template: ../deploy/azure-deployment.yml
-      parameters:
-        environment: 'Dev'
-        location: ${{ parameters.location }}
-        azureSubscription: $(AzureSubscription)
+
+# Disabled for demo      
+#- stage: DeployDev
+#  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+#  dependsOn: BuildTest
+#  displayName: 'Deploy to Dev'
+#  variables:
+#    - group: Platform-Dev
+#  jobs:
+#    - template: ../deploy/azure-deployment.yml
+#      parameters:
+#        environment: 'Dev'
+#        location: ${{ parameters.location }}
+#        azureSubscription: $(AzureSubscription)
