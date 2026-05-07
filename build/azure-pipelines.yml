@@ -7,7 +7,7 @@ pool:
 parameters:
   - name: location
     type: string
-    default: 'northeurope'
+    default: 'uksouth'
     values:
       - uksouth
       - northeurope
