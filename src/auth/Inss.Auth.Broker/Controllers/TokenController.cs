@@ -76,7 +76,7 @@ public class TokenController : Controller
         
         var accessToken = tokenHandler.CreateJwtSecurityToken(
             issuer: issuer,
-            audience: "api",
+            audience: _brokerOptions.Value.ClientId,
             subject: new ClaimsIdentity(identity.Claims),
             expires: DateTime.UtcNow.AddMinutes(_brokerOptions.Value.TokenExpiresInMinutes),
             signingCredentials: signingCredentials
