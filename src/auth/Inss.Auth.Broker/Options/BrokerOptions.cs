@@ -15,4 +15,11 @@ public sealed class BrokerOptions
     public string JwtPrivateKey { get; init; }
     
     public int TokenExpiresInMinutes { get; init; } = 30;
+    
+    public string[] AllowedPostLogoutRedirects { get; init; } = [];
+
+    public bool PostLogoutRedirectAllowed(string postLogoutRedirectUri)
+    {
+        return AllowedPostLogoutRedirects.Any(r => r.StartsWith(postLogoutRedirectUri, StringComparison.OrdinalIgnoreCase));
+    }
 }
