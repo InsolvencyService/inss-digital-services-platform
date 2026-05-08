@@ -23,10 +23,11 @@ public class SessionController : Controller
     {
         string postLogoutRedirectUri = Request.Query["post_logout_redirect_uri"].ToString();
 
-        // if (!_options.Value.PostLogoutRedirectAllowed(postLogoutRedirectUri))
-        // {
-        //     return Forbid();
-        // }
+        if (!_options.Value.PostLogoutRedirectAllowed(postLogoutRedirectUri))
+        {
+            _logger.InvalidPostRedirectLogoutUrl(postLogoutRedirectUri);
+            return Forbid();
+        }
         
         _logger.RpsLogout(postLogoutRedirectUri);
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
