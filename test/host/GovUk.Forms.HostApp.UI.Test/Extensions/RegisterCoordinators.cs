@@ -1,4 +1,5 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Coordinators;
+using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GovUk.Forms.HostApp.UI.Test.Extensions;
@@ -13,6 +14,11 @@ public static class RegisterCoordinators
         services.AddScoped<UploadDocumentCoordinator>();
         services.AddScoped<CommonCoordinator>();
         services.AddScoped<UploadErrorDetailsCoordinator>();
-        services.AddScoped<UploadDocumentSummaryCoordinator>();
+        services.AddScoped<CheckYourAnswersCoordinator>();
+        services.AddScoped<IUploadPageCoordinator, UploadPageCoordinator>();
+        services.AddScoped<IFileUploadCoordinator, FileUploadCoordinator>();
+        services.AddScoped<IRp14aScenarioCoordinator, Rp14aScenarioCoordinator>();
+        services.AddScoped<IUploadVerificationCoordinator, UploadVerificationCoordinator>();
+        services.AddScoped<IUploadNavigationCoordinator, UploadNavigationCoordinator>();
     }
 }

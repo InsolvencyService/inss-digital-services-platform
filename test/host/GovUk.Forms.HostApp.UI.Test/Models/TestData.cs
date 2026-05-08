@@ -52,7 +52,7 @@ public class TestData
             HintText: hintText);
     }
 
-    private static string UiDateOfBirth() =>
+    public static string UiDateOfBirth() =>
      DateTime
     .ParseExact(ScenarioConstant.DOB, "yyyy-MM-dd", CultureInfo.InvariantCulture)
     .ToString("d/M/yyyy", CultureInfo.InvariantCulture);

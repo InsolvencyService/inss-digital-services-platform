@@ -13,10 +13,10 @@ public interface IUploadErrorDetailsPage
     Task VerifyEmployeeErrorSummaryIsDisplayedAsync();
     Task<int> GetColumnIndexAsync(string columnName);
     Task VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync();
-    Task VerifyMultipleAffectedEmployeeAsync(AffectedEmployee employee);
     Task VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync();
     Task VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync();
     Task VerifyEmploymentDatesHeaderIsDisplayedAsync();
     Task ClickBackButtonAsync();
     Task VerifyArrearsOfPayDatesHeaderIsDisplayedAsync();
+    Task VerifyCaseReferenceHeaderIsDisplayedAsync();
 }

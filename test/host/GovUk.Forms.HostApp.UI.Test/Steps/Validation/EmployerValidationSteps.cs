@@ -1,8 +1,8 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
+using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using System.Globalization;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
@@ -12,12 +12,12 @@ public class EmployerValidationSteps
 {
     private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
     private readonly UploadErrorDetailsCoordinator _uploadErrorDetailsCoordinator;
-    private readonly UploadDocumentSummaryCoordinator _uploadDocumentSummaryCoordinator;
+    private readonly CheckYourAnswersCoordinator _uploadDocumentSummaryCoordinator;
     private readonly ScenarioContext _scenarioContext;
     public EmployerValidationSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
         UploadErrorDetailsCoordinator uploadErrorDetailsCoordinator,
-        UploadDocumentSummaryCoordinator uploadDocumentSummaryCoordinator,
+        CheckYourAnswersCoordinator uploadDocumentSummaryCoordinator,
         ScenarioContext scenarioContext)
     {
         _uploadDocumentCoordinator = uploadDocumentCoordinator;
@@ -115,15 +115,16 @@ public class EmployerValidationSteps
         {
             Forename = ScenarioConstant.Forname,
             Surname = ScenarioConstant.Surname,
-            DateOfBirth = DateTime
-                .ParseExact(ScenarioConstant.DOB, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                .ToString("d/M/yyyy", CultureInfo.InvariantCulture),
+            DateOfBirth = TestData.UiDateOfBirth(),
             NiNumber = ScenarioConstant.NationalInsuranceNumber,
             CellValue = employerName
         };
 
         await _uploadErrorDetailsCoordinator
-            .VerifyEmployerNameErrorDetailsAsync(expectedError, affectedEmployee);
+            .VerifyErrorDetailsAsync(
+              expectedError,
+              affectedEmployee,
+             ErrorDetailsHeaderType.EmployerName);
     }
 
 

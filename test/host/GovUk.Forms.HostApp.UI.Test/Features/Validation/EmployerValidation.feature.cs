@@ -27,9 +27,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employer Validation", "  As an Insolvency Practitioner user\r\n  I want RP14A validation to run before sub" +
-                "mission to Dynamics\r\n  So that I can fix errors immediately and avoid delayed re" +
-                "jection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employer Validation", "              As an Insolvency Practitioner user\r\n              I want RP14A vali" +
+                "dation to run before submission to Dynamics\r\n  So that I can fix errors immediat" +
+                "ely and avoid delayed rejection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "EmployerValidation.feature"
 #line hidden
@@ -108,9 +108,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
         {
 #line 7
-#line hidden
+        #line hidden
 #line 8
-    await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+            await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
         
@@ -147,7 +147,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 11
-this.ScenarioInitialize(scenarioInfo, ruleInfo);
+        this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
             {
@@ -157,22 +157,22 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 7
-await this.FeatureBackgroundAsync();
+        await this.FeatureBackgroundAsync();
 #line hidden
 #line 12
-  await testRunner.GivenAsync(string.Format("I have uploaded an RP14A file with employer name of length {0}", length), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+            await testRunner.GivenAsync(string.Format("I have uploaded an RP14A file with employer name of length {0}", length), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 13
-  await testRunner.WhenAsync("I submit the RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+             await testRunner.WhenAsync("I submit the RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 14
-  await testRunner.ThenAsync(string.Format("the submission should be \"{0}\"", outcome), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+             await testRunner.ThenAsync(string.Format("the submission should be \"{0}\"", outcome), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 15
-  await testRunner.AndAsync(string.Format("the error summary should \"{0}\" with \"{1}\"", summaryBehaviour, detailsBehaviour), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+              await testRunner.AndAsync(string.Format("the error summary should \"{0}\" with \"{1}\"", summaryBehaviour, detailsBehaviour), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 16
-  await testRunner.AndAsync("I should be able to view error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+              await testRunner.AndAsync("I should be able to view error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

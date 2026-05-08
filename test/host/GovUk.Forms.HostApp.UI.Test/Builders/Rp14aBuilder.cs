@@ -17,7 +17,7 @@ public sealed class Rp14aBuilder
     private const string NamespaceUri = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application";
     private static readonly XNamespace _ns = NamespaceUri;
 
-    private string _caseReference = "CN12345678";
+    private string _caseReference = "CN82345678";
     private string _nationalInsuranceNumber = ScenarioConstant.NationalInsuranceNumber;
     private string _employerName = ScenarioConstant.EmployerName;
     private string _surname = ScenarioConstant.Surname;

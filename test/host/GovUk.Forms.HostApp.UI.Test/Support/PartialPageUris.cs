@@ -8,4 +8,5 @@ public class PartialPageUris
     public const string UploadPage = "/upload-document";
     public const string UploadErrorDetails = "/upload-error-details";
     public const string UploadError = "/upload-errors";
+    public const string SubmitCompleted = "/submit-completed";
 }

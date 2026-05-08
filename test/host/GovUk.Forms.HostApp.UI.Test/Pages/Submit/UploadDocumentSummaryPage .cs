@@ -14,16 +14,16 @@ public class UploadDocumentSummaryPage : BasePage, IUploadDocumentSummaryPage
 
     private new IPage Page => _playwrightDriver.Page;
 
-    private ILocator PageHeading => Page.GetByRole(AriaRole.Heading, new() { Name = "Check your answers before submitting the form" });
-    private ILocator InitialValidationMessage => Page.GetByText("Your form has passed initial validation.", new() { Exact = true });
-    private ILocator SubmitButton => Page.GetByRole(AriaRole.Button, new() { Name = "Submit" });
-    private ILocator UploadedDocumentRow => Page.Locator(".govuk-summary-list__row")
-            .Filter(new() { HasTextString = "Upload document" });
-    private ILocator UploadedDocumentValue => UploadedDocumentRow.Locator(".govuk-summary-list__value");
+    private ILocator PageHeading => Page.GetByRole(AriaRole.Heading, new() { Name = DocumentSummaryLocators.Labels.CheckYourAnswersBeforeSubmittingTheForm });
+    private ILocator InitialValidationMessage => Page.GetByText(DocumentSummaryLocators.Labels.YourFormHasPassedInitialValidation, new() { Exact = true });
+    private ILocator SubmitButton => Page.GetByRole(AriaRole.Button, new() { Name = DocumentSummaryLocators.Labels.Submit });
+    private ILocator UploadedDocumentRow => Page.Locator(DocumentSummaryLocators.Selectors.SummaryList)
+            .Filter(new() { HasTextString = DocumentSummaryLocators.Labels.UploadDocument });
+    private ILocator UploadedDocumentValue => UploadedDocumentRow.Locator(DocumentSummaryLocators.Selectors.SummaryListOfValue);
     private ILocator ChangeLink =>
         UploadedDocumentRow.GetByRole(AriaRole.Link, new()
         {
-            Name = "Change"
+            Name = DocumentSummaryLocators.Labels.Change
         });
 
     protected override async Task PageContentLoadedAsync()

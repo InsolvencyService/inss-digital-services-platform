@@ -19,7 +19,7 @@ public class DeclarationPage : BasePage, IDeclarationPage
 
     private ILocator DeclarationTitle => Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.DeclarationTitle });
     private ILocator Section187Link => Page.GetByRole(AriaRole.Link, new() { Name = DeclarationLocators.Labels.Section187Link });
-    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
+    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.BackButton, Exact = true });
     private ILocator AgreeAndContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = DeclarationLocators.Labels.AgreeAndContinueButton });
     protected override async Task PageContentLoadedAsync()
     {

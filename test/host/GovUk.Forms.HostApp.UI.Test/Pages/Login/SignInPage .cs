@@ -22,7 +22,7 @@ public class SignInPage : BasePage, ISignInPage
     private ILocator ShowPasswordButton => Page.GetByRole(AriaRole.Button, new() { Name = SignInLocators.Labels.ShowPasswordButton });
     private ILocator SignInButton => Page.GetByRole(AriaRole.Button, new() { Name = SignInLocators.Labels.SignInButton });
     private ILocator ForgotPasswordLink => Page.GetByRole(AriaRole.Link, new() { Name = SignInLocators.Labels.ForgotPasswordLink });
-    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
+    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.BackButton, Exact = true });
     private ILocator ErrorSummary => Page.Locator(SignInLocators.Selectors.ErrorSummary);
     private ILocator ErrorSummaryItems => ErrorSummary.GetByRole(AriaRole.Link);
     private ILocator EmailError => Page.Locator(SignInLocators.Selectors.EmailError);

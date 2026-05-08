@@ -20,22 +20,22 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     private new IPage Page => _playwrightDriver.Page;
 
-    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
-    private ILocator GiveFeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.FeedbackLink });
+    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.BackButton, Exact = true });
+    private ILocator GiveFeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.FeedbackLink });
     private ILocator UploadFileText => Page.GetByText(UploadLocators.Labels.UploadFile, new() { Exact = true });
     private ILocator NoFileChosenText => Page.GetByText(UploadLocators.Labels.NoFileChosen, new() { Exact = true });
     private ILocator CommonIssuesWhenUploadingRP14AForms => Page.GetByText(UploadLocators.Labels.CommonIssuesWhenUploadingRP14AForms, new() { Exact = true });
     private ILocator RPSStakeholderEmail => Page.GetByText(UploadLocators.Labels.RPSStakeholderEmail, new() { Exact = true });
     private ILocator GuidanceText => Page.GetByText(UploadLocators.Labels.Guidance, new() { Exact = true });
-    private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLoactors.ContinueButton });
+    private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton });
     private ILocator FileUploadInput => Page.Locator(UploadLocators.Selectors.FileInput);
     private ILocator UploadedFileStatus => Page.Locator(UploadLocators.Selectors.UploadStatus);
-    private ILocator ErrorSummary => Page.Locator(".govuk-error-summary");
-    private ILocator ErrorSummaryTitle => ErrorSummary.GetByRole(AriaRole.Heading, new() { Name = "There is a problem" });
+    private ILocator ErrorSummary => Page.Locator(UploadLocators.Selectors.ErrorSummary);
+    private ILocator ErrorSummaryTitle => ErrorSummary.GetByRole(AriaRole.Heading, new() { Name = UploadLocators.Labels.ThereIsAProblem });
     private ILocator ErrorSummaryLink => ErrorSummary.GetByRole(AriaRole.Link);
-    private ILocator UploadFileFormGroup => Page.Locator(".govuk-form-group.govuk-form-group--error");
-    private ILocator UploadFileErrorMessage => Page.Locator("#Contents-error");
-    private ILocator UploadFileInput => Page.Locator("#Contents");
+    private ILocator UploadFileFormGroup => Page.Locator(UploadLocators.Selectors.ErrorGroupForm);
+    private ILocator UploadFileErrorMessage => Page.Locator(UploadLocators.Selectors.ContentError);
+    private ILocator UploadFileInput => Page.Locator(UploadLocators.Selectors.UploadForm);
 
 
     protected override async Task PageContentLoadedAsync()

@@ -20,6 +20,7 @@ public static class RegisterPageObjects
         services.AddScoped<IUploadErrorDetailsPage, UploadErrorDetailsPage>();
         services.AddScoped<IUploadErrorsPage, UploadErrorsPage>();
         services.AddScoped<IUploadDocumentSummaryPage, UploadDocumentSummaryPage>();
+        services.AddScoped<ISubmitCompletedPage, SubmitCompletedPage>();
         services.AddScoped<DirectorConductReportingServicePage>();
     }
 }

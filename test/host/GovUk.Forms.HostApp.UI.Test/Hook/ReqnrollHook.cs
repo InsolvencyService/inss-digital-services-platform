@@ -196,7 +196,7 @@ public sealed class ReqnrollHook : BaseTestConfig
 
         Dictionary<string, string> properties = new()
         {
-            ["Browser"] = "Chromium",
+            ["Browser"] = TestConfigReader.Settings.BrowserSettings.BrowserName,
             ["Environment"] = EnvironmentConfigFactory.CurrentEnvironment.ToString(),
             ["BaseUrl"] = EnvironmentConfigFactory.EnvironmentConfig.BaseUrl,
         };

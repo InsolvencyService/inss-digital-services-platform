@@ -1,5 +1,4 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
-using GovUk.Forms.HostApp.UI.Test.Extensions;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -8,6 +7,12 @@ namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
 public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
 {
+    private const int ForenameColumnIndex = 0;
+    private const int SurnameColumnIndex = 1;
+    private const int DateOfBirthColumnIndex = 2;
+    private const int NiNumberColumnIndex = 3;
+    private const int CellValueColumnIndex = 4;
+
     private readonly IPlaywrightDriver _playwrightDriver;
 
     public UploadErrorDetailsPage(IPlaywrightDriver playwrightDriver)
@@ -20,38 +25,20 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
 
     private ILocator MainContent => Page.Locator("main");
 
-    private ILocator EmployerNameHeading =>
-        Page.GetByRole(AriaRole.Heading, new() { Name = "Employer name" });
-
-    private ILocator EmployeeSurnameHeading =>
-        Page.GetByRole(AriaRole.Heading, new() { Name = "Employee surname" });
-
     private ILocator AffectedEmployeesTable =>
-        Page.GetByRole(AriaRole.Table, new() { Name = "Affected employees" });
-    private ILocator EmployeeArrearsOfPaymentOwedHeader =>
-        Page.GetByRole(AriaRole.Heading, new() { Name = "Employee arrears of payment owed" });
-    private ILocator EmployeeNationalInsuranceNumberHeader =>
-    Page.GetByRole(AriaRole.Heading, new() { Name = "Employee national insurance number" });
-    private ILocator MoneyOwedToEmployerHeading =>
-    Page.GetByRole(AriaRole.Heading, new() { Name = "Money owed to employer" });
-    private ILocator EmploymentDatesHeader =>
-    Page.GetByRole(AriaRole.Heading, new() { Name = "Employee employment dates" });
-    private ILocator ArrearsOfPayDatesHeader =>
-    Page.GetByRole(AriaRole.Heading, new() { Name = "Employee arrears of payment dates" });
+        Page.GetByRole(AriaRole.Table, new() { Name = UploadLocators.Labels.AffectedEmployees });
 
-    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
-    private ILocator TableRows =>
-        AffectedEmployeesTable.GetByRole(AriaRole.Row);
+    private ILocator TableRows => AffectedEmployeesTable.GetByRole(AriaRole.Row);
 
-    private ILocator ExactText(string text) =>
-        Page.GetByText(text, new() { Exact = true });
-
+    private ILocator BackButton =>
+        Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.BackButton, Exact = true });
 
     public async Task VerifyErrorMessageAsync(string expectedMessage)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(expectedMessage);
 
-        await ExactText(expectedMessage).ShouldBeVisibleAsync();
+        await Expect(Page.GetByText(expectedMessage, new() { Exact = true }))
+            .ToBeVisibleAsync();
     }
 
     public async Task VerifyAffectedEmployeeTableHeadersAsync()
@@ -67,9 +54,10 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
 
         foreach (string header in expectedHeaders)
         {
-            await AffectedEmployeesTable
-                .GetByRole(AriaRole.Columnheader, new() { Name = header })
-                .ShouldBeVisibleAsync();
+            await Expect(AffectedEmployeesTable.GetByRole(
+                    AriaRole.Columnheader,
+                    new() { Name = header, Exact = true }))
+                .ToBeVisibleAsync();
         }
     }
 
@@ -80,39 +68,12 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
         await Expect(MainContent).Not.ToContainTextAsync(text);
     }
 
-    public async Task VerifyEmployerErrorSummaryIsDisplayedAsync()
+    public async Task VerifyErrorSummaryIsDisplayedAsync(ErrorCategory category)
     {
-        await EmployerNameHeading.ShouldBeVisibleAsync();
-        await AffectedEmployeesTable.ShouldBeVisibleAsync();
-    }
+        ILocator heading = GetErrorCategoryHeading(category);
 
-    public async Task VerifyEmployeeErrorSummaryIsDisplayedAsync()
-    {
-        await EmployeeSurnameHeading.ShouldBeVisibleAsync();
-        await AffectedEmployeesTable.ShouldBeVisibleAsync();
-    }
-
-    public async Task VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync()
-    {
-        await EmployeeArrearsOfPaymentOwedHeader.ShouldBeVisibleAsync();
-        await AffectedEmployeesTable.ShouldBeVisibleAsync();
-    }
-    public async Task VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync()
-    {
-        await EmployeeNationalInsuranceNumberHeader.ShouldBeVisibleAsync();
-        await AffectedEmployeesTable.ShouldBeVisibleAsync();
-    }
-
-    public async Task VerifyEmploymentDatesHeaderIsDisplayedAsync()
-    {
-        await EmploymentDatesHeader.ShouldBeVisibleAsync();
-        await AffectedEmployeesTable.ShouldBeVisibleAsync();
-    }
-
-    protected override async Task PageContentLoadedAsync()
-    {
-        await Page.WaitForLoadStateAsync(LoadState.Load,
-           new() { Timeout = ScenarioConstant.ElementTimeout });
+        await Expect(heading).ToBeVisibleAsync();
+        await Expect(AffectedEmployeesTable).ToBeVisibleAsync();
     }
 
     public async Task ClickBackButtonAsync()
@@ -121,115 +82,227 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
         await BackButton.ClickAsync();
     }
 
-    public async Task VerifyArrearsOfPayDatesHeaderIsDisplayedAsync()
+    protected override async Task PageContentLoadedAsync()
     {
-        await ArrearsOfPayDatesHeader.ShouldBeVisibleAsync();
-        await AffectedEmployeesTable.ShouldBeVisibleAsync();
-    }
-
-    public async Task VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync()
-    {
-
-        await MoneyOwedToEmployerHeading.ShouldBeVisibleAsync();
-        await AffectedEmployeesTable.ShouldBeVisibleAsync();
+        await Page.WaitForLoadStateAsync(
+            LoadState.Load,
+            new() { Timeout = ScenarioConstant.ElementTimeout });
     }
 
     public async Task VerifyAffectedEmployeeAsync(AffectedEmployee employee)
     {
         ArgumentNullException.ThrowIfNull(employee);
 
-        ILocator row = TableRows;
+        ILocator row = await GetAffectedEmployeeRowAsync(employee);
 
-        row = ApplyFilterIfNotEmpty(row, employee.NiNumber);
-        row = ApplyFilterIfNotEmpty(row, employee.DateOfBirth);
-        row = ApplyFilterIfNotEmpty(row, employee.Surname);
-        row = ApplyFilterIfNotEmpty(row, employee.Forename);
-        row = ApplyFilterIfNotEmpty(row, employee.CellValue);
-
-        await Expect(row).ToHaveCountAsync(1);
-
-        await VerifyCellAsync(row, 0, employee.Forename);
-        await VerifyCellAsync(row, 1, employee.Surname);
-        await VerifyCellAsync(row, 2, employee.DateOfBirth);
-        await VerifyCellAsync(row, 3, employee.NiNumber);
-        await VerifyCellAsync(row, 4, employee.CellValue);
+        await VerifyCellAsync(row, ForenameColumnIndex, employee.Forename);
+        await VerifyCellAsync(row, SurnameColumnIndex, employee.Surname);
+        await VerifyCellAsync(row, DateOfBirthColumnIndex, employee.DateOfBirth);
+        await VerifyCellAsync(row, NiNumberColumnIndex, employee.NiNumber);
+        await VerifyCellAsync(row, CellValueColumnIndex, employee.CellValue);
     }
+
     public async Task<int> GetColumnIndexAsync(string columnName)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(columnName);
+
         ILocator headers = AffectedEmployeesTable.GetByRole(AriaRole.Columnheader);
         int count = await headers.CountAsync();
 
         for (int i = 0; i < count; i++)
         {
-            if ((await headers.Nth(i).InnerTextAsync()).Trim() == columnName)
+            string headerText = (await headers.Nth(i).InnerTextAsync()).Trim();
+
+            if (headerText.Equals(columnName, StringComparison.OrdinalIgnoreCase))
             {
                 return i;
             }
         }
 
-        throw new InvalidOperationException($"Column '{columnName}' not found");
-    }
-    private static ILocator ApplyFilterIfNotEmpty(ILocator locator, string? value)
-    {
-        return string.IsNullOrWhiteSpace(value)
-            ? locator
-            : locator.Filter(new() { HasTextString = value });
-    }
-
-    private static async Task VerifyCellAsync(
-    ILocator row,
-    int columnIndex,
-    string? expectedValue)
-    {
-        ILocator cell = row.GetByRole(AriaRole.Cell).Nth(columnIndex);
-
-        await cell.ShouldBeVisibleAsync();
-
-        if (string.IsNullOrWhiteSpace(expectedValue))
-        {
-            await Expect(cell).ToHaveTextAsync(string.Empty);
-            return;
-        }
-
-        await Expect(cell).ToHaveTextAsync(expectedValue);
-    }
-
-    public async Task VerifyMultipleAffectedEmployeeAsync(AffectedEmployee employee)
-    {
-        ArgumentNullException.ThrowIfNull(employee);
-
-        ILocator row = await GetAffectedEmployeeRowAsync(employee);
-
-        await VerifyCellAsync(row, 0, employee.Forename);
-        await VerifyCellAsync(row, 1, employee.Surname);
-        await VerifyCellAsync(row, 2, employee.DateOfBirth);
-        await VerifyCellAsync(row, 3, employee.NiNumber);
-        await VerifyCellAsync(row, 4, employee.CellValue);
+        throw new InvalidOperationException(
+            $"Column '{columnName}' was not found in the affected employees table.");
     }
 
     private async Task<ILocator> GetAffectedEmployeeRowAsync(AffectedEmployee employee)
     {
-        ILocator rows = TableRows;
+        ILocator rows = ApplyEmployeeFilters(TableRows, employee);
+        int matchCount = await rows.CountAsync();
 
-        rows = ApplyFilterIfNotEmpty(rows, employee.NiNumber);
-        rows = ApplyFilterIfNotEmpty(rows, employee.DateOfBirth);
-        rows = ApplyFilterIfNotEmpty(rows, employee.Surname);
-        rows = ApplyFilterIfNotEmpty(rows, employee.Forename);
+        if (matchCount == 0)
+        {
+            throw new InvalidOperationException(
+                $"No affected employee row found matching: " +
+                $"Forename='{employee.Forename}', " +
+                $"Surname='{employee.Surname}', " +
+                $"DOB='{employee.DateOfBirth}', " +
+                $"NI number='{employee.NiNumber}', " +
+                $"Cell value='{employee.CellValue}'.");
+        }
+
+        if (matchCount == 1)
+        {
+            return rows.First;
+        }
+
+        return await FindRowByCellValueAsync(rows, employee.CellValue);
+    }
+
+    private static async Task<ILocator> FindRowByCellValueAsync(
+        ILocator rows,
+        string? cellValue)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(cellValue);
 
         int rowCount = await rows.CountAsync();
 
         for (int i = 0; i < rowCount; i++)
         {
             ILocator row = rows.Nth(i);
-            string actualCellValue = (await row.GetByRole(AriaRole.Cell).Nth(4).InnerTextAsync()).Trim();
+            string actualCellValue =
+                (await GetCellValueAsync(row, CellValueColumnIndex)).Trim();
 
-            if (actualCellValue == employee.CellValue)
+            if (actualCellValue.Equals(cellValue, StringComparison.Ordinal))
             {
                 return row;
             }
         }
 
         throw new InvalidOperationException(
-            $"Affected employee row was not found for cell value '{employee.CellValue}'.");
+            $"No row found with cell value '{cellValue}' among {rowCount} matching rows.");
     }
+
+    private static ILocator ApplyEmployeeFilters(
+        ILocator rows,
+        AffectedEmployee employee)
+    {
+        ILocator filteredRows = rows;
+
+        if (!string.IsNullOrWhiteSpace(employee.Forename))
+        {
+            filteredRows = filteredRows.Filter(new() { HasTextString = employee.Forename });
+        }
+
+        if (!string.IsNullOrWhiteSpace(employee.Surname))
+        {
+            filteredRows = filteredRows.Filter(new() { HasTextString = employee.Surname });
+        }
+
+        if (!string.IsNullOrWhiteSpace(employee.DateOfBirth))
+        {
+            filteredRows = filteredRows.Filter(new() { HasTextString = employee.DateOfBirth });
+        }
+
+        if (!string.IsNullOrWhiteSpace(employee.NiNumber))
+        {
+            filteredRows = filteredRows.Filter(new() { HasTextString = employee.NiNumber });
+        }
+
+        if (!string.IsNullOrWhiteSpace(employee.CellValue))
+        {
+            filteredRows = filteredRows.Filter(new() { HasTextString = employee.CellValue });
+        }
+
+        return filteredRows;
+    }
+
+    private static async Task VerifyCellAsync(
+        ILocator row,
+        int columnIndex,
+        string? expectedValue)
+    {
+        if (columnIndex < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(columnIndex),
+                "Column index cannot be negative.");
+        }
+
+        ILocator cell = row.GetByRole(AriaRole.Cell).Nth(columnIndex);
+
+        await Expect(cell).ToBeVisibleAsync();
+
+        string expectedText = string.IsNullOrWhiteSpace(expectedValue)
+            ? string.Empty
+            : expectedValue;
+
+        await Expect(cell).ToHaveTextAsync(expectedText);
+    }
+
+    private static async Task<string> GetCellValueAsync(
+        ILocator row,
+        int columnIndex)
+    {
+        if (columnIndex < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(columnIndex),
+                "Column index cannot be negative.");
+        }
+
+        ILocator cell = row.GetByRole(AriaRole.Cell).Nth(columnIndex);
+
+        return await cell.InnerTextAsync() ?? string.Empty;
+    }
+
+    private ILocator GetErrorCategoryHeading(ErrorCategory category)
+    {
+        string headingText = category switch
+        {
+            ErrorCategory.EmployerName => "Employer name",
+            ErrorCategory.EmployeeSurname => "Employee surname",
+            ErrorCategory.EmployeeArrearsOfPaymentOwed => "Employee arrears of payment owed",
+            ErrorCategory.EmployeeNationalInsuranceNumber => "Employee national insurance number",
+            ErrorCategory.MoneyOwedToEmployer => "Money owed to employer",
+            ErrorCategory.EmploymentDates => "Employee employment dates",
+            ErrorCategory.ArrearsOfPayDates => "Employee arrears of payment dates",
+            ErrorCategory.CaseReference => "Case reference",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(category),
+                category,
+                "Unknown error category.")
+        };
+
+        return Page.GetByRole(
+            AriaRole.Heading,
+            new() { Name = headingText, Exact = true });
+    }
+
+    public Task VerifyEmployerErrorSummaryIsDisplayedAsync() =>
+        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployerName);
+
+    public Task VerifyEmployeeErrorSummaryIsDisplayedAsync() =>
+        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeSurname);
+
+    public Task VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync() =>
+        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeArrearsOfPaymentOwed);
+
+    public Task VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync() =>
+        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeNationalInsuranceNumber);
+
+    public Task VerifyEmploymentDatesHeaderIsDisplayedAsync() =>
+        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmploymentDates);
+
+    public Task VerifyArrearsOfPayDatesHeaderIsDisplayedAsync() =>
+        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.ArrearsOfPayDates);
+
+    public Task VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync() =>
+        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.MoneyOwedToEmployer);
+
+    public Task VerifyCaseReferenceHeaderIsDisplayedAsync() =>
+      VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.CaseReference);
+}
+
+/// <summary>
+/// Enum defining the different error categories that can be displayed on the error details page.
+/// </summary>
+public enum ErrorCategory
+{
+    EmployerName,
+    EmployeeSurname,
+    EmployeeArrearsOfPaymentOwed,
+    EmployeeNationalInsuranceNumber,
+    MoneyOwedToEmployer,
+    EmploymentDates,
+    ArrearsOfPayDates,
+    CaseReference
 }

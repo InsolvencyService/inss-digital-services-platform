@@ -1,4 +1,5 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Builders;
+using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Models;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
@@ -37,5 +38,12 @@ public class CommonCoordinator(
         await signInCoordinator.SignInToServiceAsync(user.Email, user.Password);
         await declarationCoordinator.ReturnToStartPageAsync();
         await startPageCoordinator.VerifyStartPageIsDisplayedAsync();
+    }
+
+    public async Task UploadAValidRP14AAndVerifyAsync(TestUser? user = null)
+    {
+        await VerifyThatUploadDocumentPageIsDisplayedAsync(user);
+        await uploadDocument.UploadValidRp14aAsync();
+        await uploadDocument.VerifyThatFileIsUploadedAsync();
     }
 }

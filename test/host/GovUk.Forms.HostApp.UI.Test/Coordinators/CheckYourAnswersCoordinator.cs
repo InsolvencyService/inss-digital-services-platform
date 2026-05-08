@@ -1,10 +1,13 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Pages.Submit;
+﻿using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
+using GovUk.Forms.HostApp.UI.Test.Pages.Submit;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 
-public class UploadDocumentSummaryCoordinator(
+public class CheckYourAnswersCoordinator(
         IUploadDocumentSummaryPage summaryPage,
+        IUploadNavigationCoordinator uploadNavigationCoordinator,
+        ISubmitCompletedPage submitCompletedPage,
         ScenarioContext scenarioContext)
 {
     public async Task VerifySummaryPageIsDisplayedAsync()
@@ -25,6 +28,16 @@ public class UploadDocumentSummaryCoordinator(
     public async Task ChangeUploadedDocumentAsync()
     {
         await summaryPage.ClickChangeAsync();
+    }
+
+    public async Task NavigateBackAsync()
+    {
+        await uploadNavigationCoordinator.ClickOnBackButtonAsync();
+    }
+
+    public async Task VerifySubmitCompletedPageIsDisplayedAsync()
+    {
+        await submitCompletedPage.WaitForPageToLoadAsync();
     }
 }
 
