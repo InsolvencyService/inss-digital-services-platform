@@ -57,6 +57,6 @@ public class FormController : Controller
     [HttpGet]
     public IActionResult LogOut()
     {
-        return SignOut(CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+        return SignOut(OpenIdConnectDefaults.AuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
     }
 }

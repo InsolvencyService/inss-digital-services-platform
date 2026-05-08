@@ -91,7 +91,6 @@ public class StartupConfiguration : IHostingStartup
         options.ClientId = brokerOptions.ClientId;
         options.ResponseType = OpenIdConnectResponseType.Code;
         options.SignedOutCallbackPath = "/signout-callback-oidc";
-        options.SignedOutRedirectUri = "https://localhost:5056/";
         options.SaveTokens = true;
         options.Scope.Clear();
 
