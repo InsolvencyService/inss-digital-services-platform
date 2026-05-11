@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +25,7 @@ public static class AuthenticationBuilderExtensions
                 options.ClientId = identityProviderOptions.Value.ClientId;
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.ResponseMode = OpenIdConnectResponseMode.Query;
+                options.SignedOutCallbackPath = "/";
                 options.SaveTokens = true;
                 options.Scope.Clear();
 
@@ -34,6 +36,15 @@ public static class AuthenticationBuilderExtensions
 
                 options.ProtocolValidator.RequireNonce = false;
                 options.CallbackPath = "/signin-oidc-rps";
+                
+                options.Events = new OpenIdConnectEvents
+                {
+                    OnRedirectToIdentityProviderForSignOut = ctx =>
+                    {
+                        ctx.ProtocolMessage.PostLogoutRedirectUri = ctx.Request.Query["post_logout_redirect_uri"];
+                        return Task.CompletedTask;
+                    }
+                };
             });
         }
         

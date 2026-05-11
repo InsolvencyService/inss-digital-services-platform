@@ -7,7 +7,7 @@ pool:
 parameters:
   - name: location
     type: string
-    default: 'northeurope'
+    default: 'uksouth'
     values:
       - uksouth
       - northeurope
@@ -76,16 +76,15 @@ stages:
         artifactName: 'WebApps'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
-# Disabled for demo      
-#- stage: DeployDev
-#  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-#  dependsOn: BuildTest
-#  displayName: 'Deploy to Dev'
-#  variables:
-#    - group: Platform-Dev
-#  jobs:
-#    - template: ../deploy/azure-deployment.yml
-#      parameters:
-#        environment: 'Dev'
-#        location: ${{ parameters.location }}
-#        azureSubscription: $(AzureSubscription)
+- stage: DeployDev
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: BuildTest
+  displayName: 'Deploy to Dev'
+  variables:
+    - group: Platform-Dev
+  jobs:
+    - template: ../deploy/azure-deployment.yml
+      parameters:
+        environment: 'Dev'
+        location: ${{ parameters.location }}
+        azureSubscription: $(AzureSubscription)

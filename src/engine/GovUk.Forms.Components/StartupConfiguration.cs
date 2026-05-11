@@ -9,6 +9,7 @@ using GovUk.Forms.Infrastructure.Extensions;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,11 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
+        builder.ConfigureKestrel(options =>
+        {
+            options.AddServerHeader = false;
+        });
+        
         builder.ConfigureServices((context, services) =>
         {
             services.AddOptions<HeaderOptions>()
@@ -63,6 +69,16 @@ public class StartupConfiguration : IHostingStartup
                 app.UseHsts();
             }
             */
+            
+            // app.Use(async (HttpContext context, Func<Task> next)
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.XFrameOptions = "DENY";
+                context.Response.Headers.ContentSecurityPolicy = "default-src 'self' 'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw=' 'sha256-+MPr4O+XRBNAduB7gNJMvYtSAF5bNPiBYOUmvIx/CSA='";
+                context.Response.Headers.XContentTypeOptions = "nosniff";
+                context.Response.Headers.XXSSProtection = "1; mode=block";
+                await next();
+            });
             
             app.UseExceptionHandler("/error");
             app.UseStatusCodePagesWithReExecute("/Error/{0}");

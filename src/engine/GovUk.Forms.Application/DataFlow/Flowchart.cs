@@ -53,7 +53,7 @@ public sealed class Flowchart : IFlowchart
 
         section.SetInProgress();
 
-        return await ValueTask.FromResult(pageAssociatedToNode.Path);
+        return pageAssociatedToNode.Path;
     }
     
     public async ValueTask<ValidationResult[]> ValidateAsync(PageModel page)
@@ -84,7 +84,7 @@ public sealed class Flowchart : IFlowchart
         PageModel? nextPage = section.Pages.FindPage(nextPagePath);
         nextPage?.PreviousPagePath = page.Path;
         
-        return await ValueTask.FromResult(nextPagePath);
+        return nextPagePath;
     }
     
     public void TransitionPageToStart(PageModel page)

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Inss.Auth.Broker.Options;
@@ -15,4 +17,12 @@ public sealed class BrokerOptions
     public string JwtPrivateKey { get; init; }
     
     public int TokenExpiresInMinutes { get; init; } = 30;
+    
+    public string AllowedPostLogoutRedirects { get; init; }
+
+    public bool PostLogoutRedirectAllowed(string postLogoutRedirectUri)
+    {
+        string[] allowedList = JsonSerializer.Deserialize<string[]>(AllowedPostLogoutRedirects) ?? [];
+        return allowedList.Any(r => r.StartsWith(postLogoutRedirectUri, StringComparison.OrdinalIgnoreCase));
+    }
 }

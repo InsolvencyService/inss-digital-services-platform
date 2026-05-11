@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using StartupConfiguration = GovUk.Forms.HostApp.StartupConfiguration;
@@ -73,7 +72,8 @@ public class StartupConfiguration : IHostingStartup
                         {
                             OnRedirectToIdentityProvider = HandleProviderRedirect,
                             OnAuthenticationFailed = HandleAuthenticationFailed,
-                            OnRedirectToIdentityProviderForSignOut = HandleProviderRedirectForSignOut
+                            OnRedirectToIdentityProviderForSignOut = redirectContext 
+                                => HandleProviderRedirectForSignOut(redirectContext, brokerOptions)
                         };
                     });
             }
@@ -91,7 +91,6 @@ public class StartupConfiguration : IHostingStartup
         options.ClientId = brokerOptions.ClientId;
         options.ResponseType = OpenIdConnectResponseType.Code;
         options.SignedOutCallbackPath = "/signout-callback-oidc";
-        options.SignedOutRedirectUri = "/";
         options.SaveTokens = true;
         options.Scope.Clear();
 
@@ -138,10 +137,11 @@ public class StartupConfiguration : IHostingStartup
         return Task.CompletedTask;
     }
     
-    private static Task HandleProviderRedirectForSignOut(RedirectContext context)
+    private static Task HandleProviderRedirectForSignOut(RedirectContext context, BrokerOptions brokerOptions)
     {
-        IOptions<BrokerOptions> brokerOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<BrokerOptions>>();
-        context.ProtocolMessage.PostLogoutRedirectUri = brokerOptions.Value.LogoutRedirectUrl;
+        IAuthenticationProvider authenticationProvider = context.HttpContext.RequestServices.GetRequiredService<IAuthenticationProvider>();
+        context.ProtocolMessage.PostLogoutRedirectUri = brokerOptions.LogoutRedirectUrl;
+        context.ProtocolMessage.LoginHint = authenticationProvider.Name;
         return Task.CompletedTask;
     }
 }
