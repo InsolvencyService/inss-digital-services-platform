@@ -1,17 +1,18 @@
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Primitives;
-using Inss.GovUk.Forms.IPUpload.Application.Clients;
+using Inss.GovUk.Forms.IPUpload.Application.Services;
+using Inss.GovUk.Forms.IPUpload.Domain;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 
 public sealed class SubmitFileUploadFlowNodeExecutor : IFlowNodeExecutor
 {
-    private readonly ISubmitIPUploadSectionClient _submitSectionClient;
+    private readonly ISubmitUploadedXmlService _submitUploadedXmlService;
     private const int PostSubmitIndex = 0;
     
-    public SubmitFileUploadFlowNodeExecutor(ISubmitIPUploadSectionClient submitSectionClient)
+    public SubmitFileUploadFlowNodeExecutor(ISubmitUploadedXmlService submitUploadedXmlService)
     {
-        _submitSectionClient = submitSectionClient;
+        _submitUploadedXmlService = submitUploadedXmlService;
     }
     
     public async ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
@@ -19,7 +20,11 @@ public sealed class SubmitFileUploadFlowNodeExecutor : IFlowNodeExecutor
         if (context.FinalExecuteStep)
         {
             context.Section.SetCompleted();
-            await _submitSectionClient.SubmitAsync(context.Section, context.Form.Id);
+            string referenceNumber = await _submitUploadedXmlService.SubmitAsync(context.Section, context.Form.Id);
+
+            PostSubmitModel postSubmit = context.Section.Pages.GetFirstOf<PostSubmitModel>();
+            postSubmit.ReferenceNumber = referenceNumber;
+
         }
         
         return context.CurrentNode.NextNodes[PostSubmitIndex];
