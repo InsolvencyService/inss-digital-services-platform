@@ -25,7 +25,8 @@ public class SessionController : Controller
         if (!_options.Value.PostLogoutRedirectAllowed(postLogoutRedirectUri))
         {
             _logger.InvalidPostRedirectLogoutUrl(postLogoutRedirectUri);
-            throw new InvalidOperationException($"The post logout redirect {postLogoutRedirectUri} has not been matched with allowed list.");
+            string list = string.Join(Environment.NewLine, _options.Value.AllowedPostLogoutRedirects);
+            throw new InvalidOperationException($"The post logout redirect {postLogoutRedirectUri} has not been matched with allowed list. Options are: {list}");
         }
         
         var openIdConnectScheme = Request.Query["login_hint"].ToString();
