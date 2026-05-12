@@ -5,6 +5,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Azure.Relay" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
     </ItemGroup>
 
