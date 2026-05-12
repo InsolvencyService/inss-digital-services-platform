@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Builders;
 using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Extensions;
+using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -75,15 +76,7 @@ public sealed class FileUploadCoordinator : IFileUploadCoordinator
 
         string filePath = await Rp14aFileFactory.CreateAsync(xml);
 
-        try
-        {
-            await UploadFileInternalAsync(filePath, stepName);
-        }
-        finally
-        {
-            // Keep file for Allure/debugging.
-            // CleanupTempFile(filePath);
-        }
+        await UploadFileInternalAsync(filePath, stepName);
     }
 
     private async Task UploadFileInternalAsync(string filePath, string stepName)

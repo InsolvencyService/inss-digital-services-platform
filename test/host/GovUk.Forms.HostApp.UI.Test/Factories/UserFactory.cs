@@ -3,7 +3,7 @@ using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
 
-namespace GovUk.Forms.HostApp.UI.Test.Builders;
+namespace GovUk.Forms.HostApp.UI.Test.Factories;
 
 /// <summary>
 /// Temporary solution for providing test users while authentication and

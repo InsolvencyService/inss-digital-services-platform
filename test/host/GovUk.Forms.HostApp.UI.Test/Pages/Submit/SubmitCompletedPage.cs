@@ -14,7 +14,7 @@ public partial class SubmitCompletedPage : BasePage, ISubmitCompletedPage
     private new IPage Page => _playwrightDriver.Page;
 
     private ILocator PageHeading => Page.GetByRole(AriaRole.Heading, new() { Name = DocumentSummaryLocators.Labels.ApplicationComplete });
-    private ILocator YourReferenceNumberText => Page.GetByText(DocumentSummaryLocators.Labels.YourReferenceNumber, new() { Exact = true });
+    private ILocator ConfirmationPanel => Page.Locator(DocumentSummaryLocators.Selectors.ConfirmBodyCompleted);
 
     protected override async Task PageContentLoadedAsync()
     {
@@ -22,6 +22,6 @@ public partial class SubmitCompletedPage : BasePage, ISubmitCompletedPage
            LoadState.Load,
            new() { Timeout = ScenarioConstant.ElementTimeout });
         await Expect(PageHeading).ToBeVisibleAsync();
-        await Expect(YourReferenceNumberText).ToBeVisibleAsync();
+        await Expect(ConfirmationPanel).ToContainTextAsync(DocumentSummaryLocators.Labels.YourReferenceNumber);
     }
 }

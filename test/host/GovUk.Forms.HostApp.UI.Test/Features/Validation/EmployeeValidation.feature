@@ -1,4 +1,5 @@
-﻿Feature: Employee Validation
+﻿@MEDS-1067
+Feature: Employee Validation
 
               As an Insolvency Practitioner user
               I want RP14A validation to run before submission to Dynamics
@@ -16,13 +17,13 @@
 
 
         @regression @validation @rp14a @visual @allure.subSuite:Employee
-        Scenario: Return to upload page when proceeding after submission with errors
-              And the RP14A contains an employee with no surname
+        Scenario: Return to the upload page after attempting to submit an invalid RP14A
+             Given the RP14A contains an employee with no surname
              When I attempt to submit the RP14A
               And I proceed to the check answers page
              Then I should be returned to the upload page
 
-
+                  
         @regression @validation @rp14a @allure.subSuite:Employee
         Scenario: RP14A Display error when employee surname is longer than 99 characters
             Given the RP14A contains an employee surname longer than 99 characters
@@ -115,7 +116,7 @@
                   | 1 invalid arrears of dates | Start date must be before the end date | Employee arrears of payment dates |
               And I should be able to view error details
 
-        @regression @validation @rp14a @ignore
+        @regression @validation @rp14a @ignore @allure.story:Payment
         Scenario: Display error for invalid arrears of pay owed format
             Given I am on the upload page as a "Admin" user
               And the RP14A contains employee arrears of pay owed "abc"

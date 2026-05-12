@@ -38,10 +38,31 @@ public class UploadDocumentsSteps
         await _uploadDocumentCoordinator.ExpandCommonIssuesWhenUploadingRP14AFormsAsync();
     }
 
+    [When("I proceed to the check answers page")]
     [When("I click the continue button without selecting a file")]
     public async Task WhenIClickTheContinueButtonWithoutSelectingAFile()
     {
         await _uploadDocumentCoordinator.ClickOnContinueButtonAsync();
+    }
+
+    [When(@"I upload an unsupported file with extension ""([^""]*)""")]
+    public async Task WhenIUploadAnUnsupportedFileWithExtension(string extension)
+    {
+        await _uploadDocumentCoordinator.UploadUnsupportedFileAsync(extension);
+    }
+
+    [When(@"I upload an XML file with invalid RP14A content")]
+    public async Task WhenIUploadAnXmlFileThatDoesNotMatchTheExpectedRp14AStructure()
+    {
+        await _uploadDocumentCoordinator
+            .UploadXmlFileWithWrongContentAsync();
+    }
+
+    [When(@"I upload an XML file larger than the maximum allowed size")]
+    public async Task WhenIUploadAnXmlFileLargerThanTheMaximumAllowedSize()
+    {
+        await _uploadDocumentCoordinator
+            .UploadValidXmlFileAboveMaximumSizeAsync();
     }
 
     [Then("the uploaded file should appear in the file list")]
@@ -75,6 +96,7 @@ public class UploadDocumentsSteps
             .UseFileName(ScenarioConstant.UploadPageWithCommonIssuesSection);
     }
 
+    [Then("I should see the upload error message {string}")]
     [Then("I should see the file upload error {string}")]
     public async Task ThenIShouldSeeTheFileUploadError(string errorMessage)
     {
@@ -84,5 +106,10 @@ public class UploadDocumentsSteps
         ErrorMessage: errorMessage));
     }
 
+    [Then("the file should not be uploaded")]
+    public async Task ThenTheFileShouldNotBeUploaded()
+    {
+        await _uploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
+    }
 
 }

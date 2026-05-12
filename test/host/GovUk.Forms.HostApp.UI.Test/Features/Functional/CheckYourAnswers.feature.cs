@@ -21,13 +21,15 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
     [global::NUnit.Framework.DescriptionAttribute("Check Your Answers")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
     [global::NUnit.Framework.IgnoreAttribute("Ignored feature")]
+    [global::NUnit.Framework.CategoryAttribute("MEDS-1046")]
     public partial class CheckYourAnswersFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "ignore"};
+                "ignore",
+                "MEDS-1046"};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Functional", "Check Your Answers", "As an Insolvency Practitioner\r\nI want to see the file that I have uploaded\r\nSo th" +
                 "at I can confirm it’s the correct file and continue", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());

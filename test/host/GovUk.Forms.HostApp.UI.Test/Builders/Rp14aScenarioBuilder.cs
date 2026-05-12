@@ -1,4 +1,7 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Builders;
+﻿using GovUk.Forms.HostApp.UI.Test.Support;
+using static GovUk.Forms.HostApp.UI.Test.Support.Rp14aEmployee;
+
+namespace GovUk.Forms.HostApp.UI.Test.Builders;
 
 public sealed class Rp14aScenarioBuilder
 {
@@ -81,65 +84,87 @@ public sealed class Rp14aScenarioBuilder
         return this;
     }
 
-    public string BuildXml()
+    public Rp14aEmployee BuildEmployeeData()
     {
-        Rp14aBuilder builder = new();
+        Rp14aEmployee employee = Default();
 
         if (_caseReference is not null)
         {
-            builder.WithCaseReference(_caseReference);
+            employee = employee with { CaseReference = _caseReference };
         }
 
         if (_employerNameLength.HasValue)
         {
-            builder.WithEmployerNameLength(_employerNameLength.Value);
+            employee = employee with
+            {
+                EmployerName = new string('A', _employerNameLength.Value)
+            };
         }
         else if (_employerName is not null)
         {
-            builder.WithEmployerName(_employerName);
+            employee = employee with { EmployerName = _employerName };
         }
 
         if (_employeeName is not null)
         {
-            builder.WithEmployeeName(
-                _employeeName.Surname,
-                _employeeName.Forename,
-                _employeeName.Title);
+            employee = employee with
+            {
+                Surname = _employeeName.Surname,
+                Forenames = _employeeName.Forename,
+                Title = _employeeName.Title
+            };
         }
 
         if (_moneyOwedToEmployer is not null)
         {
-            builder.WithMoneyOwedToEmployer(_moneyOwedToEmployer);
+            employee = employee with
+            {
+                MoneyOwedToEmployer = _moneyOwedToEmployer
+            };
         }
 
         if (_employmentDates is not null)
         {
-            builder.WithEmploymentDates(
-                _employmentDates.StartDate,
-                _employmentDates.EndDate);
+            employee = employee with
+            {
+                StartDate = _employmentDates.StartDate,
+                EndDate = _employmentDates.EndDate
+            };
         }
 
         if (_nationalInsuranceNumber is not null)
         {
-            builder.WithNationalInsuranceNumber(_nationalInsuranceNumber);
+            employee = employee with
+            {
+                NationalInsuranceNumber = _nationalInsuranceNumber
+            };
         }
 
         if (_arrearsOfPayPeriods.Count > 0)
         {
-            builder.WithNoArrearsOfPay();
-
-            foreach (ArrearsOfPayPeriodData arrears in _arrearsOfPayPeriods.OrderBy(x => x.PeriodNumber))
+            employee = employee with
             {
-                builder.WithArrearsOfPayPeriod(
-                    arrears.PeriodNumber,
-                    arrears.StartDate,
-                    arrears.EndDate,
-                    arrears.AmountOwed,
-                    arrears.PayType);
-            }
+                ArrearsOfPayPeriods = _arrearsOfPayPeriods
+                    .OrderBy(x => x.PeriodNumber)
+                    .Select(x => new ArrearsOfPayPeriod(
+                        x.PeriodNumber,
+                        x.StartDate,
+                        x.EndDate,
+                        x.AmountOwed,
+                        x.PayType))
+                    .ToList()
+            };
         }
 
-        return builder.Build();
+        return employee;
+    }
+
+    public string BuildXml()
+    {
+        return Rp14aXmlScenarioBuilder
+            .Create()
+            .WithEmployee(this)
+            .BuildXml();
     }
 
     public string GetDescription()
@@ -163,38 +188,32 @@ public sealed class Rp14aScenarioBuilder
 
         if (_employeeName is not null)
         {
-            parts.Add(
-                $"Employee: {_employeeName.Forename} {_employeeName.Surname}");
+            parts.Add($"Employee: {_employeeName.Forename} {_employeeName.Surname}");
         }
 
         if (_moneyOwedToEmployer is not null)
         {
-            parts.Add(
-                $"Money Owed To Employer: '{_moneyOwedToEmployer}'");
+            parts.Add($"Money Owed To Employer: '{_moneyOwedToEmployer}'");
         }
 
         if (_arrearsOfPayPeriods.Count > 0)
         {
-            parts.Add(
-                $"Arrears Periods: {_arrearsOfPayPeriods.Count}");
+            parts.Add($"Arrears Periods: {_arrearsOfPayPeriods.Count}");
         }
 
         if (_employmentDates is not null)
         {
-            parts.Add(
-                $"Employment: {_employmentDates.StartDate} to {_employmentDates.EndDate}");
+            parts.Add($"Employment: {_employmentDates.StartDate} to {_employmentDates.EndDate}");
         }
 
         if (_nationalInsuranceNumber is not null)
         {
-            parts.Add(
-                $"NINO: '{_nationalInsuranceNumber}'");
+            parts.Add($"NINO: '{_nationalInsuranceNumber}'");
         }
 
         return string.Join(" | ", parts);
     }
 }
-
 public sealed record EmployeeNameData(
     string Surname,
     string Forename,

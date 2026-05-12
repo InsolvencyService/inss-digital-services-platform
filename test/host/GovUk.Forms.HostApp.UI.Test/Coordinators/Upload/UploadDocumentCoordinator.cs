@@ -1,5 +1,6 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Builders;
 using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -122,6 +123,43 @@ public sealed class UploadDocumentCoordinator :
             arrearsAmount,
             employmentStartDate,
             employmentEndDate);
+
+    public async Task UploadUnsupportedFileAsync(string extension)
+    {
+        string filePath = TestFileFactory.CreateUnsupportedFile(
+            TestArtifacts,
+            extension);
+
+        await UploadFileAsync(filePath);
+    }
+
+    public async Task UploadXmlFileWithWrongContentAsync()
+    {
+        string filePath = TestFileFactory.CreateXmlWithWrongContent(
+            TestArtifacts);
+
+        await UploadFileAsync(filePath);
+    }
+
+    public async Task UploadValidXmlFileAtMaximumSizeAsync()
+    {
+        string filePath = TestFileFactory
+            .CreateValidXmlFileAtSize(
+                TestArtifacts,
+                10);
+
+        await UploadFileAsync(filePath);
+    }
+
+    public async Task UploadValidXmlFileAboveMaximumSizeAsync()
+    {
+        string filePath = TestFileFactory
+            .CreateValidXmlFileAboveSize(
+                TestArtifacts,
+                10);
+
+        await UploadFileAsync(filePath);
+    }
 
     public async Task VerifyThatFileIsUploadedAsync()
         => await _verificationCoordinator.VerifyThatFileIsUploadedAsync();

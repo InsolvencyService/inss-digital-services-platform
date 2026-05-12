@@ -1,8 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
-using GovUk.Forms.HostApp.UI.Test.Support;
-using System.Text;
+﻿using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Xml.Linq;
-using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
+using static GovUk.Forms.HostApp.UI.Test.Support.Rp14aEmployee;
 
 namespace GovUk.Forms.HostApp.UI.Test.Builders;
 
@@ -14,88 +12,38 @@ namespace GovUk.Forms.HostApp.UI.Test.Builders;
 /// </summary>
 public sealed class Rp14aBuilder
 {
-    private const string NamespaceUri = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application";
+    private const string NamespaceUri =
+        "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application";
+
     private static readonly XNamespace _ns = NamespaceUri;
 
-    private string _caseReference = "CN82345678";
-    private string _nationalInsuranceNumber = ScenarioConstant.NationalInsuranceNumber;
-    private string _employerName = ScenarioConstant.EmployerName;
-    private string _surname = ScenarioConstant.Surname;
-    private string _forenames = ScenarioConstant.Forname;
-    private string _title = ScenarioConstant.Title;
-    private string _dateOfBirth = ScenarioConstant.DOB;
-    private string _moneyOwedToEmployer = "1000";
-    private string _startDate = "2019-01-01";
-    private string _endDate = "2020-03-01";
+    private readonly List<Rp14aEmployee> _employees = [];
 
-    public Rp14aBuilder WithCaseReference(string caseReference)
+    public Rp14aBuilder()
     {
-        _caseReference = caseReference;
+        _employees.Add(Default());
+    }
+
+    public Rp14aBuilder WithNoEmployees()
+    {
+        _employees.Clear();
         return this;
     }
 
-    public Rp14aBuilder WithNationalInsuranceNumber(string nationalInsuranceNumber)
+    public Rp14aBuilder WithEmployee(Rp14aEmployee employee)
     {
-        _nationalInsuranceNumber = nationalInsuranceNumber;
+        ArgumentNullException.ThrowIfNull(employee);
+
+        _employees.Add(employee);
         return this;
     }
 
-    public Rp14aBuilder WithEmployerName(string employerName)
+    public Rp14aBuilder WithEmployees(params Rp14aEmployee[] employees)
     {
-        _employerName = employerName;
-        return this;
-    }
+        ArgumentNullException.ThrowIfNull(employees);
 
-    public Rp14aBuilder WithEmployerNameLength(int length)
-    {
-        _employerName = new string('A', length);
-        return this;
-    }
-
-    public Rp14aBuilder WithSurname(string surname)
-    {
-        _surname = surname;
-        return this;
-    }
-
-    public Rp14aBuilder WithForenames(string forenames)
-    {
-        _forenames = forenames;
-        return this;
-    }
-
-    public Rp14aBuilder WithTitle(string title)
-    {
-        _title = title;
-        return this;
-    }
-
-    public Rp14aBuilder WithDateOfBirth(string dateOfBirth)
-    {
-        _dateOfBirth = dateOfBirth;
-        return this;
-    }
-    public Rp14aBuilder WithMoneyOwedToEmployer(string value)
-    {
-        _moneyOwedToEmployer = value;
-        return this;
-    }
-
-    public Rp14aBuilder WithEmploymentDates(string startDate, string endDate)
-    {
-        _startDate = startDate;
-        _endDate = endDate;
-        return this;
-    }
-
-    public Rp14aBuilder WithEmployeeName(
-    string surname,
-    string forenames,
-    string title)
-    {
-        _surname = surname;
-        _forenames = forenames;
-        _title = title;
+        _employees.Clear();
+        _employees.AddRange(employees);
 
         return this;
     }
@@ -106,160 +54,95 @@ public sealed class Rp14aBuilder
             new XDeclaration("1.0", "UTF-8", "yes"),
             new XElement(_ns + "RP14A",
                 new XAttribute(XNamespace.Xmlns + "ns1", _ns),
-                BuildEmployee()
+                _employees.Select(BuildEmployee)
             )
         );
 
-        return document.ToString(SaveOptions.None); ;
+        return document.ToString(SaveOptions.None);
     }
 
-    public string BuildToFile(TestArtifacts artifacts, string? fileName = null)
-    {
-        ArgumentNullException.ThrowIfNull(artifacts);
-
-        fileName ??= $"rp14a-{Guid.NewGuid():N}.xml";
-
-        if (!fileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-        {
-            fileName += ".xml";
-        }
-
-        string filePath = artifacts.FilePath(fileName);
-
-        string xml = Build();
-
-        File.WriteAllText(filePath, xml, Encoding.UTF8);
-
-        return filePath;
-    }
-
-    private XElement BuildEmployee()
+    private static XElement BuildEmployee(Rp14aEmployee employee)
     {
         return new XElement(_ns + "Employee",
             new XElement(_ns + "Header",
-                new XElement(_ns + "CaseReference", _caseReference)
+                new XElement(_ns + "CaseReference", employee.CaseReference)
             ),
-            new XElement(_ns + "EmployerName", _employerName),
+            new XElement(_ns + "EmployerName", employee.EmployerName),
             new XElement(_ns + "EmployeeName",
-                new XElement(_ns + "Surname", _surname),
-                new XElement(_ns + "Forenames", _forenames),
-                new XElement(_ns + "Title", _title)
+                new XElement(_ns + "Surname", employee.Surname),
+                new XElement(_ns + "Forenames", employee.Forenames),
+                new XElement(_ns + "Title", employee.Title)
             ),
-            new XElement(_ns + "NIClass", "A"),
-            new XElement(_ns + "NINO", _nationalInsuranceNumber),
-            new XElement(_ns + "DateOfBirth", _dateOfBirth),
-            new XElement(_ns + "StartDate", _startDate),
-            new XElement(_ns + "DateNoticeGiven", "2020-01-01"),
-            new XElement(_ns + "EndDate", _endDate),
-            new XElement(_ns + "IsDirector", "No"),
-            new XElement(_ns + "AverageHoursWorked", "37"),
-            new XElement(_ns + "MoneyOwedToEmployer", _moneyOwedToEmployer),
-            new XElement(_ns + "EntitledToRedundancyPay", "Yes"),
-            new XElement(_ns + "EntitledToNoticePay", "Yes"),
-            BuildPayDetails(),
-            BuildHolidayDetails()
+            new XElement(_ns + "NIClass", employee.NIClass),
+            new XElement(_ns + "NINO", employee.NationalInsuranceNumber),
+            new XElement(_ns + "DateOfBirth", employee.DateOfBirth),
+            new XElement(_ns + "StartDate", employee.StartDate),
+            new XElement(_ns + "DateNoticeGiven", employee.DateNoticeGiven),
+            new XElement(_ns + "EndDate", employee.EndDate),
+            new XElement(_ns + "IsDirector", employee.IsDirector),
+            new XElement(_ns + "AverageHoursWorked", employee.AverageHoursWorked),
+            new XElement(_ns + "MoneyOwedToEmployer", employee.MoneyOwedToEmployer),
+            new XElement(_ns + "EntitledToRedundancyPay", employee.EntitledToRedundancyPay),
+            new XElement(_ns + "EntitledToNoticePay", employee.EntitledToNoticePay),
+            BuildPayDetails(employee),
+            BuildHolidayDetails(employee)
         );
     }
 
-    private XElement BuildPayDetails()
+    private static XElement BuildPayDetails(Rp14aEmployee employee)
     {
         return new XElement(_ns + "PayDetails",
-            new XElement(_ns + "BasicPayPerWeek", "1000"),
+            new XElement(_ns + "BasicPayPerWeek", employee.BasicPayPerWeek),
             new XElement(_ns + "ComponentPayPerWeek1",
-                new XElement(_ns + "ComponentType", "Holiday Pay Accrued"),
-                new XElement(_ns + "ComponentRate", "1000"),
-                new XElement(_ns + "ComponentRateStatus")
+                new XElement(_ns + "ComponentType", employee.Component1Type),
+                new XElement(_ns + "ComponentRate", employee.Component1Rate),
+                new XElement(_ns + "ComponentRateStatus", employee.Component1RateStatus)
             ),
             new XElement(_ns + "ComponentPayPerWeek2",
-                new XElement(_ns + "ComponentType", "Holiday Pay Taken Not Paid"),
-                new XElement(_ns + "ComponentRateStatus", "Fixed rate of pay")
+                new XElement(_ns + "ComponentType", employee.Component2Type),
+                new XElement(_ns + "ComponentRateStatus", employee.Component2RateStatus)
             ),
-            new XElement(_ns + "WeeklyPayDay", "Monday"),
+            new XElement(_ns + "WeeklyPayDay", employee.WeeklyPayDay),
             new XElement(_ns + "ArrearsOfPay",
-                _arrearsOfPayPeriods
+                employee.ArrearsOfPayPeriods
                     .OrderBy(x => x.PeriodNumber)
-                    .Select(x => BuildArrearsOfPayPeriod(
-                        x.PeriodNumber,
-                        x.StartDate,
-                        x.EndDate,
-                        x.AmountOwed,
-                        x.PayType))
+                    .Select(BuildArrearsOfPayPeriod)
             )
-        );
-    }
-
-    private static XElement BuildHolidayDetails()
-    {
-        return new XElement(_ns + "Holiday",
-            new XElement(_ns + "HolidayYearStart", "2020-01-01"),
-            new XElement(_ns + "HolidayContractedEntitlementDays", "30"),
-            new XElement(_ns + "HolidayDaysCarriedForward", "10"),
-            new XElement(_ns + "HolidayDaysTaken", "2"),
-            new XElement(_ns + "HolidayNotPaid",
-                BuildHoliday(1, "2020-01-20", "2020-01-21"),
-                BuildHoliday(2, "2020-01-22", "2020-01-23"),
-                BuildHoliday(3, "2020-01-24", "2020-01-25")
-            ),
-            new XElement(_ns + "NoDaysHolidayOwed", "10")
         );
     }
 
     private static XElement BuildArrearsOfPayPeriod(
-        int periodNumber,
-        string startDate,
-        string endDate,
-        string amountOwed,
-        string payType)
+        ArrearsOfPayPeriod period)
     {
-        return new XElement(_ns + $"ArrearsOfPayPeriod{periodNumber}",
-            new XElement(_ns + $"AOP{periodNumber}StartDate", startDate),
-            new XElement(_ns + $"AOP{periodNumber}EndDate", endDate),
-            new XElement(_ns + $"AOPOwed{periodNumber}", amountOwed),
-            new XElement(_ns + $"AOPPayType{periodNumber}", payType)
+        return new XElement(_ns + $"ArrearsOfPayPeriod{period.PeriodNumber}",
+            new XElement(_ns + $"AOP{period.PeriodNumber}StartDate", period.StartDate),
+            new XElement(_ns + $"AOP{period.PeriodNumber}EndDate", period.EndDate),
+            new XElement(_ns + $"AOPOwed{period.PeriodNumber}", period.AmountOwed),
+            new XElement(_ns + $"AOPPayType{period.PeriodNumber}", period.PayType)
         );
     }
 
-    private static XElement BuildHoliday(
-        int holidayNumber,
-        string startDate,
-        string endDate)
+    private static XElement BuildHolidayDetails(Rp14aEmployee employee)
     {
-        return new XElement(_ns + $"Holiday{holidayNumber}",
-            new XElement(_ns + $"Holiday{holidayNumber}StartDate", startDate),
-            new XElement(_ns + $"Holiday{holidayNumber}EndDate", endDate)
+        return new XElement(_ns + "Holiday",
+            new XElement(_ns + "HolidayYearStart", employee.HolidayYearStart),
+            new XElement(_ns + "HolidayContractedEntitlementDays", employee.HolidayContractedEntitlementDays),
+            new XElement(_ns + "HolidayDaysCarriedForward", employee.HolidayDaysCarriedForward),
+            new XElement(_ns + "HolidayDaysTaken", employee.HolidayDaysTaken),
+            new XElement(_ns + "HolidayNotPaid",
+                employee.HolidaysNotPaid
+                    .OrderBy(x => x.HolidayNumber)
+                    .Select(BuildHoliday)
+            ),
+            new XElement(_ns + "NoDaysHolidayOwed", employee.NoDaysHolidayOwed)
         );
     }
 
-    private readonly List<ArrearsOfPayPeriod> _arrearsOfPayPeriods =
-[
-           new(1, "2020-01-10", "2020-01-11", "100", "attachmentofearnings"),
-           new(2, "2020-01-12", "2020-01-13", "100", "bouncedcheque"),
-           new(3, "2020-01-14", "2020-01-15", "100", "commission"),
-           new(4, "2020-01-16", "2020-01-17", "100", "overtime")
-];
-
-    public Rp14aBuilder WithArrearsOfPayPeriod(
-    int periodNumber,
-    string startDate,
-    string endDate,
-    string amountOwed,
-    string payType)
+    private static XElement BuildHoliday(HolidayPeriod holiday)
     {
-        _arrearsOfPayPeriods.RemoveAll(x => x.PeriodNumber == periodNumber);
-
-        _arrearsOfPayPeriods.Add(new ArrearsOfPayPeriod(
-            periodNumber,
-            startDate,
-            endDate,
-            amountOwed,
-            payType));
-
-        return this;
-    }
-
-    public Rp14aBuilder WithNoArrearsOfPay()
-    {
-        _arrearsOfPayPeriods.Clear();
-        return this;
+        return new XElement(_ns + $"Holiday{holiday.HolidayNumber}",
+            new XElement(_ns + $"Holiday{holiday.HolidayNumber}StartDate", holiday.StartDate),
+            new XElement(_ns + $"Holiday{holiday.HolidayNumber}EndDate", holiday.EndDate)
+        );
     }
 }

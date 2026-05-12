@@ -20,12 +20,14 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
     [global::NUnit.Framework.TestFixtureAttribute()]
     [global::NUnit.Framework.DescriptionAttribute("Employer Validation")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
+    [global::NUnit.Framework.CategoryAttribute("MEDS-1067")]
     public partial class EmployerValidationFeature
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
-        private static string[] featureTags = ((string[])(null));
+        private static string[] featureTags = new string[] {
+                "MEDS-1067"};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employer Validation", "              As an Insolvency Practitioner user\r\n              I want RP14A vali" +
                 "dation to run before submission to Dynamics\r\n  So that I can fix errors immediat" +
@@ -107,9 +109,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         
         public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
         {
-#line 7
-        #line hidden
 #line 8
+        #line hidden
+#line 9
             await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
@@ -146,7 +148,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Employer name length boundary validation", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 11
+#line 12
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -156,22 +158,22 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             else
             {
                 await this.ScenarioStartAsync();
-#line 7
+#line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 12
+#line 13
             await testRunner.GivenAsync(string.Format("I have uploaded an RP14A file with employer name of length {0}", length), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 13
+#line 14
              await testRunner.WhenAsync("I submit the RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 14
+#line 15
              await testRunner.ThenAsync(string.Format("the submission should be \"{0}\"", outcome), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 15
+#line 16
               await testRunner.AndAsync(string.Format("the error summary should \"{0}\" with \"{1}\"", summaryBehaviour, detailsBehaviour), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 16
+#line 17
               await testRunner.AndAsync("I should be able to view error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }

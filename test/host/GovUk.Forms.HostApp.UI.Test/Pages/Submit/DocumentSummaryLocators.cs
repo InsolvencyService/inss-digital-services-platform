@@ -18,6 +18,7 @@ public class DocumentSummaryLocators
     {
         public const string SummaryList = ".govuk-summary-list__row";
         public const string SummaryListOfValue = ".govuk-summary-list__value";
+        public const string ConfirmBodyCompleted = ".govuk-panel__body";
     }
 
 }

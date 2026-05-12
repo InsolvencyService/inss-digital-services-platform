@@ -31,3 +31,27 @@ Scenario: Verify Upload Document Page visual snapshot
 Scenario: Display error when submitting without uploading a file
   When I click the continue button without selecting a file
   Then I should see the file upload error "The file must end with an XML extension"
+
+@regression @validation
+Scenario: Display validation error when XML content is invalid
+  When I upload an XML file with invalid RP14A content
+    And I proceed to the check answers page
+  Then I should see the upload error message "The file provided is invalid XML or has invalid field data"
+   And the file should not be uploaded
+
+@regression @validation 
+Scenario Outline: Display error for unsupported file extension
+  When I upload an unsupported file with extension "<extension>"
+   And I proceed to the check answers page
+  Then I should see the upload error message "The file must end with an XML extension"
+  And the file should not be uploaded
+
+Examples:
+  | extension |
+  | .pdf      |
+  | .txt      |
+  | .exe      |
+  | .zip      |
+
+
+
