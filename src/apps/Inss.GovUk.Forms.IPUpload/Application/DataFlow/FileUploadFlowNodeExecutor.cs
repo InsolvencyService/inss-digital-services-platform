@@ -1,11 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Reflection;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Primitives;
+using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
-using Inss.GovUk.Forms.IPUpload.Domain.Validation.Lookups;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 
@@ -20,7 +18,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         _serviceProvider = serviceProvider;
     }
     
-    public ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
+    public async ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
     {
         XmlFileUploadModel fileUpload = context.UpdatedPage.As<XmlFileUploadModel>();
         IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
@@ -30,141 +28,131 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         if (context.FinalExecuteStep)
         {
             object redundancyPayment = fileUpload.GetRedundancyPaymentObject();
-            Validate(fileUploadErrors, redundancyPayment);
+            await ValidateAsync(fileUploadErrors, redundancyPayment);
         }
 
-        return ValueTask.FromResult<NodeId?>(fileUploadErrors.HasErrors 
+        return fileUploadErrors.HasErrors 
             ? context.CurrentNode.NextNodes[FileUploadErrorIndex] 
-            : context.CurrentNode.NextNodes[SummaryIndex]);
+            : context.CurrentNode.NextNodes[SummaryIndex];
     }
     
-    private void Validate(IPUploadXmlErrorsModel fileUploadErrors, object redundancyPayment)
+    private async Task ValidateAsync(IPUploadXmlErrorsModel fileUploadErrors, object redundancyPayment)
     {
-        if (redundancyPayment is Domain.Spreadsheet.RP14A spreadsheetRP14A)
+        if (redundancyPayment is Domain.Employee.Spreadsheet.RP14A spreadsheetRP14A)
         {
-            ValidateSpreadsheetUpload(fileUploadErrors, spreadsheetRP14A);
+            await ValidateSpreadsheetUploadAsync(fileUploadErrors, spreadsheetRP14A);
         }
-        else if (redundancyPayment is Domain.Api.RP14A apiRP14A)
+        else if (redundancyPayment is Domain.Employee.Api.RP14A apiRP14A)
         {
-            ValidateApiUpload(fileUploadErrors, apiRP14A);
+            await ValidateApiUploadAsync(fileUploadErrors, apiRP14A);
         }
     }
 
-    private void ValidateSpreadsheetUpload(IPUploadXmlErrorsModel fileUploadErrors, Domain.Spreadsheet.RP14A redundancyPayment)
+    private async Task ValidateSpreadsheetUploadAsync(IPUploadXmlErrorsModel fileUploadErrors, Domain.Employee.Spreadsheet.RP14A redundancyPayment)
     {
-        foreach (Domain.Spreadsheet.RP14AEmployee employee in redundancyPayment.Employee)
-        {
-            List<ErrorInfoValidationResult> results = [];
+        ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
 
-            if (!TryValidateRecursive(employee, results, _serviceProvider))
+        foreach (Domain.Employee.Spreadsheet.RP14AEmployee employee in redundancyPayment.Employee)
+        {
+            if (!(await caseReferenceService.CheckExistsAsync(employee.Header.CaseReference)))
             {
-                foreach (ErrorInfoValidationResult result in results)
-                {
-                    fileUploadErrors.AddError(
-                        employee.EmployeeName.Forenames,
-                        employee.EmployeeName.Surname,
-                        DateOnly.FromDateTime(employee.DateOfBirth),
-                        employee.NINO,
-                        result.Value,
-                        result.ErrorInfo.Category, 
-                        result.ErrorInfo.Property, 
-                        result.ErrorInfo.Error,
-                        result.ErrorInfo.Hint);
-                }
+                fileUploadErrors.AddError(
+                    employee.EmployeeName.Forenames,
+                    employee.EmployeeName.Surname,
+                    DateOnly.FromDateTime(employee.DateOfBirth),
+                    employee.NINO,
+                    employee.Header.CaseReference,
+                    "Case",
+                    "Case reference",
+                    "[COUNT] case reference have not been matched in our system",
+                    null);
             }
-        }
-    }
-    
-    private void ValidateApiUpload(IPUploadXmlErrorsModel fileUploadErrors, Domain.Api.RP14A redundancyPayment)
-    {
-        foreach (Domain.Api.RP14AEmployee employee in redundancyPayment.Employee)
-        {
-            List<ErrorInfoValidationResult> results = [];
             
-            if (!TryValidateRecursive(employee, results, _serviceProvider))
+            RP14ASpreadsheetEmployeeValidator validator = new();
+            FluentValidation.Results.ValidationResult? validationResult = await validator.ValidateAsync(employee);
+
+            if (validationResult?.IsValid == false)
             {
-                foreach (ErrorInfoValidationResult result in results)
+                foreach (var validationError in validationResult.Errors)
                 {
                     fileUploadErrors.AddError(
                         employee.EmployeeName.Forenames,
                         employee.EmployeeName.Surname,
                         DateOnly.FromDateTime(employee.DateOfBirth),
                         employee.NINO,
-                        result.Value,
-                        result.ErrorInfo.Category, 
-                        result.ErrorInfo.Property, 
-                        result.ErrorInfo.Error,
-                        result.ErrorInfo.Hint);
+                        validationError.AttemptedValue?.ToString() ?? "Not entered",
+                        RP14AValidation.GetCategory(validationError.PropertyName),
+                        RP14AValidation.GetProperty(validationError.PropertyName),
+                        RP14AValidation.GetError(validationError.ErrorMessage),
+                        RP14AValidation.GetHint(validationError.ErrorMessage));
                 }
             }
         }
     }
-
-    private static bool TryValidateRecursive(object instance, List<ErrorInfoValidationResult> results, IServiceProvider serviceProvider)
+    
+    private async Task ValidateApiUploadAsync(IPUploadXmlErrorsModel fileUploadErrors, Domain.Employee.Api.RP14A redundancyPayment)
     {
-        List<ValidationResult> internalResults = [];
-        ValidationContext context = new(instance);
-        context.InitializeServiceProvider(serviceProvider.GetService);
+        RP14AValidator2 validator2 = new();
+        FluentValidation.Results.ValidationResult? validationResult = await validator2.ValidateAsync(redundancyPayment);
         
-        bool isValid = Validator.TryValidateObject(instance, context, internalResults, validateAllProperties: true);
-
-        if (instance is IValidatableObject validatableObject)
+        if (validationResult?.IsValid == false)
         {
-            internalResults.AddRange(validatableObject.Validate(context));
-        }
-
-        if (!isValid)
-        {
-            foreach (var result in internalResults)
+            Domain.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
+            
+            foreach (var validationError in validationResult.Errors)
             {
-                List<string> values = [];
-
-                foreach (string memberName in result.MemberNames)
+                fileUploadErrors.AddError(
+                    employee.EmployeeName.Forenames,
+                    employee.EmployeeName.Surname,
+                    DateOnly.FromDateTime(employee.DateOfBirth),
+                    employee.NINO,
+                    validationError.AttemptedValue?.ToString() ?? "Not entered",
+                    RP14AValidation.GetCategory(validationError.PropertyName),
+                    RP14AValidation.GetProperty(validationError.PropertyName),
+                    RP14AValidation.GetError(validationError.ErrorMessage),
+                    RP14AValidation.GetHint(validationError.ErrorMessage));
+            }
+        }
+        
+        ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
+        
+        if (!(await caseReferenceService.CheckExistsAsync(redundancyPayment.Header.CaseReference)))
+        {
+            Domain.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
+            
+            fileUploadErrors.AddError(
+                employee.EmployeeName.Forenames,
+                employee.EmployeeName.Surname,
+                DateOnly.FromDateTime(employee.DateOfBirth),
+                employee.NINO,
+                redundancyPayment.Header.CaseReference,
+                "Case",
+                "Case reference",
+                "[COUNT] case reference have not been matched in our system",
+                null);
+        }
+        
+        foreach (Domain.Employee.Api.RP14AEmployee employee in redundancyPayment.Employee)
+        {
+            RP14AApiEmployeeValidator validator3 = new();
+            FluentValidation.Results.ValidationResult? validationResult2 = await validator3.ValidateAsync(employee);
+            
+            if (validationResult2?.IsValid == false)
+            {
+                foreach (var validationError in validationResult2.Errors)
                 {
-                    PropertyInfo property = instance.GetType().GetProperties().First(p => p.Name == memberName);
-                    object? value = property.GetValue(instance);
-
-                    if (value is not null && property.PropertyType == typeof(DateTime))
-                    {
-                        DateTime date = DateTime.Parse(value.ToString()!, CultureInfo.CurrentCulture);
-                        values.Add(date.ToString("d", CultureInfo.CurrentCulture));
-                    }
-                    else
-                    {
-                        values.Add(property.GetValue(instance)?.ToString() ?? "Not entered");
-                    }
-                }
-
-                ErrorInfo errorInfo = ValidationAnnotationProvider.GetErrorInfo(result.ErrorMessage!);
-                results.Add(new ErrorInfoValidationResult(result, errorInfo, string.Join(", ", values)));
-            }
-        }
-
-        var properties = instance.GetType().GetProperties()
-            .Where(p => p.CanRead && p.PropertyType != typeof(string) && !p.PropertyType.IsValueType);
-
-        foreach (var property in properties)
-        {
-            var value = property.GetValue(instance);
-
-            if (value is null)
-            {
-                continue;
-            }
-
-            if (value is IEnumerable<object> collection)
-            {
-                foreach (var element in collection)
-                {
-                    isValid &= TryValidateRecursive(element, results, serviceProvider);
+                    fileUploadErrors.AddError(
+                        employee.EmployeeName.Forenames,
+                        employee.EmployeeName.Surname,
+                        DateOnly.FromDateTime(employee.DateOfBirth),
+                        employee.NINO,
+                        validationError.AttemptedValue?.ToString() ?? "Not entered",
+                        RP14AValidation.GetCategory(validationError.PropertyName),
+                        RP14AValidation.GetProperty(validationError.PropertyName),
+                        RP14AValidation.GetError(validationError.ErrorMessage),
+                        RP14AValidation.GetHint(validationError.ErrorMessage));
                 }
             }
-            else
-            {
-                isValid &= TryValidateRecursive(value, results, serviceProvider);
-            }
         }
-
-        return isValid;
     }
 }
