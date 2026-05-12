@@ -11,4 +11,7 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 1001, Level = LogLevel.Information, Message = "Checking that the case reference {CaseReference} exists in RPS.")]
     public static partial void CheckCaseReferenceExists(this ILogger logger, string caseReference);
+    
+    [LoggerMessage(EventId = 1002, Level = LogLevel.Information, Message = "Submitting JSON to Dynamics with correlation {CorrelationId} for reference {Reference}.")]
+    public static partial void SubmittingUploadToDynamics(this ILogger logger, string reference, string correlationId);
 }

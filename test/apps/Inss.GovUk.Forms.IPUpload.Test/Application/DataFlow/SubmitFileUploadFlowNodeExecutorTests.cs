@@ -2,8 +2,8 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
-using Inss.GovUk.Forms.IPUpload.Application.Clients;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
+using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using NSubstitute;
 using Xunit;
@@ -13,7 +13,7 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
 public class SubmitFileUploadFlowNodeExecutorTests
 {
     private readonly SubmitFileUploadFlowNodeExecutor _submitFileUploadFlowNodeExecutor;
-    private readonly ISubmitIPUploadSectionClient _submitIPUploadSectionClient;
+    private readonly ISubmitUploadedXmlService _submitUploadedXmlService;
     private readonly FormModel _form;
     private readonly SectionModel _section;
     private readonly FlowNode _node;
@@ -34,8 +34,8 @@ public class SubmitFileUploadFlowNodeExecutorTests
             UpdatedPage = new IPUploadDeclarationModel { Path = summary.Path },
             FinalExecuteStep = true
         };
-        _submitIPUploadSectionClient = Substitute.For<ISubmitIPUploadSectionClient>();
-        _submitFileUploadFlowNodeExecutor = new SubmitFileUploadFlowNodeExecutor(_submitIPUploadSectionClient);
+        _submitUploadedXmlService = Substitute.For<ISubmitUploadedXmlService>();
+        _submitFileUploadFlowNodeExecutor = new SubmitFileUploadFlowNodeExecutor(_submitUploadedXmlService);
     }
 
     [Fact]
@@ -47,11 +47,15 @@ public class SubmitFileUploadFlowNodeExecutorTests
     }
     
     [Fact]
-    public async Task SubmittingSection_ExecuteAsync_CallsDynamicsClient()
+    public async Task SubmittingSection_ExecuteAsync_UpdatesPostSubmitReferenceNumber()
     {
+        const string referenceNumber = "J880ZFKY";
+        _submitUploadedXmlService.SubmitAsync(_section, _form.Id).Returns(referenceNumber);
+        
         await _submitFileUploadFlowNodeExecutor.ExecuteAsync(_context);
 
-        await _submitIPUploadSectionClient.Received(1).SubmitAsync(_section, _form.Id);
+        PostSubmitModel postSubmit = _section.Pages.GetFirstOf<PostSubmitModel>();
+        Assert.Equal(referenceNumber, postSubmit.ReferenceNumber);
     }
     
     [Fact]

@@ -32,6 +32,8 @@ public class StartupConfiguration : IHostingStartup
             ExternalApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<ExternalApiOptions>()!;
             services.AddTypedClient<ICaseReferenceClient, CaseReferenceClient>(rpsOptions);
             
+            services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();
+            
             IPUploadFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
         });
