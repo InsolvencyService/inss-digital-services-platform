@@ -33,7 +33,11 @@ public class StartupConfiguration : IHostingStartup
 
             RpsApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<RpsApiOptions>()!;
             
-            if (context.HostingEnvironment.IsDevelopment())
+            services.AddTypedClient<ICaseReferenceClient, MockCaseReferenceClient>(rpsOptions);
+            
+            // Enable below once we have deployment of the listener in the RPS environment
+            
+            /*if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddTypedClient<ICaseReferenceClient, MockCaseReferenceClient>(rpsOptions);
             }
@@ -44,7 +48,7 @@ public class StartupConfiguration : IHostingStartup
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
                 services.AddTypedClient<ICaseReferenceClient, CaseReferenceClient>(rpsOptions);
-            }
+            }*/
             
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();
             
