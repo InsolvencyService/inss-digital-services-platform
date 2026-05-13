@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" />
         <PackageReference Include="Microsoft.Azure.Relay" />
     </ItemGroup>
     
@@ -14,6 +15,10 @@
 
     <ItemGroup>
       <AdditionalFiles Include="Views\_ViewImports.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Domain\Employee\" />
     </ItemGroup>
 
 </Project>

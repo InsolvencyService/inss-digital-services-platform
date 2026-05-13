@@ -11,9 +11,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using Inss.GovUk.Forms.IPUpload.Domain;
-using Inss.GovUk.Forms.IPUpload.Domain.Validation.Attributes;
 
-namespace Inss.GovUk.Forms.IPUpload.Domain.Spreadsheet;
+namespace Inss.GovUk.Forms.IPUpload.Domain.Employee.Spreadsheet;
 
 using System.Xml.Serialization;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
@@ -52,7 +51,7 @@ public partial class RP14A
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployee : IValidatableObject
+public partial class RP14AEmployee
 {
 
     private RP14AEmployeeHeader headerField;
@@ -119,7 +118,6 @@ public partial class RP14AEmployee : IValidatableObject
     }
 
     /// <remarks/>
-    [StringLengthProperty("InvalidLengthEmployerName", 99)]
     public string EmployerName
     {
         get
@@ -159,8 +157,6 @@ public partial class RP14AEmployee : IValidatableObject
     }
 
     /// <remarks/>
-    [RequiredProperty("MissingEmployeeNino")]
-    [RegularExpressionProperty("InvalidFormatEmployeeNino", "[A-CEGHJ-PR-TW-Za-ceghj-pr-tw-z]{1}[A-CEGHJ-NPR-TW-Za-ceghj-npr-tw-z]{1}[0-9]{6}[A-DFMa-dfm]{1}")]
     public string NINO
     {
         get
@@ -340,7 +336,6 @@ public partial class RP14AEmployee : IValidatableObject
     }
 
     /// <remarks/>
-    [RegularExpressionProperty("InvalidFormatMoneyOwedToEmployer", @"^\d+(\.\d{2})?$")]
     public decimal MoneyOwedToEmployer
     {
         get
@@ -446,22 +441,6 @@ public partial class RP14AEmployee : IValidatableObject
             this.holidayField = value;
         }
     }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (StartDate > EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "EmploymentEndBeforeStartDate", 
-                "EmploymentEndBeforeStartDate",
-                [nameof(StartDate), nameof(EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
-        }
-    }
 }
 
 /// <remarks/>
@@ -482,10 +461,6 @@ public partial class RP14AEmployeeHeader
     private string cHAMPDocumentIDField;
 
     /// <remarks/>
-    [CaseReference("UnknownCaseReference")]
-    [RequiredProperty("MissingCaseReference")]
-    [RegularExpressionProperty("InvalidFormatCaseReference", "CN[0-9]{8}|cn[0-9]{8}|Cn[0-9]{8}|cN[0-9]{8}")]
-    [StringLengthProperty("InvalidLengthCaseReference", 12)]
     public string CaseReference
     {
         get
@@ -554,8 +529,6 @@ public partial class NameType
     private string titleField;
 
     /// <remarks/>
-    [RequiredProperty("MissingEmployeeSurname")]
-    [StringLengthProperty("InvalidLengthEmployeeSurname", 99)]
     public string Surname
     {
         get
@@ -645,7 +618,6 @@ public partial class RP14AEmployeePayDetails
     private RP14AEmployeePayDetailsArrearsOfPay arrearsOfPayField;
 
     /// <remarks/>
-    [RegularExpressionProperty("InvalidFormatEmployeeBasicPayPerWeek", @"^\d+(\.\d{2})?$")]
     public decimal BasicPayPerWeek
     {
         get
@@ -1609,7 +1581,7 @@ public partial class RP14AEmployeePayDetailsArrearsOfPay
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1 : IValidatableObject
+public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1
 {
 
     private System.DateTime aOP1StartDateField;
@@ -1685,7 +1657,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1 : IV
     }
 
     /// <remarks/>
-    [RegularExpressionProperty("InvalidFormatEmployeeAOP", @"^\d+(\.\d{2})?$")]
     public decimal AOPOwed1
     {
         get
@@ -1738,22 +1709,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1 : IV
             this.aOPPayType1FieldSpecified = value;
         }
     }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (AOP1StartDate > AOP1EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "AOPEndBeforeStartDate", 
-                "AOPEndBeforeStartDate1",
-                [nameof(AOP1StartDate), nameof(AOP1EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
-        }
-    }
 }
 
 /// <remarks/>
@@ -1785,7 +1740,7 @@ public enum RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1AOPPayType1
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2 : IValidatableObject
+public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2
 {
 
     private System.DateTime aOP2StartDateField;
@@ -1861,7 +1816,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2 : IV
     }
 
     /// <remarks/>
-    [RegularExpressionProperty("InvalidFormatEmployeeAOP", @"^\d+(\.\d{2})?$")]
     public decimal AOPOwed2
     {
         get
@@ -1914,22 +1868,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2 : IV
             this.aOPPayType2FieldSpecified = value;
         }
     }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (AOP2StartDate > AOP2EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "AOPEndBeforeStartDate", 
-                "AOPEndBeforeStartDate2",
-                [nameof(AOP2StartDate), nameof(AOP2EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
-        }
-    }
 }
 
 /// <remarks/>
@@ -1961,7 +1899,7 @@ public enum RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2AOPPayType2
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3 : IValidatableObject
+public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3
 {
 
     private System.DateTime aOP3StartDateField;
@@ -2037,7 +1975,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3 : IV
     }
 
     /// <remarks/>
-    [RegularExpressionProperty("InvalidFormatEmployeeAOP", @"^\d+(\.\d{2})?$")]
     public decimal AOPOwed3
     {
         get
@@ -2090,22 +2027,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3 : IV
             this.aOPPayType3FieldSpecified = value;
         }
     }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (AOP3StartDate > AOP3EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "AOPEndBeforeStartDate", 
-                "AOPEndBeforeStartDate3",
-                [nameof(AOP3StartDate), nameof(AOP3EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
-        }
-    }
 }
 
 /// <remarks/>
@@ -2137,7 +2058,7 @@ public enum RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3AOPPayType3
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4 : IValidatableObject
+public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4
 {
 
     private System.DateTime aOP4StartDateField;
@@ -2213,7 +2134,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4 : IV
     }
 
     /// <remarks/>
-    [RegularExpressionProperty("InvalidFormatEmployeeAOP", @"^\d+(\.\d{2})?$")]
     public decimal AOPOwed4
     {
         get
@@ -2264,22 +2184,6 @@ public partial class RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4 : IV
         set
         {
             this.aOPPayType4FieldSpecified = value;
-        }
-    }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (AOP4StartDate > AOP4EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "AOPEndBeforeStartDate", 
-                "AOPEndBeforeStartDate4",
-                [nameof(AOP4StartDate), nameof(AOP4EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
         }
     }
 }
@@ -2367,9 +2271,6 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [RequiredProperty("MissingContractedHolidayEntitlement")]
-    [RegularExpressionProperty("InvalidContractedHolidayEntitlement", @"^\d+(\.\d{2})?$")]
-    [RangeProperty("InvalidRangeContractedHolidayEntitlement", 0, 365)]
     public decimal HolidayContractedEntitlementDays
     {
         get
@@ -2397,9 +2298,6 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [RequiredProperty("MissingHolidayCarriedForward")]
-    [RegularExpressionProperty("InvalidHolidayCarriedForward", @"^\d+(\.\d{2})?$")]
-    [RangeProperty("InvalidRangeHolidayCarriedForward", 0, 365)]
     public decimal HolidayDaysCarriedForward
     {
         get
@@ -2427,9 +2325,6 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [RequiredProperty("MissingHolidayTaken")]
-    [RegularExpressionProperty("InvalidHolidayTaken", @"^\d+(\.\d{2})?$")]
-    [RangeProperty("InvalidRangeHolidayTaken", 0, 365)]
     public decimal HolidayDaysTaken
     {
         get
@@ -2470,9 +2365,6 @@ public partial class RP14AEmployeeHoliday
     }
 
     /// <remarks/>
-    [RequiredProperty("MissingHolidayOwed")]
-    [RegularExpressionProperty("InvalidHolidayOwed", @"^\d+(\.\d{2})?$")]
-    [RangeProperty("InvalidRangeHolidayOwed", 0, 365)]
     public decimal NoDaysHolidayOwed
     {
         get
@@ -2561,7 +2453,7 @@ public partial class RP14AEmployeeHolidayHolidayNotPaid
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1 : IValidatableObject
+public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1
 {
 
     private System.DateTime holiday1StartDateField;
@@ -2627,22 +2519,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1 : IValidatableOb
             this.holiday1EndDateFieldSpecified = value;
         }
     }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (Holiday1StartDate > Holiday1EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "HolidayNotPaidEndBeforeStartDate", 
-                "HolidayNotPaidEndBeforeStartDate1",
-                [nameof(Holiday1StartDate), nameof(Holiday1EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
-        }
-    }
 }
 
 /// <remarks/>
@@ -2651,7 +2527,7 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday1 : IValidatableOb
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2 : IValidatableObject
+public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2
 {
 
     private System.DateTime holiday2StartDateField;
@@ -2717,22 +2593,6 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2 : IValidatableOb
             this.holiday2EndDateFieldSpecified = value;
         }
     }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (Holiday2StartDate > Holiday2EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "HolidayNotPaidEndBeforeStartDate", 
-                "HolidayNotPaidEndBeforeStartDate2",
-                [nameof(Holiday2StartDate), nameof(Holiday2EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
-        }
-    }
 }
 
 /// <remarks/>
@@ -2741,7 +2601,7 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday2 : IValidatableOb
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application")]
-public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3 : IValidatableObject
+public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3
 {
 
     private System.DateTime holiday3StartDateField;
@@ -2782,21 +2642,5 @@ public partial class RP14AEmployeeHolidayHolidayNotPaidHoliday3 : IValidatableOb
     {
         get { return this.holiday3EndDateFieldSpecified; }
         set { this.holiday3EndDateFieldSpecified = value; }
-    }
-    
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (Holiday3StartDate > Holiday3EndDate)
-        {
-            ValidationResult result = validationContext.CreateValidationResult(
-                "HolidayNotPaidEndBeforeStartDate", 
-                "HolidayNotPaidEndBeforeStartDate3",
-                [nameof(Holiday3StartDate), nameof(Holiday3EndDate)]);
-
-            if (result is not null)
-            {
-                yield return result;
-            }
-        }
     }
 }
