@@ -6,29 +6,11 @@ public sealed class RP14ApiAddressValidator : AbstractValidator<Domain.Employer.
 {
     public RP14ApiAddressValidator(string category)
     {
-        RuleFor(p => p.Line)
-            .Must(p => p.Length <= 4)
-            .OverridePropertyName(RP14ValidationInfo.InvalidLinesLength.PropertyFormat.Replace("[CATEGORY]", category))
-            .WithMessage(RP14ValidationInfo.InvalidPayRecordPhoneLength.ErrorFormat);
-        RuleForEach(p => p.Line)
-            .MaximumLength(35)
-            .OverridePropertyName(RP14ValidationInfo.InvalidLineLength.PropertyFormat.Replace("[CATEGORY]", category))
-            .WithMessage(RP14ValidationInfo.InvalidLineLength.ErrorFormat);
-        RuleFor(p => p.Town)
-            .MaximumLength(35)
-            .OverridePropertyName(RP14ValidationInfo.InvalidTownLength.PropertyFormat.Replace("[CATEGORY]", category))
-            .WithMessage(RP14ValidationInfo.InvalidTownLength.ErrorFormat);
-        RuleFor(p => p.County)
-            .MaximumLength(35)
-            .OverridePropertyName(RP14ValidationInfo.InvalidCountyLength.PropertyFormat.Replace("[CATEGORY]", category))
-            .WithMessage(RP14ValidationInfo.InvalidCountyLength.ErrorFormat);
-        RuleFor(p => p.Postcode)
-            .MaximumLength(10)
-            .OverridePropertyName(RP14ValidationInfo.InvalidPostcodeLength.PropertyFormat.Replace("[CATEGORY]", category))
-            .WithMessage(RP14ValidationInfo.InvalidPostcodeLength.ErrorFormat);
-        RuleFor(p => p.Country)
-            .MaximumLength(10)
-            .OverridePropertyName(RP14ValidationInfo.InvalidCountryLength.PropertyFormat.Replace("[CATEGORY]", category))
-            .WithMessage(RP14ValidationInfo.InvalidCountryLength.ErrorFormat);
+        RuleFor(p => p.Line).ValidateAddressLines(category);
+        RuleForEach(p => p.Line).ValidateAddressLine(category);
+        RuleFor(p => p.Town).ValidateAddressTown(category);
+        RuleFor(p => p.County).ValidateAddressCounty(category);
+        RuleFor(p => p.Postcode).ValidateAddressPostcode(category);
+        RuleFor(p => p.Country).ValidateAddressCountry(category);
     }
 }

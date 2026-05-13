@@ -103,6 +103,57 @@ internal static partial class ValidatorRuleExtensions
                 .OverridePropertyName(RP14ValidationInfo.InvalidPayRecordPhoneLength.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.InvalidPayRecordPhoneLength.ErrorFormat);
         }
+        
+        internal IRuleBuilderOptions<T, string> ValidateAddressLine(string category)
+        {
+            return rule
+                .MaximumLength(35)
+                .OverridePropertyName(RP14ValidationInfo.InvalidLineLength.PropertyFormat.Replace("[CATEGORY]", category))
+                .WithMessage(RP14ValidationInfo.InvalidLineLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateAddressTown(string category)
+        {
+            return rule
+                .MaximumLength(35)
+                .OverridePropertyName(RP14ValidationInfo.InvalidTownLength.PropertyFormat.Replace("[CATEGORY]", category))
+                .WithMessage(RP14ValidationInfo.InvalidTownLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateAddressCounty(string category)
+        {
+            return rule
+                .MaximumLength(35)
+                .OverridePropertyName(RP14ValidationInfo.InvalidCountyLength.PropertyFormat.Replace("[CATEGORY]", category))
+                .WithMessage(RP14ValidationInfo.InvalidCountyLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateAddressPostcode(string category)
+        {
+            return rule
+                .MaximumLength(10)
+                .OverridePropertyName(RP14ValidationInfo.InvalidPostcodeLength.PropertyFormat.Replace("[CATEGORY]", category))
+                .WithMessage(RP14ValidationInfo.InvalidPostcodeLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateAddressCountry(string category)
+        {
+            return rule
+                .MaximumLength(35)
+                .OverridePropertyName(RP14ValidationInfo.InvalidCountryLength.PropertyFormat.Replace("[CATEGORY]", category))
+                .WithMessage(RP14ValidationInfo.InvalidCountryLength.ErrorFormat);
+        }
+    }
+
+    extension<T>(IRuleBuilder<T, string[]> rule)
+    {
+        internal IRuleBuilderOptions<T, string[]> ValidateAddressLines(string category)
+        {
+            return rule
+                .Must(p => p.Length <= 4)
+                .OverridePropertyName(RP14ValidationInfo.InvalidLinesLength.PropertyFormat.Replace("[CATEGORY]", category))
+                .WithMessage(RP14ValidationInfo.InvalidPayRecordPhoneLength.ErrorFormat);
+        }
     }
 
     extension<T>(IRuleBuilder<T, decimal> rule)
