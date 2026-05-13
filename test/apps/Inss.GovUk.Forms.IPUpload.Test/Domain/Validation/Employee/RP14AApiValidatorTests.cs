@@ -1,9 +1,9 @@
 ﻿using FluentValidation.TestHelper;
 using Inss.GovUk.Forms.IPUpload.Domain.Employee.Api;
-using Inss.GovUk.Forms.IPUpload.Domain.Validation.RP14A;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 using Xunit;
 
-namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Validation.RP14A;
+namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Validation.Employee;
 
 public class RP14AApiValidatorTests
 {

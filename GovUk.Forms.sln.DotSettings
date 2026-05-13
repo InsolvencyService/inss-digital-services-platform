@@ -3,6 +3,7 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=QA/@EntryIndexedValue">QA</s:String>
     <s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=RP14/@EntryIndexedValue">RP14</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=RP14A/@EntryIndexedValue">RP14A</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=SIC/@EntryIndexedValue">SIC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=SIT/@EntryIndexedValue">SIT</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Inss/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=pkce/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
