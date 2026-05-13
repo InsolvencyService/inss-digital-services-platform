@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <Folder Include="Domain\Employee\" />
+      <Folder Include="Domain\Validation\Employer\" />
     </ItemGroup>
 
 </Project>

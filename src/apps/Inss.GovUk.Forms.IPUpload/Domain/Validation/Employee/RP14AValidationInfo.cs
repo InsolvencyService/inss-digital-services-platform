@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.RP14A;
+﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
 internal sealed class RP14AValidationInfo : ValidationInfo
 {

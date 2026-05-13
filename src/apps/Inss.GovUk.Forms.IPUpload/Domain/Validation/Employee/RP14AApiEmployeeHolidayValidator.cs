@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Inss.GovUk.Forms.IPUpload.Domain.Employee.Api;
 
-namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.RP14A;
+namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
 public sealed class RP14AApiEmployeeHolidayValidator : AbstractValidator<RP14AEmployeeHoliday>
 {

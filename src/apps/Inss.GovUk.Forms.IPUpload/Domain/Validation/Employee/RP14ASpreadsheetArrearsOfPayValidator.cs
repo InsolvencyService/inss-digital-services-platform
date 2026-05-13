@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Inss.GovUk.Forms.IPUpload.Domain.Employee.Spreadsheet;
 
-namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.RP14A;
+namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
 public sealed class RP14ASpreadsheetArrearsOfPayValidator : AbstractValidator<RP14AEmployeePayDetailsArrearsOfPay>
 {
