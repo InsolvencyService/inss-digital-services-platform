@@ -1,22 +1,23 @@
 using System.Text.Json.Serialization;
-using GovUk.Forms.Domain.Enums;
 
 namespace GovUk.Forms.Domain;
 
 public class SectionModel : ContentModel
 {
     public string Title { get; init; } = string.Empty;
-
-    public SectionStateTypes State { get; set; } = SectionStateTypes.NotStarted;
-
+    
     public PageModelList Pages { get; init; } = [];
 
+    public DateTimeOffset? StartedDate { get; set; }
+    
+    public DateTimeOffset? CompletedDate { get; set; }
+    
     [JsonIgnore]
     public PageModel FirstPage
     {
         get
         {
-            if (State == SectionStateTypes.Completed)
+            if (CompletedDate is not null)
             {
                 return Pages.GetFirstOf<SummaryModel>();
             }
@@ -24,12 +25,14 @@ public class SectionModel : ContentModel
             return Pages[0] is GroupPageModel groupPage ? groupPage.Pages[0] : Pages[0];
         }
     }
-
-    public void TransitionToInProgress()
+    
+    public void SetInProgress()
     {
-        if (State == SectionStateTypes.NotStarted)
-        {
-            State = SectionStateTypes.InProgress;
-        }
+        StartedDate ??= DateTimeOffset.Now;
+    }
+
+    public void SetCompleted()
+    {
+        CompletedDate = DateTimeOffset.Now;
     }
 }

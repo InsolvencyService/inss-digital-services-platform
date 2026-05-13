@@ -1,8 +1,14 @@
+// ReSharper disable UnusedMember.Global - Used by binder
 namespace GovUk.Forms.Domain.Primitives;
 
 public sealed record ContentPath
 {
     private const string ForwardSlash = "/";
+
+    public ContentPath()
+    {
+        Value = "";
+    }
     
     public ContentPath(string value)
     {
@@ -31,8 +37,6 @@ public sealed record ContentPath
         !string.IsNullOrWhiteSpace(Value) && 
         Value.StartsWith(ForwardSlash, StringComparison.InvariantCultureIgnoreCase) &&
         !Value.EndsWith(ForwardSlash, StringComparison.InvariantCultureIgnoreCase);
-
-    public bool IsEmpty() => string.IsNullOrWhiteSpace(Value) || Value == ForwardSlash;
 
     public ContentPath GetRoot()
     {

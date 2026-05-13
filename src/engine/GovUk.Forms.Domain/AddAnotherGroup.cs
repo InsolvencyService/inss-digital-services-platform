@@ -16,7 +16,7 @@ public sealed class AddAnotherGroup : GroupPageModel
     
     public override PageModelList SubmittablePages => AddAnother.Items;
 
-    public CheckAnswersModel CheckAnswers => (CheckAnswersModel)Pages.First(p => p is CheckAnswersModel);
+    public CheckAnswersModel? CheckAnswers => (CheckAnswersModel?)Pages.FirstOrDefault(p => p is CheckAnswersModel);
     
     public AddAnotherModel AddAnother => (AddAnotherModel)Pages.First(p => p is AddAnotherModel);
 

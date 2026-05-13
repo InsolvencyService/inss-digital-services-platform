@@ -13,6 +13,8 @@ public sealed class AddAnotherModel : PageModel
     public string? Hint { get; set; }
 
     public int GroupLength { get; set; }
+
+    public bool CanAddAnother { get; set; } = true;
     
     [JsonIgnore]
     public AddAnotherSummaryModel[] SummaryInfo { get; set; } = [];

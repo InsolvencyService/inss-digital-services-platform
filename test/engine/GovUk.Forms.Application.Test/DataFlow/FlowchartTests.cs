@@ -5,7 +5,6 @@ using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Application.Exceptions;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,12 +29,12 @@ public class FlowchartTests
     
     public FlowchartTests()
     {
-        NodeId fullNameId = NodeId.New();
-        NodeId addressId = NodeId.New();
-        NodeId ageId = NodeId.New();
-        NodeId salaryId = NodeId.New();
-        NodeId bankAccountId = NodeId.New();
-        NodeId summaryId = NodeId.New();
+        NodeId fullNameId = "FullName";
+        NodeId addressId = "Address";
+        NodeId ageId = "Age";
+        NodeId salaryId = "Salary";
+        NodeId bankAccountId = "BankAccount";
+        NodeId summaryId = "Summary";
     
         _form = TestFormModels.CreateWithYourDetailsSection();
         _yourDetails = _form.Sections[0];
@@ -69,24 +68,10 @@ public class FlowchartTests
         BuildTestFlowchart([]);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
-        _yourDetails.State = SectionStateTypes.NotStarted;
         
         await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
-        
-        Assert.Equal(SectionStateTypes.InProgress, _yourDetails.State);
-    }
-    
-    [Fact]
-    public async Task NoNextNodeToLoad_PreProcessAsync_PutsPageInEditMode()
-    {
-        BuildTestFlowchart([]);
-        FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
-        fullName.LinkedToNode = _fullNameNode.Id;
-        fullName.EditMode = PageEditTypes.NotStarted;
-        
-        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
-        
-        Assert.Equal(PageEditTypes.Editing, fullName.EditMode);
+
+        Assert.NotNull(_yourDetails.StartedDate);
     }
     
     [Fact]
@@ -95,7 +80,6 @@ public class FlowchartTests
         BuildTestFlowchart([]);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
-        fullName.EditMode = PageEditTypes.NotStarted;
         
         ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
         
@@ -112,9 +96,7 @@ public class FlowchartTests
         ServiceCollection services = [];
         services.AddKeyedSingleton(_fullNameNode.Id, testLoader);
         BuildTestFlowchart(services);
-        
         fullName.LinkedToNode = _fullNameNode.Id;
-        fullName.EditMode = PageEditTypes.NotStarted;
         
         ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
         
@@ -154,7 +136,7 @@ public class FlowchartTests
     }
     
     [Fact]
-    public async Task PostedPageWithChange_ProcessAsync_UpdatesSourcePageState()
+    public async Task PostedPageWithChange_ProcessAsync_UpdatesSourcePageCompleted()
     {
         BuildTestFlowchart([]);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
@@ -164,8 +146,8 @@ public class FlowchartTests
         copyOfFullName.Value = "Homer Simpson";
         
         await _flowchart.ProcessAsync(_form, _yourDetails, copyOfFullName);
-        
-        Assert.Equal(PageEditTypes.Saved, fullName.EditMode);
+
+        Assert.NotNull(fullName.CompletedDate);
     }
     
     [Fact]

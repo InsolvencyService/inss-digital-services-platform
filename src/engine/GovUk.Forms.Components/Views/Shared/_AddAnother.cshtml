@@ -18,15 +18,24 @@
     </govuk-summary-list>
 }
 
-<govuk-radios for="@Model.AddAnotherItem">
-    <govuk-radios-fieldset>
-        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
-            @(Model.Question ?? "Do you want to add another?")
-        </govuk-radios-fieldset-legend>
-        <govuk-radios-hint>
-            @(Model.Hint ?? "Choose an option below")
-        </govuk-radios-hint>
-        <govuk-radios-item value="true" checked="@Model.AddAnotherItem">Yes</govuk-radios-item>
-        <govuk-radios-item value="false" checked="@(!Model.AddAnotherItem)">No</govuk-radios-item>
-    </govuk-radios-fieldset>
-</govuk-radios>
+@if (Model.CanAddAnother)
+{
+    <govuk-radios for="@Model.AddAnotherItem">
+        <govuk-radios-fieldset>
+            <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                @(Model.Question ?? "Do you want to add another?")
+            </govuk-radios-fieldset-legend>
+            <govuk-radios-hint>
+                @(Model.Hint ?? "Choose an option below")
+            </govuk-radios-hint>
+            <govuk-radios-item value="true" checked="@Model.AddAnotherItem">Yes</govuk-radios-item>
+            <govuk-radios-item value="false" checked="@(!Model.AddAnotherItem)">No</govuk-radios-item>
+        </govuk-radios-fieldset>
+    </govuk-radios>
+}
+else
+{
+    <p class="govuk-body">
+        You can only add upto 2 files.
+    </p>
+}

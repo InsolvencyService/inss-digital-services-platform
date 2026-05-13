@@ -5,11 +5,20 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="Microsoft.Azure.Relay" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <AdditionalFiles Include="Views\_ViewImports.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Domain\Employee\" />
     </ItemGroup>
 
 </Project>

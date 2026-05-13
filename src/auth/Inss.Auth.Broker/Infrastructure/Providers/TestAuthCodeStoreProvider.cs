@@ -8,20 +8,20 @@ public sealed class TestAuthCodeStoreProvider : IAuthCodeStoreProvider
 {
     private static readonly ConcurrentDictionary<string, AuthCode> _cache = new();
     
-    public Task StoreAsync(string code, AuthCode user)
+    public Task StoreAsync(AuthCode authCode)
     {
-        _cache[code] = user;
+        _cache[authCode.Id] = authCode;
         return Task.CompletedTask;
     }
 
-    public Task<AuthCode?> GetAsync(string code)
+    public Task<AuthCode?> GetAsync(string id)
     {
-        return Task.FromResult<AuthCode?>(_cache[code]);
+        return Task.FromResult<AuthCode?>(_cache[id]);
     }
 
-    public Task RemoveAsync(string code)
+    public Task RemoveAsync(string id)
     {
-        _ = _cache.TryRemove(code, out _);
+        _ = _cache.TryRemove(id, out _);
         return Task.CompletedTask;
     }
 }

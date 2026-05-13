@@ -1,5 +1,4 @@
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
@@ -7,7 +6,6 @@ using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Microsoft.Extensions.DependencyInjection;
-using XmlFileUploadModel = Inss.GovUk.Forms.IPUpload.Domain.XmlFileUploadModel;
 
 namespace Inss.GovUk.Forms.IPUpload.Builders;
 
@@ -15,28 +13,27 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
-        NodeId declarationId = NodeId.New();
-        NodeId fileUploadId = NodeId.New();
-        NodeId fileUploadErrorId = NodeId.New();
-        NodeId fileUploadErrorDetailsId = NodeId.New();
-        NodeId summaryId = NodeId.New();
-        NodeId postSubmitSuccessId = NodeId.New();
+        NodeId declarationId = "Declaration";
+        NodeId fileUploadId = "FileUpload";
+        NodeId fileUploadErrorId = "FileUploadErrors";
+        NodeId fileUploadErrorDetailsId = "FileUploadErrorDetails";
+        NodeId summaryId = "Summary";
+        NodeId postSubmitSuccessId = "PostSubmit";
         WebRoot webRoot = new();
         
         FormModel form = GetForm(services, webRoot.Root);
         SectionModel section = form.Sections["IP Upload"];
             
-        StaticHtmlModel declaration = section.Pages.GetFirstOf<StaticHtmlModel>();
+        IPUploadDeclarationModel declaration = section.Pages.GetFirstOf<IPUploadDeclarationModel>();
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
         IPUploadXmlErrorsModel uploadErrors = section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         IPUploadXmlErrorDetailsModel errorDetails = section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
-        PostSubmitSuccessModel  postSubmitSuccess = section.Pages.GetFirstOf<PostSubmitSuccessModel>();
+        PostSubmitModel  postSubmit = section.Pages.GetFirstOf<PostSubmitModel>();
         
         FlowchartBuilder
             .ForSection(section, services)
             .AddTransitionNode(declarationId, declaration.Path, fileUploadId)
-            .WithLoader<StaticHtmlFlowNodeLoader>()
             .WithExecutor<DeclarationFlowNodeExecutor>()
             .Next()
             .AddDecisionNode(fileUploadId, fileUpload.Path, fileUploadErrorId, summaryId)
@@ -52,9 +49,10 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .Next()
             .AddTransitionNode(summaryId, summary.Path, postSubmitSuccessId)
             .WithLoader<SectionSummaryFlowNodeLoader>()
-            .WithExecutor<SubmitSectionFlowNodeExecutor>()
+            .WithExecutor<SubmitFileUploadFlowNodeExecutor>()
             .Next()
-            .AddEndNode(postSubmitSuccessId, postSubmitSuccess.Path)
+            .AddEndNode(postSubmitSuccessId, postSubmit.Path, declarationId)
+            .WithLoader<PostSubmitFlowNodeLoader>()
             .BuildAndRegister();
     }
 }

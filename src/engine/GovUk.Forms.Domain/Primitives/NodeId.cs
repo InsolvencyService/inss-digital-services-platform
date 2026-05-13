@@ -7,10 +7,6 @@ public sealed record NodeId(string Value)
     public static implicit operator string(NodeId id) => id.Value;
     
     public static implicit operator NodeId(string value) => new(value);
-
-    public static NodeId New() => new(Guid.NewGuid().ToString());
-    
-    public bool IsValid() => !string.IsNullOrWhiteSpace(Value);
     
     public override string ToString() => Value;
 }

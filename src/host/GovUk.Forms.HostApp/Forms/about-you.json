@@ -2,12 +2,10 @@
   "sections": [
     {
       "title": "Your Details",
-      "state": "NotStarted",
       "pages": [
         {
           "$type": "FullNameModel",
           "value": "",
-          "editMode": "NotStarted",
           "title": "Your name",
           "returnUrl": null,
           "metaData": {
@@ -19,10 +17,12 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "a36b4ee4-2f44-4bec-acf8-8a40ec54fa31",
+          "completedDate": null,
+          "id": "17a33841-9346-4bd7-a809-94da9ad7d3d0",
           "path": "/about-you/your-details/your-name",
           "viewName": "_FullName",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.FullNameModel"
         },
@@ -33,7 +33,6 @@
           "townCity": "",
           "county": null,
           "postcode": "",
-          "editMode": "NotStarted",
           "title": "Your address",
           "returnUrl": null,
           "metaData": {
@@ -45,10 +44,12 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "dfd7146f-c17f-4a0b-bbe3-75addb8bd6c4",
+          "completedDate": null,
+          "id": "6516b4b4-0754-40f4-8762-13dd4c80a196",
           "path": "/about-you/your-details/your-address",
           "viewName": "_Address",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.AddressModel"
         },
@@ -68,7 +69,6 @@
             "labelSize": "Large",
             "viewName": "Types/_TelephoneNumber"
           },
-          "editMode": "NotStarted",
           "title": "Your contact details",
           "returnUrl": null,
           "metaData": {
@@ -80,17 +80,18 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "16cc4ee3-0f5a-4467-a008-71d4207f27f0",
+          "completedDate": null,
+          "id": "bf3bd8ac-3775-4464-b391-58ed158d5103",
           "path": "/about-you/your-details/Your-contact-details",
           "viewName": "_ContactDetails",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "Demo.GovUk.Forms.AboutYou.Domain.ContactDetailsModel"
         },
         {
           "$type": "AgeModel",
           "value": 0,
-          "editMode": "NotStarted",
           "title": "Your age",
           "returnUrl": null,
           "metaData": {
@@ -102,17 +103,18 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "86f02bea-3c41-43f7-b12e-20911115d501",
+          "completedDate": null,
+          "id": "550a12d6-a9ce-445f-994a-33976af808ad",
           "path": "/about-you/your-details/your-age",
           "viewName": "_Age",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.AgeModel"
         },
         {
           "$type": "SalaryModel",
           "value": 0,
-          "editMode": "NotStarted",
           "title": "Your salary",
           "returnUrl": null,
           "metaData": {
@@ -124,10 +126,12 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "93b84a14-801c-4ba6-afa1-48a739c3faf6",
+          "completedDate": null,
+          "id": "57ba761c-6858-437b-b645-61037ede451f",
           "path": "/about-you/your-details/your-salary",
           "viewName": "_Salary",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.SalaryModel"
         },
@@ -137,7 +141,6 @@
           "accountNumber": "",
           "sortCode": "",
           "buildingSocietyRollNumber": null,
-          "editMode": "NotStarted",
           "title": "Your bank account",
           "returnUrl": null,
           "metaData": {
@@ -149,17 +152,18 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "dfda2165-47c8-4243-b7e5-ef459a07a729",
+          "completedDate": null,
+          "id": "00bafb6d-b32e-4ee8-b9bb-44446afbd5bf",
           "path": "/about-you/your-details/your-bank-account",
           "viewName": "_BankAccount",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.BankAccountModel"
         },
         {
           "$type": "OwnHomeModel",
           "ownsHome": false,
-          "editMode": "NotStarted",
           "title": "Own your own home",
           "returnUrl": null,
           "metaData": {
@@ -171,17 +175,18 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "ddaf86f9-8925-4fca-a542-6de0b480c730",
+          "completedDate": null,
+          "id": "6909b748-54b0-4798-a084-38354ad4c4ed",
           "path": "/about-you/your-details/your-home-ownership",
           "viewName": "_OwnHome",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "Demo.GovUk.Forms.AboutYou.Domain.OwnHomeModel"
         },
         {
           "$type": "HomeValueModel",
           "value": 0,
-          "editMode": "NotStarted",
           "title": "Your home value",
           "returnUrl": null,
           "metaData": {
@@ -193,16 +198,17 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "f951f960-48e4-4557-afe5-3195e0442ddb",
+          "completedDate": null,
+          "id": "e2ec5759-b28a-47ca-ac47-45af953d94ec",
           "path": "/about-you/your-details/your-home-value",
           "viewName": "_HomeValue",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "Demo.GovUk.Forms.AboutYou.Domain.HomeValueModel"
         },
         {
           "$type": "SummaryModel",
-          "editMode": "NotStarted",
           "title": "Your summary",
           "returnUrl": null,
           "metaData": {
@@ -214,27 +220,34 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "ee4127c3-b213-42cd-a984-8644465a7bf3",
+          "completedDate": null,
+          "id": "42257083-0c6b-4ebe-8c46-0a249c2f9d04",
           "path": "/about-you/your-details/summary",
           "viewName": "_Summary",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "id": "0c659981-872b-414d-9388-2dcf9e4fc3c0",
+      "startedDate": null,
+      "completedDate": null,
+      "id": "292f1acb-b84e-4c92-9847-30d1f1221948",
       "path": "/about-you/your-details",
       "viewName": "_Section",
       "encodingType": null,
+      "fullWidthLayout": false,
       "submitType": "Form",
       "typeName": "GovUk.Forms.Domain.SectionModel"
     }
   ],
   "canSubmit": false,
-  "id": "25e47e66-3013-455d-a848-b010b631abf1",
+  "createdDate": "2026-05-05T13:43:43.5718461+01:00",
+  "id": "4f0f646a-847e-4b43-aec1-ade3ed025e4a",
   "path": "/about-you",
   "viewName": "_Form",
   "encodingType": null,
+  "fullWidthLayout": false,
   "submitType": "Form",
   "typeName": "GovUk.Forms.Domain.FormModel"
 }

@@ -2,14 +2,10 @@
   "sections": [
     {
       "title": "IP Upload",
-      "state": "NotStarted",
       "pages": [
         {
           "$type": "IPUploadDeclarationModel",
           "accepted": false,
-          "key": "ipupload-declaration",
-          "html": null,
-          "editMode": "NotStarted",
           "title": "Declaration",
           "returnUrl": null,
           "metaData": {
@@ -21,9 +17,10 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "45b5fa75-b681-41a7-891f-5b88e963a803",
+          "completedDate": null,
+          "id": "5ba775df-78aa-4e84-aa9c-3e579752290f",
           "path": "/ip-upload/redundancy-payment/declaration",
-          "viewName": "_StaticHtml",
+          "viewName": "_IPUploadDeclaration",
           "encodingType": null,
           "fullWidthLayout": false,
           "submitType": "Section",
@@ -35,7 +32,6 @@
           "contents": null,
           "length": 0,
           "sizeInMb": 0,
-          "editMode": "NotStarted",
           "title": "Upload document",
           "returnUrl": null,
           "metaData": {
@@ -47,7 +43,8 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "e5ab7b52-60bd-4c37-a57d-9443862ac2ac",
+          "completedDate": null,
+          "id": "c316a9d9-547e-4e33-ade9-d8cca022f919",
           "path": "/ip-upload/redundancy-payment/upload-document",
           "viewName": "_XmlFileUpload",
           "encodingType": "multipart/form-data",
@@ -60,7 +57,6 @@
           "filename": null,
           "hasErrors": false,
           "errors": [],
-          "editMode": "NotStarted",
           "title": "IP upload errors",
           "returnUrl": null,
           "metaData": {
@@ -72,7 +68,8 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "53dcf5e6-da49-4ef8-a6d7-5e40eece80d4",
+          "completedDate": null,
+          "id": "eb4c3f6a-9c66-4640-9d5e-759ab7852689",
           "path": "/ip-upload/redundancy-payment/upload-errors",
           "viewName": "_IPUploadXmlErrors",
           "encodingType": null,
@@ -83,7 +80,6 @@
         {
           "$type": "IPUploadXmlErrorDetailsModel",
           "currentErrorDetail": null,
-          "editMode": "NotStarted",
           "title": "IP upload error details",
           "returnUrl": null,
           "metaData": {
@@ -95,7 +91,8 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "504af42a-f7a2-41a1-8503-c0f1fd5f9225",
+          "completedDate": null,
+          "id": "264b2240-803f-470b-afe2-b5c727ddf2bc",
           "path": "/ip-upload/redundancy-payment/upload-error-details",
           "viewName": "_IPUploadXmlErrorDetails",
           "encodingType": null,
@@ -105,7 +102,6 @@
         },
         {
           "$type": "SummaryModel",
-          "editMode": "NotStarted",
           "title": "Redundancy payment summary",
           "returnUrl": null,
           "metaData": {
@@ -117,7 +113,8 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "84adecc2-73c9-4f74-b2f1-087501c79c35",
+          "completedDate": null,
+          "id": "33d55d96-0cf0-49d0-ae1c-7e23543513c0",
           "path": "/ip-upload/redundancy-payment/summary",
           "viewName": "_Summary",
           "encodingType": null,
@@ -126,8 +123,9 @@
           "typeName": "GovUk.Forms.Domain.SummaryModel"
         },
         {
-          "$type": "PostSubmitSuccessModel",
-          "editMode": "NotStarted",
+          "$type": "PostSubmitModel",
+          "referenceNumber": "HDJ2123F",
+          "declarationPagePath": null,
           "title": "Submitted",
           "returnUrl": null,
           "metaData": {
@@ -135,20 +133,23 @@
             "hint": null,
             "description": null,
             "group": "",
-            "submitButtonText": null
+            "submitButtonText": "Upload another form"
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "ae508e24-f8e5-4626-a989-8ebf07003301",
+          "completedDate": null,
+          "id": "f54c8353-e538-44bb-8a97-25d9f369924f",
           "path": "/ip-upload/redundancy-payment/submit-completed",
-          "viewName": "_PostSubmitSuccess",
+          "viewName": "_PostSubmit",
           "encodingType": null,
           "fullWidthLayout": false,
           "submitType": "Section",
-          "typeName": "GovUk.Forms.Domain.PostSubmitSuccessModel"
+          "typeName": "Inss.GovUk.Forms.IPUpload.Domain.PostSubmitModel"
         }
       ],
-      "id": "364ee0d8-2997-456d-bbd8-f91b3f306489",
+      "startedDate": null,
+      "completedDate": null,
+      "id": "7797240c-beaf-4389-bf4b-ed62008d717b",
       "path": "/ip-upload/redundancy-payment",
       "viewName": "_Section",
       "encodingType": null,
@@ -158,7 +159,8 @@
     }
   ],
   "canSubmit": false,
-  "id": "0535203e-afc2-43ca-b276-cb0afc27080b",
+  "createdDate": "2026-05-05T16:30:02.3297797+01:00",
+  "id": "da23e831-35db-41b7-a44e-00d9b485d9da",
   "path": "/ip-upload",
   "viewName": "_Form",
   "encodingType": null,

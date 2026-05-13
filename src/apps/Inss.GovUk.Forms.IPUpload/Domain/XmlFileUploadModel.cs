@@ -27,8 +27,8 @@ public sealed class XmlFileUploadModel : PageModel
         XDocument document = GetXml();
         return document.Root?.Name.NamespaceName.ToLower() switch
         {
-            "http://www.ins.gsi.gov.uk/fileupload/rp14a_application" => CreateModel<Spreadsheet.RP14A>(document),
-            "www.inss.gsi.gov.uk/rp14a_application" => CreateModel<Api.RP14A>(document),
+            "http://www.ins.gsi.gov.uk/fileupload/rp14a_application" => CreateModel<Employee.Spreadsheet.RP14A>(document),
+            "www.inss.gsi.gov.uk/rp14a_application" => CreateModel<Employee.Api.RP14A>(document),
             _ => throw new IPUploadException($"Unknown or empty XML schema {document.Root?.Name.NamespaceName} provided.")
         };
     }
@@ -51,6 +51,7 @@ public sealed class XmlFileUploadModel : PageModel
         base.ClearValues();
         Filename = string.Empty;
         Contents = string.Empty;
+        Length = 0;
     }
     
     private XDocument GetXml()

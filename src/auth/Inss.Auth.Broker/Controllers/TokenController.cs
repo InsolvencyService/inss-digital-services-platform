@@ -28,7 +28,7 @@ public class TokenController : Controller
     }
     
     [HttpPost("/connect/token")]
-    public async Task<IActionResult> Discovery()
+    public async Task<IActionResult> TokenExchange()
     {
         var form = await Request.ReadFormAsync();
         var code = form["code"].ToString();
@@ -55,9 +55,10 @@ public class TokenController : Controller
             return BadRequest("Invalid PKCE verification");
         }
 
-        ClaimsIdentity ci = (ClaimsIdentity)authCode.Principal.Identity!;
-        AppendSubjectClaim(ci);
-        AppendNameClaim(ci);
+        ClaimsPrincipal principal = authCode.GetClaimsPrincipal();
+        ClaimsIdentity identity = (ClaimsIdentity)principal.Identity!;
+        AppendSubjectClaim(identity);
+        AppendNameClaim(identity);
     
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -68,15 +69,15 @@ public class TokenController : Controller
         var idToken = tokenHandler.CreateJwtSecurityToken(
             issuer: issuer,
             audience: _brokerOptions.Value.ClientId,
-            subject: new ClaimsIdentity(authCode.Principal.Claims),
+            subject: new ClaimsIdentity(principal.Claims),
             expires: DateTime.UtcNow.AddMinutes(_brokerOptions.Value.TokenExpiresInMinutes),
             signingCredentials: signingCredentials
         );
         
         var accessToken = tokenHandler.CreateJwtSecurityToken(
             issuer: issuer,
-            audience: "api",
-            subject: new ClaimsIdentity(authCode.Principal.Claims),
+            audience: _brokerOptions.Value.ClientId,
+            subject: new ClaimsIdentity(identity.Claims),
             expires: DateTime.UtcNow.AddMinutes(_brokerOptions.Value.TokenExpiresInMinutes),
             signingCredentials: signingCredentials
         );

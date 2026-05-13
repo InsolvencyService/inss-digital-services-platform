@@ -17,7 +17,7 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
-            services.AddKeyedSingleton<IFormPrePopulationService, TestFormPrePopulationService>(webRoot.Root);
+            services.AddKeyedTransient<IFormPrePopulationService, TestFormPrePopulationService>(webRoot.Root);
             YourDetailsFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
         });

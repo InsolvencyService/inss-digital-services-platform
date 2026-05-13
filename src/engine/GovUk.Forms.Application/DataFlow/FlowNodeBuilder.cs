@@ -20,19 +20,19 @@ public sealed class FlowNodeBuilder
 
     public FlowNodeBuilder WithLoader<TLoader>() where TLoader : class, IFlowNodeLoader
     {
-        _services.AddKeyedSingleton<IFlowNodeLoader, TLoader>(_node.Id);
+        _services.AddKeyedTransient<IFlowNodeLoader, TLoader>(_node.Id);
         return this;
     }
     
     public FlowNodeBuilder WithValidator<TValidator>() where TValidator : class, IFlowNodeValidator
     {
-        _services.AddKeyedSingleton<IFlowNodeValidator, TValidator>(_node.Id);
+        _services.AddKeyedTransient<IFlowNodeValidator, TValidator>(_node.Id);
         return this;
     }
     
     public FlowNodeBuilder WithExecutor<TExecutor>() where TExecutor : class, IFlowNodeExecutor
     {
-        _services.AddKeyedSingleton<IFlowNodeExecutor, TExecutor>(_node.Id);
+        _services.AddKeyedTransient<IFlowNodeExecutor, TExecutor>(_node.Id);
         return this;
     }
     

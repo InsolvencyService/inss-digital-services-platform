@@ -7,7 +7,7 @@ pool:
 parameters:
   - name: location
     type: string
-    default: 'northeurope'
+    default: 'uksouth'
     values:
       - uksouth
       - northeurope
@@ -75,7 +75,7 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'WebApps'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-      
+
 - stage: DeployDev
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn: BuildTest

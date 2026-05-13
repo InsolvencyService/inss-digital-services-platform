@@ -23,7 +23,6 @@ public class IPUploadFlowchartTests
         IFormProvider formProvider = Substitute.For<IFormProvider>();
         formProvider.Create(form.Path).Returns(form);
         builder.Services.AddSingleton(formProvider);
-        builder.Services.AddSingleton(Substitute.For<IStaticContentProvider>());
         IPUploadFlowchart flowchart = new();
         
         flowchart.Construct(builder.Services);

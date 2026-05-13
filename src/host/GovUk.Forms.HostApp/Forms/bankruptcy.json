@@ -2,7 +2,6 @@
   "sections": [
     {
       "title": "Bankruptcy",
-      "state": "NotStarted",
       "pages": [
         {
           "$type": "DateModel",
@@ -10,7 +9,6 @@
           "month": 3,
           "year": 2001,
           "value": "2001-03-27",
-          "editMode": "NotStarted",
           "title": "Date you went bankrupt",
           "returnUrl": null,
           "metaData": {
@@ -22,16 +20,17 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "c143303c-4db0-4799-8b87-c483b46664f6",
+          "completedDate": null,
+          "id": "d48f25df-bc74-491a-a4fa-2c6642f857cf",
           "path": "/bankruptcy/your-bankruptcy/date-bankrupt",
           "viewName": "_Date",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.DateModel"
         },
         {
           "$type": "SummaryModel",
-          "editMode": "NotStarted",
           "title": "Bankruptcy summary",
           "returnUrl": null,
           "metaData": {
@@ -43,27 +42,34 @@
           },
           "linkedToNode": "",
           "previousPagePath": "/",
-          "id": "ce00c609-db70-4685-87ce-dc46eb57f5df",
+          "completedDate": null,
+          "id": "97f8ba5b-c960-4af4-a7ba-8ebe9540593e",
           "path": "/bankruptcy/your-bankruptcy/summary",
           "viewName": "_Summary",
           "encodingType": null,
+          "fullWidthLayout": false,
           "submitType": "Form",
           "typeName": "GovUk.Forms.Domain.SummaryModel"
         }
       ],
-      "id": "7de4b33c-020d-47a9-824a-3359e040b0e6",
+      "startedDate": null,
+      "completedDate": null,
+      "id": "60f1d157-7963-4b56-aca5-7bbbe27b670f",
       "path": "/bankruptcy/your-bankruptcy",
       "viewName": "_Section",
       "encodingType": null,
+      "fullWidthLayout": false,
       "submitType": "Form",
       "typeName": "GovUk.Forms.Domain.SectionModel"
     }
   ],
   "canSubmit": false,
-  "id": "1081083d-7684-4c0b-9e1d-b34e1f324708",
+  "createdDate": "2026-05-05T13:43:43.708037+01:00",
+  "id": "1d878f66-d527-4324-bac1-a8bfd3ee7448",
   "path": "/bankruptcy",
   "viewName": "_Form",
   "encodingType": null,
+  "fullWidthLayout": false,
   "submitType": "Form",
   "typeName": "GovUk.Forms.Domain.FormModel"
 }

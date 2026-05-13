@@ -42,12 +42,8 @@
     <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.AboutYou\Demo.GovUk.Forms.AboutYou.csproj" />
     <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Bankruptcy\Demo.GovUk.Forms.Bankruptcy.csproj" />
     <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
+    <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.ContactUs\Demo.GovUk.Forms.ContactUs.csproj" />
     <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
     <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Resources\Html\IPUpload-Declaration.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

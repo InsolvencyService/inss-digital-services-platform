@@ -1,8 +1,12 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+
+using System.ComponentModel.DataAnnotations;
+
 namespace GovUk.Forms.Components.Options;
 
-public sealed class ExternalApiOptions
+public class ExternalApiOptions
 {
+    [Required]
     public string Url { get; init; }
 
     public int LifetimeMinutes { get; init; } = 5;

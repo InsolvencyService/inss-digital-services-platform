@@ -9,7 +9,7 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
 
 public class FileUploadErrorFlowNodeLoaderTests
 {
-    private readonly FileUploadErrorFlowNodeLoader _loader = new();
+    private readonly FileUploadErrorFlowNodeLoader _fileUploadErrorFlowNodeLoader = new();
     
     [Fact]
     public async Task LoadingErrorPage_LoadAsync_LinksNodeToErrorDetails()
@@ -27,7 +27,7 @@ public class FileUploadErrorFlowNodeLoaderTests
             Page = fileUploadErrors
         };
 
-        await _loader.LoadAsync(context);
+        await _fileUploadErrorFlowNodeLoader.LoadAsync(context);
         
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
         Assert.Equal("NodeId3", fileUploadErrorDetails.LinkedToNode);

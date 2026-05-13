@@ -1,4 +1,3 @@
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Domain.Serialization;
 
@@ -6,8 +5,6 @@ namespace GovUk.Forms.Domain;
 
 public abstract class PageModel : ContentModel
 {
-    public PageEditTypes EditMode { get; set; } = PageEditTypes.NotStarted;
-
     public string Title { get; init; } = string.Empty;
     
     public string? ReturnUrl { get; set; }
@@ -16,7 +13,9 @@ public abstract class PageModel : ContentModel
 
     public NodeId LinkedToNode { get; set; } = NodeId.Empty;
 
-    public ContentPath PreviousPagePath { get; set; } = "/";
+    public ContentPath? PreviousPagePath { get; set; }
+    
+    public DateTimeOffset? CompletedDate { get; set; }
     
     public virtual void ClearValues()
     {
@@ -26,7 +25,7 @@ public abstract class PageModel : ContentModel
         }
             
         ReturnUrl = null;
-        EditMode = PageEditTypes.NotStarted;
+        CompletedDate = null;
         PreviousPagePath = "/";
     }
 
@@ -36,24 +35,9 @@ public abstract class PageModel : ContentModel
         return FormSerializer.DeserializePage(json, GetType());
     }
 
-    public void TransitionToEdit(ContentPath previousPagePath)
+    public void SetCompleted()
     {
-        if (IsLocked())
-        {
-            return;
-        }
-        
-        EditMode = PageEditTypes.Editing;
-        
-        if (PreviousPagePath.IsEmpty()) 
-        {
-            PreviousPagePath = previousPagePath;
-        }
-    }
-
-    public bool IsLocked()
-    {
-        return (EditMode & PageEditTypes.Locked) == PageEditTypes.Locked;
+        CompletedDate = DateTimeOffset.Now;
     }
 
     public virtual string[] GetSummaryInfo()
@@ -67,6 +51,6 @@ public abstract class PageModel : ContentModel
 
     public virtual string? GetButtonText()
     {
-        return !IsLocked() ? MetaData.SubmitButtonText : null;
+        return MetaData.SubmitButtonText;
     }
 }

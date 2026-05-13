@@ -1,4 +1,3 @@
-using GovUk.Forms.Domain.Enums;
 using GovUk.Forms.Domain.Exceptions;
 using GovUk.Forms.Domain.FormValidation;
 using GovUk.Forms.Domain.Primitives;
@@ -8,8 +7,10 @@ namespace GovUk.Forms.Domain;
 public class FormModel : ContentModel
 {
     public SectionModelList Sections { get; init; } = [];
-    
-    public bool CanSubmit => Sections.All(s => s.State == SectionStateTypes.Completed);
+
+    public bool CanSubmit => Sections.All(s => s.CompletedDate is not null);
+
+    public DateTimeOffset CreatedDate { get; init; } = DateTimeOffset.Now;
     
     public ContentModel GetContent(ContentPath path)
     {
@@ -89,7 +90,8 @@ public class FormModel : ContentModel
             {
                 Id = section.Id,
                 Path = section.Path,
-                State = SectionStateTypes.Completed,
+                StartedDate = section.StartedDate,
+                CompletedDate = section.CompletedDate,
                 Title = section.Title
             };
 

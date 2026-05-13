@@ -4,6 +4,8 @@ using GovUk.Forms.Components.Authentication;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GovUk.Forms.Components.Controllers;
@@ -23,7 +25,7 @@ public class FormController : Controller
     public async Task<IActionResult> Edit(string? state = null)
     {
         (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(new ContentPath(Request.Path), state);
-        ViewData.AddBackButton(result.Content is PageModel page ? page.PreviousPagePath.Value : null);
+        ViewData.AddBackButton(result.Content is PageModel { PreviousPagePath: not null } page ? page.PreviousPagePath.Value : null);
         ViewData.AddFullWidthLayout(result.Content?.FullWidthLayout == true);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
@@ -43,12 +45,18 @@ public class FormController : Controller
                 }
             }
 
-            ViewData.AddBackButton(postedContent is PageModel page ? page.PreviousPagePath.Value : null);
+            ViewData.AddBackButton(postedContent is PageModel { PreviousPagePath: not null } page ? page.PreviousPagePath.Value : null);
             ViewData.AddFullWidthLayout(postedContent.FullWidthLayout);
             return View(postedContent);
         }
 
         ContentPath redirectTo = await _formService.SaveAsync(postedContent);
         return Redirect(redirectTo);
+    }
+    
+    [HttpGet]
+    public IActionResult LogOut()
+    {
+        return SignOut(OpenIdConnectDefaults.AuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
     }
 }

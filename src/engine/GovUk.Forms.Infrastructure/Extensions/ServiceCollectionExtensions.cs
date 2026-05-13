@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
                 if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString) ||
                     !string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
                 {
-                    CosmosClientOptions options = new() { Serializer = new CosmosFormCosmosSerializer() };
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
                     CosmosClient client = cosmosDbOptions.ConnectionString is not null
                         ? new CosmosClient(cosmosDbOptions.ConnectionString, options)
                         : new CosmosClient(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
@@ -35,8 +35,7 @@ public static class ServiceCollectionExtensions
 
                 return new TestFormStorageProvider();
             });
-
-            services.AddSingleton<IStaticContentProvider, TestStaticContentProvider>();
+            
             services.AddSingleton<IFormProvider, TestFormProvider>();
             return services;
         }
