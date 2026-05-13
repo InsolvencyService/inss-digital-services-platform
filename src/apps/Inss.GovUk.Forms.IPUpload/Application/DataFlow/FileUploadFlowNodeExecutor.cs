@@ -3,6 +3,7 @@ using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation.RP14A;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
@@ -81,10 +82,10 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                         DateOnly.FromDateTime(employee.DateOfBirth),
                         employee.NINO,
                         validationError.AttemptedValue?.ToString() ?? "Not entered",
-                        RP14AValidation.GetCategory(validationError.PropertyName),
-                        RP14AValidation.GetProperty(validationError.PropertyName),
-                        RP14AValidation.GetError(validationError.ErrorMessage),
-                        RP14AValidation.GetHint(validationError.ErrorMessage));
+                        ValidationInfo.GetCategory(validationError.PropertyName),
+                        ValidationInfo.GetProperty(validationError.PropertyName),
+                        ValidationInfo.GetError(validationError.ErrorMessage),
+                        ValidationInfo.GetHint(validationError.ErrorMessage));
                 }
             }
         }
@@ -92,8 +93,8 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
     
     private async Task ValidateApiUploadAsync(IPUploadXmlErrorsModel fileUploadErrors, Domain.Employee.Api.RP14A redundancyPayment)
     {
-        RP14AValidator2 validator2 = new();
-        FluentValidation.Results.ValidationResult? validationResult = await validator2.ValidateAsync(redundancyPayment);
+        RP14AApiValidator apiValidator = new();
+        FluentValidation.Results.ValidationResult? validationResult = await apiValidator.ValidateAsync(redundancyPayment);
         
         if (validationResult?.IsValid == false)
         {
@@ -107,10 +108,10 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                     DateOnly.FromDateTime(employee.DateOfBirth),
                     employee.NINO,
                     validationError.AttemptedValue?.ToString() ?? "Not entered",
-                    RP14AValidation.GetCategory(validationError.PropertyName),
-                    RP14AValidation.GetProperty(validationError.PropertyName),
-                    RP14AValidation.GetError(validationError.ErrorMessage),
-                    RP14AValidation.GetHint(validationError.ErrorMessage));
+                    ValidationInfo.GetCategory(validationError.PropertyName),
+                    ValidationInfo.GetProperty(validationError.PropertyName),
+                    ValidationInfo.GetError(validationError.ErrorMessage),
+                    ValidationInfo.GetHint(validationError.ErrorMessage));
             }
         }
         
@@ -147,10 +148,10 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                         DateOnly.FromDateTime(employee.DateOfBirth),
                         employee.NINO,
                         validationError.AttemptedValue?.ToString() ?? "Not entered",
-                        RP14AValidation.GetCategory(validationError.PropertyName),
-                        RP14AValidation.GetProperty(validationError.PropertyName),
-                        RP14AValidation.GetError(validationError.ErrorMessage),
-                        RP14AValidation.GetHint(validationError.ErrorMessage));
+                        ValidationInfo.GetCategory(validationError.PropertyName),
+                        ValidationInfo.GetProperty(validationError.PropertyName),
+                        ValidationInfo.GetError(validationError.ErrorMessage),
+                        ValidationInfo.GetHint(validationError.ErrorMessage));
                 }
             }
         }

@@ -1,0 +1,17 @@
+﻿using FluentValidation;
+using Inss.GovUk.Forms.IPUpload.Domain.Employee.Spreadsheet;
+
+namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.RP14A;
+
+public sealed class RP14ASpreadsheetHolidayNotPaidValidator : AbstractValidator<RP14AEmployeeHolidayHolidayNotPaid>
+{
+    public RP14ASpreadsheetHolidayNotPaidValidator()
+    {
+        RuleFor(p => p.Holiday1.Holiday1StartDate).ValidateStartEndDates(
+            p => p.Holiday1.Holiday1EndDate, RP14AValidationInfo.InvalidHolidayNotPaidRange);
+        RuleFor(p => p.Holiday2.Holiday2StartDate).ValidateStartEndDates(
+            p => p.Holiday2.Holiday2EndDate, RP14AValidationInfo.InvalidHolidayNotPaidRange);
+        RuleFor(p => p.Holiday3.Holiday3StartDate).ValidateStartEndDates(
+            p => p.Holiday3.Holiday3EndDate, RP14AValidationInfo.InvalidHolidayNotPaidRange);
+    }
+}
