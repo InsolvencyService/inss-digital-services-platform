@@ -14,7 +14,7 @@ internal sealed class RP14AValidationInfo : ValidationInfo
     internal static readonly RP14AValidationInfo MissingEmployeeSurname = new("Employee", "Employee surname", "[COUNT] missing employee surname");
     internal static readonly RP14AValidationInfo InvalidEmployeeSurnameLength = new("Employee", "Employee surname", "[COUNT] invalid length of the employee surname", "Maximum of 99 characters allowed");
     internal static readonly RP14AValidationInfo MissingNino = new("Employee", "Employee national insurance number", "[COUNT] missing employee national insurance number");
-    internal static readonly RP14AValidationInfo InvalidNinoFormat = new("Employee", "Employee national insurance number", "[COUNT] invalid employee national insurance number format", "Format is CN12345678");
+    internal static readonly RP14AValidationInfo InvalidNinoFormat = new("Employee", "Employee national insurance number", "[COUNT] invalid employee national insurance number format", "Format is AB112233C");
     internal static readonly RP14AValidationInfo InvalidAopOwedFormat = new("Employee", "Employee arrears of payment owed", "[COUNT] invalid arrears of pay owed", "Expected format is 12.34 or 100");
     internal static readonly RP14AValidationInfo InvalidMoneyOwedFormat = new("Employee", "Money owed to employer", "[COUNT] invalid money owed to employer", "Expected format is 12.34 or 100");
     internal static readonly RP14AValidationInfo InvalidEmploymentDates = new("Employee", "Employee employment dates", "[COUNT] invalid employment dates for the employee", "Start date must be before the end date");
