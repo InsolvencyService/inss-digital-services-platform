@@ -8,5 +8,6 @@ public sealed class RP14ApiPayRecordsContactValidator : AbstractValidator<Domain
     {
         RuleFor(p => p.Name).ValidatePayRecordContactName();
         RuleFor(p => p.PhoneNumber).ValidatePayRecordContactPhone();
+        RuleFor(p => p.Address).SetValidator(new RP14ApiAddressValidator("Pay records contact"));
     }
 }

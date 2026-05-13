@@ -7,5 +7,6 @@ public sealed class RP14ApiTransferToValidator : AbstractValidator<Domain.Employ
     public RP14ApiTransferToValidator()
     {
         RuleFor(p => p.Name).ValidateTransferToName();
+        RuleFor(p => p.Address).SetValidator(new RP14ApiAddressValidator("Transfers"));
     }
 }

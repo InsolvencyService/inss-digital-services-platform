@@ -7,5 +7,6 @@ public sealed class RP14ApiEmploymentContinuityValidator : AbstractValidator<Dom
     public RP14ApiEmploymentContinuityValidator()
     {
         RuleFor(p => p.EmployerName).ValidateContinuityEmployerName();
+        RuleFor(p => p.Address).SetValidator(new RP14ApiAddressValidator("Employment continuity"));
     }
 }
