@@ -1,4 +1,8 @@
-﻿using GovUk.Forms.Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using GovUk.Forms.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -29,10 +33,12 @@ public sealed class IPUploadXmlErrorsModel : PageModel
         if (errorInfo is null)
         {
             errorInfo = new ErrorInfo { Category = category, Property = property, Error = error, Hint = hint };
+            errorInfo.AddRow("Forenames", "Surname", "Date of birth", "NI number", "Cell value");
             errors.Add(errorInfo);
         }
 
-        errorInfo.AddIdentifier(firstName, surname, dob, nino, value);
+        errorInfo.AddRow(firstName, surname, dob.ToString(CultureInfo.CurrentCulture), nino, value);
+        //errorInfo.AddIdentifier(firstName, surname, dob, nino, value);
         Errors = errors.ToArray();
     }
     

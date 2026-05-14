@@ -1,10 +1,9 @@
-﻿@using Inss.GovUk.Forms.IPUpload.Domain.Validation
-@model IPUploadXmlErrorDetailsModel
+﻿@model IPUploadXmlErrorDetailsModel
 
 <h1 class="govuk-heading-l">@(Model.CurrentErrorDetail.Property)</h1>
 
 <p class="govuk-body">
-    @(Model.CurrentErrorDetail.Error.Replace("[COUNT]", Model.CurrentErrorDetail.Identifiers.Length.ToString()))
+    @(Model.CurrentErrorDetail.Error.Replace("[COUNT]", Model.CurrentErrorDetail.RowCount.ToString()))
 </p>
 
 @if (Model.CurrentErrorDetail.Hint is not null)
@@ -13,26 +12,28 @@
     <p class="govuk-body">@(Model.CurrentErrorDetail.Hint)</p>
 }
 
+@{
+    string[] headers = Model.CurrentErrorDetail.Rows[0];
+}
 <table class="govuk-table govuk-table--small-text-until-tablet">
     <caption class="govuk-table__caption govuk-table__caption--m">Affected employees</caption>
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Forenames</th>
-        <th scope="col" class="govuk-table__header">Surname</th>
-        <th scope="col" class="govuk-table__header">Date of birth</th>
-        <th scope="col" class="govuk-table__header">NI number</th>
-        <th scope="col" class="govuk-table__header">Cell value</th>
+        @foreach (string header in headers)
+        {
+            <th scope="col" class="govuk-table__header">@header</th>
+        }
     </tr>
     </thead>
     <tbody class="govuk-table__body">
-    @foreach (ErrorIdentifier identifier in Model.CurrentErrorDetail.Identifiers)
+    @for (int i = 1; i < Model.CurrentErrorDetail.Rows.Length; i++)
     {
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell">@(identifier.FirstName)</td>
-            <td class="govuk-table__cell">@(identifier.Surname)</td>
-            <td class="govuk-table__cell">@(identifier.Dob)</td>
-            <td class="govuk-table__cell">@(identifier.Nino)</td>
-            <td class="govuk-table__cell">@(identifier.Value)</td>
+            
+            @for (int j = 0; j < Model.CurrentErrorDetail.ColumnCount; j++)
+            {
+                <td class="govuk-table__cell">@(Model.CurrentErrorDetail.Rows[i][j])</td>
+            }
         </tr>
     }
     </tbody>

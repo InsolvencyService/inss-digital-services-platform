@@ -12,7 +12,7 @@
           @(error.Property)
         </dt>
         <dd class="govuk-summary-list__value">
-          <p class="govuk-body">@(error.Error.Replace("[COUNT]", error.Count.ToString()))</p>
+          <p class="govuk-body">@(error.Error.Replace("[COUNT]", error.RowCount.ToString()))</p>
           @if (error.Hint is not null)
           {
             <p class='govuk-body govuk-hint'>@(error.Hint)</p>
