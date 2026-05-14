@@ -10,6 +10,19 @@ internal static partial class ValidatorRuleExtensions
 {
     extension<T>(IRuleBuilder<T, string> rule)
     {
+        internal IRuleBuilderOptions<T, string> ValidateCaseReference()
+        {
+            return rule
+                .Matches(ValidationInfo.CaseReferenceFormat)
+                .When(p => p is not null && !string.IsNullOrWhiteSpace(p.ToString()))
+                .OverridePropertyName(RP14ValidationInfo.InvalidCaseReferenceFormat.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidCaseReferenceFormat.ErrorFormat)
+                .MaximumLength(12)
+                .When(p => p is not null && !string.IsNullOrWhiteSpace(p.ToString()))
+                .OverridePropertyName(RP14ValidationInfo.InvalidCaseReferenceLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidCaseReferenceLength.ErrorFormat);
+        }
+        
         internal IRuleBuilderOptions<T, string> ValidateBusinessName()
         {
             return rule

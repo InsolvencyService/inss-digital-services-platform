@@ -2,6 +2,10 @@
 
 internal sealed class RP14ValidationInfo : ValidationInfo
 {
+    // Case
+    internal static readonly RP14ValidationInfo InvalidCaseReferenceFormat = new("Case", "Case reference", "[COUNT] invalid case reference format", "Format is CN12345678");
+    internal static readonly RP14ValidationInfo InvalidCaseReferenceLength = new("Case", "Case reference", "[COUNT] too long case reference", "Up to 12 characters are allowed");
+    
     // Business
     internal static readonly RP14ValidationInfo MissingBusinessName = new("Business", "Name of business", "[COUNT] missing name of business");
     internal static readonly RP14ValidationInfo InvalidBusinessNameLength = new("Business", "Name of business", "[COUNT] too long name of business", "Up to 60 characters are allowed");
