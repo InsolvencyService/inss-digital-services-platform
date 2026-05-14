@@ -30,8 +30,10 @@ public class FileUploadErrorDetailsFlowNodeLoaderTests
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel ipUploadSection = form.Sections["IP Upload"];
         IPUploadXmlErrorsModel fileUploadErrors = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
-        fileUploadErrors.AddError("Homer", "Simpson", DateOnly.Parse("10/04/1990", CultureInfo.CurrentCulture), 
-            "AB112233H", "CN12345678", "Case", "Case reference", "[COUNT] unknown case reference", null);
+        fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
+            "Case", "Case reference", "[COUNT] unknown case reference", null,
+            "Homer", "Simpson", DateOnly.Parse("10/04/1990", CultureInfo.CurrentCulture), 
+            "AB112233H", "CN12345678"));
         ErrorInfo[] errors = fileUploadErrors.GetErrors("Case");
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = fileUploadErrorDetails.Path, NextNodes = ["NodeId2"] };

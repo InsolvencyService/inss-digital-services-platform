@@ -8,22 +8,6 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Validation.Employer;
 public class RP14ApiEmploymentContinuityValidatorTests
 {
     private readonly RP14ApiEmploymentContinuityValidator _validator = new();
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    public void InvalidEmployerName_TestValidate_ReturnsInvalidResult(string? employerName)
-    {
-        RP14EmployeesEmployeesClaimingContinuity model = new()
-        {
-            EmployerName = employerName
-        };
-
-        var result = _validator.TestValidate(model);
-        
-        Assert.False(result.IsValid);
-    }
     
     [Fact]
     public void InvalidEmployerNameLength_TestValidate_ReturnsInvalidResult()
