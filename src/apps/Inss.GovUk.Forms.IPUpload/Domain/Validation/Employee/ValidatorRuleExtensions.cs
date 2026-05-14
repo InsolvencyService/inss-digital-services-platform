@@ -29,7 +29,7 @@ internal static partial class ValidatorRuleExtensions
             return rule
                 .NotEmpty()
                 .OverridePropertyName(RP14AValidationInfo.MissingNino.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.MissingNino.ErrorFormat).Matches(ValidationInfo.NinoFormat)
+                .WithMessage(RP14AValidationInfo.MissingNino.ErrorFormat)
                 .Matches(ValidationInfo.NinoFormat)
                 .OverridePropertyName(RP14AValidationInfo.InvalidNinoFormat.PropertyFormat)
                 .WithMessage(RP14AValidationInfo.InvalidNinoFormat.ErrorFormat);
