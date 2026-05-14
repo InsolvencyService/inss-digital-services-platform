@@ -9,16 +9,12 @@ public class RP14ApiDirectorValidatorTests
 {
     private readonly RP14ApiDirectorValidator _validator = new();
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("XX112233YY")]
-    public void InvalidNino_TestValidate_ReturnsInvalidResult(string? invalidNino)
+    [Fact]
+    public void InvalidNino_TestValidate_ReturnsInvalidResult()
     {
         RP14DirectorsDirector model = new()
         {
-            NINO = invalidNino
+            NINO = "XX112233YY"
         };
 
         var result = _validator.TestValidate(model);

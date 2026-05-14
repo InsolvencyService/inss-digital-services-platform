@@ -12,21 +12,18 @@
     <p class="govuk-body">@(Model.CurrentErrorDetail.Hint)</p>
 }
 
-@{
-    string[] headers = Model.CurrentErrorDetail.Rows[0];
-}
 <table class="govuk-table govuk-table--small-text-until-tablet">
-    <caption class="govuk-table__caption govuk-table__caption--m">Affected employees</caption>
+    <caption class="govuk-table__caption govuk-table__caption--m">@(Model.CurrentErrorDetail.HeaderCaption)</caption>
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-        @foreach (string header in headers)
+        @foreach (string header in Model.CurrentErrorDetail.Headers)
         {
             <th scope="col" class="govuk-table__header">@header</th>
         }
     </tr>
     </thead>
     <tbody class="govuk-table__body">
-    @for (int i = 1; i < Model.CurrentErrorDetail.Rows.Length; i++)
+    @for (int i = 0; i < Model.CurrentErrorDetail.Rows.Length; i++)
     {
         <tr class="govuk-table__row">
             

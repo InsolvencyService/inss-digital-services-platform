@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using FluentValidation;
+using Inss.GovUk.Forms.IPUpload.Application.Services;
+
 // ReSharper disable UnusedMethodReturnValue.Global
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
@@ -39,9 +41,6 @@ internal static partial class ValidatorRuleExtensions
         internal IRuleBuilderOptions<T, string> ValidateDirectorNino()
         {
             return rule
-                .NotEmpty()
-                .OverridePropertyName(RP14ValidationInfo.DirectorMissingNino.PropertyFormat)
-                .WithMessage(RP14ValidationInfo.DirectorMissingNino.ErrorFormat)
                 .Matches(ValidationInfo.NinoFormat)
                 .OverridePropertyName(RP14ValidationInfo.DirectorInvalidNinoFormat.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.DirectorInvalidNinoFormat.ErrorFormat);
@@ -66,9 +65,6 @@ internal static partial class ValidatorRuleExtensions
         internal IRuleBuilderOptions<T, string> ValidateContinuityEmployerName()
         {
             return rule
-                .NotEmpty()
-                .OverridePropertyName(RP14ValidationInfo.MissingContinuityEmployerName.PropertyFormat)
-                .WithMessage(RP14ValidationInfo.MissingContinuityEmployerName.ErrorFormat)
                 .MaximumLength(60)
                 .OverridePropertyName(RP14ValidationInfo.InvalidContinuityEmployerNameLength.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.InvalidContinuityEmployerNameLength.ErrorFormat);
@@ -77,9 +73,6 @@ internal static partial class ValidatorRuleExtensions
         internal IRuleBuilderOptions<T, string> ValidateTransferToName()
         {
             return rule
-                .NotEmpty()
-                .OverridePropertyName(RP14ValidationInfo.MissingTransferToName.PropertyFormat)
-                .WithMessage(RP14ValidationInfo.MissingTransferToName.ErrorFormat)
                 .MaximumLength(60)
                 .OverridePropertyName(RP14ValidationInfo.InvalidTransferToNameLength.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.InvalidTransferToNameLength.ErrorFormat);

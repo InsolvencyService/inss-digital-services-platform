@@ -29,6 +29,8 @@ public sealed class XmlFileUploadModel : PageModel
         {
             "http://www.ins.gsi.gov.uk/fileupload/rp14a_application" => CreateModel<Employee.Spreadsheet.RP14A>(document),
             "www.inss.gsi.gov.uk/rp14a_application" => CreateModel<Employee.Api.RP14A>(document),
+            "http://www.ins.gsi.gov.uk/fileupload/rp14_application" => CreateModel<Employer.Spreadsheet.RP14>(document),
+            "www.inss.gsi.gov.uk/rp14_application" => CreateModel<Employer.Api.RP14>(document),
             _ => throw new IPUploadException($"Unknown or empty XML schema {document.Root?.Name.NamespaceName} provided.")
         };
     }

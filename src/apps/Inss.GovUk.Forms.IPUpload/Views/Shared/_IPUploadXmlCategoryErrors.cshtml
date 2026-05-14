@@ -18,9 +18,12 @@
             <p class='govuk-body govuk-hint'>@(error.Hint)</p>
           }
         </dd>
-        <dd class="govuk-summary-list_actions">
-          <a class="govuk-link" href="/ip-upload/redundancy-payment/upload-error-details/?state=@error.Id">View details</a>
-        </dd>
+        @if (error.ShowErrorDetails)
+        {
+          <dd class="govuk-summary-list_actions">
+            <a class="govuk-link" href="/ip-upload/redundancy-payment/upload-error-details/?state=@error.Id">View details</a>
+          </dd>
+        }
       </div>
     }
   </dl>

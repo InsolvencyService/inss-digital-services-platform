@@ -9,11 +9,10 @@ internal sealed class RP14ValidationInfo : ValidationInfo
     internal static readonly RP14ValidationInfo InvalidSICLength = new("Business", "Standard industrial classification", "[COUNT] too long standard industrial classification", "Up to 255 characters are allowed");
     
     // Directors
-    internal static readonly RP14ValidationInfo DirectorMissingNino = new("Director", "Director national insurance number", "[COUNT] missing the director national insurance number");
     internal static readonly RP14ValidationInfo DirectorInvalidNinoFormat = new("Director", "Director national insurance number", "[COUNT] invalid director national insurance number format", "Format is AB112233C");
     
     // Shareholders
-    internal static readonly RP14ValidationInfo InvalidShareholderPercentage = new("Shareholder", "Shareholder percentage", "[COUNT] invalid shareholder percentage", "Expected format is 50.50 or 100");
+    internal static readonly RP14ValidationInfo InvalidShareholderPercentage = new("Shareholders", "Shareholder percentage", "[COUNT] invalid shareholder percentage", "Expected format is 50.50 or 100");
     
     // Associated companies
     internal static readonly RP14ValidationInfo InvalidAssociatedCompanyNameLength = new("Associated company", "Associated company name", "[COUNT] too long name of associated company", "Up to 60 characters are allowed");
