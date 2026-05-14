@@ -7,6 +7,7 @@ public sealed class RP14ApiValidator : AbstractValidator<Domain.Employer.Api.RP1
     public RP14ApiValidator()
     {
         RuleFor(p => p.NameOfBusiness).ValidateBusinessName();
+        RuleFor(p => p.NatureOfBusiness).ValidateNatureOfBusiness();
         RuleFor(p => p.CompanyNumber).ValidateCompanyNumber();
         RuleFor(p => p.Address).SetValidator(new RP14ApiAddressValidator("Business"));
         RuleFor(p => p.SICCode).ValidateSIC();
@@ -16,5 +17,6 @@ public sealed class RP14ApiValidator : AbstractValidator<Domain.Employer.Api.RP1
         RuleFor(p => p.Employees.EmployeesClaimingContinuity).SetValidator(new RP14ApiEmploymentContinuityValidator());
         RuleFor(p => p.TransferDetails.TransferTo).SetValidator(new RP14ApiTransferToValidator());
         RuleFor(p => p.PayRecordsContact).SetValidator(new RP14ApiPayRecordsContactValidator());
+        RuleFor(p => p.InsolvencyPractitioner).SetValidator(new RP14ApiInsolvencyPractitionerValidator());
     }
 }

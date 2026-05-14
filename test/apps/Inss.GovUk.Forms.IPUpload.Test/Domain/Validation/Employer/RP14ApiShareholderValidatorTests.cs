@@ -14,7 +14,28 @@ public class RP14ApiShareholderValidatorTests
     {
         RP14Shareholder model = new()
         {
-            Percentage = 50.123M
+            Percentage = 50.123M,
+            Name = new NameType
+            {
+                FullName = "Ned Flanders"
+            }
+        };
+
+        var result = _validator.TestValidate(model);
+        
+        Assert.False(result.IsValid);
+    }
+    
+    [Fact]
+    public void InvalidShareholderName_TestValidate_ReturnsInvalidResult()
+    {
+        RP14Shareholder model = new()
+        {
+            Percentage = 50.123M,
+            Name = new NameType
+            {
+                FullName = new string('X', 101)
+            }
         };
 
         var result = _validator.TestValidate(model);
@@ -27,7 +48,11 @@ public class RP14ApiShareholderValidatorTests
     {
         RP14Shareholder model = new()
         {
-            Percentage = 50.00M
+            Percentage = 50.00M,
+            Name = new NameType
+            {
+                FullName = "Ned Flanders"
+            }
         };
 
         var result = _validator.TestValidate(model);

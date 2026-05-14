@@ -6,6 +6,7 @@ public sealed class RP14ApiShareholderValidator : AbstractValidator<Domain.Emplo
 {
     public RP14ApiShareholderValidator()
     {
+        RuleFor(p => p.Name.FullName).ValidateShareholderName();
         RuleFor(p => p.Percentage).ValidateShareholderPercentage();
     }
 }

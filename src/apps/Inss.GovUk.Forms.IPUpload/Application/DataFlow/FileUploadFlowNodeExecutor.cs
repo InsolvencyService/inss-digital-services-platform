@@ -67,7 +67,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         {
             if (!(await caseReferenceService.CheckExistsAsync(employee.Header.CaseReference)))
             {
-                fileUploadErrors.AddOrMergeError(new EmployeeSpreadsheetErrorInfo(
+                fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
                     "Case",
                     "Case reference",
                     "[COUNT] case reference have not been matched in our system",
@@ -86,7 +86,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             {
                 foreach (var validationError in validationResult.Errors)
                 {
-                    fileUploadErrors.AddOrMergeError(new EmployeeSpreadsheetErrorInfo(
+                    fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
                         ValidationInfo.GetCategory(validationError.PropertyName),
                         ValidationInfo.GetProperty(validationError.PropertyName),
                         ValidationInfo.GetError(validationError.ErrorMessage),
@@ -114,7 +114,6 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                     "Case reference",
                     "[COUNT] case reference have not been matched in our system",
                     null,
-                    false,
                     ["Case reference value"],
                     [redundancyPayment.Header.CaseReference]));
             }
@@ -132,15 +131,9 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                     ValidationInfo.GetProperty(validationError.PropertyName),
                     ValidationInfo.GetError(validationError.ErrorMessage),
                     ValidationInfo.GetHint(validationError.ErrorMessage),
-                    false,
                     [$"{ValidationInfo.GetProperty(validationError.PropertyName)} value"],
                     [validationError.AttemptedValue?.ToString()]
                 ));
-            }
-
-            foreach (ErrorInfo errorInfo in fileUploadErrors.Errors)
-            {
-                errorInfo.ShowErrorDetails = errorInfo.Category is "Shareholders" or "Employment continuity";
             }
         }
     }
@@ -156,7 +149,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             
             foreach (var validationError in validationResult.Errors)
             {
-                fileUploadErrors.AddOrMergeError(new EmployeeSpreadsheetErrorInfo(
+                fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
                     ValidationInfo.GetCategory(validationError.PropertyName),
                     ValidationInfo.GetProperty(validationError.PropertyName),
                     ValidationInfo.GetError(validationError.ErrorMessage),
@@ -175,7 +168,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         {
             Domain.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
             
-            fileUploadErrors.AddOrMergeError(new EmployeeSpreadsheetErrorInfo(
+            fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
                 "Case",
                 "Case reference",
                 "[COUNT] case reference have not been matched in our system",
@@ -196,7 +189,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             {
                 foreach (var validationError in employeeValidationResult.Errors)
                 {
-                    fileUploadErrors.AddOrMergeError(new EmployeeSpreadsheetErrorInfo(
+                    fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
                         ValidationInfo.GetCategory(validationError.PropertyName),
                         ValidationInfo.GetProperty(validationError.PropertyName),
                         ValidationInfo.GetError(validationError.ErrorMessage),
@@ -224,7 +217,6 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                     "Case reference",
                     "[COUNT] case reference have not been matched in our system",
                     null,
-                    false,
                     ["Case reference value"],
                     [redundancyPayment.Header.CaseReference]));
             }
@@ -242,15 +234,9 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                     ValidationInfo.GetProperty(validationError.PropertyName),
                     ValidationInfo.GetError(validationError.ErrorMessage),
                     ValidationInfo.GetHint(validationError.ErrorMessage),
-                    false,
                     [$"{ValidationInfo.GetProperty(validationError.PropertyName)} value"],
                     [validationError.AttemptedValue?.ToString()]
                 ));
-            }
-
-            foreach (ErrorInfo errorInfo in fileUploadErrors.Errors)
-            {
-                errorInfo.ShowErrorDetails = errorInfo.Category is "Shareholders" or "Employment continuity";
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
+﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
 public class ErrorInfo : ErrorInfoHeader
 {
@@ -37,50 +35,5 @@ public class ErrorInfo : ErrorInfoHeader
     public string[] GetValueRow()
     {
         return Rows.Last();
-    }
-}
-
-public sealed class EmployeeSpreadsheetErrorInfo : ErrorInfo
-{
-    public EmployeeSpreadsheetErrorInfo(
-        string category, 
-        string property, 
-        string error,
-        string? hint,
-        string forenames, 
-        string surname, 
-        DateOnly dob, 
-        string niNumber, 
-        string? cellValue)
-    {
-        Category = category;
-        Property = property;
-        Error = error;
-        Hint = hint;
-        
-        AddHeader("Forenames", "Surname", "Date of birth", "NI number", "Cell value");
-        AddRow(forenames, surname, dob.ToString(CultureInfo.CurrentCulture), niNumber, cellValue ?? "Not entered");
-    }
-}
-
-public sealed class EmployerErrorInfo : ErrorInfo
-{
-    public EmployerErrorInfo(
-        string category, 
-        string property, 
-        string error,
-        string? hint,
-        bool showErrorDetails,
-        string[] headers,
-        string?[] cellValues)
-    {
-        Category = category;
-        Property = property;
-        Error = error;
-        Hint = hint;
-        ShowErrorDetails = showErrorDetails;
-
-        AddHeader(headers);
-        AddRow(cellValues.Select(v => v ?? "Not entered").ToArray());
     }
 }

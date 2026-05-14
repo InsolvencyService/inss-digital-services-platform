@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using FluentValidation;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 
@@ -20,6 +19,14 @@ internal static partial class ValidatorRuleExtensions
                 .MaximumLength(60)
                 .OverridePropertyName(RP14ValidationInfo.InvalidBusinessNameLength.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.InvalidBusinessNameLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateNatureOfBusiness()
+        {
+            return rule
+                .MaximumLength(100)
+                .OverridePropertyName(RP14ValidationInfo.InvalidNatureOfBusinessLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidNatureOfBusinessLength.ErrorFormat);
         }
         
         internal IRuleBuilderOptions<T, string> ValidateCompanyNumber()
@@ -135,6 +142,30 @@ internal static partial class ValidatorRuleExtensions
                 .MaximumLength(10)
                 .OverridePropertyName(RP14ValidationInfo.InvalidCountryLength.PropertyFormat.Replace("[CATEGORY]", category))
                 .WithMessage(RP14ValidationInfo.InvalidCountryLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateIPRegistrationNumber()
+        {
+            return rule
+                .MaximumLength(9)
+                .OverridePropertyName(RP14ValidationInfo.InvalidIPRegistrationNumberLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidIPRegistrationNumberLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateIPFirmName()
+        {
+            return rule
+                .MaximumLength(255)
+                .OverridePropertyName(RP14ValidationInfo.InvalidIPFirmNameLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidIPFirmNameLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateShareholderName()
+        {
+            return rule
+                .MaximumLength(100)
+                .OverridePropertyName(RP14ValidationInfo.InvalidShareholderNameLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidShareholderNameLength.ErrorFormat);
         }
     }
 
