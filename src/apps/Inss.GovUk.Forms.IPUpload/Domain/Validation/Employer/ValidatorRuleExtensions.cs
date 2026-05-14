@@ -139,7 +139,7 @@ internal static partial class ValidatorRuleExtensions
         internal IRuleBuilderOptions<T, string> ValidateAddressCountry(string category)
         {
             return rule
-                .MaximumLength(35)
+                .MaximumLength(10)
                 .OverridePropertyName(RP14ValidationInfo.InvalidCountryLength.PropertyFormat.Replace("[CATEGORY]", category))
                 .WithMessage(RP14ValidationInfo.InvalidCountryLength.ErrorFormat);
         }
