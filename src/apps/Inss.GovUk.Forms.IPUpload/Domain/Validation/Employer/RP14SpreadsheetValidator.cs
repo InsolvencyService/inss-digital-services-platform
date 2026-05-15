@@ -6,6 +6,8 @@ public sealed class RP14SpreadsheetValidator : AbstractValidator<Domain.Employer
 {
     public RP14SpreadsheetValidator()
     {
+        RuleFor(p => p.Header.CaseReference).ValidateCaseReference();
+        
         RuleFor(p => p.NameOfBusiness).ValidateBusinessName();
         RuleFor(p => p.CompanyNumber).ValidateCompanyNumber();
         RuleFor(p => p.CompanyAddrLine1).ValidateAddressLine("Business");

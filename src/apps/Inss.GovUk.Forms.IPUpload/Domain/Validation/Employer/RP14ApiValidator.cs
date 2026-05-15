@@ -6,6 +6,7 @@ public sealed class RP14ApiValidator : AbstractValidator<Domain.Employer.Api.RP1
 {
     public RP14ApiValidator()
     {
+        RuleFor(p => p.Header.CaseReference).ValidateCaseReference();
         RuleFor(p => p.NameOfBusiness).ValidateBusinessName();
         RuleFor(p => p.NatureOfBusiness).ValidateNatureOfBusiness();
         RuleFor(p => p.CompanyNumber).ValidateCompanyNumber();
