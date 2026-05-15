@@ -17,6 +17,8 @@ public sealed class AuthCode
     
     public string CodeChallengeMethod { get; init; }
 
+    public string Nonce { get; init; }
+    
     public void AddClaimsPrincipal(ClaimsPrincipal principal)
     {
         using MemoryStream stream = new();

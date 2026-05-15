@@ -59,6 +59,7 @@ public class TokenController : Controller
         ClaimsIdentity identity = (ClaimsIdentity)principal.Identity!;
         AppendSubjectClaim(identity);
         AppendNameClaim(identity);
+        AppendNonceClaim(identity, authCode.Nonce);
     
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -91,21 +92,33 @@ public class TokenController : Controller
         });
     }
     
-    private static void AppendSubjectClaim(ClaimsIdentity ci)
+    private static void AppendSubjectClaim(ClaimsIdentity identity)
     {
-        if (!ci.HasClaim(c => c.Type == JwtRegisteredClaimNames.Sub))
+        if (!identity.HasClaim(c => c.Type == JwtRegisteredClaimNames.Sub))
         {
-            Claim cl = ci.FindFirst("name") ?? ci.FindFirst("email") ?? throw new InvalidOperationException("Missing name or email claim.");
-            ci.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, cl.Value));
+            Claim claim = identity.FindFirst("name") 
+                          ?? identity.FindFirst("email") 
+                          ?? throw new InvalidOperationException("Missing name or email claim.");
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, claim.Value));
         }
     }
 
-    private static void AppendNameClaim(ClaimsIdentity ci)
+    private static void AppendNameClaim(ClaimsIdentity identity)
     {
-        if (!ci.HasClaim(c => c.Type == ClaimTypes.Name))
+        if (!identity.HasClaim(c => c.Type == ClaimTypes.Name))
         {
-            Claim cl = ci.FindFirst("name") ?? ci.FindFirst("email") ?? throw new InvalidOperationException("Missing name or email claim.");
-            ci.AddClaim(new Claim(ClaimTypes.Name, cl.Value));
+            Claim claim = identity.FindFirst("name") 
+                          ?? identity.FindFirst("email")
+                          ?? throw new InvalidOperationException("Missing name or email claim.");
+            identity.AddClaim(new Claim(ClaimTypes.Name, claim.Value));
+        }
+    }
+    
+    private static void AppendNonceClaim(ClaimsIdentity identity, string nonce)
+    {
+        if (!identity.HasClaim(c => c.Type == Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Nonce))
+        {
+            identity.AddClaim(new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Nonce, nonce));
         }
     }
 }

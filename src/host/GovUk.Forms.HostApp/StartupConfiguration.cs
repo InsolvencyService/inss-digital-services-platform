@@ -36,7 +36,7 @@ public class StartupConfiguration : IHostingStartup
                     _ => new AnonymousAuthenticationProvider()
                 };
             });
-            
+
             services.AddSingleton<IUserSessionProvider>(provider =>
             {
                 IHttpContextAccessor accessor = provider.GetRequiredService<IHttpContextAccessor>();
@@ -104,7 +104,7 @@ public class StartupConfiguration : IHostingStartup
     {
         options.TokenValidationParameters.NameClaimType = "name";
         options.TokenValidationParameters.RoleClaimType = "role";
-        options.ProtocolValidator.RequireNonce = false;
+        options.ProtocolValidator.RequireNonce = true;
                     
         RSA rsa = RSA.Create();
         
