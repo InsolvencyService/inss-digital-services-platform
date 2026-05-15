@@ -1,4 +1,5 @@
-﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
+﻿// ReSharper disable MemberCanBePrivate.Global - Cosmos won't serialize properly
+namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
 public class ErrorInfo : ErrorInfoHeader
 {
@@ -6,13 +7,13 @@ public class ErrorInfo : ErrorInfoHeader
 
     public int RowCount => Rows.Length;
     
-    public string[] Headers { get; private set; } = [];
+    public string[] Headers { get; set; } = [];
     
-    public string[][] Rows { get; private set; } = [];
+    public string[][] Rows { get; set; } = [];
 
-    public string HeaderCaption { get; set; }
+    public string HeaderCaption { get; init; }
 
-    public bool ShowErrorDetails { get; set; } = true;
+    public bool ShowErrorDetails { get; init; } = true;
     
     public int ColumnCount => Headers.Length;
 
