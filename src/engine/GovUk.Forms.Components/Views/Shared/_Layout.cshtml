@@ -1,4 +1,6 @@
-﻿@{
+﻿@inject IOptions<AnalyticsOptions> Analytics;
+
+@{
     // ReSharper disable once Razor.LayoutNotResolved
     Layout = "_GovUkPageTemplate";
 }
@@ -10,6 +12,11 @@
 
 @* ReSharper disable once Razor.SectionNotResolved *@
 @section Header {
+    @if (Analytics.Value.IsEnabled)
+    {
+        <script src="@(Analytics.Value.Url)" data-site-id="@(Analytics.Value.SiteId)" defer>
+        </script>
+    }
     @await Html.PartialAsync("_LayoutHeader")
 }
 
