@@ -1,10 +1,5 @@
 ﻿@model AddAnotherModel
 
-@*<h1 class="govuk-heading-xl">@Model.Heading</h1>
-
-@Html.HiddenFor(m => m.GroupLength)
-@Html.HiddenFor(m => m.Heading)*@
-
 @foreach (AddAnotherModel.AddAnotherSummaryModel item in Model.SummaryInfo)
 {
     <govuk-summary-list>

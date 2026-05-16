@@ -1,4 +1,6 @@
-﻿@if (ViewData.HasBackButton)
+﻿@inject IPagePropertiesProvider PagePropertiesProvider
+
+@if (PagePropertiesProvider.PreviousPagePath is not null)
 {
-    <govuk-back-link href="@ViewData.GetBackButton()"/>
+    <govuk-back-link href="@(PagePropertiesProvider.PreviousPagePath)"/>
 }

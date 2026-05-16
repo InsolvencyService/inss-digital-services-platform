@@ -1,5 +1,5 @@
 ﻿@inject IOptions<AnalyticsOptions> Analytics;
-
+@inject IPagePropertiesProvider PagePropertiesProvider; 
 @{
     // ReSharper disable once Razor.LayoutNotResolved
     Layout = "_GovUkPageTemplate";
@@ -27,7 +27,7 @@
         @await Html.PartialAsync("_BackButton")
     }
 
-    @if (ViewData.GetFullWidthLayout())
+    @if (PagePropertiesProvider.FullPageLayout)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
