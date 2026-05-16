@@ -16,7 +16,11 @@
 
     if (page is not null)
     {
-        @Html.HiddenFor(m => page.LinkedToNode.Value)
+        @if (page.LinkedToNode is not null)
+        {
+            @Html.HiddenFor(m => page.LinkedToNode.Value)
+        }
+
         @Html.HiddenFor(m => page.MetaData.Group.Value)
 
         @if (page.PreviousPagePath is not null)

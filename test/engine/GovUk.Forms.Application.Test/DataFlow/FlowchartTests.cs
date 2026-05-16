@@ -50,7 +50,7 @@ public class FlowchartTests
     public void InvalidNodeId_AddNode_ThrowsException()
     {
         BuildTestFlowchart([]);
-        Assert.Throws<ArgumentException>(() => _flowchart.AddNode(new FlowNode { Id = NodeId.Empty, PagePath = "/form/section/page" }));
+        Assert.Throws<ArgumentException>(() => _flowchart.AddNode(new FlowNode { Id = "", PagePath = "/form/section/page" }));
     }
     
     [Fact]
@@ -172,7 +172,7 @@ public class FlowchartTests
     public void UnknownPagePath_TransitionPageToStart_ThrowsException()
     {
         BuildTestFlowchart([]);
-        FullNameModel fullName = new() { Path = "/form/section/page", LinkedToNode = NodeId.Empty };
+        FullNameModel fullName = new() { Path = "/form/section/page", LinkedToNode = "" };
 
         FlowchartException exception = Assert.Throws<FlowchartException>(() => _flowchart.TransitionPageToStart(fullName));
         
@@ -184,7 +184,7 @@ public class FlowchartTests
     {
         BuildTestFlowchart([]);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
-        fullName.LinkedToNode = NodeId.Empty;
+        fullName.LinkedToNode = null;
         
         _flowchart.TransitionPageToStart(fullName);
         

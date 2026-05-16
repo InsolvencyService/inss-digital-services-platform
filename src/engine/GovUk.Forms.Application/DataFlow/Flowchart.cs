@@ -77,6 +77,9 @@ public sealed class Flowchart : IFlowchart
         
         NodeId? nextNodeId = await GetNextNodeForUpdatedPageAsync(node, page, form, section);
 
+        // If this is the first visit then we just set the link to the next node, otherwise we need to determine if the data entered
+        // has changed the route to go down. If it has then we reset downstream page. If not then we can return to the previous page
+        // e.g. return url if set or continue setting the next page up
         if (targetPage.LinkedToNextNode is null)
         {
             targetPage.LinkedToNextNode = nextNodeId;
