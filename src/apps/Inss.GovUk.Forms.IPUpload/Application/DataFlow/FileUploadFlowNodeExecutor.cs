@@ -28,11 +28,8 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         fileUploadErrors.ClearErrors();
         fileUploadErrors.Filename = fileUpload.Filename;
         
-        if (context.FinalExecuteStep)
-        {
-            object redundancyPayment = fileUpload.GetRedundancyPaymentObject();
-            await ValidateAsync(fileUploadErrors, redundancyPayment);
-        }
+        object redundancyPayment = fileUpload.GetRedundancyPaymentObject();
+        await ValidateAsync(fileUploadErrors, redundancyPayment);
 
         return fileUploadErrors.HasErrors 
             ? context.CurrentNode.NextNodes[FileUploadErrorIndex] 

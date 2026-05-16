@@ -159,6 +159,7 @@ public class FlowchartTests
         fullName.LinkedToNode = _fullNameNode.Id;
         fullName.ReturnUrl = age.Path;
         fullName.Value = string.Empty;
+        fullName.LinkedToNextNode = _addressNode.Id;
         FullNameModel copyOfFullName = (FullNameModel)fullName.Clone();
         copyOfFullName.Value = "Homer Simpson";
         
