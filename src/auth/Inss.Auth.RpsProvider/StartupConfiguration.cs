@@ -1,6 +1,8 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Options;
+using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Frontend.AspNetCore;
 using Inss.Auth.RpsProvider.Application.Clients;
 using Inss.Auth.RpsProvider.Application.Providers;
@@ -41,6 +43,7 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddSingleton<IUserAuthStoreProvider, TestUserAuthStoreProvider>();
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
+            services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             services.AddGovUkFrontend();
             services.AddControllersWithViews();
             services.AddOpenTelemetry().UseAzureMonitor();

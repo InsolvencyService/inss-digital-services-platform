@@ -1,6 +1,8 @@
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Infrastructure.Options;
+using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
 using Inss.Auth.Broker;
 using Inss.Auth.Broker.Application.Providers;
@@ -70,6 +72,7 @@ public class StartupConfiguration : IHostingStartup
                 return new TestAuthCodeStoreProvider();
             });
             services.AddOpenTelemetry().UseAzureMonitor();
+            services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             
         });
         
