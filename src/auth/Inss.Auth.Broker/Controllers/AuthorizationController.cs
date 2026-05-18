@@ -30,6 +30,7 @@ public class AuthorizationController : Controller
         string loginHint = Request.Query["login_hint"].ToString();
         string codeChallenge = Request.Query["code_challenge"].ToString();
         string codeChallengeMethod = Request.Query["code_challenge_method"].ToString();
+        string nonce = Request.Query["nonce"].ToString();
         
         if (clientId != _options.Value.ClientId || string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(codeChallenge))
         {
@@ -45,7 +46,8 @@ public class AuthorizationController : Controller
                 ["client_state"] = state,
                 ["Provider"] = loginHint,
                 ["client_code_challenge"] = codeChallenge,
-                ["client_code_challenge_method"] = codeChallengeMethod
+                ["client_code_challenge_method"] = codeChallengeMethod,
+                ["client_nonce"] = nonce
             }
         };
 
@@ -67,6 +69,7 @@ public class AuthorizationController : Controller
         string? clientState = authProps?.Items["client_state"];
         string clientCodeChallenge = authProps?.Items["client_code_challenge"]!;
         string clientCodeChallengeMethod = authProps?.Items["client_code_challenge_method"]!;
+        string clientNonce = authProps?.Items["client_nonce"]!;
 
         if (string.IsNullOrEmpty(clientRedirectUri))
         {
@@ -77,7 +80,8 @@ public class AuthorizationController : Controller
         {
             Id = Guid.NewGuid().ToString("N"),
             CodeChallenge = clientCodeChallenge,
-            CodeChallengeMethod = clientCodeChallengeMethod
+            CodeChallengeMethod = clientCodeChallengeMethod,
+            Nonce = clientNonce
         };
         authCode.AddClaimsPrincipal(result.Principal);
         await _authCodeStoreProvider.StoreAsync(authCode);
