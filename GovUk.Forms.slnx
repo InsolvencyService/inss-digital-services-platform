@@ -1,5 +1,8 @@
 <Solution>
   <Folder Name="/src/" />
+  <Folder Name="/src/apis/">
+    <Project Path="src/apis/Inss.FormsSubmission.Service/Inss.FormsSubmission.Service.csproj" />
+  </Folder>
   <Folder Name="/src/apps/">
     <Project Path="src/apps/Demo.GovUk.Forms.ContactUs/Demo.GovUk.Forms.ContactUs.csproj" />
     <Project Path="src\apps\Demo.GovUk.Forms.AboutYou\Demo.GovUk.Forms.AboutYou.csproj" />
@@ -11,6 +14,9 @@
     <File Path="src/auth/Readme.md" />
     <Project Path="src/auth/Inss.Auth.Broker/Inss.Auth.Broker.csproj" />
     <Project Path="src/auth/Inss.Auth.RpsProvider/Inss.Auth.RpsProvider.csproj" />
+  </Folder>
+  <Folder Name="/src/common/">
+    <Project Path="src/common/Inss.Common/Inss.Common.csproj" />
   </Folder>
   <Folder Name="/src/engine/">
     <Project Path="src/engine/GovUk.Forms.Application/GovUk.Forms.Application.csproj" />
