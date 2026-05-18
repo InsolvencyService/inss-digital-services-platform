@@ -5,6 +5,7 @@ using System.Text;
 using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Domain;
 using Inss.Auth.Broker.Options;
+using Inss.Common.Tokens;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -60,6 +61,7 @@ public class TokenController : Controller
         AppendSubjectClaim(identity);
         AppendNameClaim(identity);
         AppendNonceClaim(identity, authCode.Nonce);
+        AppendSubmissionClaim(identity);
     
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -120,5 +122,13 @@ public class TokenController : Controller
         {
             identity.AddClaim(new Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Nonce, nonce));
         }
+    }
+    
+    private static void AppendSubmissionClaim(ClaimsIdentity identity)
+    {
+        // This is temporary as we will want to pull this from the user management system when it exists but for now
+        // we can simply issue it for all users so they can submit IP uploads. Also we shall use claims but in reality
+        // we will (probably) use roles. This can be changed once we get the requirements.
+        identity.AddClaim(new Claim(Claims.Submission, Claims.SubmissionValue));
     }
 }

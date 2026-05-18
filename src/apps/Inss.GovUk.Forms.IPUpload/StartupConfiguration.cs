@@ -10,7 +10,6 @@ using Inss.GovUk.Forms.IPUpload.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 [assembly: HostingStartup(typeof(Inss.GovUk.Forms.IPUpload.StartupConfiguration))]
 
@@ -28,9 +27,21 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
             
-            ExternalApiOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<ExternalApiOptions>()!;
-            services.AddTypedClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(dynamicsOptions);
+            ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
 
+            // Enable below once we have deployment of the listener in the RPS environment
+            
+            /*if (context.HostingEnvironment.IsDevelopment())
+            {
+                services.AddTypedClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(submissionOptions);
+            }
+            else
+            {
+                services.AddTypedClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(submissionOptions);
+            }*/
+
+            services.AddTypedClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(submissionOptions);
+            
             RpsApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<RpsApiOptions>()!;
             
             services.AddTypedClient<ICaseReferenceClient, MockCaseReferenceClient>(rpsOptions);
