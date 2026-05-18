@@ -15,20 +15,6 @@ public sealed class PageModelList : List<PageModel>
         PageModel? page = GetAllPathPages().FirstOrDefault(page => page.Path == path);
         return page ?? throw new ModelException($"Unable to find page for path {path}.");
     }
-
-    public void ResetDownstream(PageModel currentPage)
-    {
-        int pageIndex = IndexOf(currentPage);
-
-        if (pageIndex > -1)
-        {
-            for (int i = pageIndex + 1; i < Count; i++)
-            {
-                PageModel page = this[i];
-                page.ClearValues();
-            }
-        }
-    }
     
     public PageModelList GetCompletedPages()
     {

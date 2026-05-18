@@ -90,8 +90,7 @@ public sealed class Flowchart : IFlowchart
             
             if (targetPage.LinkedToNextNode != nextNodeId)
             {
-                // TODO: Bug - we need to use the flowchart nodes to decide what to reset in case the page order is not correct
-                section.Pages.ResetDownstream(targetPage);
+                ResetVisitedNodesFrom(targetPage.LinkedToNode, section);
                 resetPages = true;
             }
             
@@ -169,6 +168,25 @@ public sealed class Flowchart : IFlowchart
             Nodes = Nodes, CurrentNode = node, Form = form, Section = section, UpdatedPage = updatedPage
         };
         return await executor.ExecuteAsync(context);
+    }
+    
+    private void ResetVisitedNodesFrom(NodeId? fromNodeId, SectionModel section)
+    {
+        int currentPageNodeIndex = section.VisitedNodes.IndexOf(fromNodeId);
+
+        if (currentPageNodeIndex > -1)
+        {
+            NodeId[] nodeIdsToReset = section.VisitedNodes.Skip(currentPageNodeIndex + 1).ToArray();
+                    
+            foreach (NodeId nodeId in nodeIdsToReset)
+            {
+                FlowNode resetNode = GetNode(nodeId);
+                PageModel resetPage = section.Pages.GetPage(resetNode.PagePath);
+                resetPage.ClearValues();
+            }
+                    
+            section.Untrack(nodeIdsToReset);
+        }
     }
     
     private static void CopyPageData(PageModel sourcePage, PageModel targetPage)

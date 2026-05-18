@@ -15,7 +15,7 @@ public sealed class AboutYouFormFactory : IFormFactory
             .AddSection("Your Details", "your-details")
             .AddPage<FullNameModel>("Your name", "your-name", submitButtonText: "Continue")
             .AddPage<AddressModel>("Your address", "your-address", submitButtonText: "Continue")
-            .AddPage<ContactDetailsModel>("Your contact details", "Your-contact-details", submitButtonText: "Continue")
+            .AddPage<ContactDetailsModel>("Your contact details", "your-contact-details", submitButtonText: "Continue")
             .AddPage<AgeModel>("Your age", "your-age", submitButtonText: "Continue")
             .AddPage<SalaryModel>("Your salary", "your-salary", submitButtonText: "Continue")
             .AddPage<BankAccountModel>("Your bank account", "your-bank-account", submitButtonText: "Continue")
