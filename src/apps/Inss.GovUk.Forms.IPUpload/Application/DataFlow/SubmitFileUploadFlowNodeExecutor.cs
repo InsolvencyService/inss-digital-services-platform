@@ -17,15 +17,11 @@ public sealed class SubmitFileUploadFlowNodeExecutor : IFlowNodeExecutor
     
     public async ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
     {
-        if (context.FinalExecuteStep)
-        {
-            context.Section.SetCompleted();
-            string referenceNumber = await _submitUploadedXmlService.SubmitAsync(context.Section, context.Form.Id);
+        context.Section.SetCompleted();
+        string referenceNumber = await _submitUploadedXmlService.SubmitAsync(context.Section, context.Form.Id);
 
-            PostSubmitModel postSubmit = context.Section.Pages.GetFirstOf<PostSubmitModel>();
-            postSubmit.ReferenceNumber = referenceNumber;
-
-        }
+        PostSubmitModel postSubmit = context.Section.Pages.GetFirstOf<PostSubmitModel>();
+        postSubmit.ReferenceNumber = referenceNumber;
         
         return context.CurrentNode.NextNodes[PostSubmitIndex];
     }

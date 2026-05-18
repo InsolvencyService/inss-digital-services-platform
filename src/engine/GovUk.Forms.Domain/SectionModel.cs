@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using GovUk.Forms.Domain.Primitives;
 
 namespace GovUk.Forms.Domain;
 
@@ -11,6 +12,8 @@ public class SectionModel : ContentModel
     public DateTimeOffset? StartedDate { get; set; }
     
     public DateTimeOffset? CompletedDate { get; set; }
+
+    public NodeId[] VisitedNodes { get; set; } = [];
     
     [JsonIgnore]
     public PageModel FirstPage
@@ -34,5 +37,26 @@ public class SectionModel : ContentModel
     public void SetCompleted()
     {
         CompletedDate = DateTimeOffset.Now;
+    }
+    
+    public void Track(NodeId? nodeId)
+    {
+        if (nodeId is not null && VisitedNodes.IndexOf(nodeId) == -1)
+        {
+            List<NodeId> nodeIdList = [..VisitedNodes, nodeId];
+            VisitedNodes = nodeIdList.ToArray();
+        }
+    }
+
+    public void Untrack(params NodeId[] nodeIdToUntrack)
+    {
+        List<NodeId> nodeIdList = [..VisitedNodes];
+
+        foreach (NodeId nodeId in nodeIdToUntrack)
+        {
+            nodeIdList.Remove(nodeId);
+        }
+        
+        VisitedNodes = nodeIdList.ToArray();
     }
 }

@@ -73,17 +73,46 @@ public sealed class Flowchart : IFlowchart
         FlowNode node = GetNode(page.LinkedToNode);
         PageModel targetPage = section.Pages.GetPage(page.Path);
         
-        NodeId? currentPageNodeId = await GetNextNodeForSavedPageAsync(node, targetPage, form, section);
-
         CopyPageData(page, targetPage);
         
         NodeId? nextNodeId = await GetNextNodeForUpdatedPageAsync(node, page, form, section);
 
-        ContentPath nextPagePath = GetNextPagePath(targetPage, currentPageNodeId, nextNodeId, form, section);
-
-        PageModel? nextPage = section.Pages.FindPage(nextPagePath);
-        nextPage?.PreviousPagePath = page.Path;
+        // If this is the first visit then we just set the link to the next node, otherwise we need to determine if the data entered
+        // has changed the route to go down. If it has then we reset downstream page. If not then we can return to the previous page
+        // e.g. return url if set or continue setting the next page up
+        if (targetPage.LinkedToNextNode is null)
+        {
+            targetPage.LinkedToNextNode = nextNodeId;
+        }
+        else
+        {
+            bool resetPages = false;
+            
+            if (targetPage.LinkedToNextNode != nextNodeId)
+            {
+                ResetVisitedNodesFrom(targetPage.LinkedToNode, section);
+                resetPages = true;
+            }
+            
+            targetPage.LinkedToNextNode = nextNodeId;
+            
+            if (!resetPages && targetPage.ReturnUrl is not null)
+            {
+                return targetPage.ReturnUrl;
+            }
+        }
         
+        ContentPath nextPagePath = form.Path;
+        
+        if (nextNodeId is not null)
+        {
+            nextPagePath = GetPagePath(nextNodeId);
+
+            PageModel nextPage = section.Pages.GetPage(nextPagePath);
+            nextPage.LinkedToNode = nextNodeId;
+            nextPage.PreviousPagePath = page.Path;
+        }
+
         return nextPagePath;
     }
     
@@ -127,21 +156,6 @@ public sealed class Flowchart : IFlowchart
         return await loader.LoadAsync(context);
     }
     
-    private async ValueTask<NodeId?> GetNextNodeForSavedPageAsync(
-        FlowNode node, 
-        PageModel targetPage, 
-        FormModel form, 
-        SectionModel section)
-    {
-        IFlowNodeExecutor executor = _serviceProvider.GetKeyedService<IFlowNodeExecutor>(node.Id) ?? NoopFlowNodeExecutor.Default;
-        PageModel copyOfCurrentPage = targetPage.Clone();
-        ExecuteContext context = new() 
-        { 
-            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, UpdatedPage = copyOfCurrentPage
-        };
-        return await executor.ExecuteAsync(context);
-    }
-
     private async ValueTask<NodeId?> GetNextNodeForUpdatedPageAsync(
         FlowNode node, 
         PageModel updatedPage, 
@@ -151,42 +165,28 @@ public sealed class Flowchart : IFlowchart
         IFlowNodeExecutor executor = _serviceProvider.GetKeyedService<IFlowNodeExecutor>(node.Id) ?? NoopFlowNodeExecutor.Default;
         ExecuteContext context = new()
         {
-            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, UpdatedPage = updatedPage, FinalExecuteStep = true
+            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, UpdatedPage = updatedPage
         };
         return await executor.ExecuteAsync(context);
     }
-
-    private ContentPath GetNextPagePath(
-        PageModel targetPage, 
-        NodeId? currentPageNodeId, 
-        NodeId? nextNodeId, 
-        FormModel form, 
-        SectionModel section)
+    
+    private void ResetVisitedNodesFrom(NodeId? fromNodeId, SectionModel section)
     {
-        if (currentPageNodeId != nextNodeId)
+        int currentPageNodeIndex = section.VisitedNodes.IndexOf(fromNodeId);
+
+        if (currentPageNodeIndex > -1)
         {
-            // TODO: Bug - we need to use the flowchart nodes to decide what to reset in case the page order is not correct
-            section.Pages.ResetDownstream(targetPage);
-        }
-        else
-        {
-            if (targetPage.ReturnUrl is not null)
+            NodeId[] nodeIdsToReset = section.VisitedNodes.Skip(currentPageNodeIndex + 1).ToArray();
+                    
+            foreach (NodeId nodeId in nodeIdsToReset)
             {
-                return targetPage.ReturnUrl;
+                FlowNode resetNode = GetNode(nodeId);
+                PageModel resetPage = section.Pages.GetPage(resetNode.PagePath);
+                resetPage.ClearValues();
             }
+                    
+            section.Untrack(nodeIdsToReset);
         }
-        
-        ContentPath nextPagePath = form.Path;
-        
-        if (nextNodeId is not null)
-        {
-            nextPagePath = GetPagePath(nextNodeId);
-
-            PageModel nextPage = section.Pages.GetPage(nextPagePath);
-            nextPage.LinkedToNode = nextNodeId;
-        }
-
-        return nextPagePath;
     }
     
     private static void CopyPageData(PageModel sourcePage, PageModel targetPage)

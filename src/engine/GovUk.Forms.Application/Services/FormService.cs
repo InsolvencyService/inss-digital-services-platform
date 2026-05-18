@@ -83,7 +83,9 @@ public sealed class FormService : IFormService
             {
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                return await flowchart.ProcessAsync(form, section, page);
+                ContentPath path = await flowchart.ProcessAsync(form, section, page);
+                section.Track(page.LinkedToNode);
+                return path;
             }
 
             FormModel submittableForm = form.GetSubmittable();

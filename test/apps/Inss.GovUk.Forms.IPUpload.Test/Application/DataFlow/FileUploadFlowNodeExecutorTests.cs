@@ -27,30 +27,7 @@ public class FileUploadFlowNodeExecutorTests
     }
     
     [Fact]
-    public async Task FirstPassExecution_ExecuteAsync_ReturnsSummaryNodeId()
-    {
-        FormModel form = TestFormModels.CreateWithIPUploadSection();
-        SectionModel ipUploadSection = form.Sections["IP Upload"];
-        XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
-        FlowNode node = new() { Id = "NodeId1", PagePath = ipUpload.Path, NextNodes = ["NodeId2", "NodeId3"] };
-        ExecuteContext context = new()
-        {
-            Nodes = [node],
-            CurrentNode = node,
-            Form = form,
-            Section = ipUploadSection,
-            FinalExecuteStep = false,
-            UpdatedPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlNoErrors)) }
-        };
-
-        NodeId? nextNodeId = await _fileUploadFlowNodeExecutor.ExecuteAsync(context);
-
-        Assert.NotNull(nextNodeId);
-        Assert.Equal("NodeId3", nextNodeId);
-    }
-    
-    [Fact]
-    public async Task FinalPassExecutionNoErrors_ExecuteAsync_ReturnsSummaryNodeId()
+    public async Task NoErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
         _caseReferenceService.CheckExistsAsync("CN10000112").Returns(true);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
@@ -63,7 +40,6 @@ public class FileUploadFlowNodeExecutorTests
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            FinalExecuteStep = true,
             UpdatedPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlNoErrors)) }
         };
 
@@ -74,7 +50,7 @@ public class FileUploadFlowNodeExecutorTests
     }
 
     [Fact]
-    public async Task FinalPassExecutionWithErrors_ExecuteAsync_ReturnsSummaryNodeId()
+    public async Task WithErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
         _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
@@ -87,7 +63,6 @@ public class FileUploadFlowNodeExecutorTests
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            FinalExecuteStep = true,
             UpdatedPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlWithErrors)) }
         };
 
@@ -98,7 +73,7 @@ public class FileUploadFlowNodeExecutorTests
     }
     
     [Fact]
-    public async Task FinalPassExecutionWithErrors_ExecuteAsync_PopulatesPageWithErrorInfo()
+    public async Task WithErrors_ExecuteAsync_PopulatesPageWithErrorInfo()
     {
         _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
@@ -111,7 +86,6 @@ public class FileUploadFlowNodeExecutorTests
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            FinalExecuteStep = true,
             UpdatedPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlWithErrors)) }
         };
 
@@ -127,7 +101,7 @@ public class FileUploadFlowNodeExecutorTests
     }
     
     [Fact]
-    public async Task FinalPassExecutionWithErrors_ExecuteAsync_PopulatesUnknownCaseReference()
+    public async Task WithErrors_ExecuteAsync_PopulatesUnknownCaseReference()
     {
         _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
@@ -140,7 +114,6 @@ public class FileUploadFlowNodeExecutorTests
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            FinalExecuteStep = true,
             UpdatedPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlWithErrors)) }
         };
 
