@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using GovUk.Forms.Components.Extensions;
+using GovUk.Forms.Application.Providers;
 using Inss.Auth.RpsProvider.Application.Services;
 using Inss.Auth.RpsProvider.Domain.Enums;
 using Inss.Auth.RpsProvider.Models;
@@ -15,24 +15,26 @@ public class LoginController : Controller
 {
     private readonly ILoginService _loginService;
     private readonly IOptions<LoginOptions> _loginOptions;
+    private readonly IPagePropertiesProvider _pagePropertiesProvider;
 
-    public LoginController(ILoginService  loginService, IOptions<LoginOptions> loginOptions)
+    public LoginController(ILoginService  loginService, IOptions<LoginOptions> loginOptions, IPagePropertiesProvider pagePropertiesProvider)
     {
         _loginService = loginService;
         _loginOptions = loginOptions;
+        _pagePropertiesProvider = pagePropertiesProvider;
     }
     
     [HttpGet]
     public IActionResult Index()
     {
-        ViewData.AddBackButton(_loginOptions.Value.BackUrl);
+        _pagePropertiesProvider.PreviousPagePath = _loginOptions.Value.BackUrl;
         return View(new LoginModel{ ReturnUrl = Request.Query["returnUrl"]!, ForgotPasswordUrl = _loginOptions.Value.ForgotPasswordUrl });
     }
 
     [HttpPost]
     public async Task<IActionResult> Index(LoginModel model)
     {
-        ViewData.AddBackButton(_loginOptions.Value.BackUrl);
+        _pagePropertiesProvider.PreviousPagePath = _loginOptions.Value.BackUrl;
         
         if (!ModelState.IsValid)
         {

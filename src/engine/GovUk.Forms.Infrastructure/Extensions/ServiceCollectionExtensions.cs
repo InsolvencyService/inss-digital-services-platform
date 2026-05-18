@@ -37,6 +37,7 @@ public static class ServiceCollectionExtensions
             });
             
             services.AddSingleton<IFormProvider, TestFormProvider>();
+            services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             return services;
         }
     }
