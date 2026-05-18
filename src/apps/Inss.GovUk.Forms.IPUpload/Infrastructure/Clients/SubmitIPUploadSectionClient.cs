@@ -21,12 +21,12 @@ public sealed class SubmitIPUploadSectionClient : ISubmitIPUploadSectionClient
     {
         string? accessToken = await _httpContextAccessor.HttpContext!.GetTokenAsync("access_token");
 
-        HttpRequestMessage request = new();
+        using HttpRequestMessage request = new();
         request.RequestUri = new Uri("/ipupload/submit", UriKind.Relative);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
         Console.WriteLine("Calling submission service...");
-        HttpResponseMessage response = await _client.SendAsync(request);
+        using HttpResponseMessage response = await _client.SendAsync(request);
         
         response.EnsureSuccessStatusCode();
     }
