@@ -30,6 +30,7 @@ public class FileUploadErrorFlowNodeLoaderTests
         await _fileUploadErrorFlowNodeLoader.LoadAsync(context);
         
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
+        Assert.NotNull(fileUploadErrorDetails.LinkedToNode);
         Assert.Equal("NodeId3", fileUploadErrorDetails.LinkedToNode);
     }
 }

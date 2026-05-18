@@ -11,7 +11,9 @@ public abstract class PageModel : ContentModel
 
     public PageMetaData MetaData { get; init; } = new();
 
-    public NodeId LinkedToNode { get; set; } = NodeId.Empty;
+    public NodeId? LinkedToNode { get; set; }
+    
+    public NodeId? LinkedToNextNode { get; set; }
 
     public ContentPath? PreviousPagePath { get; set; }
     
