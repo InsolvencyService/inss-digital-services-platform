@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,11 +11,13 @@ public sealed class FormService : IFormService
 {
     private readonly IUserFormService _userFormService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IPagePropertiesProvider _pagePropertiesProvider;
 
-    public FormService(IUserFormService userFormService, IServiceProvider serviceProvider)
+    public FormService(IUserFormService userFormService, IServiceProvider serviceProvider, IPagePropertiesProvider pagePropertiesProvider)
     {
         _userFormService = userFormService;
         _serviceProvider = serviceProvider;
+        _pagePropertiesProvider = pagePropertiesProvider;
     }
     
     public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(ContentPath path, string? state)
@@ -30,6 +33,7 @@ public sealed class FormService : IFormService
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
                 ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, state);
+                _pagePropertiesProvider.PreviousPagePath = page.PreviousPagePath;
                 return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != path ? altPath : null);
             }
 
@@ -60,6 +64,7 @@ public sealed class FormService : IFormService
             {
                 PageModel savedPage = section.Pages.GetPage(page.Path);
                 savedPage.MetaData.CopyTo(page.MetaData);
+                _pagePropertiesProvider.PreviousPagePath = page.PreviousPagePath;
             }
             
             return validationResults;

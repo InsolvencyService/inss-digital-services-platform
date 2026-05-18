@@ -1,4 +1,5 @@
 ﻿using GovUk.Forms.Application.DataFlow.Loading;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.Exceptions;
 using Inss.GovUk.Forms.IPUpload.Domain;
@@ -7,6 +8,13 @@ namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 
 public sealed class FileUploadErrorDetailsFlowNodeLoader : IFlowNodeLoader
 {
+    private readonly IPagePropertiesProvider _pagePropertiesProvider;
+
+    public FileUploadErrorDetailsFlowNodeLoader(IPagePropertiesProvider pagePropertiesProvider)
+    {
+        _pagePropertiesProvider = pagePropertiesProvider;
+    }
+    
     public ValueTask<NodeId?> LoadAsync(LoadContext context)
     {
         if (context.State is null)
@@ -18,7 +26,7 @@ public sealed class FileUploadErrorDetailsFlowNodeLoader : IFlowNodeLoader
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = context.Section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
         fileUploadErrorDetails.CurrentErrorDetail = fileUploadErrors.GetError(context.State)!;
         fileUploadErrorDetails.PreviousPagePath = fileUploadErrors.Path;
-        fileUploadErrorDetails.FullWidthLayout = true;
+        _pagePropertiesProvider.FullPageLayout = true;
         
         return ValueTask.FromResult<NodeId?>(null);
     }

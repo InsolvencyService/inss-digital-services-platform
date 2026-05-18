@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -13,6 +14,7 @@ public class FormServiceTests
 {
     private readonly IUserFormService _userFormService; 
     private readonly IFlowchart _sectionFlowchart;
+    private readonly IPagePropertiesProvider _pagePropertiesProvider;
     private readonly ServiceCollection _services = [];
     private readonly FormModel _form;
     private readonly SectionModel _section;
@@ -25,6 +27,7 @@ public class FormServiceTests
         _section = _form.Sections["Your Details"];
         _userFormService = Substitute.For<IUserFormService>();
         _sectionFlowchart = Substitute.For<IFlowchart>();
+        _pagePropertiesProvider = Substitute.For<IPagePropertiesProvider>();
         _services.AddKeyedSingleton(_section.Path, _sectionFlowchart);
     }
     
@@ -62,6 +65,19 @@ public class FormServiceTests
         (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(fullName.Path, NoState);
         
         Assert.Equal(fullName, result.Content);
+    }
+    
+    [Fact]
+    public async Task ContentIsPage_LoadAsync_SetsPreviousPageUrl()
+    {
+        FullNameModel fullName = _section.Pages.GetFirstOf<FullNameModel>();
+        fullName.PreviousPagePath = _form.Path; 
+        _userFormService.GetAsync(fullName.Path).Returns(_form);
+        BuildForService();
+        
+        await _formService.LoadAsync(fullName.Path, NoState);
+        
+        Assert.Equal(fullName.PreviousPagePath, _pagePropertiesProvider.PreviousPagePath);
     }
     
     [Fact]
@@ -157,6 +173,6 @@ public class FormServiceTests
     private void BuildForService()
     {
         IServiceProvider serviceProvider = _services.BuildServiceProvider();
-        _formService = new FormService(_userFormService, serviceProvider);
+        _formService = new FormService(_userFormService, serviceProvider, _pagePropertiesProvider);
     }
 }
