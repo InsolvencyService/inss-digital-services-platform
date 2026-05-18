@@ -34,6 +34,12 @@ public sealed class FormService : IFormService
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
                 ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, state);
                 _pagePropertiesProvider.PreviousPagePath = page.PreviousPagePath;
+
+                if (_pagePropertiesProvider.PreviousPagePath is null && page == section.FirstPage)
+                {
+                    _pagePropertiesProvider.PreviousPagePath = form.Path;
+                }
+                
                 return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != path ? altPath : null);
             }
 

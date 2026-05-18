@@ -47,6 +47,7 @@ stages:
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish HostApp'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'publish'
         publishWebProjects: false
@@ -55,6 +56,7 @@ stages:
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish Broker'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'publish'
         publishWebProjects: false
@@ -63,6 +65,7 @@ stages:
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish RPS Provider'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'publish'
         publishWebProjects: false
