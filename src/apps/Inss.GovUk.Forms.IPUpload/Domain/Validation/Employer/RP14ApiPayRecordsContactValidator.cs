@@ -2,7 +2,7 @@
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
-public sealed class RP14ApiPayRecordsContactValidator : AbstractValidator<Domain.Employer.Api.RP14PayRecordsContact>
+public sealed class RP14ApiPayRecordsContactValidator : AbstractValidator<Inss.Common.IPUpload.Employer.Api.RP14PayRecordsContact>
 {
     public RP14ApiPayRecordsContactValidator()
     {

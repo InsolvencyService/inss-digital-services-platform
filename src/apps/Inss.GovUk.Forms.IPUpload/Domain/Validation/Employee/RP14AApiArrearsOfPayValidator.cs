@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Inss.GovUk.Forms.IPUpload.Domain.Employee.Api;
+using Inss.Common.IPUpload.Employee.Api;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 

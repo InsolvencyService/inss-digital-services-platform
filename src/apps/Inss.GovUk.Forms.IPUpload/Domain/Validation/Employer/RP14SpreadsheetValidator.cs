@@ -2,7 +2,7 @@
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
-public sealed class RP14SpreadsheetValidator : AbstractValidator<Domain.Employer.Spreadsheet.RP14>
+public sealed class RP14SpreadsheetValidator : AbstractValidator<Inss.Common.IPUpload.Employer.Spreadsheet.RP14>
 {
     public RP14SpreadsheetValidator()
     {

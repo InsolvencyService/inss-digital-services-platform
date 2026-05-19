@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Inss.GovUk.Forms.IPUpload.Domain.Employee.Spreadsheet;
+using Inss.Common.IPUpload.Employee.Spreadsheet;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 

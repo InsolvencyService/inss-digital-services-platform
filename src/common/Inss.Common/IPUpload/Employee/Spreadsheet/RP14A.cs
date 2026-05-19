@@ -10,13 +10,10 @@
 // Schema: https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.Common/Models/Schemas/RP14A_Flattened.xsd
 
 using System.ComponentModel.DataAnnotations;
-using Inss.GovUk.Forms.IPUpload.Domain;
 
-namespace Inss.GovUk.Forms.IPUpload.Domain.Employee.Spreadsheet;
+namespace Inss.Common.IPUpload.Employee.Spreadsheet;
 
 using System.Xml.Serialization;
-using Inss.GovUk.Forms.IPUpload.Domain.Validation;
-
 
 /// <remarks/>
 [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.8.3928.0")]
