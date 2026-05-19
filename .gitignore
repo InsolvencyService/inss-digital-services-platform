@@ -162,6 +162,9 @@ artifacts/
 *.VisualState.xml
 TestResult.xml
 
+# Reqnroll generated files
+*.feature.cs
+
 # ASP.NET scaffolding
 ScaffoldingReadMe.txt
 
