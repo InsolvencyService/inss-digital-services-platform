@@ -38,29 +38,31 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
     
     private async Task ValidateAsync(IPUploadXmlErrorsModel fileUploadErrors, object redundancyPayment)
     {
-        if (redundancyPayment is Domain.Employee.Spreadsheet.RP14A spreadsheetRP14A)
+        if (redundancyPayment is Inss.Common.IPUpload.Employee.Spreadsheet.RP14A spreadsheetRP14A)
         {
             await ValidateSpreadsheetUploadAsync(fileUploadErrors, spreadsheetRP14A);
         }
-        else if (redundancyPayment is Domain.Employee.Api.RP14A apiRP14A)
+        else if (redundancyPayment is Inss.Common.IPUpload.Employee.Api.RP14A apiRP14A)
         {
             await ValidateApiUploadAsync(fileUploadErrors, apiRP14A);
         }
-        else if (redundancyPayment is Domain.Employer.Spreadsheet.RP14 spreadsheetRP14)
+        else if (redundancyPayment is Inss.Common.IPUpload.Employer.Spreadsheet.RP14 spreadsheetRP14)
         {
             await ValidateSpreadsheetUploadAsync(fileUploadErrors, spreadsheetRP14);
         }
-        else if (redundancyPayment is Domain.Employer.Api.RP14 apiRP14)
+        else if (redundancyPayment is Inss.Common.IPUpload.Employer.Api.RP14 apiRP14)
         {
             await ValidateApiUploadAsync(fileUploadErrors, apiRP14);
         }
     }
 
-    private async Task ValidateSpreadsheetUploadAsync(IPUploadXmlErrorsModel fileUploadErrors, Domain.Employee.Spreadsheet.RP14A redundancyPayment)
+    private async Task ValidateSpreadsheetUploadAsync(
+        IPUploadXmlErrorsModel fileUploadErrors, 
+        Inss.Common.IPUpload.Employee.Spreadsheet.RP14A redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
 
-        foreach (Domain.Employee.Spreadsheet.RP14AEmployee employee in redundancyPayment.Employee)
+        foreach (Inss.Common.IPUpload.Employee.Spreadsheet.RP14AEmployee employee in redundancyPayment.Employee)
         {
             if (!(await caseReferenceService.CheckExistsAsync(employee.Header.CaseReference)))
             {
@@ -98,7 +100,9 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         }
     }
     
-    private async Task ValidateSpreadsheetUploadAsync(IPUploadXmlErrorsModel fileUploadErrors, Domain.Employer.Spreadsheet.RP14 redundancyPayment)
+    private async Task ValidateSpreadsheetUploadAsync(
+        IPUploadXmlErrorsModel fileUploadErrors,
+        Inss.Common.IPUpload.Employer.Spreadsheet.RP14 redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
 
@@ -135,14 +139,16 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         }
     }
     
-    private async Task ValidateApiUploadAsync(IPUploadXmlErrorsModel fileUploadErrors, Domain.Employee.Api.RP14A redundancyPayment)
+    private async Task ValidateApiUploadAsync(
+        IPUploadXmlErrorsModel fileUploadErrors, 
+        Inss.Common.IPUpload.Employee.Api.RP14A redundancyPayment)
     {
         RP14AApiValidator apiValidator = new();
         ValidationResult? validationResult = await apiValidator.ValidateAsync(redundancyPayment);
         
         if (validationResult?.IsValid == false)
         {
-            Domain.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
+            Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
             
             foreach (var validationError in validationResult.Errors)
             {
@@ -163,7 +169,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         
         if (!(await caseReferenceService.CheckExistsAsync(redundancyPayment.Header.CaseReference)))
         {
-            Domain.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
+            Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
             
             fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
                 "Case",
@@ -177,7 +183,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
                 redundancyPayment.Header.CaseReference));
         }
         
-        foreach (Domain.Employee.Api.RP14AEmployee employee in redundancyPayment.Employee)
+        foreach (Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee in redundancyPayment.Employee)
         {
             RP14AApiEmployeeValidator validator3 = new();
             ValidationResult? employeeValidationResult = await validator3.ValidateAsync(employee);
@@ -201,7 +207,9 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         }
     }
     
-    private async Task ValidateApiUploadAsync(IPUploadXmlErrorsModel fileUploadErrors, Domain.Employer.Api.RP14 redundancyPayment)
+    private async Task ValidateApiUploadAsync(
+        IPUploadXmlErrorsModel fileUploadErrors, 
+        Inss.Common.IPUpload.Employer.Api.RP14 redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
 

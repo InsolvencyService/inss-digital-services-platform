@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Inss.GovUk.Forms.IPUpload.Domain.Employee.Api;
+using Inss.Common.IPUpload.Employee.Api;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 using Xunit;
 
@@ -16,13 +16,13 @@ public class RP14AApiValidatorTests
     [InlineData("XY12345678")]
     public void InvalidCaseReference_TestValidate_ReturnsInvalidResult(string? invalidCaseReference)
     {
-        IPUpload.Domain.Employee.Api.RP14A model = new()
+        RP14A model = new()
         {
             EmployerName = "The Simpsons",
             Header = new RP14AHeader { CaseReference = invalidCaseReference }
         };
         
-        TestValidationResult<IPUpload.Domain.Employee.Api.RP14A>? result = _validator.TestValidate(model);
+        TestValidationResult<RP14A>? result = _validator.TestValidate(model);
         
         Assert.False(result.IsValid);
     }
@@ -30,13 +30,13 @@ public class RP14AApiValidatorTests
     [Fact]
     public void InvalidEmployerName_TestValidate_ReturnsInvalidResult()
     {
-        IPUpload.Domain.Employee.Api.RP14A model = new()
+        RP14A model = new()
         {
             EmployerName = new string('X', 100),
             Header = new RP14AHeader { CaseReference = "CN12345678" }
         };
         
-        TestValidationResult<IPUpload.Domain.Employee.Api.RP14A>? result = _validator.TestValidate(model);
+        TestValidationResult<RP14A>? result = _validator.TestValidate(model);
         
         Assert.False(result.IsValid);
     }
@@ -44,13 +44,13 @@ public class RP14AApiValidatorTests
     [Fact]
     public void ValidHeaderDetails_TestValidate_ReturnsValidResult()
     {
-        IPUpload.Domain.Employee.Api.RP14A model = new()
+        RP14A model = new()
         {
             EmployerName = "The Simpsons",
             Header = new RP14AHeader { CaseReference = "CN12345678" }
         };
         
-        TestValidationResult<IPUpload.Domain.Employee.Api.RP14A>? result = _validator.TestValidate(model);
+        TestValidationResult<RP14A>? result = _validator.TestValidate(model);
         
         Assert.True(result.IsValid);
     }

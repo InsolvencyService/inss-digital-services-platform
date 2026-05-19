@@ -42,10 +42,10 @@ public sealed class XmlFileUploadModel : PageModel
         XDocument document = GetXml();
         return document.Root?.Name.NamespaceName.ToLower() switch
         {
-            RP14ASpreadsheetNamespace => CreateModel<Employee.Spreadsheet.RP14A>(document),
-            RP14AApiNamespace => CreateModel<Employee.Api.RP14A>(document),
-            RP14SpreadsheetNamespace => CreateModel<Employer.Spreadsheet.RP14>(document),
-            RP14ApiNamespace => CreateModel<Employer.Api.RP14>(document),
+            RP14ASpreadsheetNamespace => CreateModel<Inss.Common.IPUpload.Employee.Spreadsheet.RP14A>(document),
+            RP14AApiNamespace => CreateModel<Inss.Common.IPUpload.Employee.Api.RP14A>(document),
+            RP14SpreadsheetNamespace => CreateModel<Inss.Common.IPUpload.Employer.Spreadsheet.RP14>(document),
+            RP14ApiNamespace => CreateModel<Inss.Common.IPUpload.Employer.Api.RP14>(document),
             _ => throw new IPUploadException($"Unknown or empty XML schema {document.Root?.Name.NamespaceName} provided.")
         };
     }

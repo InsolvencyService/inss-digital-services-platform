@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Inss.GovUk.Forms.IPUpload.Domain.Employer.Api;
+using Inss.Common.IPUpload.Employer.Api;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 using Xunit;
 

@@ -10,9 +10,8 @@
 // Schema: https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.Common/Models/Schemas/RP14A.xsd
 
 using System.ComponentModel.DataAnnotations;
-using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-namespace Inss.GovUk.Forms.IPUpload.Domain.Employee.Api;
+namespace Inss.Common.IPUpload.Employee.Api;
 
 /// <remarks/>
 [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.8.3928.0")]

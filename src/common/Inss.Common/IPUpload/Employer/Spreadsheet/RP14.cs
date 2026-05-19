@@ -11,9 +11,8 @@
 
 using System.Xml.Serialization;
 using System.ComponentModel.DataAnnotations;
-using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-namespace Inss.GovUk.Forms.IPUpload.Domain.Employer.Spreadsheet;
+namespace Inss.Common.IPUpload.Employer.Spreadsheet;
 
 /// <remarks/>
 [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.6.1055.0")]

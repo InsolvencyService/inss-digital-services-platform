@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using FluentValidation.TestHelper;
-using Inss.GovUk.Forms.IPUpload.Domain.Employee.Api;
+using Inss.Common.IPUpload.Employee.Api;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 using Xunit;
 

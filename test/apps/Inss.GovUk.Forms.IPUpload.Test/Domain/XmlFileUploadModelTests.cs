@@ -35,6 +35,6 @@ public class XmlFileUploadModelTests
         object rp14A = xmlFileUpload.GetRedundancyPaymentObject();
 
         Assert.NotNull(rp14A);
-        Assert.IsType<Inss.GovUk.Forms.IPUpload.Domain.Employee.Spreadsheet.RP14A>(rp14A);
+        Assert.IsType<Inss.Common.IPUpload.Employee.Spreadsheet.RP14A>(rp14A);
     }
 }
