@@ -2,6 +2,9 @@
 using System.Text;
 using Inss.Common.IPUpload;
 using Inss.FormsSubmission.Service.Handlers;
+using Inss.FormsSubmission.Service.IPUpload.Employee;
+using Inss.FormsSubmission.Service.IPUpload.Employer;
+using Inss.FormsSubmission.Service.IPUpload.Exceptions;
 
 namespace Inss.FormsSubmission.Service.IPUpload;
 
@@ -81,69 +84,13 @@ public sealed class MapperFactory : IMapperFactory
             Inss.Common.IPUpload.Employee.Api.RP14A x => new RP14AApiMapper(x),
             Inss.Common.IPUpload.Employer.Spreadsheet.RP14 x => new RP14SpreadsheetMapper(x),
             Inss.Common.IPUpload.Employer.Api.RP14 x => new RP14ApiMapper(x),
-            _ => throw new InvalidOperationException("Todo")
+            _ => throw new IPUploadMappingException($"Unable to map the model {model.GetType()} to an RP14(A) type.")
         };
     }
 }
-public sealed class RP14ASpreadsheetMapper : IMapper
-{
-    private readonly Inss.Common.IPUpload.Employee.Spreadsheet.RP14A _model;
-    
-    public RP14ASpreadsheetMapper(Inss.Common.IPUpload.Employee.Spreadsheet.RP14A model)
-    {
-        _model = model;
-    }
-    
-    public JsonMessage[] Map()
-    {
-        throw new NotImplementedException();
-    }
-}
 
-public sealed class RP14AApiMapper : IMapper
-{
-    private readonly Inss.Common.IPUpload.Employee.Api.RP14A _model;
-    
-    public RP14AApiMapper(Inss.Common.IPUpload.Employee.Api.RP14A model)
-    {
-        _model = model;
-    }
-    
-    public JsonMessage[] Map()
-    {
-        throw new NotImplementedException();
-    }
-}
 
-public sealed class RP14SpreadsheetMapper : IMapper
-{
-    private readonly Inss.Common.IPUpload.Employer.Spreadsheet.RP14 _model;
-    
-    public RP14SpreadsheetMapper(Inss.Common.IPUpload.Employer.Spreadsheet.RP14 model)
-    {
-        _model = model;
-    }
-    
-    public JsonMessage[] Map()
-    {
-        throw new NotImplementedException();
-    }
-}
 
-public sealed class RP14ApiMapper : IMapper
-{
-    private readonly Inss.Common.IPUpload.Employer.Api.RP14 _model;
-    
-    public RP14ApiMapper(Inss.Common.IPUpload.Employer.Api.RP14 model)
-    {
-        _model = model;
-    }
-    
-    public JsonMessage[] Map()
-    {
-        throw new NotImplementedException();
-    }
-}
 
 public sealed class JsonMessage
 {

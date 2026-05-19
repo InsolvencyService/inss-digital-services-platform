@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global - Dynamics object
+using System.Text.Json.Serialization;
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employee;
 
