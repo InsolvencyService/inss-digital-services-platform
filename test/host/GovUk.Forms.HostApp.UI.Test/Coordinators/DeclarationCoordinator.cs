@@ -44,6 +44,7 @@ public class DeclarationCoordinator(
         return await CapturePageVisualAsync(
            () => commonPage.CaptureVisualAsync(playwrightDriver.Page),
            ScenarioConstant.DeclarationPage);
+
     }
 
     public async Task NavigateToUploadAFilePageAsync()

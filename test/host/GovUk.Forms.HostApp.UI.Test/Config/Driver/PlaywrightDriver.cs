@@ -61,6 +61,18 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
     {
         try
         {
+            if (_page is not null && !_page.IsClosed)
+            {
+                await _page.CloseAsync();
+            }
+        }
+        catch (PlaywrightException ex)
+        {
+            Console.WriteLine($"[Driver Page Close Error] {ex}");
+        }
+
+        try
+        {
             if (_context is not null)
             {
                 await _context.CloseAsync();
@@ -85,6 +97,7 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
         finally
         {
             _playwright?.Dispose();
+
             _page = null;
             _context = null;
             _browser = null;

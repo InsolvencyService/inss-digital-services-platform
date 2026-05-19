@@ -1,4 +1,6 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
+﻿using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
+
+namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
 public interface IUploadDocumentPage
 {
@@ -10,4 +12,6 @@ public interface IUploadDocumentPage
     Task UploadFileAsync(string filePath);
     Task<string> GetUploadedFileNameAsync();
     Task<IReadOnlyList<string>> GetUploadedFileNamesAsync();
+    Task VerifyUploadFileErrorAsync(UploadFileError expected);
+    Task ClickErrorSummaryLinkAsync();
 }

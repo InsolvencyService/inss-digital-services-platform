@@ -1,6 +1,6 @@
 ﻿namespace GovUk.Forms.HostApp.UI.Test.Pages.Common;
 
-public class SharedLoactors
+public class SharedLocactors
 {
     public const string UploadRedundancyPaymentForms = "Upload redundancy payment forms (RP14/A)";
     public const string BackButton = "Back";

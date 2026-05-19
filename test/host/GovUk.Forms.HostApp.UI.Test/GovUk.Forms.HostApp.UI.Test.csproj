@@ -2,9 +2,18 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="Resources\Rp14a\rp14A.xml" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Resources\Rp14a\rp14A.xml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="Allure.Reqnroll" />
+    <PackageReference Include="Bogus" />
     <PackageReference Include="Expressium.LivingDoc.ReqnrollPlugin" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
@@ -29,6 +38,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Functional\" />
+    <Folder Include="Features\Validation\" />
     <Folder Include="Hook\" />
   </ItemGroup>
 

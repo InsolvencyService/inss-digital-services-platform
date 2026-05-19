@@ -1,4 +1,5 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
+using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Support;
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -75,7 +76,7 @@ public class DeclarationSteps
         string screenshotPath = await _declarationCoordinator.CaptureDeclarationVisualAsync();
         await VerifyFile(screenshotPath)
             .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.DeclarationPage); ;
+            .UseFileName(ScenarioConstant.DeclarationPage);
     }
 
 
