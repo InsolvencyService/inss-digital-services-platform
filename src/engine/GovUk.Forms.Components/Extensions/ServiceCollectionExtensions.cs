@@ -13,7 +13,9 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddTypedClient<TClientInterface, TClient>(ExternalApiOptions options) 
+        public IServiceCollection AddTypedClient<TClientInterface, TClient>(
+            ExternalApiOptions options, 
+            HttpClientHandler? clientHandler = null) 
             where TClient : class, TClientInterface 
             where TClientInterface : class
         {
@@ -21,6 +23,7 @@ public static class ServiceCollectionExtensions
                 {
                     client.BaseAddress = new Uri(options.Url);
                 })
+                .ConfigurePrimaryHttpMessageHandler(() => clientHandler ?? new HttpClientHandler())
                 .SetHandlerLifetime(TimeSpan.FromMinutes(options.LifetimeMinutes))
                 .AddPolicyHandler(IServiceCollection.GetRetryPolicy(options))
                 .AddPolicyHandler((IServiceCollection.GetCircuitBreaker(options)));
