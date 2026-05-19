@@ -1,8 +1,8 @@
 ﻿namespace Inss.FormsSubmission.Service.Endpoints;
 
-public static class HealthEndpointHandler
+public static class HealthEndpoint
 {
-    public static RouteHandlerBuilder HealthEndpoint(this IEndpointRouteBuilder builder)
+    public static RouteHandlerBuilder DefineHealthEndpoint(this IEndpointRouteBuilder builder)
     {
         return builder.MapGet("/health", () => Results.Ok("Healthy."));
     }

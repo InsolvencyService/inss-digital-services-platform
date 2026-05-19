@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.Domain;
+﻿using Inss.Common;
+using Inss.Common.IPUpload;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
 // ReSharper disable UnusedParameter.Local
 
@@ -10,9 +11,9 @@ public sealed class MockSubmitIPUploadSectionClient : ISubmitIPUploadSectionClie
     {
     }
     
-    public Task SubmitAsync(SectionModel section, string userSessionId)
+    public Task<Result<SubmitIPUploadResponse>> SubmitAsync(SubmitIPUploadRequest submitRequest)
     {
         Console.WriteLine("Calling submission service...");
-        return Task.CompletedTask;
+        return Task.FromResult<Result<SubmitIPUploadResponse>>(new SubmitIPUploadResponse { Reference = "RH12XY34" });
     }
 }

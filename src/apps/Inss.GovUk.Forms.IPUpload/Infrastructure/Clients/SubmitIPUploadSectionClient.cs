@@ -1,5 +1,9 @@
 using System.Net.Http.Headers;
-using GovUk.Forms.Domain;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using Inss.Common;
+using Inss.Common.IPUpload;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -17,17 +21,32 @@ public sealed class SubmitIPUploadSectionClient : ISubmitIPUploadSectionClient
         _httpContextAccessor = httpContextAccessor;
     }
     
-    public async Task SubmitAsync(SectionModel section, string userSessionId)
+    public async Task<Result<SubmitIPUploadResponse>> SubmitAsync(SubmitIPUploadRequest submitRequest)
+    {
+        using HttpRequestMessage apiRequest = await CreateRequestAsync(submitRequest);
+        using HttpResponseMessage apiResponse = await _client.SendAsync(apiRequest);
+        return await HandleResponseAsync(apiResponse);
+    }
+
+    private async Task<HttpRequestMessage> CreateRequestAsync(SubmitIPUploadRequest submitRequest)
     {
         string? accessToken = await _httpContextAccessor.HttpContext!.GetTokenAsync("access_token");
+        HttpRequestMessage apiRequest = new(HttpMethod.Post, "/ipupload/submit");
+        apiRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        apiRequest.Content = new StringContent(JsonSerializer.Serialize(submitRequest), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+        return apiRequest;
+    }
 
-        using HttpRequestMessage request = new();
-        request.RequestUri = new Uri("/ipupload/submit", UriKind.Relative);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+    private static async Task<Result<SubmitIPUploadResponse>> HandleResponseAsync(HttpResponseMessage apiResponse)
+    {
+        if (!apiResponse.IsSuccessStatusCode)
+        {
+            return new Error($"Unable to successfully submit the IP upload. Status code {apiResponse.StatusCode}", ErrorType.Unexpected);
+        }
 
-        Console.WriteLine("Calling submission service...");
-        using HttpResponseMessage response = await _client.SendAsync(request);
-        
-        response.EnsureSuccessStatusCode();
+        SubmitIPUploadResponse? submitResponse = await apiResponse.Content.ReadFromJsonAsync<SubmitIPUploadResponse>();
+        return submitResponse is not null 
+            ? (Result<SubmitIPUploadResponse>)submitResponse 
+            : new Error("Unable to serialize IP Upload response.", ErrorType.Unexpected);
     }
 }
