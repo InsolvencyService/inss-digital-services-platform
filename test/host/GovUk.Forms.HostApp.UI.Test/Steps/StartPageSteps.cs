@@ -54,7 +54,7 @@ public class StartPageSteps
     [Then("the user is redirected to the sign-in page")]
     public async Task ThenTheUserIsRedirectedToTheSignInPage()
     {
-        await _signInCoordinator.VerifyThatSignInPageIsDisplayedAsync();
+        await _signInCoordinator.VerifySignInPageIsLoadedAsync();
     }
 
     [Then("the start page should match the visual snapshot")]

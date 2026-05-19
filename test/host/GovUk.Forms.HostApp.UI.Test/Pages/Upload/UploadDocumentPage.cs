@@ -1,7 +1,7 @@
-﻿
-using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
@@ -19,20 +19,28 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     private new IPage Page => _playwrightDriver.Page;
 
-    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.BackButton, Exact = true });
-    private ILocator GiveFeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLoactors.FeedbackLink });
+    private ILocator BackButton => Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.BackButton, Exact = true });
+    private ILocator GiveFeedbackLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.FeedbackLink });
     private ILocator UploadFileText => Page.GetByText(UploadLocators.Labels.UploadFile, new() { Exact = true });
     private ILocator NoFileChosenText => Page.GetByText(UploadLocators.Labels.NoFileChosen, new() { Exact = true });
     private ILocator CommonIssuesWhenUploadingRP14AForms => Page.GetByText(UploadLocators.Labels.CommonIssuesWhenUploadingRP14AForms, new() { Exact = true });
     private ILocator RPSStakeholderEmail => Page.GetByText(UploadLocators.Labels.RPSStakeholderEmail, new() { Exact = true });
     private ILocator GuidanceText => Page.GetByText(UploadLocators.Labels.Guidance, new() { Exact = true });
-    private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLoactors.ContinueButton });
+    private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton });
     private ILocator FileUploadInput => Page.Locator(UploadLocators.Selectors.FileInput);
     private ILocator UploadedFileStatus => Page.Locator(UploadLocators.Selectors.UploadStatus);
+    private ILocator ErrorSummary => Page.Locator(UploadLocators.Selectors.ErrorSummary);
+    private ILocator ErrorSummaryTitle => ErrorSummary.GetByRole(AriaRole.Heading, new() { Name = UploadLocators.Labels.ThereIsAProblem });
+    private ILocator ErrorSummaryLink => ErrorSummary.GetByRole(AriaRole.Link);
+    private ILocator UploadFileFormGroup => Page.Locator(UploadLocators.Selectors.ErrorGroupForm);
+    private ILocator UploadFileErrorMessage => Page.Locator(UploadLocators.Selectors.ContentError);
+    private ILocator UploadFileInput => Page.Locator(UploadLocators.Selectors.UploadForm);
+
 
     protected override async Task PageContentLoadedAsync()
     {
-        await Page.WaitForLoadStateAsync(LoadState.Load);
+        await Page.WaitForLoadStateAsync(LoadState.Load,
+            new() { Timeout = ScenarioConstant.ElementTimeout });
         await Expect(UploadFileText).ToBeVisibleAsync();
         await Expect(NoFileChosenText).ToBeVisibleAsync();
         await Expect(CommonIssuesWhenUploadingRP14AForms).ToBeVisibleAsync();
@@ -45,6 +53,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     public async Task ClickOnContinueButtonAsync()
     {
         await ContinueButton.ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = ScenarioConstant.ElementTimeout });
     }
     public async Task ClickOnBackButtonAsync()
     {
@@ -69,8 +78,18 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     public async Task UploadFileAsync(string filePath)
     {
-        ArgumentNullException.ThrowIfNull(filePath);
-        await FileUploadInput.SetInputFilesAsync(filePath);
+        string absolutePath = Path.GetFullPath(filePath);
+
+        byte[] bytes = await File.ReadAllBytesAsync(absolutePath);
+
+        await
+            FileUploadInput
+            .SetInputFilesAsync(new FilePayload
+            {
+                Name = Path.GetFileName(absolutePath),
+                MimeType = "text/xml",
+                Buffer = bytes
+            });
     }
 
     public async Task<string> GetUploadedFileNameAsync()
@@ -81,5 +100,21 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     public async Task<IReadOnlyList<string>> GetUploadedFileNamesAsync()
     {
         return await UploadedFileStatus.AllInnerTextsAsync();
+    }
+
+    public async Task VerifyUploadFileErrorAsync(UploadFileError expected)
+    {
+        await Expect(ErrorSummary).ToBeVisibleAsync();
+        await Expect(ErrorSummaryTitle).ToBeVisibleAsync();
+
+        await Expect(ErrorSummaryLink).ToHaveTextAsync(expected.ErrorMessage);
+        await Expect(UploadFileFormGroup).ToBeVisibleAsync();
+        await Expect(UploadFileErrorMessage).ToContainTextAsync(expected.ErrorMessage);
+    }
+
+    public async Task ClickErrorSummaryLinkAsync()
+    {
+        await ErrorSummaryLink.ClickAsync();
+        await Expect(UploadFileInput).ToBeFocusedAsync();
     }
 }

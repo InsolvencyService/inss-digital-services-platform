@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Pages;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Pages.Common;
 
 public class DirectorConductReportingServicePage : BasePage
 {

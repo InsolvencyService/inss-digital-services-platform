@@ -127,16 +127,18 @@ public sealed class ReqnrollHook : BaseTestConfig
     [AfterScenario(Order = 0)]
     public async Task AfterScenarioAsync()
     {
-        IBrowserContext context = _driver.Context;
-        IPage page = _driver.Page;
-
-        IVideo? video = page.Video;
+        IVideo? video = null;
 
         bool failed =
             _scenarioContext.ScenarioExecutionStatus == ScenarioExecutionStatus.TestError;
 
         try
         {
+            if (!_driver.Page.IsClosed)
+            {
+                video = _driver.Page.Video;
+            }
+
             await StopAndAttachScreencastAsync();
 
             if (failed)
@@ -149,29 +151,8 @@ public sealed class ReqnrollHook : BaseTestConfig
             await BrowserTearDownAsync(
                 _scenarioContext,
                 _output,
-                context,
-                page);
-
-            if (!page.IsClosed)
-            {
-                await page.CloseAsync();
-            }
-
-            if (_shouldRecordVideo && failed && video is not null && TestArtifacts is not null)
-            {
-                string? videoPath = await video.SaveRecordedVideoToArtifactsAsync(
-                    TestArtifacts,
-                    _output,
-                    $"{TestName}_failure");
-
-                if (!string.IsNullOrWhiteSpace(videoPath))
-                {
-                    _allureReportingHelper.AttachFile(
-                        "Failure Video",
-                        videoPath,
-                        "video/webm");
-                }
-            }
+                _driver.Context,
+                _driver.Page);
 
             AttachTraceToAllure();
         }
@@ -188,6 +169,22 @@ public sealed class ReqnrollHook : BaseTestConfig
         finally
         {
             await _driver.CloseAsync();
+
+            if (_shouldRecordVideo && failed && video is not null && TestArtifacts is not null)
+            {
+                string? videoPath = await video.SaveRecordedVideoToArtifactsAsync(
+                    TestArtifacts,
+                    _output,
+                    $"{TestName}_failure");
+
+                if (!string.IsNullOrWhiteSpace(videoPath))
+                {
+                    _allureReportingHelper.AttachFile(
+                        "Failure Video",
+                        videoPath,
+                        "video/webm");
+                }
+            }
         }
     }
 
@@ -199,7 +196,7 @@ public sealed class ReqnrollHook : BaseTestConfig
 
         Dictionary<string, string> properties = new()
         {
-            ["Browser"] = "Chromium",
+            ["Browser"] = TestConfigReader.Settings.BrowserSettings.BrowserName,
             ["Environment"] = EnvironmentConfigFactory.CurrentEnvironment.ToString(),
             ["BaseUrl"] = EnvironmentConfigFactory.EnvironmentConfig.BaseUrl,
         };
@@ -301,6 +298,10 @@ public sealed class ReqnrollHook : BaseTestConfig
 
         _allureReportingHelper.AddParameter("Feature", _featureContext.FeatureInfo.Title);
         _allureReportingHelper.AddParameter("Scenario", _scenarioContext.ScenarioInfo.Title);
+        AllureLifecycle.Instance.UpdateTestCase(tc =>
+        {
+            tc.name = _scenarioContext.ScenarioInfo.Title;
+        });
     }
 
     private static string? GetTagValue(string[] tags, string prefix)

@@ -110,13 +110,13 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
 #line 6
 #line hidden
 #line 7
-  await testRunner.GivenAsync("I am on the upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+  await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
         }
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/UploadFile.feature.ndjson", 6);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/UploadFile.feature.ndjson", 12);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -266,6 +266,140 @@ await this.FeatureBackgroundAsync();
 #line hidden
 #line 28
  await testRunner.ThenAsync("the common issues section should display the correct content", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Display error when submitting without uploading a file")]
+        [global::NUnit.Framework.IgnoreAttribute("Ignored scenario")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        public async global::System.Threading.Tasks.Task DisplayErrorWhenSubmittingWithoutUploadingAFile()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "ignore",
+                    "regression"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "4";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error when submitting without uploading a file", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 31
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 32
+  await testRunner.WhenAsync("I click the continue button without selecting a file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 33
+  await testRunner.ThenAsync("I should see the file upload error \"The file must end with an XML extension\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Display validation error when XML content is invalid")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        public async global::System.Threading.Tasks.Task DisplayValidationErrorWhenXMLContentIsInvalid()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "validation"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "5";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display validation error when XML content is invalid", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 36
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 37
+  await testRunner.WhenAsync("I upload an XML file with invalid RP14A content", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 38
+    await testRunner.AndAsync("I proceed to the check answers page", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 39
+  await testRunner.ThenAsync("I should see the upload error message \"The file provided is invalid XML or has in" +
+                        "valid field data\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 40
+   await testRunner.AndAsync("the file should not be uploaded", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Display error for unsupported file extension")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.TestCaseAttribute(".pdf", "6", null)]
+        [global::NUnit.Framework.TestCaseAttribute(".txt", "7", null)]
+        [global::NUnit.Framework.TestCaseAttribute(".exe", "8", null)]
+        [global::NUnit.Framework.TestCaseAttribute(".zip", "9", null)]
+        public async global::System.Threading.Tasks.Task DisplayErrorForUnsupportedFileExtension(string extension, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "regression",
+                    "validation"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("extension", extension);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error for unsupported file extension", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 43
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 44
+  await testRunner.WhenAsync(string.Format("I upload an unsupported file with extension \"{0}\"", extension), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 45
+   await testRunner.AndAsync("I proceed to the check answers page", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 46
+  await testRunner.ThenAsync("I should see the upload error message \"The file must end with an XML extension\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 47
+  await testRunner.AndAsync("the file should not be uploaded", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

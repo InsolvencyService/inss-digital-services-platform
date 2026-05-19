@@ -1,4 +1,4 @@
-﻿namespace GovUk.Forms.HostApp.UI.Test.Builders;
+﻿namespace GovUk.Forms.HostApp.UI.Test.Factories;
 
 public static class Rp14aFileFactory
 {
