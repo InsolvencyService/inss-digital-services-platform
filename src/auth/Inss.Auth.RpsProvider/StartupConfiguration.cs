@@ -40,9 +40,7 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<ILoginService, LoginService>();
 
             ExternalApiOptions authenticationOptions = context.Configuration.GetSection("RpsRelay").Get<ExternalApiOptions>()!;
-            services.AddTypedClient<IUserAuthenticationClient, UserAuthenticationClient>(
-                authenticationOptions, 
-                new HttpClientHandler { AllowAutoRedirect = true, CookieContainer = new CookieContainer() });
+            services.AddTypedClient<IUserAuthenticationClient, UserAuthenticationClient>(authenticationOptions);
             
             services.AddSingleton<IUserAuthStoreProvider, TestUserAuthStoreProvider>();
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using GovUk.Forms.Components.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -13,9 +14,7 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddTypedClient<TClientInterface, TClient>(
-            ExternalApiOptions options, 
-            HttpClientHandler? clientHandler = null) 
+        public IServiceCollection AddTypedClient<TClientInterface, TClient>(ExternalApiOptions options) 
             where TClient : class, TClientInterface 
             where TClientInterface : class
         {
@@ -23,7 +22,17 @@ public static class ServiceCollectionExtensions
                 {
                     client.BaseAddress = new Uri(options.Url);
                 })
-                .ConfigurePrimaryHttpMessageHandler(() => clientHandler ?? new HttpClientHandler())
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    HttpClientHandler clientHandler = new() { AllowAutoRedirect = options.AllowAutoRedirect };
+
+                    if (options.CreateCookieContainer)
+                    {
+                        clientHandler.CookieContainer = new CookieContainer();
+                    }
+                    
+                    return clientHandler;
+                })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(options.LifetimeMinutes))
                 .AddPolicyHandler(IServiceCollection.GetRetryPolicy(options))
                 .AddPolicyHandler((IServiceCollection.GetCircuitBreaker(options)));
