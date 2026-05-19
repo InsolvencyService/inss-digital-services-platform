@@ -66,7 +66,7 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
                 await _page.CloseAsync();
             }
         }
-        catch (Exception ex)
+        catch (PlaywrightException ex)
         {
             Console.WriteLine($"[Driver Page Close Error] {ex}");
         }
