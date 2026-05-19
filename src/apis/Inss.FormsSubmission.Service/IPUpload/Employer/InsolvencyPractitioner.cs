@@ -1,0 +1,27 @@
+﻿using System.Text.Json.Serialization;
+
+namespace Inss.FormsSubmission.Service.IPUpload.Employer;
+
+public class InsolvencyPractitioner
+{
+    [JsonPropertyName("ip_registration_number")]
+    public string IpRegistrationNumber { get; init; }
+
+    [JsonPropertyName("ip_firm_name")]
+    public string IpFirmName { get; init; }
+
+    [JsonPropertyName("ip_name")]
+    public string IpName { get; init; }
+
+    [JsonPropertyName("declaration_agreement")]
+    public bool? DeclarationAgreement { get; init; }
+
+    [JsonPropertyName("address")]
+    public Address Address { get; init; }
+
+    [JsonPropertyName("telephone_number")]
+    public string TelephoneNumber { get; init; }
+
+    [JsonPropertyName("email_address")]
+    public string EmailAddress { get; init; }
+}

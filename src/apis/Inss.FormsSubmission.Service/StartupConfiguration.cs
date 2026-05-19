@@ -5,6 +5,7 @@ using Inss.FormsSubmission.Service.Endpoints;
 using Inss.FormsSubmission.Service.Endpoints.Security;
 using Inss.FormsSubmission.Service.Extensions;
 using Inss.FormsSubmission.Service.Handlers;
+using Inss.FormsSubmission.Service.IPUpload;
 using Inss.FormsSubmission.Service.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
