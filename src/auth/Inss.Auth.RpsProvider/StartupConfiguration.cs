@@ -1,3 +1,4 @@
+using System.Net;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Components.Extensions;
@@ -38,8 +39,8 @@ public class StartupConfiguration : IHostingStartup
 
             services.AddSingleton<ILoginService, LoginService>();
 
-            ExternalApiOptions dynamicsOptions = context.Configuration.GetSection("RpsRelay").Get<ExternalApiOptions>()!;
-            services.AddTypedClient<IUserAuthenticationClient, UserAuthenticationClient>(dynamicsOptions);
+            ExternalApiOptions authenticationOptions = context.Configuration.GetSection("RpsRelay").Get<ExternalApiOptions>()!;
+            services.AddTypedClient<IUserAuthenticationClient, UserAuthenticationClient>(authenticationOptions);
             
             services.AddSingleton<IUserAuthStoreProvider, TestUserAuthStoreProvider>();
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
