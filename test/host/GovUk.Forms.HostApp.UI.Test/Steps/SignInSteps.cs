@@ -119,7 +119,13 @@ public sealed class SignInSteps
         {
             throw;
         }
-        catch (Exception ex)
+        catch (InvalidOperationException ex)
+        {
+            throw new InvalidOperationException(
+                "Failed to parse error messages from DataTable. " +
+                "Expected format: | Message | with at least one row.", ex);
+        }
+        catch (FormatException ex)
         {
             throw new InvalidOperationException(
                 "Failed to parse error messages from DataTable. " +
