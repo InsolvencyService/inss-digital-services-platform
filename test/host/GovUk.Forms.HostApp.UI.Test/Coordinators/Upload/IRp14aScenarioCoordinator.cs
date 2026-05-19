@@ -19,23 +19,23 @@ public interface IRp14aScenarioCoordinator
 
     Task UploadRp14aWithInvalidArrearsOfPayOwedAsync(int count);
 
-    Task UploadRp14aWithNationalInsuranceNumberAsync(string? insuranceNumber);
+    Task UploadRp14aWithNationalInsuranceNumberAsync(string? insuranceNumber, int occurrenceIndex);
 
     Task UploadRp14aWithMoneyOwedToEmployerAsync(string? moneyOwed);
 
     Task UploadRp14aWithEmploymentDatesAsync(
-        string? startDate,
-        string? endDate);
-
-    Task UploadRp14aWithArrearsDatesAsync(
-        string? startDate,
-        string? endDate);
+     DateOnly? startDate,
+     DateOnly? endDate);
 
     Task UploadComplexRp14aScenarioAsync(
         string employerName,
         string surname,
         string forename,
         string arrearsAmount,
-        string employmentStartDate,
-        string employmentEndDate);
+        DateOnly? employmentStartDate,
+        DateOnly? employmentEndDate);
+
+    Task UploadRp14aWithArrearsDatesAsync(
+        string? startDate,
+        string? endDate);
 }

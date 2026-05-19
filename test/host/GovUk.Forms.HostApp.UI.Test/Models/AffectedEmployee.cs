@@ -8,10 +8,3 @@ public sealed class AffectedEmployee
     public string NiNumber { get; init; } = string.Empty;
     public string? CellValue { get; init; }
 }
-
-public sealed record UploadErrorSummary(
-    string Category,
-    string ErrorType,
-    string ErrorMessage,
-    string? HintText = null,
-    string ActionText = "View details");

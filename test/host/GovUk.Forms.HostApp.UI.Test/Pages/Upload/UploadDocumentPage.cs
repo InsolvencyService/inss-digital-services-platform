@@ -1,5 +1,4 @@
-﻿
-using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
@@ -79,8 +78,18 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     public async Task UploadFileAsync(string filePath)
     {
-        ArgumentNullException.ThrowIfNull(filePath);
-        await FileUploadInput.SetInputFilesAsync(filePath);
+        string absolutePath = Path.GetFullPath(filePath);
+
+        byte[] bytes = await File.ReadAllBytesAsync(absolutePath);
+
+        await
+            FileUploadInput
+            .SetInputFilesAsync(new FilePayload
+            {
+                Name = Path.GetFileName(absolutePath),
+                MimeType = "text/xml",
+                Buffer = bytes
+            });
     }
 
     public async Task<string> GetUploadedFileNameAsync()

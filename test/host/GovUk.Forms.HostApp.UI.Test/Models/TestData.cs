@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace GovUk.Forms.HostApp.UI.Test.Models;
 
-public class TestData
+public partial class TestData
 {
     public class Errors
     {
@@ -11,17 +11,6 @@ public class TestData
         public string Hint { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
     }
-
-    public sealed record UploadFileError(
-    string SummaryTitle,
-    string ErrorMessage);
-
-    public sealed record ArrearsOfPayPeriod(
-    int PeriodNumber,
-    string StartDate,
-    string EndDate,
-    string AmountOwed,
-    string PayType);
 
 
     public static AffectedEmployee CreateAffectedEmployee(

@@ -1,5 +1,4 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Builders;
-using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
@@ -60,10 +59,7 @@ public sealed class UploadDocumentCoordinator :
         => await _fileUploadCoordinator.UploadFileAsync(filePath);
 
     public async Task UploadValidRp14aAsync()
-        => await _fileUploadCoordinator.UploadValidRp14aAsync();
-
-    public async Task UploadRp14aAsync(Rp14aScenarioBuilder scenarioBuilder)
-        => await _fileUploadCoordinator.UploadRp14aAsync(scenarioBuilder);
+        => await _scenarioCoordinator.UploadValidRp14aAsync();
 
     public async Task UploadRp14aWithCaseReferenceAsync(string? caseReference)
         => await _scenarioCoordinator.UploadRp14aWithCaseReferenceAsync(caseReference);
@@ -89,18 +85,18 @@ public sealed class UploadDocumentCoordinator :
     public async Task UploadRp14aWithInvalidArrearsOfPayOwedAsync(int count)
         => await _scenarioCoordinator.UploadRp14aWithInvalidArrearsOfPayOwedAsync(count);
 
-    public async Task UploadRp14aWithNationalInsuranceNumberAsync(string? insuranceNumber)
-        => await _scenarioCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(insuranceNumber);
+    public async Task UploadRp14aWithNationalInsuranceNumberAsync(string? insuranceNumber, int occurrenceIndex)
+        => await _scenarioCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(insuranceNumber, occurrenceIndex);
 
     public async Task UploadRp14aWithMoneyOwedToEmployerAsync(string? moneyOwed)
         => await _scenarioCoordinator.UploadRp14aWithMoneyOwedToEmployerAsync(moneyOwed);
 
     public async Task UploadRp14aWithEmploymentDatesAsync(
-        string? startDate,
-        string? endDate)
-        => await _scenarioCoordinator.UploadRp14aWithEmploymentDatesAsync(
-            startDate,
-            endDate);
+    DateOnly? startDate,
+    DateOnly? endDate)
+    => await _scenarioCoordinator.UploadRp14aWithEmploymentDatesAsync(
+        startDate,
+        endDate);
 
     public async Task UploadRp14aWithArrearsDatesAsync(
         string? startDate,
@@ -110,19 +106,19 @@ public sealed class UploadDocumentCoordinator :
             endDate);
 
     public async Task UploadComplexRp14aScenarioAsync(
-        string employerName,
-        string surname,
-        string forename,
-        string arrearsAmount,
-        string employmentStartDate,
-        string employmentEndDate)
-        => await _scenarioCoordinator.UploadComplexRp14aScenarioAsync(
-            employerName,
-            surname,
-            forename,
-            arrearsAmount,
-            employmentStartDate,
-            employmentEndDate);
+      string employerName,
+      string surname,
+      string forename,
+      string arrearsAmount,
+      DateOnly? employmentStartDate,
+      DateOnly? employmentEndDate)
+      => await _scenarioCoordinator.UploadComplexRp14aScenarioAsync(
+          employerName,
+          surname,
+          forename,
+          arrearsAmount,
+          employmentStartDate,
+          employmentEndDate);
 
     public async Task UploadUnsupportedFileAsync(string extension)
     {

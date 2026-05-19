@@ -60,7 +60,7 @@ Feature: Employee Validation
                   | 2     |
                   | 3     |
 
-        @regression @validation @rp14a @allure.subSuite:NationalInsurance
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance @bug
         Scenario: RP14A Display error for missing employee national insurance number
             Given the RP14A contains an employee with no national insurance number
              When I attempt to submit the RP14A
@@ -96,7 +96,7 @@ Feature: Employee Validation
                   | -50       |
 
 
-        @regression @validation @rp14a @allure.story:Employee
+@regression @validation @rp14a @allure.story:Employee @bug
         Scenario: RP14A Display error when employment start date is after employment end date
             Given the RP14A contains employment start date "2026-04-30" with end date "2026-04-01"
              When I attempt to submit the RP14A
@@ -107,7 +107,7 @@ Feature: Employee Validation
               And I should be able to go to the previous page from the error details page
 
 
-        @regression @validation @rp14a @allure.story:Payment
+@regression @validation @rp14a @allure.story:Payment @bug
         Scenario: RP14A Display error when arrears of pay start date is after end date
             Given the RP14A contains arrears of pay start date "2026-04-30" and end date "2026-04-01"
              When I attempt to submit the RP14A

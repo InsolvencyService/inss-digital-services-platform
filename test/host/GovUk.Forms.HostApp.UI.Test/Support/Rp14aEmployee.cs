@@ -10,9 +10,9 @@ public sealed record Rp14aEmployee
     public string NIClass { get; init; } = "A";
     public string NationalInsuranceNumber { get; init; } = "BP011752C";
     public string DateOfBirth { get; init; } = "1990-01-01";
-    public string StartDate { get; init; } = "2019-01-01";
+    public DateOnly? StartDate { get; init; } = new(2019, 1, 1);
+    public DateOnly? EndDate { get; init; } = new(2020, 3, 1);
     public string DateNoticeGiven { get; init; } = "2020-01-01";
-    public string EndDate { get; init; } = "2020-03-01";
     public string IsDirector { get; init; } = "No";
     public string AverageHoursWorked { get; init; } = "37";
     public string MoneyOwedToEmployer { get; init; } = "1000";

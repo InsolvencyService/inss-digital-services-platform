@@ -15,7 +15,7 @@ public sealed class UploadErrorDetailsCoordinator
     private readonly IUploadErrorsPage _uploadErrorsPage;
     private readonly IPlaywrightDriver _playwrightDriver;
     private readonly ScenarioContext _scenarioContext;
-    private readonly IAllureReportingHelper _allure;
+    private readonly IAllureReportingHelper _reportingHelper;
 
     public UploadErrorDetailsCoordinator(
         IUploadErrorDetailsPage uploadErrorDetailsPage,
@@ -28,7 +28,7 @@ public sealed class UploadErrorDetailsCoordinator
         _uploadErrorsPage = uploadErrorsPage;
         _playwrightDriver = playwrightDriver;
         _scenarioContext = scenarioContext;
-        _allure = allure;
+        _reportingHelper = allure;
     }
 
     public async Task VerifyUploadErrorPageIsDisplayedAsync()
@@ -48,13 +48,13 @@ public sealed class UploadErrorDetailsCoordinator
 
         string expectedFileName = GetUploadedFileName();
 
-        await _allure.StepAsync("Verify upload errors summary page", async () =>
+        await _reportingHelper.StepAsync("Verify upload errors summary page", async () =>
         {
             await _uploadErrorsPage.WaitForPageToLoadAsync();
             await _uploadErrorsPage.VerifyUploadedFileNameAsync(expectedFileName);
             await _uploadErrorsPage.VerifyErrorSummaryAsync(expectedError);
 
-            await _allure.AttachScreenshotAsync(
+            await _reportingHelper.AttachScreenshotAsync(
                 _playwrightDriver.Page,
                 "Upload Errors Page");
         });
@@ -65,12 +65,12 @@ public sealed class UploadErrorDetailsCoordinator
     {
         ArgumentNullException.ThrowIfNull(expectedError);
 
-        await _allure.StepAsync("Open upload error details page", async () =>
+        await _reportingHelper.StepAsync("Open upload error details page", async () =>
         {
             await _uploadErrorsPage.WaitForPageToLoadAsync();
             await _uploadErrorsPage.ClickOnViewDetailsAsync(expectedError);
 
-            await _allure.AttachScreenshotAsync(
+            await _reportingHelper.AttachScreenshotAsync(
                 _playwrightDriver.Page,
                 "Upload Errors Summary Page");
         });
@@ -85,7 +85,7 @@ public sealed class UploadErrorDetailsCoordinator
                 nameof(expectedError));
         }
 
-        await _allure.StepAsync("Verify validation error", async () =>
+        await _reportingHelper.StepAsync("Verify validation error", async () =>
         {
             await _uploadErrorsPage.WaitForPageToLoadAsync();
 
@@ -94,7 +94,7 @@ public sealed class UploadErrorDetailsCoordinator
 
             await _uploadErrorsPage.VerifyErrorMessageAsync(resolvedError);
 
-            await _allure.AttachScreenshotAsync(
+            await _reportingHelper.AttachScreenshotAsync(
                 _playwrightDriver.Page,
                 "Validation Error");
         });
@@ -164,14 +164,14 @@ public sealed class UploadErrorDetailsCoordinator
 
     public async Task ClickBackAndVerifyUploadErrorPageIsDisplayedAsync()
     {
-        await _allure.StepAsync(
+        await _reportingHelper.StepAsync(
             "Click Back and verify Upload Error page is displayed",
             async () =>
             {
                 await _uploadErrorDetailsPage.ClickBackButtonAsync();
                 await VerifyUploadErrorPageIsDisplayedAsync();
 
-                await _allure.AttachScreenshotAsync(
+                await _reportingHelper.AttachScreenshotAsync(
                     _playwrightDriver.Page,
                     "Upload Error Page after clicking Back");
             });
@@ -191,14 +191,14 @@ public sealed class UploadErrorDetailsCoordinator
 
         await OpenErrorDetailsAsync(expectedError);
 
-        await _allure.StepAsync(config.StepName, async () =>
+        await _reportingHelper.StepAsync(config.StepName, async () =>
         {
             await VerifyUploadErrorDetailsPageIsDisplayedAsync();
             await VerifyHeaderAsync(headerType);
             await VerifyErrorMessageContentAsync(expectedError);
             await VerifyAffectedEmployeesTableAsync(affectedEmployees);
 
-            await _allure.AttachScreenshotAsync(
+            await _reportingHelper.AttachScreenshotAsync(
                 _playwrightDriver.Page,
                 config.ScreenshotName);
         });

@@ -398,13 +398,15 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:NationalInsurance")]
+        [global::NUnit.Framework.CategoryAttribute("bug")]
         public async global::System.Threading.Tasks.Task RP14ADisplayErrorForMissingEmployeeNationalInsuranceNumber()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
                     "validation",
                     "rp14a",
-                    "allure.subSuite:NationalInsurance"};
+                    "allure.subSuite:NationalInsurance",
+                    "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "8";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for missing employee national insurance number", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
@@ -568,13 +570,15 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.story:Employee")]
+        [global::NUnit.Framework.CategoryAttribute("bug")]
         public async global::System.Threading.Tasks.Task RP14ADisplayErrorWhenEmploymentStartDateIsAfterEmploymentEndDate()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
                     "validation",
                     "rp14a",
-                    "allure.story:Employee"};
+                    "allure.story:Employee",
+                    "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "16";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error when employment start date is after employment end date", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
@@ -626,13 +630,15 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.story:Payment")]
+        [global::NUnit.Framework.CategoryAttribute("bug")]
         public async global::System.Threading.Tasks.Task RP14ADisplayErrorWhenArrearsOfPayStartDateIsAfterEndDate()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
                     "validation",
                     "rp14a",
-                    "allure.story:Payment"};
+                    "allure.story:Payment",
+                    "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "17";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error when arrears of pay start date is after end date", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);

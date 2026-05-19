@@ -1,5 +1,4 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Builders;
-using GovUk.Forms.HostApp.UI.Test.Helpers;
+﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
 using System.Text;
 
 namespace GovUk.Forms.HostApp.UI.Test.Factories;
@@ -7,6 +6,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Factories;
 public static class TestFileFactory
 {
     private const int OneMb = 1024 * 1024;
+
+    private const string BaselineRp14aFilePath =
+        "Resources/Rp14a/rp14A.xml";
 
     public static string CreateValidXmlFileAtSize(
         TestArtifacts artifacts,
@@ -17,9 +19,9 @@ public static class TestFileFactory
         string filePath = artifacts.FilePath(
             $"rp14a-{targetSizeMb}mb.xml");
 
-        string xml = Rp14aScenarioBuilder
-            .Create()
-            .BuildXml();
+        string xml = File.ReadAllText(
+            BaselineRp14aFilePath,
+            Encoding.UTF8);
 
         StringBuilder builder = new(xml);
 
@@ -51,9 +53,9 @@ public static class TestFileFactory
         string filePath = artifacts.FilePath(
             $"rp14a-above-{maxSizeMb}mb.xml");
 
-        string xml = Rp14aScenarioBuilder
-            .Create()
-            .BuildXml();
+        string xml = File.ReadAllText(
+            BaselineRp14aFilePath,
+            Encoding.UTF8);
 
         StringBuilder builder = new(xml);
 
@@ -75,6 +77,7 @@ public static class TestFileFactory
 
         return filePath;
     }
+
     public static string CreateFile(
         TestArtifacts artifacts,
         string fileName,
@@ -100,24 +103,25 @@ public static class TestFileFactory
     }
 
     public static string CreateXmlWithWrongContent(
-     TestArtifacts artifacts)
+        TestArtifacts artifacts)
     {
         ArgumentNullException.ThrowIfNull(artifacts);
 
-        string filePath = artifacts.FilePath("invalid-rp14a-structure.xml");
+        string filePath = artifacts.FilePath(
+            "invalid-rp14a-structure.xml");
 
         File.WriteAllText(
             filePath,
             """
-        <InvalidRP14A>
-          <Employee>
-            <Header>
-              <CaseReference>CN12445678</CaseReference>
-            </Header>
-            <EmployerName>Employer Test</EmployerName>
-          </Employee>
-        </InvalidRP14A>
-        """);
+            <InvalidRP14A>
+              <Employee>
+                <Header>
+                  <CaseReference>CN12445678</CaseReference>
+                </Header>
+                <EmployerName>Employer Test</EmployerName>
+              </Employee>
+            </InvalidRP14A>
+            """);
 
         return filePath;
     }

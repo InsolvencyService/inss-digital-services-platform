@@ -1,7 +1,4 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Builders;
-using GovUk.Forms.HostApp.UI.Test.Config.Driver;
-using GovUk.Forms.HostApp.UI.Test.Extensions;
-using GovUk.Forms.HostApp.UI.Test.Factories;
+﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -12,7 +9,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 public sealed class FileUploadCoordinator : IFileUploadCoordinator
 {
     private readonly IUploadDocumentPage _uploadDocumentPage;
-    private readonly IAllureReportingHelper _allure;
+    private readonly IAllureReportingHelper _reportingHelper;
     private readonly IPlaywrightDriver _playwrightDriver;
     private readonly ScenarioContext _scenarioContext;
     private readonly IReqnrollOutputHelper _outputHelper;
@@ -25,7 +22,7 @@ public sealed class FileUploadCoordinator : IFileUploadCoordinator
         IReqnrollOutputHelper outputHelper)
     {
         _uploadDocumentPage = uploadDocumentPage;
-        _allure = allure;
+        _reportingHelper = allure;
         _playwrightDriver = playwrightDriver;
         _scenarioContext = scenarioContext;
         _outputHelper = outputHelper;
@@ -35,46 +32,7 @@ public sealed class FileUploadCoordinator : IFileUploadCoordinator
     {
         ValidateFilePath(filePath);
 
-        await UploadFileInternalAsync(
-            filePath,
-            $"Upload file '{Path.GetFileName(filePath)}'");
-    }
-
-    public async Task UploadValidRp14aAsync()
-    {
-        Rp14aScenarioBuilder scenario = Rp14aScenarioBuilder.Create()
-            .WithCaseReference(Rp14aCaseReferences.Default);
-
-        await UploadRp14aAsync(scenario);
-    }
-
-    public async Task UploadRp14aAsync(Rp14aScenarioBuilder scenarioBuilder)
-    {
-        ArgumentNullException.ThrowIfNull(scenarioBuilder);
-
-        string xml = scenarioBuilder.BuildXml();
-
-        ValidateXml(xml);
-
-        string description = scenarioBuilder.GetDescription();
-
-        string stepName = string.IsNullOrWhiteSpace(description)
-            ? "Upload RP14A"
-            : $"Upload RP14A: {description}";
-
-        await UploadRp14aInternalAsync(xml, stepName);
-    }
-
-    private async Task UploadRp14aInternalAsync(string xml, string stepName)
-    {
-        ValidateXml(xml);
-
-        if (string.IsNullOrWhiteSpace(stepName))
-        {
-            stepName = "Upload RP14A";
-        }
-
-        string filePath = await Rp14aFileFactory.CreateAsync(xml);
+        string stepName = $"Upload file '{Path.GetFileName(filePath)}'";
 
         await UploadFileInternalAsync(filePath, stepName);
     }
@@ -88,14 +46,14 @@ public sealed class FileUploadCoordinator : IFileUploadCoordinator
             stepName = $"Upload file '{Path.GetFileName(filePath)}'";
         }
 
-        await _allure.StepAsync(stepName, async () =>
+        await _reportingHelper.StepAsync(stepName, async () =>
         {
             await _uploadDocumentPage.UploadFileAsync(filePath);
 
             StoreUploadedFileInScenarioContext(filePath);
             AttachUploadedFile(filePath);
 
-            await _allure.AttachScreenshotAsync(
+            await _reportingHelper.AttachScreenshotAsync(
                 _playwrightDriver.Page,
                 "After Upload File");
         });
@@ -116,21 +74,9 @@ public sealed class FileUploadCoordinator : IFileUploadCoordinator
         _outputHelper.WriteLine($"Uploading file: {fileName}");
         _outputHelper.WriteLine($"Full path: {filePath}");
 
-        _outputHelper.AddAttachmentAsLink(filePath);
-
-        _allure.AttachFile(
+        _reportingHelper.AttachFile(
             filePath,
-            $"Uploaded RP14A File - {fileName}");
-    }
-
-    private static void ValidateXml(string xml)
-    {
-        if (string.IsNullOrWhiteSpace(xml))
-        {
-            throw new ArgumentException(
-                "Generated RP14A XML cannot be null or empty.",
-                nameof(xml));
-        }
+            $"Uploaded File - {fileName}");
     }
 
     private static void ValidateFilePath(string filePath)

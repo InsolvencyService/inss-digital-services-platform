@@ -3,6 +3,7 @@ using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using System.Globalization;
 using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
@@ -90,7 +91,7 @@ public sealed class EmployeeValidationSteps
             cellValue: string.Empty);
 
         await _uploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(
-            string.Empty);
+            string.Empty, occurrenceIndex: 0);
 
         _scenarioContext.Set(employee);
     }
@@ -104,7 +105,7 @@ public sealed class EmployeeValidationSteps
             cellValue: nationalInsuranceNumber);
 
         await _uploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(
-            nationalInsuranceNumber);
+            nationalInsuranceNumber, occurrenceIndex: 0);
 
         _scenarioContext.Set(employee);
     }
@@ -123,18 +124,22 @@ public sealed class EmployeeValidationSteps
 
     [Given("the RP14A contains employment start date {string} with end date {string}")]
     public async Task GivenTheRp14aContainsEmploymentStartDateWithEndDate(
-        string startDate,
-        string endDate)
+    string startDate,
+    string endDate)
     {
+        DateOnly? parsedStartDate = ParseDateOrNull(startDate);
+        DateOnly? parsedEndDate = ParseDateOrNull(endDate);
+
         AffectedEmployee employee = CreateAffectedEmployee(
             cellValue: FormatDateRange(startDate, endDate));
 
         await _uploadDocumentCoordinator.UploadRp14aWithEmploymentDatesAsync(
-            startDate,
-            endDate);
+            parsedStartDate,
+            parsedEndDate);
 
         _scenarioContext.Set(employee);
     }
+
 
     [Given("the RP14A contains arrears of pay start date {string} and end date {string}")]
     public async Task GivenTheRp14aContainsArrearsOfPayStartDateAndEndDate(
@@ -299,5 +304,19 @@ public sealed class EmployeeValidationSteps
             expectedError,
             affectedEmployee,
             headerType);
+    }
+
+    private static DateOnly? ParseDateOrNull(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value) ||
+            value.Equals("<empty>", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        return DateOnly.ParseExact(
+            value,
+            "yyyy-MM-dd",
+            CultureInfo.InvariantCulture);
     }
 }
