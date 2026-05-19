@@ -9,6 +9,11 @@ namespace Inss.GovUk.Forms.IPUpload.Domain;
 
 public sealed class XmlFileUploadModel : PageModel
 {
+    private const string RP14ASpreadsheetNamespace = "http://www.ins.gsi.gov.uk/fileupload/rp14a_application";
+    private const string RP14AApiNamespace = "www.inss.gsi.gov.uk/rp14a_application";
+    private const string RP14SpreadsheetNamespace = "http://www.ins.gsi.gov.uk/fileupload/rp14_application";
+    private const string RP14ApiNamespace = "www.inss.gsi.gov.uk/rp14_application";
+    
     public XmlFileUploadModel()
     {
         EncodingType = "multipart/form-data";
@@ -22,15 +27,25 @@ public sealed class XmlFileUploadModel : PageModel
     
     public int SizeInMb => Length / (1024 * 1024);
 
+    public static bool IsEmployeeDocument(XDocument document)
+    {
+        return document.Root?.Name.NamespaceName.ToLower() switch
+        {
+            RP14ASpreadsheetNamespace => true,
+            RP14AApiNamespace => true,
+            _ => false
+        };
+    }
+    
     public object GetRedundancyPaymentObject()
     {
         XDocument document = GetXml();
         return document.Root?.Name.NamespaceName.ToLower() switch
         {
-            "http://www.ins.gsi.gov.uk/fileupload/rp14a_application" => CreateModel<Employee.Spreadsheet.RP14A>(document),
-            "www.inss.gsi.gov.uk/rp14a_application" => CreateModel<Employee.Api.RP14A>(document),
-            "http://www.ins.gsi.gov.uk/fileupload/rp14_application" => CreateModel<Employer.Spreadsheet.RP14>(document),
-            "www.inss.gsi.gov.uk/rp14_application" => CreateModel<Employer.Api.RP14>(document),
+            RP14ASpreadsheetNamespace => CreateModel<Employee.Spreadsheet.RP14A>(document),
+            RP14AApiNamespace => CreateModel<Employee.Api.RP14A>(document),
+            RP14SpreadsheetNamespace => CreateModel<Employer.Spreadsheet.RP14>(document),
+            RP14ApiNamespace => CreateModel<Employer.Api.RP14>(document),
             _ => throw new IPUploadException($"Unknown or empty XML schema {document.Root?.Name.NamespaceName} provided.")
         };
     }
@@ -56,7 +71,7 @@ public sealed class XmlFileUploadModel : PageModel
         Length = 0;
     }
     
-    private XDocument GetXml()
+    public XDocument GetXml()
     {
         byte[] xmlBytes = Convert.FromBase64String(Contents);
         string xml = Encoding.UTF8.GetString(xmlBytes);

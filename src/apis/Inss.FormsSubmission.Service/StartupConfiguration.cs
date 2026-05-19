@@ -1,8 +1,10 @@
 using System.Security.Cryptography;
+using Inss.Common.IPUpload;
 using Inss.FormsSubmission.Service;
 using Inss.FormsSubmission.Service.Endpoints;
 using Inss.FormsSubmission.Service.Endpoints.Security;
 using Inss.FormsSubmission.Service.Extensions;
+using Inss.FormsSubmission.Service.Handlers;
 using Inss.FormsSubmission.Service.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -30,6 +32,8 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddAuthorizationBuilder()
                 .AddSubmissionPolicy();
+            
+            services.AddTransient<IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse>, SubmitIPUploadHandler>();
         });
         
         builder.Configure(app =>
@@ -39,9 +43,9 @@ public class StartupConfiguration : IHostingStartup
             app.UseAuthorization();
             app.UseEndpoints(configure =>
             {
-                configure.RootEndpoint();
-                configure.HealthEndpoint();
-                configure.SubmitIPUploadEndpoint();
+                configure.DefineRootEndpoint();
+                configure.DefineHealthEndpoint();
+                configure.DefineSubmitIPUploadEndpoint();
             });
         });
     }
