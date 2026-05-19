@@ -19,9 +19,9 @@ public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
     public async Task<string> SubmitAsync(SectionModel section, string userId)
     {
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
-        XDocument document = fileUpload.GetXml();
+        XDocument document = FileHelper.GetXml(fileUpload.Contents);
         string xml = document.Root!.Value;
-        bool isEmployeeUpload = XmlFileUploadModel.IsEmployeeDocument(document);
+        bool isEmployeeUpload = FileHelper.IsEmployeeDocument(document);
         
         SubmitIPUploadRequest request = new() { UserId = userId, Xml = xml, IsEmployeeUpload = isEmployeeUpload };
         
