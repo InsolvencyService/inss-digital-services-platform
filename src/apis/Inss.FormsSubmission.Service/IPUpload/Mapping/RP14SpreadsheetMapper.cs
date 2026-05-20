@@ -1,9 +1,10 @@
 ﻿using System.Globalization;
 using System.Text.Json;
 using Inss.Common.IPUpload.Employer.Spreadsheet;
+using Inss.FormsSubmission.Service.IPUpload.Employer;
 using Inss.FormsSubmission.Service.IPUpload.Exceptions;
 
-namespace Inss.FormsSubmission.Service.IPUpload.Employer;
+namespace Inss.FormsSubmission.Service.IPUpload.Mapping;
 
 public sealed class RP14SpreadsheetMapper : IMapper
 {

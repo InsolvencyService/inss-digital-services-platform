@@ -1,6 +1,7 @@
 ﻿namespace Inss.FormsSubmission.Service.IPUpload;
 
-public interface IMapper
+public enum PayloadTypes
 {
-    JsonMessage[] Map();
+    Employee,
+    Employer
 }

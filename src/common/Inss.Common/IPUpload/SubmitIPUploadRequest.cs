@@ -6,5 +6,5 @@ public sealed class SubmitIPUploadRequest
     
     public bool IsEmployeeUpload { get; init; }
     
-    public string Xml { get; init; }
+    public string FileContents { get; init; }
 }
