@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Inss.Common.IPUpload;
+using Inss.FormsSubmission.Service.Extensions;
 using Inss.FormsSubmission.Service.Handlers;
 using Inss.FormsSubmission.Service.IPUpload.Clients;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
@@ -14,36 +15,31 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private readonly IDynamicsStoreProvider _dynamicsStoreProvider;
     private readonly IBackgroundDynamicsQueue _backgroundDynamicsQueue;
     private readonly IDynamicsClient _dynamicsClient;
+    private readonly ILogger<SubmitIPUploadHandler> _logger;
 
     public SubmitIPUploadHandler(
         IMapperFactory mapperFactory, 
         IDynamicsStoreProvider dynamicsStoreProvider, 
         IBackgroundDynamicsQueue backgroundDynamicsQueue,
-        IDynamicsClient dynamicsClient)
+        IDynamicsClient dynamicsClient,
+        ILogger<SubmitIPUploadHandler> logger)
     {
         _mapperFactory = mapperFactory;
         _dynamicsStoreProvider = dynamicsStoreProvider;
         _backgroundDynamicsQueue = backgroundDynamicsQueue;
         _dynamicsClient = dynamicsClient;
+        _logger = logger;
     }
     
-    public async Task<SubmitIPUploadResponse> HandleAsync(SubmitIPUploadRequest request)
+    public async Task<SubmitIPUploadResponse> HandleAsync(SubmitIPUploadRequest request, CancellationToken cancellationToken)
     {
-        // Purpose
-        // Transpose xml into json objects
-        // Generate reference
-        // Save to storage (Cosmos/table)
-        // At this point, return reference as we have persisted the json
-        // Async enum the json and send to dynamics, updating each record with success/failure in storage
-        // Finally send email to gov notify (another task)
-        
         JsonMessage[] jsonMessages = CreateJsonMessages(request.FileContents);
 
         string reference = ReferenceNumbers.Generate();
 
-        await StoreMessageAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload);
+        await StoreMessageAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
 
-        await SubmitMessagesToDynamics(jsonMessages, reference);
+        await SubmitMessagesToDynamics(jsonMessages, reference, cancellationToken);
         
         return new SubmitIPUploadResponse { Reference = reference };
     }
@@ -55,7 +51,12 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         return mapper.Map();
     }
 
-    private async Task StoreMessageAsync(JsonMessage[] jsonMessages, string reference, string userId, bool isEmployeeUpload)
+    private async Task StoreMessageAsync(
+        JsonMessage[] jsonMessages, 
+        string reference, 
+        string userId, 
+        bool isEmployeeUpload, 
+        CancellationToken cancellationToken)
     {
         foreach (JsonMessage jsonMessage in jsonMessages)
         {
@@ -69,22 +70,24 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
                 UserId = userId
             };
             
-            await _dynamicsStoreProvider.StoreAsync(submission);
+            await _dynamicsStoreProvider.StoreAsync(submission, cancellationToken);
         }
     }
 
-    private async Task SubmitMessagesToDynamics(JsonMessage[] jsonMessages, string reference)
+    private async Task SubmitMessagesToDynamics(JsonMessage[] jsonMessages, string reference, CancellationToken cancellationToken)
     {
         foreach (JsonMessage jsonMessage in jsonMessages)
         {
-            await _backgroundDynamicsQueue.QueueAsync(async cancellationToken =>
+            await _backgroundDynamicsQueue.QueueAsync(async _ =>
             {
-                Console.WriteLine("Submitting...");
-                await Task.Delay(5000, cancellationToken);
+                _logger.SubmittingDynamicsMessage(jsonMessage.CorrelationId, reference);
                 SubmitResponse submitResponse = await SubmitMessageToDynamicsAsync(jsonMessage, cancellationToken);
+
+                _logger.UpdatingDynamicsResponseInStore(jsonMessage.CorrelationId, reference);
                 await UpdateStoredMessageAsync(jsonMessage, reference, submitResponse, cancellationToken);
+
+                _logger.SendingGovNotifyEmail(reference);
                 await SendEmailAsync();
-                Console.WriteLine("Submitted.");
             });
         }
     }
@@ -101,26 +104,30 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         }
     }
     
-    private async Task UpdateStoredMessageAsync(JsonMessage jsonMessage, string reference, SubmitResponse submitResponse, CancellationToken cancellationToken)
+    private async Task UpdateStoredMessageAsync(
+        JsonMessage jsonMessage, 
+        string reference,
+        SubmitResponse submitResponse, 
+        CancellationToken cancellationToken)
     {
-        DynamicsSubmission? dynamicsSubmission = await _dynamicsStoreProvider.GetAsync(jsonMessage.CorrelationId, reference);
+        DynamicsSubmission? dynamicsSubmission = await _dynamicsStoreProvider.GetAsync(
+            jsonMessage.CorrelationId, reference, cancellationToken);
 
         if (dynamicsSubmission is null)
         {
-            // TODO: Log
+            _logger.StoredMessageNotFound(jsonMessage.CorrelationId, reference);
             return;
         }
 
         dynamicsSubmission.StatusCode = submitResponse.StatusCode.ToString();
         dynamicsSubmission.ErrorInfo = submitResponse.Error;
 
-        await _dynamicsStoreProvider.StoreAsync(dynamicsSubmission);
+        await _dynamicsStoreProvider.StoreAsync(dynamicsSubmission, cancellationToken);
     }
 
     private static Task SendEmailAsync()
     {
         // TODO: Send email once outcome of https://inssdigital.atlassian.net/browse/MEDS-1019 determined and requirements defined
-        Console.WriteLine("Sending email via Gov Notify...");
         return Task.CompletedTask;
     }
 }
