@@ -15,6 +15,8 @@ public sealed class RP14ASpreadsheetMapper : IMapper
     
     public JsonMessage[] Map()
     {
+        // NOTE: Logic lifted from https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.BL/Mappers/RP14aSpreadSheetMessageMapper.cs
+        
         EmployeeInformation[] employeeInformationList = _model.Employee.Select(e => new EmployeeInformation
         {
             CorrelationId = Guid.NewGuid(),
