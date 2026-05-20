@@ -47,7 +47,7 @@ public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
     {
         try
         {
-            object _ = FileHelper.GetRedundancyPaymentObject(fileUpload.Contents);
+            FileHelper.GetRedundancyPaymentObject(fileUpload.Contents);
         }
         catch (Exception error)
         {
