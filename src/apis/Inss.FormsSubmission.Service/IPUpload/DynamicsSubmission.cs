@@ -11,11 +11,11 @@ public sealed class DynamicsSubmission
     
     public string UserId { get; init; } 
     
-    public PayloadTypes PayloadType { get; init; }
+    public string PayloadType { get; init; }
     
-    public string? StatusCode { get; init; }
+    public string? StatusCode { get; set; }
     
-    public string? ErrorInfo { get; init; }
+    public string? ErrorInfo { get; set; }
     
     public DateTimeOffset SubmissionTimestamp { get; init; }
 }

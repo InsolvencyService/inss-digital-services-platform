@@ -15,4 +15,9 @@ public sealed class MockDynamicsStoreProvider : IDynamicsStoreProvider
         _cache[submission.Id] = submission;
         return Task.CompletedTask;
     }
+
+    public Task<DynamicsSubmission?> GetAsync(string id, string reference)
+    {
+        return Task.FromResult<DynamicsSubmission?>(_cache[id]);
+    }
 }

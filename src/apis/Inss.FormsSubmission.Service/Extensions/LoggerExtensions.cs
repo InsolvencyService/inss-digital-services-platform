@@ -10,4 +10,7 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 502, Level = LogLevel.Information, Message = "Submitting IP upload to Dynamics.")]
     public static partial void SubmittingIPUpload(this ILogger logger);
+    
+    [LoggerMessage(EventId = 503, Level = LogLevel.Error, Message = "Dynamics backgrond task unexpectedly failed: {Error}.")]
+    public static partial void DynamicsBackgroundTaskFailed(this ILogger logger, string error);
 }
