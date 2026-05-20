@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Application.Extensions;
+using Inss.Common.IPUpload;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Extensions;
 using Microsoft.Extensions.Logging;
@@ -46,7 +47,7 @@ public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
     {
         try
         {
-            object _ = fileUpload.GetRedundancyPaymentObject();
+            FileHelper.GetRedundancyPaymentObject(fileUpload.Contents);
         }
         catch (Exception error)
         {

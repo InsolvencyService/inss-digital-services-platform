@@ -1,6 +1,7 @@
 using FluentValidation.Results;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Primitives;
+using Inss.Common.IPUpload;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
@@ -28,7 +29,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         fileUploadErrors.ClearErrors();
         fileUploadErrors.Filename = fileUpload.Filename;
         
-        object redundancyPayment = fileUpload.GetRedundancyPaymentObject();
+        object redundancyPayment = FileHelper.GetRedundancyPaymentObject(fileUpload.Contents);
         await ValidateAsync(fileUploadErrors, redundancyPayment);
 
         return fileUploadErrors.HasErrors 
