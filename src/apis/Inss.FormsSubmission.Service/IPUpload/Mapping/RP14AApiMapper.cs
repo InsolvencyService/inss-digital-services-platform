@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
 using Inss.Common.IPUpload.Employee.Api;
+using Inss.FormsSubmission.Service.IPUpload.Employee;
 using Inss.FormsSubmission.Service.IPUpload.Exceptions;
 
-namespace Inss.FormsSubmission.Service.IPUpload.Employee;
+namespace Inss.FormsSubmission.Service.IPUpload.Mapping;
 
 public sealed class RP14AApiMapper : IMapper
 {
@@ -22,7 +23,7 @@ public sealed class RP14AApiMapper : IMapper
             CorrelationId = Guid.NewGuid(),
             CaseReference = _model.Header.CaseReference,
             EmployerName = _model.EmployerName,
-            Employee = new Employee
+            Employee = new Employee.Employee
             {
                 Title = e.EmployeeName.Title,
                 FirstNames = e.EmployeeName.Forenames,

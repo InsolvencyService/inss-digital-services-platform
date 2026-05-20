@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
-using Inss.FormsSubmission.Service.IPUpload.Exceptions;
 using Inss.Common.IPUpload.Employee.Spreadsheet;
+using Inss.FormsSubmission.Service.IPUpload.Employee;
+using Inss.FormsSubmission.Service.IPUpload.Exceptions;
 
-namespace Inss.FormsSubmission.Service.IPUpload.Employee;
+namespace Inss.FormsSubmission.Service.IPUpload.Mapping;
 
 public sealed class RP14ASpreadsheetMapper : IMapper
 {
@@ -22,7 +23,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             CorrelationId = Guid.NewGuid(),
             CaseReference = e.Header.CaseReference,
             EmployerName = e.EmployerName,
-            Employee = new Employee
+            Employee = new Employee.Employee
             {
                 Title = e.EmployeeName.Title,
                 FirstNames = e.EmployeeName.Forenames,
@@ -72,74 +73,106 @@ public sealed class RP14ASpreadsheetMapper : IMapper
     }
     private static List<ComponentPayPerWeek> MapComponentPayPerWeekList(RP14AEmployeePayDetails payDetails)
     {
-        List<ComponentPayPerWeek> componentPayPerWeekList =
-        [
-            new()
+        List < ComponentPayPerWeek > componentPayPerWeekList = [];
+
+        if (payDetails.ComponentPayPerWeek1 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek1.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek1.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek1.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek1.ComponentRateStatus)!
-            },
-            new()
+            });
+        }
+        
+        if (payDetails.ComponentPayPerWeek2 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek2.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek2.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek2.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek2.ComponentRateStatus)!
-            },
-            new()
+            });
+        }
+        
+        if (payDetails.ComponentPayPerWeek3 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek3.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek3.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek3.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek3.ComponentRateStatus)!
-            },
-            new()
+            });
+        }
+        
+        if (payDetails.ComponentPayPerWeek4 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek4.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek4.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek4.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek4.ComponentRateStatus)!
-            },
-            new()
+            });
+        }
+        
+        if (payDetails.ComponentPayPerWeek5 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek5.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek5.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek5.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek5.ComponentRateStatus)!
-            },
-            new()
+            });
+        }
+        
+        if (payDetails.ComponentPayPerWeek6 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek6.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek6.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek6.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek6.ComponentRateStatus)!
-            },
-            new()
+            });
+        }
+        
+        if (payDetails.ComponentPayPerWeek7 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek7.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek7.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek7.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek7.ComponentRateStatus)!
-            },
-            new()
+            });
+        }
+        
+        if (payDetails.ComponentPayPerWeek8 is not null)
+        {
+            componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(payDetails.ComponentPayPerWeek8.ComponentType)!,
                 ComponentRate = payDetails.ComponentPayPerWeek8.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek8.ComponentRate : string.Empty,
                 ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek8.ComponentRateStatus)!
-            }
-        ];
+            });
+        }
         
         return componentPayPerWeekList;
     }
     
     private static List<ArrearsOfPay> MapArrearsOfPayList(RP14AEmployeePayDetailsArrearsOfPay arrearsOfPay)
     {
-        List<ArrearsOfPay> arrearsOfPayList =
-        [
-            new()
+        List<ArrearsOfPay> arrearsOfPayList = [];
+
+        if (arrearsOfPay.ArrearsOfPayPeriod1 is not null)
+        {
+            arrearsOfPayList.Add(new ArrearsOfPay
             {
                 StartDate = arrearsOfPay.ArrearsOfPayPeriod1.AOP1StartDate,
                 EndDate = arrearsOfPay.ArrearsOfPayPeriod1.AOP1EndDate,
@@ -147,8 +180,12 @@ public sealed class RP14ASpreadsheetMapper : IMapper
                     ? arrearsOfPay.ArrearsOfPayPeriod1.AOPOwed1 : null,
                 Paytype = arrearsOfPay.ArrearsOfPayPeriod1.AOPPayType1Specified 
                     ? arrearsOfPay.ArrearsOfPayPeriod1.AOPPayType1.ToString() : null!
-            },
-            new()
+            });
+        }
+
+        if (arrearsOfPay.ArrearsOfPayPeriod2 is not null)
+        {
+            arrearsOfPayList.Add(new ArrearsOfPay
             {
                 StartDate = arrearsOfPay.ArrearsOfPayPeriod2.AOP2StartDate,
                 EndDate = arrearsOfPay.ArrearsOfPayPeriod2.AOP2EndDate,
@@ -156,8 +193,12 @@ public sealed class RP14ASpreadsheetMapper : IMapper
                     ? arrearsOfPay.ArrearsOfPayPeriod2.AOPOwed2 : null,
                 Paytype = arrearsOfPay.ArrearsOfPayPeriod2.AOPPayType2Specified 
                     ? arrearsOfPay.ArrearsOfPayPeriod2.AOPPayType2.ToString() : null!
-            },
-            new()
+            });
+        }
+
+        if (arrearsOfPay.ArrearsOfPayPeriod3 is not null)
+        {
+            arrearsOfPayList.Add(new ArrearsOfPay
             {
                 StartDate = arrearsOfPay.ArrearsOfPayPeriod3.AOP3StartDate,
                 EndDate = arrearsOfPay.ArrearsOfPayPeriod3.AOP3EndDate,
@@ -165,8 +206,12 @@ public sealed class RP14ASpreadsheetMapper : IMapper
                     ? arrearsOfPay.ArrearsOfPayPeriod3.AOPOwed3 : null,
                 Paytype = arrearsOfPay.ArrearsOfPayPeriod3.AOPPayType3Specified 
                     ? arrearsOfPay.ArrearsOfPayPeriod3.AOPPayType3.ToString() : null!
-            },
-            new()
+            });
+        }
+
+        if (arrearsOfPay.ArrearsOfPayPeriod4 is not null)
+        {
+            arrearsOfPayList.Add(new ArrearsOfPay
             {
                 StartDate = arrearsOfPay.ArrearsOfPayPeriod4.AOP4StartDate,
                 EndDate = arrearsOfPay.ArrearsOfPayPeriod4.AOP4EndDate,
@@ -174,33 +219,43 @@ public sealed class RP14ASpreadsheetMapper : IMapper
                     ? arrearsOfPay.ArrearsOfPayPeriod4.AOPOwed4 : null,
                 Paytype = arrearsOfPay.ArrearsOfPayPeriod4.AOPPayType4Specified 
                     ? arrearsOfPay.ArrearsOfPayPeriod4.AOPPayType4.ToString() : null!
-            }
-        ];
+            });
+        }
         
         return arrearsOfPayList;
     }
 
     private static List<TakenAndNotPaid> MapTakenAndNotPaidList(RP14AEmployeeHoliday holiday)
     {
-        List<TakenAndNotPaid> takenAndNotPaidList =
-        [
-            new()
+        List<TakenAndNotPaid> takenAndNotPaidList = [];
+
+        if (holiday.HolidayNotPaid?.Holiday1 is not null)
+        {
+            takenAndNotPaidList.Add(new TakenAndNotPaid
             {
                 StartDate = holiday.HolidayNotPaid.Holiday1.Holiday1StartDate,
                 EndDate = holiday.HolidayNotPaid.Holiday1.Holiday1EndDate
-            },
-            new()
+            });
+        }
+        
+        if (holiday.HolidayNotPaid?.Holiday2 is not null)
+        {
+            takenAndNotPaidList.Add(new TakenAndNotPaid
             {
                 StartDate = holiday.HolidayNotPaid.Holiday2.Holiday2StartDate,
                 EndDate = holiday.HolidayNotPaid.Holiday2.Holiday2EndDate
-            },
-            new()
+            });
+        }
+        
+        if (holiday.HolidayNotPaid?.Holiday3 is not null)
+        {
+            takenAndNotPaidList.Add(new TakenAndNotPaid
             {
                 StartDate = holiday.HolidayNotPaid.Holiday3.Holiday3StartDate,
                 EndDate = holiday.HolidayNotPaid.Holiday3.Holiday3EndDate
-            }
-        ];
-
+            });
+        }
+        
         return takenAndNotPaidList;
     }
     
