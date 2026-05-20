@@ -33,7 +33,8 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddAuthorizationBuilder()
                 .AddSubmissionPolicy();
-            
+
+            services.AddSingleton<IMapperFactory, MapperFactory>();
             services.AddTransient<IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse>, SubmitIPUploadHandler>();
         });
         

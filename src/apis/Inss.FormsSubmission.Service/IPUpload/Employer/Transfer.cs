@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class Transfer
+public sealed class Transfer
 {
     [JsonPropertyName("type")]
     public string Type { get; init; }

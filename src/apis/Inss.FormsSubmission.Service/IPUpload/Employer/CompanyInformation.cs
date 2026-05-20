@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class CompanyInformation
+public sealed class CompanyInformation
 {
     [JsonPropertyName("correlation_id")]
     public Guid CorrelationId { get; init; }

@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class Shareholder
+public sealed class Shareholder
 {
     [JsonPropertyName("fullname")]
     public string Fullname { get; init; }

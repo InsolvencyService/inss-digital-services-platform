@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class Employees
+public sealed class Employees
 {
     [JsonPropertyName("number_of_employees")]
     public int? NumberOfEmployees { get; init; }

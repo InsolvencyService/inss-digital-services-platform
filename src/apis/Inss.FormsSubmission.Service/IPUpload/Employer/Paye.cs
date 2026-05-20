@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class Paye
+public sealed class Paye
 {
     [JsonPropertyName("district")]
     public string District { get; init; }

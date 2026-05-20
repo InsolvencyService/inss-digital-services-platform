@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class InsolvencyPractitioner
+public sealed class InsolvencyPractitioner
 {
     [JsonPropertyName("ip_registration_number")]
     public string IpRegistrationNumber { get; init; }

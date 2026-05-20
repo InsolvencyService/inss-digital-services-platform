@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class Director 
+public sealed class Director 
 {
     [JsonPropertyName("surname")]
     public string Surname { get; init; }

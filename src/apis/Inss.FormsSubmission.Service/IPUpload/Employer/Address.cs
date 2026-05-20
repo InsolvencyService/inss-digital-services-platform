@@ -2,7 +2,7 @@
 
 namespace Inss.FormsSubmission.Service.IPUpload.Employer;
 
-public class Address
+public sealed class Address
 {
     [JsonPropertyName("line_1")]
     public string Line1 { get; init; }
@@ -24,13 +24,4 @@ public class Address
 
     [JsonPropertyName("country")]
     public string Country { get; init; }
-}
-
-public class Insolvency
-{
-    [JsonPropertyName("insolvency_date")]
-    public DateTime? InsolvencyDate { get; init; }
-
-    [JsonPropertyName("insolvency_type")]
-    public string InsolvencyType { get; init; }
 }
