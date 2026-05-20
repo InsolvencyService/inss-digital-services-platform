@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using Inss.Common.IPUpload;
+﻿using Inss.Common.IPUpload;
 using Inss.FormsSubmission.Service.Handlers;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
 using Inss.FormsSubmission.Service.IPUpload.Persistence;
@@ -11,8 +9,6 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 {
     private readonly IMapperFactory _mapperFactory;
     private readonly IDynamicsStoreProvider _dynamicsStoreProvider;
-    private const string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private const int ReferenceNumberLength = 8;
 
     public SubmitIPUploadHandler(IMapperFactory mapperFactory, IDynamicsStoreProvider dynamicsStoreProvider)
     {
@@ -34,7 +30,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         
         JsonMessage[] jsonMessages = CreateJsonMessages(request.FileContents);
 
-        string reference = GenerateReferenceNumber();
+        string reference = ReferenceNumbers.Generate();
 
         foreach (JsonMessage message in jsonMessages)
         {
@@ -54,26 +50,10 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         return new SubmitIPUploadResponse { Reference = reference };
     }
 
-    private JsonMessage[] CreateJsonMessages(string xml)
+    private JsonMessage[] CreateJsonMessages(string fileContents)
     {
-        object model = FileHelper.GetRedundancyPaymentObject(xml);
+        object model = FileHelper.GetRedundancyPaymentObject(fileContents);
         IMapper mapper = _mapperFactory.Create(model);
         return mapper.Map();
-    }
-    
-    private static string GenerateReferenceNumber()
-    {
-        StringBuilder result = new(ReferenceNumberLength);
-        byte[] randomBytes = new byte[ReferenceNumberLength];
-
-        using RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create();
-        randomNumberGenerator.GetBytes(randomBytes);
-        
-        foreach (byte currentRandomByte in randomBytes)
-        {
-            result.Append(AllowedChars[currentRandomByte % AllowedChars.Length]);
-        }
-
-        return result.ToString();
     }
 }
