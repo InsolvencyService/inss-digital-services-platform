@@ -55,18 +55,6 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
         ScenarioContext.Set(employee);
     }
 
-    [Given(@"the RP14A contains employee arrears of pay owed ""(.*)""")]
-    public async Task GivenTheRp14aContainsEmployeeArrearsOfPayOwed(string arrearsOfPay)
-    {
-        AffectedEmployee employee = CreateAffectedEmployee(
-            cellValue: arrearsOfPay);
-
-        await UploadDocumentCoordinator.UploadRp14aWithArrearsOfPayOwedAsync(
-            arrearsOfPay);
-
-        ScenarioContext.Set(employee);
-    }
-
     [Given(@"the RP14A contains (.*) invalid arrears of pay owed")]
     public async Task GivenTheRp14aContainsInvalidArrearsOfPayOwed(int count)
     {
@@ -229,13 +217,6 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     {
         await VerifySingleEmployeeErrorDetailsAsync(
             ErrorDetailsHeaderType.EmployeeSurname);
-    }
-
-    [Then("I should be able to view employee arrears of pay owed error details")]
-    public async Task ThenIShouldBeAbleToViewEmployeeArrearsOfPayOwedErrorDetails()
-    {
-        await VerifySingleEmployeeErrorDetailsAsync(
-            ErrorDetailsHeaderType.ArrearsOfPayOwed);
     }
 
     [Then("I should be able to view employee arrears of pay owed error details for multiple employees")]

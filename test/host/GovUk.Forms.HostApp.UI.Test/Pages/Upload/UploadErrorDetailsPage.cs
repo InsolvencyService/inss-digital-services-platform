@@ -277,10 +277,7 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
             ErrorCategory.HolidayDaysCarriedForward => "Holiday carried forward",
             ErrorCategory.HolidayDaysTaken => "Holiday days taken",
             ErrorCategory.NoDaysHolidayOwed => "Holiday owed",
-            _ => throw new ArgumentOutOfRangeException(
-                                                                            nameof(category),
-                                                                            category,
-                                                                            "Unknown error category.")
+            _ => throw new ArgumentOutOfRangeException(nameof(category), category, "Unknown error category.")
         };
 
         return Page.GetByRole(
