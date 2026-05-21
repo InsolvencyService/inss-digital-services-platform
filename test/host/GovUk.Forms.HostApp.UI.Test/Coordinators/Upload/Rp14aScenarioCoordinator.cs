@@ -419,7 +419,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
 
         string absolutePath = Path.IsPathRooted(effectivePath)
             ? effectivePath
-            : Path.Combine(AppContext.BaseDirectory, effectivePath);
+            : Path.Join(AppContext.BaseDirectory, effectivePath);
 
         if (!File.Exists(absolutePath))
         {
