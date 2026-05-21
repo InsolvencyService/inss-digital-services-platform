@@ -81,6 +81,20 @@ public class FormServiceTests
     }
     
     [Fact]
+    public async Task ContentIsFirstPage_LoadAsync_SetsPreviousPageUrl()
+    {
+        FullNameModel fullName = _section.Pages.GetFirstOf<FullNameModel>();
+        fullName.PreviousPagePath = null; 
+        _userFormService.GetAsync(fullName.Path).Returns(_form);
+        BuildForService();
+        
+        await _formService.LoadAsync(fullName.Path, NoState);
+
+        Assert.NotNull(_pagePropertiesProvider.PreviousPagePath);
+        Assert.Equal("/", _pagePropertiesProvider.PreviousPagePath);
+    }
+    
+    [Fact]
     public async Task PageIsSummaryAndSectionComplete_LoadAsync_ReturnsSummaryPage()
     {
         SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
