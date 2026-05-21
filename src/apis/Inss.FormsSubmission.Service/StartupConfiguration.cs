@@ -8,8 +8,10 @@ using Inss.FormsSubmission.Service.Extensions;
 using Inss.FormsSubmission.Service.Handlers;
 using Inss.FormsSubmission.Service.Infrastructure.Serialization;
 using Inss.FormsSubmission.Service.IPUpload;
+using Inss.FormsSubmission.Service.IPUpload.Clients;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
 using Inss.FormsSubmission.Service.IPUpload.Persistence;
+using Inss.FormsSubmission.Service.IPUpload.Processing;
 using Inss.FormsSubmission.Service.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
@@ -42,7 +44,7 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<IMapperFactory, MapperFactory>();
             services.AddTransient<IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse>, SubmitIPUploadHandler>();
 
-            if (context.HostingEnvironment.IsDevelopment())
+            if (!context.HostingEnvironment.IsDevelopment())
             {
                 services.AddSingleton<IDynamicsStoreProvider, MockDynamicsStoreProvider>();
             }
@@ -58,6 +60,12 @@ public class StartupConfiguration : IHostingStartup
                 services.AddTransient<IDynamicsStoreProvider>(
                     _ => new DynamicsStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName));
             }
+
+            ExternalApiOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<ExternalApiOptions>()!;
+            services.AddTypedClient<IDynamicsClient, MockDynamicsClient>(dynamicsOptions);
+            
+            services.AddSingleton<IBackgroundDynamicsQueue, BackgroundDynamicsQueue>();
+            services.AddHostedService<QueuedDynamicsHostedService>();
         });
         
         builder.Configure(app =>

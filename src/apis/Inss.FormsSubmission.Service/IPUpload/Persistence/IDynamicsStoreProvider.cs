@@ -2,5 +2,6 @@
 
 public interface IDynamicsStoreProvider
 {
-    Task StoreAsync(DynamicsSubmission submission);
+    Task StoreAsync(DynamicsSubmission submission, CancellationToken cancellationToken);
+    Task<DynamicsSubmission?> GetAsync(string id, string reference, CancellationToken cancellationToken);
 }

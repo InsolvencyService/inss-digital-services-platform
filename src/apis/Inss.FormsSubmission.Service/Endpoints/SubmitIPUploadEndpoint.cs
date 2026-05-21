@@ -15,10 +15,11 @@ public static class SubmitIPUploadEndpoint
                 async (
                     SubmitIPUploadRequest request, 
                     IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse> handler,
-                    ILogger<Program> logger) =>
+                    ILogger<Program> logger,
+                    CancellationToken cancellationToken) =>
                 {
                     logger.SubmittingIPUpload();
-                    SubmitIPUploadResponse response = await handler.HandleAsync(request);
+                    SubmitIPUploadResponse response = await handler.HandleAsync(request, cancellationToken);
                     return Results.Ok(response);
                 })
             .Accepts<SubmitIPUploadRequest>(System.Net.Mime.MediaTypeNames.Application.Json)

@@ -10,4 +10,19 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 502, Level = LogLevel.Information, Message = "Submitting IP upload to Dynamics.")]
     public static partial void SubmittingIPUpload(this ILogger logger);
+    
+    [LoggerMessage(EventId = 503, Level = LogLevel.Error, Message = "Dynamics backgrond task unexpectedly failed: {Error}.")]
+    public static partial void DynamicsBackgroundTaskFailed(this ILogger logger, string error);
+    
+    [LoggerMessage(EventId = 504, Level = LogLevel.Information, Message = "Submitting message {Id} and {Reference} to Dynamics.")]
+    public static partial void SubmittingDynamicsMessage(this ILogger logger, string id, string reference);
+    
+    [LoggerMessage(EventId = 505, Level = LogLevel.Information, Message = "Updating the Dynamics response for {Id} and {Reference}.")]
+    public static partial void UpdatingDynamicsResponseInStore(this ILogger logger, string id, string reference);
+    
+    [LoggerMessage(EventId = 506, Level = LogLevel.Information, Message = "Sending email via Gov Notify for {Reference}.")]
+    public static partial void SendingGovNotifyEmail(this ILogger logger, string reference);
+    
+    [LoggerMessage(EventId = 507, Level = LogLevel.Error, Message = "Unable to find the stored message for {Id} and {Reference}.")]
+    public static partial void StoredMessageNotFound(this ILogger logger, string id, string reference);
 }

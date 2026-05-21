@@ -1,7 +1,6 @@
 ﻿using Inss.FormsSubmission.Service.IPUpload.Exceptions;
-using Inss.FormsSubmission.Service.IPUpload.Mapping;
 
-namespace Inss.FormsSubmission.Service.IPUpload;
+namespace Inss.FormsSubmission.Service.IPUpload.Mapping;
 
 public sealed class MapperFactory : IMapperFactory
 {
