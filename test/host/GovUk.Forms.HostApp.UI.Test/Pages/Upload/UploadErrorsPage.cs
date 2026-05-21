@@ -155,4 +155,17 @@ public class UploadErrorsPage : BasePage, IUploadErrorsPage
                 .ToHaveTextAsync(expected.HintText);
         }
     }
+
+    public async Task VerifyValidationCategoryIsDisplayedAsync(string category)
+    {
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Name = category,
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+    }
 }

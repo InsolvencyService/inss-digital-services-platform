@@ -25,8 +25,7 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
 
     private ILocator MainContent => Page.Locator("main");
 
-    private ILocator AffectedEmployeesTable =>
-        Page.GetByRole(AriaRole.Table, new() { Name = UploadLocators.Labels.AffectedEmployees });
+    private ILocator AffectedEmployeesTable => Page.Locator("table.govuk-table");
 
     private ILocator TableRows => AffectedEmployeesTable.GetByRole(AriaRole.Row);
 
@@ -52,13 +51,30 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
             "Cell value"
         ];
 
-        foreach (string header in expectedHeaders)
+        await Expect(AffectedEmployeesTable).ToBeVisibleAsync();
+
+        foreach (string expectedHeader in expectedHeaders)
         {
-            await Expect(AffectedEmployeesTable.GetByRole(
+            await Expect(
+                AffectedEmployeesTable.GetByRole(
                     AriaRole.Columnheader,
-                    new() { Name = header, Exact = true }))
+                    new() { Name = expectedHeader, Exact = true }))
                 .ToBeVisibleAsync();
         }
+
+        IReadOnlyList<string> actualHeaders =
+            await AffectedEmployeesTable
+                .GetByRole(AriaRole.Columnheader)
+                .AllInnerTextsAsync();
+
+        string[] normalizedHeaders = actualHeaders
+            .Select(header => header.Trim())
+            .ToArray();
+
+        Assert.That(
+            normalizedHeaders,
+            Is.EqualTo(expectedHeaders),
+            "The affected employee table headers do not match.");
     }
 
     public async Task VerifyErrorDetailsDoesNotContainAsync(string text)
@@ -256,10 +272,15 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
             ErrorCategory.EmploymentDates => "Employee employment dates",
             ErrorCategory.ArrearsOfPayDates => "Employee arrears of payment dates",
             ErrorCategory.CaseReference => "Case reference",
+            ErrorCategory.BasicPayPerWeek => "Employee basic pay per week",
+            ErrorCategory.HolidayContractedEntitlementDays => "Contracted holiday entitlement",
+            ErrorCategory.HolidayDaysCarriedForward => "Holiday carried forward",
+            ErrorCategory.HolidayDaysTaken => "Holiday days taken",
+            ErrorCategory.NoDaysHolidayOwed => "Holiday owed",
             _ => throw new ArgumentOutOfRangeException(
-                nameof(category),
-                category,
-                "Unknown error category.")
+                                                                            nameof(category),
+                                                                            category,
+                                                                            "Unknown error category.")
         };
 
         return Page.GetByRole(
@@ -267,29 +288,44 @@ public sealed class UploadErrorDetailsPage : BasePage, IUploadErrorDetailsPage
             new() { Name = headingText, Exact = true });
     }
 
-    public Task VerifyEmployerErrorSummaryIsDisplayedAsync() =>
-        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployerName);
+    public async Task VerifyEmployerErrorSummaryIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployerName);
 
-    public Task VerifyEmployeeErrorSummaryIsDisplayedAsync() =>
-        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeSurname);
+    public async Task VerifyEmployeeErrorSummaryIsDisplayedAsync() =>
+       await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeSurname);
 
-    public Task VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync() =>
-        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeArrearsOfPaymentOwed);
+    public async Task VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeArrearsOfPaymentOwed);
 
-    public Task VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync() =>
-        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeNationalInsuranceNumber);
+    public async Task VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmployeeNationalInsuranceNumber);
 
-    public Task VerifyEmploymentDatesHeaderIsDisplayedAsync() =>
-        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmploymentDates);
+    public async Task VerifyEmploymentDatesHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.EmploymentDates);
 
-    public Task VerifyArrearsOfPayDatesHeaderIsDisplayedAsync() =>
-        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.ArrearsOfPayDates);
+    public async Task VerifyArrearsOfPayDatesHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.ArrearsOfPayDates);
 
-    public Task VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync() =>
-        VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.MoneyOwedToEmployer);
+    public async Task VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.MoneyOwedToEmployer);
 
-    public Task VerifyCaseReferenceHeaderIsDisplayedAsync() =>
-      VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.CaseReference);
+    public async Task VerifyCaseReferenceHeaderIsDisplayedAsync() =>
+      await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.CaseReference);
+
+    public async Task VerifyBasicPayPerWeekHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.BasicPayPerWeek);
+
+    public async Task VerifyContractedHolidayEntitlementHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.HolidayContractedEntitlementDays);
+
+    public async Task VerifyHolidayDaysCarriedForwardHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.HolidayDaysCarriedForward);
+
+    public async Task VerifyHolidayDaysTakenHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.HolidayDaysTaken);
+
+    public async Task VerifyNoDaysHolidayOwedHeaderIsDisplayedAsync() =>
+        await VerifyErrorSummaryIsDisplayedAsync(ErrorCategory.NoDaysHolidayOwed);
 }
 
 /// <summary>
@@ -304,5 +340,10 @@ public enum ErrorCategory
     MoneyOwedToEmployer,
     EmploymentDates,
     ArrearsOfPayDates,
-    CaseReference
+    CaseReference,
+    BasicPayPerWeek,
+    HolidayContractedEntitlementDays,
+    HolidayDaysCarriedForward,
+    HolidayDaysTaken,
+    NoDaysHolidayOwed
 }

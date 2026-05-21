@@ -19,4 +19,9 @@ public interface IUploadErrorDetailsPage
     Task ClickBackButtonAsync();
     Task VerifyArrearsOfPayDatesHeaderIsDisplayedAsync();
     Task VerifyCaseReferenceHeaderIsDisplayedAsync();
+    Task VerifyBasicPayPerWeekHeaderIsDisplayedAsync();
+    Task VerifyContractedHolidayEntitlementHeaderIsDisplayedAsync();
+    Task VerifyHolidayDaysCarriedForwardHeaderIsDisplayedAsync();
+    Task VerifyHolidayDaysTakenHeaderIsDisplayedAsync();
+    Task VerifyNoDaysHolidayOwedHeaderIsDisplayedAsync();
 }

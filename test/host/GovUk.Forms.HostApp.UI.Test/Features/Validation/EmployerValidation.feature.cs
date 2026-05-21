@@ -118,7 +118,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/EmployerValidation.feature.ndjson", 4);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/EmployerValidation.feature.ndjson", 5);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -175,6 +175,108 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line hidden
 #line 17
               await testRunner.AndAsync("I should be able to view error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Display multiple validation categories together")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
+        [global::NUnit.Framework.CategoryAttribute("addScreencast")]
+        public async global::System.Threading.Tasks.Task RP14ADisplayMultipleValidationCategoriesTogether()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14a",
+                    "addScreencast"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display multiple validation categories together", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 25
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 26
+    await testRunner.GivenAsync("the RP14A contains multiple validation issues", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 27
+    await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                            "Category"});
+                table1.AddRow(new string[] {
+                            "Case"});
+                table1.AddRow(new string[] {
+                            "Employer"});
+                table1.AddRow(new string[] {
+                            "Employee"});
+                table1.AddRow(new string[] {
+                            "Employee pay"});
+                table1.AddRow(new string[] {
+                            "Employee holiday"});
+#line 28
+    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table1, "Then ");
+#line hidden
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                            "Category",
+                            "Type",
+                            "Message",
+                            "Hint"});
+                table2.AddRow(new string[] {
+                            "Case",
+                            "Case reference",
+                            "1 missing a case reference",
+                            ""});
+                table2.AddRow(new string[] {
+                            "Case",
+                            "Case reference",
+                            "1 invalid case reference format",
+                            "Format is CN12345678"});
+                table2.AddRow(new string[] {
+                            "Employer",
+                            "Employer name",
+                            "1 invalid length of the employer name",
+                            "Maximum of 99 characters allowed"});
+                table2.AddRow(new string[] {
+                            "Employee",
+                            "Employee surname",
+                            "1 missing employee surname",
+                            ""});
+                table2.AddRow(new string[] {
+                            "Employee pay",
+                            "Employee basic pay per week",
+                            "1 invalid basic pay per week",
+                            "Expected format is 12.34 or 100"});
+                table2.AddRow(new string[] {
+                            "Employee holiday",
+                            "Holiday owed",
+                            "1 invalid holiday owed",
+                            "Expected format is 28.25 or 33"});
+                table2.AddRow(new string[] {
+                            "Employee holiday",
+                            "Holiday owed",
+                            "1 invalid range of holiday owed",
+                            "0 to 365 days allowed"});
+#line 35
+    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table2, "And ");
+#line hidden
+#line 44
+    await testRunner.AndAsync("I should be able to view error details for all validation categories", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
