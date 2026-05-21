@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Security;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace GovUk.Forms.HostApp.UI.Test.Builders;
@@ -417,22 +418,64 @@ public class Rp14aFixtureBuilder
 
     private static XDocument LoadXmlDocument(string filePath)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
+
         try
         {
             return XDocument.Load(
                 filePath,
                 LoadOptions.PreserveWhitespace);
         }
-        catch (Exception ex)
+        catch (FileNotFoundException ex)
         {
-            throw new InvalidOperationException(
-                $"Failed to load XML from '{filePath}': {ex.Message}",
-                ex);
+            throw CreateXmlLoadException(filePath, ex);
+        }
+        catch (DirectoryNotFoundException ex)
+        {
+            throw CreateXmlLoadException(filePath, ex);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw CreateXmlLoadException(filePath, ex);
+        }
+        catch (PathTooLongException ex)
+        {
+            throw CreateXmlLoadException(filePath, ex);
+        }
+        catch (NotSupportedException ex)
+        {
+            throw CreateXmlLoadException(filePath, ex);
+        }
+        catch (SecurityException ex)
+        {
+            throw CreateXmlLoadException(filePath, ex);
+        }
+        catch (IOException ex)
+        {
+            throw CreateXmlLoadException(filePath, ex);
+        }
+        catch (XmlException ex)
+        {
+            throw CreateXmlLoadException(filePath, ex);
         }
     }
 
-    private static void SaveXmlDocument(XDocument document, string filePath)
+    private static InvalidOperationException CreateXmlLoadException(
+        string filePath,
+        Exception ex)
     {
+        return new InvalidOperationException(
+            $"Failed to load XML from '{filePath}': {ex.Message}",
+            ex);
+    }
+
+    private static void SaveXmlDocument(
+    XDocument document,
+    string filePath)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
+
         try
         {
             using StreamWriter writer = new(
@@ -445,26 +488,48 @@ public class Rp14aFixtureBuilder
                 writer,
                 SaveOptions.DisableFormatting);
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException ex)
         {
-            throw new InvalidOperationException(
-                $"Failed to save XML to '{filePath}': {ex.Message}",
-                ex);
+            throw CreateXmlSaveException(filePath, ex);
         }
+        catch (DirectoryNotFoundException ex)
+        {
+            throw CreateXmlSaveException(filePath, ex);
+        }
+        catch (PathTooLongException ex)
+        {
+            throw CreateXmlSaveException(filePath, ex);
+        }
+        catch (NotSupportedException ex)
+        {
+            throw CreateXmlSaveException(filePath, ex);
+        }
+        catch (SecurityException ex)
+        {
+            throw CreateXmlSaveException(filePath, ex);
+        }
+        catch (IOException ex)
+        {
+            throw CreateXmlSaveException(filePath, ex);
+        }
+    }
+
+    private static InvalidOperationException CreateXmlSaveException(
+        string filePath,
+        Exception ex)
+    {
+        return new InvalidOperationException(
+            $"Failed to save XML to '{filePath}': {ex.Message}",
+            ex);
     }
 
     private static string ResolveBaselinePath(string baselineFilePath)
     {
-        if (string.IsNullOrWhiteSpace(baselineFilePath))
-        {
-            throw new ArgumentException(
-                "Baseline RP14A file path cannot be empty.",
-                nameof(baselineFilePath));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(baselineFilePath);
 
-        string absolutePath = Path.IsPathRooted(baselineFilePath)
-            ? baselineFilePath
-            : Path.Combine(AppContext.BaseDirectory, baselineFilePath);
+        string absolutePath = Path.GetFullPath(
+            baselineFilePath,
+            AppContext.BaseDirectory);
 
         if (!File.Exists(absolutePath))
         {
