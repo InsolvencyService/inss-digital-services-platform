@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Xml;
+using System.Xml.Linq;
 
 namespace GovUk.Forms.HostApp.UI.Test.Factories;
 
@@ -26,7 +27,7 @@ public record Rp14aFixture(
                 throw new InvalidOperationException("Fixture XML is empty");
             }
         }
-        catch (Exception ex)
+        catch (XmlException ex)
         {
             throw new InvalidOperationException($"Fixture XML is not well-formed: {ex.Message}", ex);
         }
