@@ -7,7 +7,6 @@ using Inss.Auth.RpsProvider.Application.Providers;
 using Inss.Auth.RpsProvider.Application.Services;
 using Inss.Auth.RpsProvider.Infrastructure.Clients;
 using Inss.Auth.RpsProvider.Infrastructure.Providers;
-using Inss.Auth.RpsProvider.Models;
 using Inss.Auth.RpsProvider.Options;
 using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
@@ -38,22 +37,38 @@ public class StartupConfiguration : IHostingStartup
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
-            services.AddSingleton<ILoginService, LoginService>();
-            services.AddScoped<LoginContext>();
+            services.AddScoped<ILoginService, LoginService>();
 
-            ExternalApiOptions authenticationOptions = context.Configuration.GetSection("RpsRelay").Get<ExternalApiOptions>()!;
-            services.AddTransient<LoginHttpDelegatingHandler>();
+            ExternalApiOptions loginOptions = context.Configuration.GetSection("RpsLogin").Get<ExternalApiOptions>()!;
 
-            services.AddHttpClient<IUserAuthenticationClient, UserAuthenticationClient>(client =>
-                {
-                    client.BaseAddress = new Uri(authenticationOptions.Url);
-                })
-                .AddHttpMessageHandler<LoginHttpDelegatingHandler>()
+            if (context.HostingEnvironment.IsDevelopment())
+            {
+                services.AddSingleton<IUserAuthenticationPageClient, MockUserAuthenticationPageClient>();
+                services.AddSingleton<IUserAuthenticationClient, MockUserAuthenticationClient>();
+            }
+            else
+            {
+                services.AddScoped<HttpClientHandler>(_ => new HttpClientHandler { CookieContainer = new CookieContainer() });
 
-                .SetHandlerLifetime(TimeSpan.FromMinutes(authenticationOptions.LifetimeMinutes))
-                .AddPolicyHandler(Resilience.GetRetryPolicy(authenticationOptions.RetryCount))
-                .AddPolicyHandler((Resilience.GetCircuitBreaker(authenticationOptions.CountBeforeBreaking, authenticationOptions.BreakDurationSeconds)));
-            
+                services.AddHttpClient<IUserAuthenticationPageClient, UserAuthenticationPageClient>(client =>
+                    {
+                        client.BaseAddress = new Uri(loginOptions.Url);
+                    })
+                    .ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<HttpClientHandler>())
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes))
+                    .AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
+                    .AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
+
+                services.AddHttpClient<IUserAuthenticationClient, UserAuthenticationClient>(client =>
+                    {
+                        client.BaseAddress = new Uri(loginOptions.Url);
+                    })
+                    .ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<HttpClientHandler>())
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes))
+                    .AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
+                    .AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
+            }
+
             services.AddSingleton<IUserAuthStoreProvider, TestUserAuthStoreProvider>();
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
