@@ -3,6 +3,7 @@ using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Diagnostics;
 using System.Globalization;
+using System.Security;
 using System.Text;
 using System.Xml.Linq;
 
@@ -242,7 +243,10 @@ public class Rp14aFixtureBuilder
 
         try
         {
-            File.Copy(absolutePath, targetPath, overwrite: false);
+            File.Copy(
+                absolutePath,
+                targetPath,
+                overwrite: false);
 
             LogInfo($"Created clean copy at {targetPath}");
 
@@ -256,15 +260,39 @@ public class Rp14aFixtureBuilder
                    "already exists",
                    StringComparison.OrdinalIgnoreCase))
         {
-            LogWarning($"File already exists due to race condition: {targetPath}. Retrying...");
+            LogWarning(
+                $"File already exists due to race condition: {targetPath}. Retrying...");
+
             return CreateValidCopy();
         }
-        catch (Exception ex)
+        catch (UnauthorizedAccessException ex)
         {
-            throw new InvalidOperationException(
-                $"Failed to create RP14A fixture copy: {ex.Message}",
-                ex);
+            throw CreateFixtureCopyException(ex);
         }
+        catch (DirectoryNotFoundException ex)
+        {
+            throw CreateFixtureCopyException(ex);
+        }
+        catch (PathTooLongException ex)
+        {
+            throw CreateFixtureCopyException(ex);
+        }
+        catch (NotSupportedException ex)
+        {
+            throw CreateFixtureCopyException(ex);
+        }
+        catch (SecurityException ex)
+        {
+            throw CreateFixtureCopyException(ex);
+        }
+    }
+
+    private static InvalidOperationException CreateFixtureCopyException(
+        Exception ex)
+    {
+        return new InvalidOperationException(
+            $"Failed to create RP14A fixture copy: {ex.Message}",
+            ex);
     }
 
     private string CreateAndMutateFile()
