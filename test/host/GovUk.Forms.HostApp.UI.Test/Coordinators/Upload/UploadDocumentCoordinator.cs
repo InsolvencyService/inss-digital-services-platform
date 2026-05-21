@@ -31,15 +31,29 @@ public sealed class UploadDocumentCoordinator :
         IUploadVerificationCoordinator verificationCoordinator,
         IUploadNavigationCoordinator navigationCoordinator,
         ICommonPage commonPage,
-        IPlaywrightDriver playwrightDriver) : base(testArtifacts)
+        IPlaywrightDriver playwrightDriver)
+        : base(testArtifacts)
     {
-        _pageCoordinator = pageCoordinator;
-        _fileUploadCoordinator = fileUploadCoordinator;
-        _scenarioCoordinator = scenarioCoordinator;
-        _verificationCoordinator = verificationCoordinator;
-        _navigationCoordinator = navigationCoordinator;
-        _commonPage = commonPage;
-        _playwrightDriver = playwrightDriver;
+        _pageCoordinator = pageCoordinator
+            ?? throw new ArgumentNullException(nameof(pageCoordinator));
+
+        _fileUploadCoordinator = fileUploadCoordinator
+            ?? throw new ArgumentNullException(nameof(fileUploadCoordinator));
+
+        _scenarioCoordinator = scenarioCoordinator
+            ?? throw new ArgumentNullException(nameof(scenarioCoordinator));
+
+        _verificationCoordinator = verificationCoordinator
+            ?? throw new ArgumentNullException(nameof(verificationCoordinator));
+
+        _navigationCoordinator = navigationCoordinator
+            ?? throw new ArgumentNullException(nameof(navigationCoordinator));
+
+        _commonPage = commonPage
+            ?? throw new ArgumentNullException(nameof(commonPage));
+
+        _playwrightDriver = playwrightDriver
+            ?? throw new ArgumentNullException(nameof(playwrightDriver));
     }
 
     public async Task VerifyUploadDocumentPageIsDisplayedAsync()
@@ -63,62 +77,35 @@ public sealed class UploadDocumentCoordinator :
 
     public async Task UploadRp14aWithCaseReferenceAsync(string? caseReference)
         => await _scenarioCoordinator.UploadRp14aWithCaseReferenceAsync(caseReference);
-
     public async Task UploadRp14aWithEmployerNameAsync(string? employerName)
         => await _scenarioCoordinator.UploadRp14aWithEmployerNameAsync(employerName);
+
+    public async Task UploadRp14aWithEmployerNameLengthAsync(int length)
+        => await _scenarioCoordinator.UploadRp14aWithEmployerNameLengthAsync(length);
 
     public async Task UploadRp14aWithEmployeeNameAsync(
         string? surname,
         string? forename,
-        string title = "Ms")
+        string? title = null)
         => await _scenarioCoordinator.UploadRp14aWithEmployeeNameAsync(
             surname,
             forename,
             title);
 
-    public async Task UploadRp14aWithEmployerNameLengthAsync(int length)
-        => await _scenarioCoordinator.UploadRp14aWithEmployerNameLengthAsync(length);
-
+    public async Task UploadRp14aWithEmployeeBasicPayPerWeekAsync(string? basicPayPerWeek)
+        => await _scenarioCoordinator.UploadRp14aWithEmployeeBasicPayPerWeekAsync(basicPayPerWeek);
     public async Task UploadRp14aWithArrearsOfPayOwedAsync(string? arrearsOfPay)
         => await _scenarioCoordinator.UploadRp14aWithArrearsOfPayOwedAsync(arrearsOfPay);
-
     public async Task UploadRp14aWithInvalidArrearsOfPayOwedAsync(int count)
         => await _scenarioCoordinator.UploadRp14aWithInvalidArrearsOfPayOwedAsync(count);
-
     public async Task UploadRp14aWithNationalInsuranceNumberAsync(string? insuranceNumber, int occurrenceIndex)
         => await _scenarioCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(insuranceNumber, occurrenceIndex);
-
     public async Task UploadRp14aWithMoneyOwedToEmployerAsync(string? moneyOwed)
         => await _scenarioCoordinator.UploadRp14aWithMoneyOwedToEmployerAsync(moneyOwed);
-
-    public async Task UploadRp14aWithEmploymentDatesAsync(
-    DateOnly? startDate,
-    DateOnly? endDate)
-    => await _scenarioCoordinator.UploadRp14aWithEmploymentDatesAsync(
-        startDate,
-        endDate);
-
-    public async Task UploadRp14aWithArrearsDatesAsync(
-        string? startDate,
-        string? endDate)
-        => await _scenarioCoordinator.UploadRp14aWithArrearsDatesAsync(
-            startDate,
-            endDate);
-
-    public async Task UploadComplexRp14aScenarioAsync(
-      string employerName,
-      string surname,
-      string forename,
-      string arrearsAmount,
-      DateOnly? employmentStartDate,
-      DateOnly? employmentEndDate)
-      => await _scenarioCoordinator.UploadComplexRp14aScenarioAsync(
-          employerName,
-          surname,
-          forename,
-          arrearsAmount,
-          employmentStartDate,
-          employmentEndDate);
+    public async Task UploadRp14aWithEmploymentDatesAsync(DateOnly? startDate, DateOnly? endDate)
+        => await _scenarioCoordinator.UploadRp14aWithEmploymentDatesAsync(startDate, endDate);
+    public async Task UploadRp14aWithArrearsDatesAsync(DateOnly? startDate, DateOnly? endDate)
+        => await _scenarioCoordinator.UploadRp14aWithArrearsDatesAsync(startDate, endDate);
 
     public async Task UploadUnsupportedFileAsync(string extension)
     {
@@ -139,20 +126,18 @@ public sealed class UploadDocumentCoordinator :
 
     public async Task UploadValidXmlFileAtMaximumSizeAsync()
     {
-        string filePath = TestFileFactory
-            .CreateValidXmlFileAtSize(
-                TestArtifacts,
-                10);
+        string filePath = TestFileFactory.CreateValidXmlFileAtSize(
+            TestArtifacts,
+            10);
 
         await UploadFileAsync(filePath);
     }
 
     public async Task UploadValidXmlFileAboveMaximumSizeAsync()
     {
-        string filePath = TestFileFactory
-            .CreateValidXmlFileAboveSize(
-                TestArtifacts,
-                10);
+        string filePath = TestFileFactory.CreateValidXmlFileAboveSize(
+            TestArtifacts,
+            10);
 
         await UploadFileAsync(filePath);
     }
@@ -163,8 +148,10 @@ public sealed class UploadDocumentCoordinator :
     public async Task VerifyOnlyOneFileUploadedAsync()
         => await _verificationCoordinator.VerifyOnlyOneFileUploadedAsync();
 
-    public async Task VerifyInvalidFileExtensionErrorAsync(UploadFileError uploadFileError)
-        => await _verificationCoordinator.VerifyInvalidFileExtensionErrorAsync(uploadFileError);
+    public async Task VerifyInvalidFileExtensionErrorAsync(
+        UploadFileError uploadFileError)
+        => await _verificationCoordinator.VerifyInvalidFileExtensionErrorAsync(
+            uploadFileError);
 
     public async Task ClickOnContinueButtonAsync()
         => await _navigationCoordinator.ClickOnContinueButtonAsync();
@@ -177,4 +164,45 @@ public sealed class UploadDocumentCoordinator :
 
     public async Task NavigateToSubmitPageAsync()
         => await _navigationCoordinator.NavigateToSubmitPageAsync();
+
+    public async Task UploadRp14aWithHolidayContractedEntitlementDaysAsync(string? entitlementDays)
+        => await _scenarioCoordinator.UploadRp14aWithHolidayContractedEntitlementDaysAsync(entitlementDays);
+    public async Task UploadRp14aWithHolidayDaysCarriedForwardAsync(string? daysCarriedForward)
+    => await _scenarioCoordinator.UploadRp14aWithHolidayDaysCarriedForwardAsync(daysCarriedForward);
+    public async Task UploadRp14aWithHolidayDaysTakenAsync(string? holidayDaysTaken)
+    => await _scenarioCoordinator.UploadRp14aWithHolidayDaysTakenAsync(holidayDaysTaken);
+    public async Task UploadRp14aWithHolidayOwedAsync(string? holidayOwed)
+    => await _scenarioCoordinator.UploadRp14aWithHolidayOwedAsync(holidayOwed);
+    public async Task UploadRp14aWithHolidayNotPaidDatesAsync(DateOnly? startDate, DateOnly? endDate)
+    => await _scenarioCoordinator.UploadRp14aWithHolidayNotPaidDatesAsync(startDate, endDate);
+    public async Task UploadRp14aWithMissingEmployeeSurnamesAsync(int employeeCount) =>
+        await _scenarioCoordinator.UploadRp14aWithMissingEmployeeSurnamesAsync(employeeCount);
+
+    public async Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(int employeeCount, params string[] invalidValues) =>
+        await _scenarioCoordinator.UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(employeeCount, invalidValues);
+
+    public async Task UploadComplexRp14aScenarioAsync(
+        string? caseReference = null,
+        string? employerName = null,
+        string? surname = null,
+        string? forename = null,
+        string? title = null,
+        string? arrearsAmount = null,
+        string? basicPayPerWeek = null,
+        string? holidayOwed = null,
+        DateOnly? employmentStartDate = null,
+        DateOnly? employmentEndDate = null)
+    {
+        await _scenarioCoordinator.UploadComplexRp14aScenarioAsync(
+            caseReference,
+            employerName,
+            surname,
+            forename,
+            title,
+            arrearsAmount,
+            basicPayPerWeek,
+            holidayOwed,
+            employmentStartDate,
+            employmentEndDate);
+    }
 }

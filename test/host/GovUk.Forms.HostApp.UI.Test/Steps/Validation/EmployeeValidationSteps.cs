@@ -2,32 +2,25 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
+using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using System.Globalization;
 using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
 [Scope(Feature = "Employee Validation")]
 [Binding]
-public sealed class EmployeeValidationSteps
+public sealed class EmployeeValidationSteps : ValidationStepsBase
 {
-    private const string AffectedEmployeesKey = "AffectedEmployees";
     private const string InvalidArrearsCountKey = "InvalidArrearsOfPayOwedCount";
-
-    private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
-    private readonly UploadErrorDetailsCoordinator _uploadErrorDetailsCoordinator;
-    private readonly ScenarioContext _scenarioContext;
     private readonly Faker _faker = new();
 
     public EmployeeValidationSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
         UploadErrorDetailsCoordinator uploadErrorDetailsCoordinator,
         ScenarioContext scenarioContext)
+        : base(uploadDocumentCoordinator, uploadErrorDetailsCoordinator, scenarioContext)
     {
-        _uploadDocumentCoordinator = uploadDocumentCoordinator;
-        _uploadErrorDetailsCoordinator = uploadErrorDetailsCoordinator;
-        _scenarioContext = scenarioContext;
     }
 
     [Given("the RP14A contains an employee with no surname")]
@@ -38,11 +31,11 @@ public sealed class EmployeeValidationSteps
             forename: _faker.Name.FirstName(),
             cellValue: string.Empty);
 
-        await _uploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
+        await UploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
             employee.Surname,
             employee.Forename);
 
-        _scenarioContext.Set(employee);
+        ScenarioContext.Set(employee);
     }
 
     [Given("the RP14A contains an employee surname longer than {int} characters")]
@@ -55,32 +48,20 @@ public sealed class EmployeeValidationSteps
             forename: _faker.Name.FirstName(),
             cellValue: surname);
 
-        await _uploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
+        await UploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
             employee.Surname,
             employee.Forename);
 
-        _scenarioContext.Set(employee);
-    }
-
-    [Given(@"the RP14A contains employee arrears of pay owed ""(.*)""")]
-    public async Task GivenTheRp14aContainsEmployeeArrearsOfPayOwed(string arrearsOfPay)
-    {
-        AffectedEmployee employee = CreateAffectedEmployee(
-            cellValue: arrearsOfPay);
-
-        await _uploadDocumentCoordinator.UploadRp14aWithArrearsOfPayOwedAsync(
-            arrearsOfPay);
-
-        _scenarioContext.Set(employee);
+        ScenarioContext.Set(employee);
     }
 
     [Given(@"the RP14A contains (.*) invalid arrears of pay owed")]
     public async Task GivenTheRp14aContainsInvalidArrearsOfPayOwed(int count)
     {
-        await _uploadDocumentCoordinator.UploadRp14aWithInvalidArrearsOfPayOwedAsync(
+        await UploadDocumentCoordinator.UploadRp14aWithInvalidArrearsOfPayOwedAsync(
             count);
 
-        _scenarioContext.Set(count, InvalidArrearsCountKey);
+        ScenarioContext.Set(count, InvalidArrearsCountKey);
     }
 
     [Given("the RP14A contains an employee with no national insurance number")]
@@ -90,10 +71,10 @@ public sealed class EmployeeValidationSteps
             niNumber: string.Empty,
             cellValue: string.Empty);
 
-        await _uploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(
+        await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(
             string.Empty, occurrenceIndex: 0);
 
-        _scenarioContext.Set(employee);
+        ScenarioContext.Set(employee);
     }
 
     [Given("the RP14A contains employee national insurance number {string}")]
@@ -104,10 +85,10 @@ public sealed class EmployeeValidationSteps
             niNumber: nationalInsuranceNumber,
             cellValue: nationalInsuranceNumber);
 
-        await _uploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(
+        await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(
             nationalInsuranceNumber, occurrenceIndex: 0);
 
-        _scenarioContext.Set(employee);
+        ScenarioContext.Set(employee);
     }
 
     [Given("the RP14A contains money owed to employer {string}")]
@@ -116,10 +97,10 @@ public sealed class EmployeeValidationSteps
         AffectedEmployee employee = CreateAffectedEmployee(
             cellValue: moneyOwed);
 
-        await _uploadDocumentCoordinator.UploadRp14aWithMoneyOwedToEmployerAsync(
+        await UploadDocumentCoordinator.UploadRp14aWithMoneyOwedToEmployerAsync(
             moneyOwed);
 
-        _scenarioContext.Set(employee);
+        ScenarioContext.Set(employee);
     }
 
     [Given("the RP14A contains employment start date {string} with end date {string}")]
@@ -133,39 +114,54 @@ public sealed class EmployeeValidationSteps
         AffectedEmployee employee = CreateAffectedEmployee(
             cellValue: FormatDateRange(startDate, endDate));
 
-        await _uploadDocumentCoordinator.UploadRp14aWithEmploymentDatesAsync(
+        await UploadDocumentCoordinator.UploadRp14aWithEmploymentDatesAsync(
             parsedStartDate,
             parsedEndDate);
 
-        _scenarioContext.Set(employee);
+        ScenarioContext.Set(employee);
     }
 
 
     [Given("the RP14A contains arrears of pay start date {string} and end date {string}")]
-    public async Task GivenTheRp14aContainsArrearsOfPayStartDateAndEndDate(
-        string startDate,
-        string endDate)
+    public async Task GivenTheRp14aContainsArrearsOfPayStartDateAndEndDate(string startDate, string endDate)
     {
         AffectedEmployee employee = CreateAffectedEmployee(
             cellValue: FormatDateRange(startDate, endDate));
 
-        await _uploadDocumentCoordinator.UploadRp14aWithArrearsDatesAsync(
-            startDate,
-            endDate);
+        DateOnly? parsedStartDate = ParseDateOrNull(startDate);
+        DateOnly? parsedEndDate = ParseDateOrNull(endDate);
 
-        _scenarioContext.Set(employee);
+        await UploadDocumentCoordinator.UploadRp14aWithArrearsDatesAsync(
+            parsedStartDate,
+            parsedEndDate);
+
+        ScenarioContext.Set(employee);
     }
 
-    [When("I attempt to submit the RP14A")]
-    public async Task WhenIAttemptToSubmitTheRp14a()
+    [Given("the RP14A contains employee basic pay per week {string}")]
+    public async Task GivenTheRPA14ContainsEmployeeBasicPayPerWeek(string basicPayPerWeek)
     {
-        await _uploadDocumentCoordinator.NavigateToSubmitPageAsync();
+        AffectedEmployee employee = CreateAffectedEmployee(
+             cellValue: basicPayPerWeek);
+
+        await UploadDocumentCoordinator.UploadRp14aWithEmployeeBasicPayPerWeekAsync(
+            basicPayPerWeek);
+
+        ScenarioContext.Set(employee);
     }
+
+    [Given("the RP14A contains {int} employees with no surname")]
+    public async Task GivenTheRp14aContainsEmployeesWithNoSurname(int employeeCount)
+    {
+        await UploadDocumentCoordinator
+            .UploadRp14aWithMissingEmployeeSurnamesAsync(employeeCount);
+    }
+
 
     [When("I proceed to the check answers page")]
     public async Task WhenIProceedToTheCheckAnswersPage()
     {
-        await _uploadErrorDetailsCoordinator.NavigateToCheckAnswersPageAsync();
+        await UploadErrorDetailsCoordinator.NavigateToCheckAnswersPageAsync();
     }
 
     [Then("I should see the validation error {string}")]
@@ -175,10 +171,10 @@ public sealed class EmployeeValidationSteps
             "Employee surname",
             errorMessage);
 
-        await _uploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(
+        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(
             expectedError);
 
-        _scenarioContext.Set(expectedError);
+        ScenarioContext.Set(expectedError);
     }
 
     [Then("I should see the national insurance number validation error {string}")]
@@ -186,18 +182,18 @@ public sealed class EmployeeValidationSteps
         string errorMessage)
     {
         string resolvedErrorMessage =
-            await _uploadErrorDetailsCoordinator.ResolveValidationErrorMessageAsync(
+            await UploadErrorDetailsCoordinator.ResolveValidationErrorMessageAsync(
                 errorMessage);
 
         UploadErrorSummary expectedError = CreateEmployeeErrorSummary(
             "Employee national insurance number",
             resolvedErrorMessage);
 
-        await _uploadErrorDetailsCoordinator.VerifyValidationErrorAsync(
+        await UploadErrorDetailsCoordinator.VerifyValidationErrorAsync(
             errorMessage);
 
-        _scenarioContext.Set(resolvedErrorMessage, ScenarioConstant.ErrorMessage);
-        _scenarioContext.Set(expectedError);
+        ScenarioContext.Set(resolvedErrorMessage, ScenarioConstant.ErrorMessage);
+        ScenarioContext.Set(expectedError);
     }
 
     [Then("I should see the following validation errors")]
@@ -210,10 +206,10 @@ public sealed class EmployeeValidationSteps
                 ? CreateErrorSummary(error.Type, error.Message, error.Hint)
                 : CreateEmployeeErrorSummary(error.Type, error.Message, error.Hint);
 
-        await _uploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(
+        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(
             expectedError);
 
-        _scenarioContext.Set(expectedError);
+        ScenarioContext.Set(expectedError);
     }
 
     [Then("I should be able to view employee error details")]
@@ -223,22 +219,15 @@ public sealed class EmployeeValidationSteps
             ErrorDetailsHeaderType.EmployeeSurname);
     }
 
-    [Then("I should be able to view employee arrears of pay owed error details")]
-    public async Task ThenIShouldBeAbleToViewEmployeeArrearsOfPayOwedErrorDetails()
-    {
-        await VerifySingleEmployeeErrorDetailsAsync(
-            ErrorDetailsHeaderType.ArrearsOfPayOwed);
-    }
-
     [Then("I should be able to view employee arrears of pay owed error details for multiple employees")]
     public async Task ThenIShouldBeAbleToViewEmployeeArrearsOfPayOwedErrorDetailsForMultipleEmployees()
     {
-        UploadErrorSummary expectedError = _scenarioContext.Get<UploadErrorSummary>();
+        UploadErrorSummary expectedError = ScenarioContext.Get<UploadErrorSummary>();
 
         List<AffectedEmployee> affectedEmployees =
-            _scenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
 
-        await _uploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
             expectedError,
             affectedEmployees,
             ErrorDetailsHeaderType.ArrearsOfPayOwed);
@@ -272,51 +261,52 @@ public sealed class EmployeeValidationSteps
             ErrorDetailsHeaderType.ArrearsOfPayDates);
     }
 
+    [Then("I should be able to view basic pay per week validation error details")]
+    public async Task ThenIShouldBeAbleToViewBasicPayPerWeekValidationErrorDetails()
+    {
+        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.BasicPayPerWeek);
+    }
+
     [Then("I should be able to go to the previous page from the error details page")]
     public async Task ThenIShouldBeAbleToGoToThePreviousPageFromTheErrorDetailsPage()
     {
-        await _uploadErrorDetailsCoordinator.ClickBackAndVerifyUploadErrorPageIsDisplayedAsync();
+        await UploadErrorDetailsCoordinator.ClickBackAndVerifyUploadErrorPageIsDisplayedAsync();
     }
 
     [Then("I should be returned to the upload page")]
     public async Task ThenIShouldBeReturnedToTheUploadPage()
     {
-        await _uploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
+        await UploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
 
         string screenshotPath =
-            await _uploadDocumentCoordinator.CaptureUploadDocumentPageVisualAsync();
+            await UploadDocumentCoordinator.CaptureUploadDocumentPageVisualAsync();
 
         await VerifyFile(screenshotPath)
             .UseDirectory(ScenarioConstant.SnapShots)
             .UseFileName(ScenarioConstant.UploadPageWithWarning);
     }
 
-    private async Task VerifySingleEmployeeErrorDetailsAsync(
-        ErrorDetailsHeaderType headerType)
+    [Then("I should see the following basic pay per week validation errors")]
+    public async Task ThenIShouldSeeTheFollowingBasicPayPerWeekValidationErrors(DataTable dataTable)
     {
-        UploadErrorSummary expectedError =
-            _scenarioContext.Get<UploadErrorSummary>();
-
-        AffectedEmployee affectedEmployee =
-            _scenarioContext.Get<AffectedEmployee>();
-
-        await _uploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
-            expectedError,
-            affectedEmployee,
-            headerType);
+        Errors error = dataTable.CreateInstance<Errors>();
+        UploadErrorSummary expectedError = CreateEmployeeErrorSummary(error.Type, error.Message, error.Hint);
+        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+        ScenarioContext.Set(expectedError);
     }
 
-    private static DateOnly? ParseDateOrNull(string value)
+    [Then("I should be able to view the validation error details for employees where the surname is missing")]
+    public async Task ThenIShouldBeAbleToViewTheValidationErrorDetailsForEmployeesWhereTheSurnameIsMissing()
     {
-        if (string.IsNullOrWhiteSpace(value) ||
-            value.Equals("<empty>", StringComparison.OrdinalIgnoreCase))
-        {
-            return null;
-        }
+        UploadErrorSummary expectedError =
+            ScenarioContext.Get<UploadErrorSummary>();
 
-        return DateOnly.ParseExact(
-            value,
-            "yyyy-MM-dd",
-            CultureInfo.InvariantCulture);
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedError,
+            affectedEmployees,
+            ErrorDetailsHeaderType.EmployeeSurname);
     }
 }

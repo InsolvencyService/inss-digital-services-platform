@@ -265,77 +265,13 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("RP14A Display error for invalid arrears of pay owed format")]
-        [global::NUnit.Framework.CategoryAttribute("regression")]
-        [global::NUnit.Framework.CategoryAttribute("validation")]
-        [global::NUnit.Framework.CategoryAttribute("rp14a")]
-        [global::NUnit.Framework.CategoryAttribute("allure.subSuite:Payment")]
-        [global::NUnit.Framework.TestCaseAttribute("12.3", "3", null)]
-        [global::NUnit.Framework.TestCaseAttribute("12.345", "4", null)]
-        [global::NUnit.Framework.TestCaseAttribute("-100", "5", null)]
-        public async global::System.Threading.Tasks.Task RP14ADisplayErrorForInvalidArrearsOfPayOwedFormat(string arrearsOfPay, string @__pickleIndex, string[] exampleTags)
-        {
-            string[] @__tags = new string[] {
-                    "regression",
-                    "validation",
-                    "rp14a",
-                    "allure.subSuite:Payment"};
-            if ((exampleTags != null))
-            {
-                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
-            }
-            string[] tagsOfScenario = @__tags;
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("arrearsOfPay", arrearsOfPay);
-            string pickleIndex = @__pickleIndex;
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for invalid arrears of pay owed format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 35
-        this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 8
-        await this.FeatureBackgroundAsync();
-#line hidden
-#line 36
-            await testRunner.GivenAsync(string.Format("the RP14A contains employee arrears of pay owed \"{0}\"", arrearsOfPay), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 37
-             await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
-                            "Message",
-                            "Hint",
-                            "Type"});
-                table2.AddRow(new string[] {
-                            "1 invalid arrears of pay owed",
-                            "Expected format is 12.34 or 100",
-                            "Employee arrears of payment owed"});
-#line 38
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table2, "Then ");
-#line hidden
-#line 41
-              await testRunner.AndAsync("I should be able to view employee arrears of pay owed error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("RP14A Display multiple errors for invalid arrears of pay owed format")]
         [global::NUnit.Framework.CategoryAttribute("regression")]
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:Payment")]
-        [global::NUnit.Framework.TestCaseAttribute("2", "6", null)]
-        [global::NUnit.Framework.TestCaseAttribute("3", "7", null)]
+        [global::NUnit.Framework.TestCaseAttribute("2", "3", null)]
+        [global::NUnit.Framework.TestCaseAttribute("3", "4", null)]
         public async global::System.Threading.Tasks.Task RP14ADisplayMultipleErrorsForInvalidArrearsOfPayOwedFormat(string count, string @__pickleIndex, string[] exampleTags)
         {
             string[] @__tags = new string[] {
@@ -354,7 +290,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display multiple errors for invalid arrears of pay owed format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 51
+#line 36
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -367,24 +303,24 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 52
+#line 37
             await testRunner.GivenAsync(string.Format("the RP14A contains {0} invalid arrears of pay owed", count), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 53
+#line 38
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table3.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             string.Format("{0} invalid arrears of pay owed", count),
                             "Expected format is 12.34 or 100",
                             "Employee arrears of payment owed"});
-#line 54
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table3, "Then ");
+#line 39
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table1, "Then ");
 #line hidden
-#line 57
+#line 42
               await testRunner.AndAsync("I should be able to view employee arrears of pay owed error details for multiple " +
                         "employees", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
@@ -408,11 +344,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "allure.subSuite:NationalInsurance",
                     "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
+            string pickleIndex = "5";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for missing employee national insurance number", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 64
+#line 49
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -425,17 +361,17 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 65
+#line 50
             await testRunner.GivenAsync("the RP14A contains an employee with no national insurance number", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 66
+#line 51
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 67
+#line 52
              await testRunner.ThenAsync("I should see the national insurance number validation error \"[COUNT] missing the " +
                         "employee national insurance number\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 68
+#line 53
               await testRunner.AndAsync("I should be able to view national insurance number error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -448,10 +384,10 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:NationalInsurance")]
-        [global::NUnit.Framework.TestCaseAttribute("123456789", "9", null)]
-        [global::NUnit.Framework.TestCaseAttribute("AB12345C", "10", null)]
-        [global::NUnit.Framework.TestCaseAttribute("QQ123456A", "11", null)]
-        [global::NUnit.Framework.TestCaseAttribute("AB123456Z", "12", null)]
+        [global::NUnit.Framework.TestCaseAttribute("123456789", "6", null)]
+        [global::NUnit.Framework.TestCaseAttribute("AB12345C", "7", null)]
+        [global::NUnit.Framework.TestCaseAttribute("QQ123456A", "8", null)]
+        [global::NUnit.Framework.TestCaseAttribute("AB123456Z", "9", null)]
         public async global::System.Threading.Tasks.Task RP14ADisplayErrorForInvalidEmployeeNationalInsuranceNumberFormat(string nationalInsuranceNumber, string @__pickleIndex, string[] exampleTags)
         {
             string[] @__tags = new string[] {
@@ -470,7 +406,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for invalid employee national insurance number format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 71
+#line 56
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -483,17 +419,17 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 72
+#line 57
             await testRunner.GivenAsync(string.Format("the RP14A contains employee national insurance number \"{0}\"", nationalInsuranceNumber), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 73
+#line 58
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 74
-             await testRunner.ThenAsync("I should see the national insurance number validation error \"[COUNT] invalid empl" +
-                        "oyee national insurance number format\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 59
+             await testRunner.ThenAsync("I should see the national insurance number validation error \"1 invalid employee n" +
+                        "ational insurance number format\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 75
+#line 60
               await testRunner.AndAsync("I should be able to view national insurance number error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -506,9 +442,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:Payment")]
-        [global::NUnit.Framework.TestCaseAttribute("12.3", "13", null)]
-        [global::NUnit.Framework.TestCaseAttribute("12.345", "14", null)]
-        [global::NUnit.Framework.TestCaseAttribute("-50", "15", null)]
+        [global::NUnit.Framework.TestCaseAttribute("12.3", "10", null)]
+        [global::NUnit.Framework.TestCaseAttribute("12.345", "11", null)]
+        [global::NUnit.Framework.TestCaseAttribute("-50", "12", null)]
         public async global::System.Threading.Tasks.Task RP14ADisplayErrorForInvalidMoneyOwedToEmployerFormat(string moneyOwed, string @__pickleIndex, string[] exampleTags)
         {
             string[] @__tags = new string[] {
@@ -527,7 +463,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for invalid money owed to employer format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 84
+#line 69
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -540,24 +476,24 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 85
+#line 70
             await testRunner.GivenAsync(string.Format("the RP14A contains money owed to employer \"{0}\"", moneyOwed), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 86
+#line 71
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table4.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "1 invalid money owed to employer",
                             "Expected format is 12.34 or 100",
                             "Money owed to employer"});
-#line 87
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table4, "Then ");
+#line 72
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table2, "Then ");
 #line hidden
-#line 90
+#line 75
               await testRunner.AndAsync("I should be able to view money owed to employer error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -580,11 +516,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "allure.story:Employee",
                     "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "16";
+            string pickleIndex = "13";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error when employment start date is after employment end date", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 100
+#line 85
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -597,27 +533,27 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 101
+#line 86
             await testRunner.GivenAsync("the RP14A contains employment start date \"2026-04-30\" with end date \"2026-04-01\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 102
+#line 87
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table5.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "1 invalid employment dates for the employee",
                             "Start date must be before the end date",
                             "Employee employment dates"});
-#line 103
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table5, "Then ");
+#line 88
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table3, "Then ");
 #line hidden
-#line 106
+#line 91
               await testRunner.AndAsync("I should be able to view the employee employment dates error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 107
+#line 92
               await testRunner.AndAsync("I should be able to go to the previous page from the error details page", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -640,11 +576,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "allure.story:Payment",
                     "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "17";
+            string pickleIndex = "14";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error when arrears of pay start date is after end date", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 111
+#line 96
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -657,25 +593,25 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 112
+#line 97
             await testRunner.GivenAsync("the RP14A contains arrears of pay start date \"2026-04-30\" and end date \"2026-04-0" +
                         "1\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 113
+#line 98
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table6.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "1 invalid arrears of dates",
                             "Start date must be before the end date",
                             "Employee arrears of payment dates"});
-#line 114
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table6, "Then ");
+#line 99
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table4, "Then ");
 #line hidden
-#line 117
+#line 102
               await testRunner.AndAsync("I should be able to view error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -683,27 +619,89 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Display error for invalid arrears of pay owed format")]
-        [global::NUnit.Framework.IgnoreAttribute("Ignored scenario")]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Display error for invalid employee basic pay per week format")]
         [global::NUnit.Framework.CategoryAttribute("regression")]
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.story:Payment")]
-        public async global::System.Threading.Tasks.Task DisplayErrorForInvalidArrearsOfPayOwedFormat()
+        [global::NUnit.Framework.TestCaseAttribute("12.3", "15", null)]
+        [global::NUnit.Framework.TestCaseAttribute("15.345", "16", null)]
+        [global::NUnit.Framework.TestCaseAttribute("-100", "17", null)]
+        public async global::System.Threading.Tasks.Task RP14ADisplayErrorForInvalidEmployeeBasicPayPerWeekFormat(string basicPayPerWeek, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14a",
+                    "allure.story:Payment"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("basicPayPerWeek", basicPayPerWeek);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for invalid employee basic pay per week format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 106
+        this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 107
+            await testRunner.GivenAsync(string.Format("the RP14A contains employee basic pay per week \"{0}\"", basicPayPerWeek), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 108
+             await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint",
+                            "Type"});
+                table5.AddRow(new string[] {
+                            "1 invalid basic pay per week",
+                            "Expected format is 12.34 or 100",
+                            "Employee basic pay per week"});
+#line 109
+              await testRunner.ThenAsync("I should see the following basic pay per week validation errors", ((string)(null)), table5, "Then ");
+#line hidden
+#line 112
+                await testRunner.AndAsync("I should be able to view basic pay per week validation error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Display aggregated count for repeated employee surname errors")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
+        [global::NUnit.Framework.CategoryAttribute("allure.subSuite:Employee")]
+        public async global::System.Threading.Tasks.Task RP14ADisplayAggregatedCountForRepeatedEmployeeSurnameErrors()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
                     "validation",
                     "rp14a",
-                    "ignore",
-                    "allure.story:Payment"};
+                    "allure.subSuite:Employee"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "18";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error for invalid arrears of pay owed format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display aggregated count for repeated employee surname errors", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 120
-        this.ScenarioInitialize(scenarioInfo, ruleInfo);
+         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
             {
@@ -716,20 +714,17 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         await this.FeatureBackgroundAsync();
 #line hidden
 #line 121
-            await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+            await testRunner.GivenAsync("the RP14A contains 3 employees with no surname", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 122
-              await testRunner.AndAsync("the RP14A contains employee arrears of pay owed \"abc\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 123
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 124
-             await testRunner.ThenAsync("I should see the validation error \"1 invalid arrears of pay owed\" with the hint \"" +
-                        "Expected format is 12.34 or 100\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 123
+             await testRunner.ThenAsync("I should see the validation error \"3 missing employee surname\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 125
-              await testRunner.AndAsync("I should be able to view employee arrears of pay owed error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line 124
+             await testRunner.AndAsync("I should be able to view the validation error details for employees where the sur" +
+                        "name is missing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
