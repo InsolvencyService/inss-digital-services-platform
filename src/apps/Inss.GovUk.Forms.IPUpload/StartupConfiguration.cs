@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using GovUk.Forms.Components;
-using GovUk.Forms.Components.Extensions;
-using GovUk.Forms.Components.Options;
+using Inss.Common.Infrastructure;
+using Inss.Common.Infrastructure.Options;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Builders;
@@ -29,7 +29,7 @@ public class StartupConfiguration : IHostingStartup
             
             ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
 
-            // Enable below once we have deployment of the listener in the RPS environment
+            // Enable below once we have the dynamics work complete
             
             /*if (context.HostingEnvironment.IsDevelopment())
             {
@@ -40,11 +40,23 @@ public class StartupConfiguration : IHostingStartup
                 services.AddTypedClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(submissionOptions);
             }*/
 
-            services.AddTypedClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(submissionOptions);
+            services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
+                {
+                    client.BaseAddress = new Uri(submissionOptions.Url);
+                })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(submissionOptions.LifetimeMinutes))
+                .AddPolicyHandler(Resilience.GetRetryPolicy(submissionOptions.RetryCount))
+                .AddPolicyHandler((Resilience.GetCircuitBreaker(submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds)));
             
             RpsApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<RpsApiOptions>()!;
             
-            services.AddTypedClient<ICaseReferenceClient, MockCaseReferenceClient>(rpsOptions);
+            services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
+                {
+                    client.BaseAddress = new Uri(rpsOptions.Url);
+                })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(rpsOptions.LifetimeMinutes))
+                .AddPolicyHandler(Resilience.GetRetryPolicy(rpsOptions.RetryCount))
+                .AddPolicyHandler((Resilience.GetCircuitBreaker(rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds)));
             
             // Enable below once we have deployment of the listener in the RPS environment
             
