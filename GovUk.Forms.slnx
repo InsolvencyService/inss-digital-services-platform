@@ -16,6 +16,7 @@
     <Project Path="src/auth/Inss.Auth.RpsProvider/Inss.Auth.RpsProvider.csproj" />
   </Folder>
   <Folder Name="/src/common/">
+    <Project Path="src/common/Inss.Common.Infrastructure/Inss.Common.Infrastructure.csproj" />
     <Project Path="src/common/Inss.Common/Inss.Common.csproj" />
   </Folder>
   <Folder Name="/src/engine/">

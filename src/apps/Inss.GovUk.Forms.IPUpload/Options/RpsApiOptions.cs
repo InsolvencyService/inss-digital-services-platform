@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GovUk.Forms.Components.Options;
+using Inss.Common.Infrastructure.Options;
 
 namespace Inss.GovUk.Forms.IPUpload.Options;
 

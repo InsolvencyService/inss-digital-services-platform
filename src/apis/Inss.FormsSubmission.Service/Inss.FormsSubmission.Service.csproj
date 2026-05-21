@@ -6,10 +6,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="Microsoft.Azure.Cosmos" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\common\Inss.Common.Infrastructure\Inss.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\common\Inss.Common\Inss.Common.csproj" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,6 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="GovUk.Frontend.AspNetCore" />
-        <PackageReference Include="Microsoft.Extensions.Http.Polly" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
     </ItemGroup>
     <ItemGroup>
@@ -21,6 +20,7 @@
         <AdditionalFiles Include="Views\_ViewStart.cshtml" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\..\common\Inss.Common.Infrastructure\Inss.Common.Infrastructure.csproj" />
       <ProjectReference Include="..\GovUk.Forms.Application\GovUk.Forms.Application.csproj" />
       <ProjectReference Include="..\GovUk.Forms.Infrastructure\GovUk.Forms.Infrastructure.csproj" />
     </ItemGroup>

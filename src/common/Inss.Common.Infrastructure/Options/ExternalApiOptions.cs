@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace GovUk.Forms.Components.Options;
+namespace Inss.Common.Infrastructure.Options;
 
 public class ExternalApiOptions
 {
@@ -16,8 +16,4 @@ public class ExternalApiOptions
     public int CountBeforeBreaking { get; init; } = 3;
 
     public int BreakDurationSeconds { get; init; } = 30;
-
-    public bool AllowAutoRedirect { get; init; }
-    
-    public bool CreateCookieContainer { get; init; }
 }
