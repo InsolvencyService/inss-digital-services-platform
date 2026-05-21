@@ -25,3 +25,19 @@ public class MockDynamicsClient : IDynamicsClient
         return new SubmitResponse { StatusCode = HttpStatusCode.InternalServerError, Error = "Task cancelled."};
     }
 }
+
+public class DynamicsClient : IDynamicsClient
+{
+    private readonly HttpClient _client;
+
+    public DynamicsClient(HttpClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<SubmitResponse> SubmitAsync(JsonMessage jsonMessage, CancellationToken cancellationToken)
+    {
+        await Task.Delay(10, cancellationToken);
+        return new SubmitResponse();
+    }
+}

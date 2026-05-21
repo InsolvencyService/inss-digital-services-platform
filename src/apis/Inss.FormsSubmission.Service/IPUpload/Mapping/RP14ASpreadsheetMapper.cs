@@ -28,7 +28,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
                 Title = e.EmployeeName.Title,
                 FirstNames = e.EmployeeName.Forenames,
                 LastName = e.EmployeeName.Surname,
-                NationalInsuranceNumber = e.NINO,
+                NationalInsuranceNumber = e.NINO.ToUpper(),
                 DateOfBirth = e.DateOfBirthSpecified ? e.DateOfBirth : null,
                 StartDate = e.StartDateSpecified ? e.StartDate : null,
                 EndDate = e.EndDateSpecified ? e.EndDate : null,
