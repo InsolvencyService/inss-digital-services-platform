@@ -28,9 +28,10 @@ public sealed class SubmitIPUploadSectionClient : ISubmitIPUploadSectionClient
         return await HandleResponseAsync(apiResponse);
     }
 
-    private async Task<HttpRequestMessage> CreateRequestAsync(SubmitIPUploadRequest submitRequest)
+    private static async Task<HttpRequestMessage> CreateRequestAsync(SubmitIPUploadRequest submitRequest)
     {
-        string? accessToken = await _httpContextAccessor.HttpContext!.GetTokenAsync("access_token");
+        await Task.Delay(10);
+        string? accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJ0ZXN0QHVzZXIub3JnIiwibmFtZSI6InRlc3RAdXNlci5vcmciLCJzdWIiOiJ0ZXN0QHVzZXIub3JnIiwidW5pcXVlX25hbWUiOiJ0ZXN0QHVzZXIub3JnIiwibm9uY2UiOiI2MzkxNDk3MjM0NDc3MjIwMjkuT1RZNU56QTBZell0T1dFNFpDMDBOekkzTFdKalltTXRNakkzTWpNNFptTXpZVGhtTXpOaE0ySTFZV010Wm1Oa09TMDBZbVJqTFRnd1pETXRaR05qT0dRMU1EbGhNMkZsIiwic3VibWlzc2lvbiI6InN1Ym1pdCIsIm5iZiI6MTc3OTM3NTU0NywiZXhwIjoxNzc5NTkxNTQ3LCJpYXQiOjE3NzkzNzU1NDcsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwNzMiLCJhdWQiOiIxMjM0NTYifQ.QMGOmkM7CTtE4kiQjfuzuPqM2ixGnAVkNvWXBlZuYMlFdGvOt8oME5yll59Ovl1j5i-49bsC6ViWRn8A6pr_mr3eZ_Fzsl1WXtLenXoMg5H_97FB8XRlGP9-lpw9p0WjUbFWEwjZbqbeEQQ01TTpp7wTv09GVZf5Z9omnsBUkULwMGeXyQTUtkVcZpqmMW5A876TrBkjZdXwftQuYxT91tpuoOsVrZfz90G-qW39I3BfAJsCWaxIs--bWMSOKkxR2ecuV0PXPRzrSK-fdmL9WP8XPNV34J895PhdOeJTkYdY4Wm4U89gl73cP_SLdhwHkvSUjrlGjFVxPL97IRrJvg";//await _httpContextAccessor.HttpContext!.GetTokenAsync("access_token");
         HttpRequestMessage apiRequest = new(HttpMethod.Post, "/ipupload/submit");
         apiRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         apiRequest.Content = new StringContent(JsonSerializer.Serialize(submitRequest), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);

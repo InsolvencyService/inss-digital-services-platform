@@ -1,4 +1,6 @@
-﻿using Azure.Identity;
+﻿using System.Net.Http.Headers;
+using System.Net.Mime;
+using Azure.Identity;
 using Inss.Common.Infrastructure;
 using Inss.Common.IPUpload;
 using Inss.FormsSubmission.Service.Handlers;
@@ -43,7 +45,10 @@ internal static class ServiceCollectionExtensions
             
             services.AddHttpClient<IDynamicsClient, MockDynamicsClient>(client =>
                 {
-                    client.BaseAddress = new Uri(dynamicsOptions.Url);
+                    client.BaseAddress = new Uri($"{dynamicsOptions.Url}/api/data/");
+                    client.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
+                    client.DefaultRequestHeaders.Add("OData-Version", "4.0");
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => new DynamicsAuthDelegatingHandler(dynamicsOptions))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(dynamicsOptions.LifetimeMinutes))

@@ -8,19 +8,22 @@ namespace Inss.FormsSubmission.Service.IPUpload;
 internal sealed class DynamicsAuthDelegatingHandler : DelegatingHandler
 {
     private readonly IConfidentialClientApplication _clientApplication;
+    private readonly string _scope;
 
     public DynamicsAuthDelegatingHandler(DynamicsOptions options)
     {
         _clientApplication = ConfidentialClientApplicationBuilder
             .Create(options.ClientId)
             .WithClientSecret(options.ClientSecret)
-            .WithAuthority(options.Url + "api/data/")
+            .WithAuthority($"{options.Url}/api/data/")
             .Build();
+        _scope = $"{options.Url}/api/data/.default";
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        AuthenticationResult? authenticationResult = await _clientApplication.AcquireTokenForClient([]).ExecuteAsync(cancellationToken);
+        AuthenticationResult? authenticationResult = 
+            await _clientApplication.AcquireTokenForClient([_scope]).ExecuteAsync(cancellationToken);
 
         if (authenticationResult is not null)
         {
