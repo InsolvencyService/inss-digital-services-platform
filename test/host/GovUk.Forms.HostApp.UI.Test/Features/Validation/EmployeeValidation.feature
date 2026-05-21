@@ -31,21 +31,6 @@ Feature: Employee Validation
              Then I should see the validation error "1 invalid length of the employee surname"
               And I should be able to view employee error details
 
-        @regression @validation @rp14a @allure.subSuite:Payment
-        Scenario Outline: RP14A Display error for invalid arrears of pay owed format
-            Given the RP14A contains employee arrears of pay owed "<arrearsOfPay>"
-             When I attempt to submit the RP14A
-             Then I should see the following validation errors
-                  | Message                       | Hint                            | Type                             |
-                  | 1 invalid arrears of pay owed | Expected format is 12.34 or 100 | Employee arrears of payment owed |
-              And I should be able to view employee arrears of pay owed error details
-
-        Examples:
-                  | arrearsOfPay |
-                  | 12.3         |
-                  | 12.345       |
-                  | -100         |
-
 
         @regression @validation @rp14a @allure.subSuite:Payment
         Scenario Outline: RP14A Display multiple errors for invalid arrears of pay owed format
@@ -71,7 +56,7 @@ Feature: Employee Validation
         Scenario Outline: RP14A Display error for invalid employee national insurance number format
             Given the RP14A contains employee national insurance number "<nationalInsuranceNumber>"
              When I attempt to submit the RP14A
-             Then I should see the national insurance number validation error "[COUNT] invalid employee national insurance number format"
+             Then I should see the national insurance number validation error "1 invalid employee national insurance number format"
               And I should be able to view national insurance number error details
         Examples:
                   | nationalInsuranceNumber |
@@ -96,7 +81,7 @@ Feature: Employee Validation
                   | -50       |
 
 
-@regression @validation @rp14a @allure.story:Employee @bug
+        @regression @validation @rp14a @allure.story:Employee @bug
         Scenario: RP14A Display error when employment start date is after employment end date
             Given the RP14A contains employment start date "2026-04-30" with end date "2026-04-01"
              When I attempt to submit the RP14A
@@ -107,7 +92,7 @@ Feature: Employee Validation
               And I should be able to go to the previous page from the error details page
 
 
-@regression @validation @rp14a @allure.story:Payment @bug
+        @regression @validation @rp14a @allure.story:Payment @bug
         Scenario: RP14A Display error when arrears of pay start date is after end date
             Given the RP14A contains arrears of pay start date "2026-04-30" and end date "2026-04-01"
              When I attempt to submit the RP14A
@@ -116,10 +101,24 @@ Feature: Employee Validation
                   | 1 invalid arrears of dates | Start date must be before the end date | Employee arrears of payment dates |
               And I should be able to view error details
 
-        @regression @validation @rp14a @ignore @allure.story:Payment
-        Scenario: Display error for invalid arrears of pay owed format
-            Given I am on the upload page as a "Admin" user
-              And the RP14A contains employee arrears of pay owed "abc"
+
+        @regression @validation @rp14a @allure.story:Payment
+        Scenario Outline:RP14A Display error for invalid employee basic pay per week format
+            Given the RP14A contains employee basic pay per week "<basicPayPerWeek>"
              When I attempt to submit the RP14A
-             Then I should see the validation error "1 invalid arrears of pay owed" with the hint "Expected format is 12.34 or 100"
-              And I should be able to view employee arrears of pay owed error details
+              Then I should see the following basic pay per week validation errors
+                  | Message                      | Hint                            | Type                        |
+                  | 1 invalid basic pay per week | Expected format is 12.34 or 100 | Employee basic pay per week |
+                And I should be able to view basic pay per week validation error details
+        Examples:
+                  | basicPayPerWeek |
+                  | 12.3            |
+                  | 15.345          |
+                  | -100            |
+
+        @regression @validation @rp14a @allure.subSuite:Employee
+         Scenario: RP14A Display aggregated count for repeated employee surname errors
+            Given the RP14A contains 3 employees with no surname
+             When I attempt to submit the RP14A
+             Then I should see the validation error "3 missing employee surname"
+             And I should be able to view the validation error details for employees where the surname is missing

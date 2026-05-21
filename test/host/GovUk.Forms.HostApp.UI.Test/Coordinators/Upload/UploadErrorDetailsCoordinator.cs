@@ -24,11 +24,20 @@ public sealed class UploadErrorDetailsCoordinator
         ScenarioContext scenarioContext,
         IAllureReportingHelper allure)
     {
-        _uploadErrorDetailsPage = uploadErrorDetailsPage;
-        _uploadErrorsPage = uploadErrorsPage;
-        _playwrightDriver = playwrightDriver;
-        _scenarioContext = scenarioContext;
-        _reportingHelper = allure;
+        _uploadErrorDetailsPage = uploadErrorDetailsPage
+            ?? throw new ArgumentNullException(nameof(uploadErrorDetailsPage));
+
+        _uploadErrorsPage = uploadErrorsPage
+            ?? throw new ArgumentNullException(nameof(uploadErrorsPage));
+
+        _playwrightDriver = playwrightDriver
+            ?? throw new ArgumentNullException(nameof(playwrightDriver));
+
+        _scenarioContext = scenarioContext
+            ?? throw new ArgumentNullException(nameof(scenarioContext));
+
+        _reportingHelper = allure
+            ?? throw new ArgumentNullException(nameof(allure));
     }
 
     public async Task VerifyUploadErrorPageIsDisplayedAsync()
@@ -41,8 +50,7 @@ public sealed class UploadErrorDetailsCoordinator
         await _uploadErrorDetailsPage.WaitForPageToLoadAsync();
     }
 
-    public async Task VerifyErrorSummaryIsDisplayedAsync(
-        UploadErrorSummary expectedError)
+    public async Task VerifyErrorSummaryIsDisplayedAsync(UploadErrorSummary expectedError)
     {
         ArgumentNullException.ThrowIfNull(expectedError);
 
@@ -59,7 +67,33 @@ public sealed class UploadErrorDetailsCoordinator
                 "Upload Errors Page");
         });
     }
+    public async Task VerifyErrorDetailsHeaderOnlyAsync(
+    UploadErrorSummary expectedError,
+    ErrorDetailsHeaderType headerType)
+    {
+        ArgumentNullException.ThrowIfNull(expectedError);
 
+        ErrorConfig config = GetErrorConfig(headerType);
+
+        await OpenErrorDetailsAsync(expectedError);
+
+        await _reportingHelper.StepAsync(config.StepName, async () =>
+        {
+            await VerifyUploadErrorDetailsPageIsDisplayedAsync();
+            await VerifyHeaderAsync(headerType);
+            await VerifyErrorMessageContentAsync(expectedError);
+
+            await _reportingHelper.AttachScreenshotAsync(
+                _playwrightDriver.Page,
+                config.ScreenshotName);
+        });
+    }
+    public async Task VerifyValidationCategoryIsDisplayedAsync(
+    string category)
+    {
+        await _uploadErrorsPage.VerifyValidationCategoryIsDisplayedAsync(
+            category);
+    }
     public async Task OpenErrorDetailsAsync(
         UploadErrorSummary expectedError)
     {
@@ -99,7 +133,6 @@ public sealed class UploadErrorDetailsCoordinator
                 "Validation Error");
         });
     }
-
     public async Task<string> ResolveValidationErrorMessageAsync(
         string expectedError)
     {
@@ -209,38 +242,45 @@ public sealed class UploadErrorDetailsCoordinator
         Func<Task> verifyAction = headerType switch
         {
             ErrorDetailsHeaderType.EmploymentDates =>
-                _uploadErrorDetailsPage
-                    .VerifyEmploymentDatesHeaderIsDisplayedAsync,
+                _uploadErrorDetailsPage.VerifyEmploymentDatesHeaderIsDisplayedAsync,
 
             ErrorDetailsHeaderType.ArrearsOfPayDates =>
-                _uploadErrorDetailsPage
-                    .VerifyArrearsOfPayDatesHeaderIsDisplayedAsync,
+                _uploadErrorDetailsPage.VerifyArrearsOfPayDatesHeaderIsDisplayedAsync,
 
             ErrorDetailsHeaderType.NationalInsuranceNumber =>
-                _uploadErrorDetailsPage
-                    .VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync,
+                _uploadErrorDetailsPage.VerifyEmployeeNationalInsuranceNumberHeaderIsDisplayedAsync,
 
             ErrorDetailsHeaderType.MoneyOwedToEmployer =>
-                _uploadErrorDetailsPage
-                    .VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync,
+                _uploadErrorDetailsPage.VerifyMoneyOwedToEmployerHeaderIsDisplayedAsync,
+
+            ErrorDetailsHeaderType.BasicPayPerWeek =>
+                _uploadErrorDetailsPage.VerifyBasicPayPerWeekHeaderIsDisplayedAsync,
 
             ErrorDetailsHeaderType.EmployeeSurname =>
-                _uploadErrorDetailsPage
-                    .VerifyEmployeeErrorSummaryIsDisplayedAsync,
+                _uploadErrorDetailsPage.VerifyEmployeeErrorSummaryIsDisplayedAsync,
 
             ErrorDetailsHeaderType.ArrearsOfPayOwed =>
-                _uploadErrorDetailsPage
-                    .VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync,
+                _uploadErrorDetailsPage.VerifyEmployeeArrearsOfPaymentOwedErrorSummaryIsDisplayedAsync,
 
             ErrorDetailsHeaderType.EmployerName =>
-                _uploadErrorDetailsPage
-                    .VerifyEmployerErrorSummaryIsDisplayedAsync,
-            ErrorDetailsHeaderType.CaseReference =>
-                _uploadErrorDetailsPage
-                    .VerifyCaseReferenceHeaderIsDisplayedAsync,
+                _uploadErrorDetailsPage.VerifyEmployerErrorSummaryIsDisplayedAsync,
 
+            ErrorDetailsHeaderType.CaseReference =>
+                _uploadErrorDetailsPage.VerifyCaseReferenceHeaderIsDisplayedAsync,
+
+            ErrorDetailsHeaderType.HolidayContractedEntitlementDays =>
+            _uploadErrorDetailsPage.VerifyContractedHolidayEntitlementHeaderIsDisplayedAsync,
+
+            ErrorDetailsHeaderType.HolidayDaysCarriedForward =>
+             _uploadErrorDetailsPage.VerifyHolidayDaysCarriedForwardHeaderIsDisplayedAsync,
+
+            ErrorDetailsHeaderType.HolidayDaysTaken =>
+            _uploadErrorDetailsPage.VerifyHolidayDaysTakenHeaderIsDisplayedAsync,
+
+            ErrorDetailsHeaderType.NoDaysHolidayOwed =>
+            _uploadErrorDetailsPage.VerifyNoDaysHolidayOwedHeaderIsDisplayedAsync,
             _ => throw new InvalidOperationException(
-                $"Unsupported header type: {headerType}")
+                                                    $"Unsupported header type: {headerType}")
         };
 
         await verifyAction();
@@ -262,13 +302,11 @@ public sealed class UploadErrorDetailsCoordinator
     private async Task VerifyAffectedEmployeesTableAsync(
         IReadOnlyCollection<AffectedEmployee> affectedEmployees)
     {
-        await _uploadErrorDetailsPage
-            .VerifyAffectedEmployeeTableHeadersAsync();
+        await _uploadErrorDetailsPage.VerifyAffectedEmployeeTableHeadersAsync();
 
         foreach (AffectedEmployee employee in affectedEmployees)
         {
-            await _uploadErrorDetailsPage
-                .VerifyAffectedEmployeeAsync(employee);
+            await _uploadErrorDetailsPage.VerifyAffectedEmployeeAsync(employee);
         }
     }
 
@@ -320,6 +358,11 @@ public sealed class UploadErrorDetailsCoordinator
                     "Money owed to employer error details page",
                     "Money Owed To Employer Error Details Page"),
 
+            ErrorDetailsHeaderType.BasicPayPerWeek =>
+                new ErrorConfig(
+                    "Basic pay per week error details page",
+                    "Basic Pay Per Week Error Details Page"),
+
             ErrorDetailsHeaderType.EmploymentDates =>
                 new ErrorConfig(
                     "Employee employment dates error details page",
@@ -344,13 +387,32 @@ public sealed class UploadErrorDetailsCoordinator
                 new ErrorConfig(
                     "Employer name error details page",
                     "Employer Name Error Details Page"),
+
             ErrorDetailsHeaderType.CaseReference =>
                 new ErrorConfig(
                     "Case reference error details page",
                     "Case Reference Error Details Page"),
+            ErrorDetailsHeaderType.HolidayContractedEntitlementDays =>
+            new ErrorConfig(
+                "Contracted holiday entitlement error details page",
+                "Contracted Holiday Entitlement Error Details Page"),
 
+            ErrorDetailsHeaderType.HolidayDaysCarriedForward =>
+            new ErrorConfig(
+                "Holiday days carried forward error details page",
+                "Holiday Days Carried Forward Error Details Page"),
+
+            ErrorDetailsHeaderType.HolidayDaysTaken =>
+              new ErrorConfig(
+                "Holiday days taken error details page",
+                "Holiday Days Taken Error Details Page"),
+
+            ErrorDetailsHeaderType.NoDaysHolidayOwed =>
+                new ErrorConfig(
+                    "Holiday owed error details page",
+                    "Holiday Owed Error Details Page"),
             _ => throw new InvalidOperationException(
-                $"No configuration defined for error type: {headerType}")
+                                                    $"No configuration defined for error type: {headerType}")
         };
     }
 }
@@ -368,6 +430,10 @@ public enum ErrorDetailsHeaderType
     ArrearsOfPayOwed,
     NationalInsuranceNumber,
     MoneyOwedToEmployer,
-    CaseReference
+    BasicPayPerWeek,
+    CaseReference,
+    HolidayContractedEntitlementDays,
+    HolidayDaysCarriedForward,
+    HolidayDaysTaken,
+    NoDaysHolidayOwed
 }
-

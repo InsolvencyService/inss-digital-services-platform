@@ -45,7 +45,12 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
                 });
 
             _context = await _browser.NewContextAsync(
-                contextOptions ?? new BrowserNewContextOptions { IgnoreHTTPSErrors = true });
+                contextOptions ?? new BrowserNewContextOptions
+                {
+                    IgnoreHTTPSErrors = true,
+                    ViewportSize = ViewportSizes.Laptop,
+                    DeviceScaleFactor = 1
+                });
 
             _page = await _context.NewPageAsync();
             AttachConsoleLogging(_page);
@@ -121,7 +126,7 @@ public sealed class PlaywrightDriver : IPlaywrightDriver
         {
             "chromium" => await playwright.Chromium.LaunchAsync(options),
             "firefox" => await playwright.Firefox.LaunchAsync(options),
-            "webkit" => await playwright.Webkit.LaunchAsync(options),
+            "webkit" => await playwright.Webkit.LaunchAsync(options),  // WebKit (Safari)
             _ => throw new NotSupportedException($"Unsupported browser: {browserName}")
         };
     }
