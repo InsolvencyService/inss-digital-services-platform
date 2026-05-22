@@ -50,4 +50,32 @@ public class CommonPage : ICommonPage
         IResponse? response = await page.GoBackAsync(options);
         return response ?? throw new InvalidOperationException("No response received when navigating back.");
     }
+
+    public async Task<byte[]> CaptureVisualAsync(
+        ILocator locator)
+    {
+        ArgumentNullException.ThrowIfNull(locator);
+
+        await Expect(locator).ToBeVisibleAsync();
+
+        return await locator.ScreenshotAsync(new()
+        {
+            Animations = ScreenshotAnimations.Disabled,
+            Caret = ScreenshotCaret.Hide
+        });
+    }
+
+    public async Task HideUnstableElementsAsync(IPage page)
+    {
+        await page.AddStyleTagAsync(new()
+        {
+            Content = """
+                .govuk-header,
+                .govuk-phase-banner,
+                .govuk-footer {
+                    display: none !important;
+                }
+            """
+        });
+    }
 }

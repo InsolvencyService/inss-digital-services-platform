@@ -13,4 +13,5 @@ public interface IUploadErrorsPage
     Task<int> GetErrorCountAsync(string errorKey);
     Task VerifyErrorMessageAsync(string expectedError);
     Task VerifyHintAsync(string expectedHint);
+    Task VerifyValidationCategoryIsDisplayedAsync(string category);
 }

@@ -10,6 +10,7 @@ public partial class TestData
         public string Message { get; set; } = string.Empty;
         public string Hint { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
     }
 
 

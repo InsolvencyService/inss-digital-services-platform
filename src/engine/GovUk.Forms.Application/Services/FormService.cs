@@ -37,7 +37,7 @@ public sealed class FormService : IFormService
 
                 if (_pagePropertiesProvider.PreviousPagePath is null && page == section.FirstPage)
                 {
-                    _pagePropertiesProvider.PreviousPagePath = form.Path;
+                    _pagePropertiesProvider.PreviousPagePath = form.Sections.Count == 1 ? "/" : form.Path;
                 }
                 
                 return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != path ? altPath : null);
@@ -46,6 +46,10 @@ public sealed class FormService : IFormService
             if (form.Sections.Count == 1)
             {
                 return new ValueTuple<ContentModel?, ContentPath?>(null, form.Sections[0].FirstPage.Path);
+            }
+            else
+            {
+                _pagePropertiesProvider.PreviousPagePath = "/";
             }
             
             return new ValueTuple<ContentModel?, ContentPath?>(form, null);
