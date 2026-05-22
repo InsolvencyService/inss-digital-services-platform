@@ -7,17 +7,18 @@ namespace Inss.Auth.RpsProvider.Infrastructure.Clients;
 public sealed class UserAuthenticationClient : IUserAuthenticationClient
 {
     private readonly HttpClient _client;
-    private readonly HttpClientHandler _handler;
+    //private readonly HttpClientHandler _handler;
 
-    public UserAuthenticationClient(HttpClient client, HttpClientHandler handler)
+    public UserAuthenticationClient(HttpClient client)//, HttpClientHandler handler)
     {
         _client = client;
-        _handler = handler;
+        //_handler = handler;
     }
 
     public async Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken)
     {
-        _handler.AllowAutoRedirect = false;
+        //_handler.AllowAutoRedirect = false;
+        //_handler.CookieContainer = new CookieContainer();
         
         // Build form data
         FormUrlEncodedContent formData = new(

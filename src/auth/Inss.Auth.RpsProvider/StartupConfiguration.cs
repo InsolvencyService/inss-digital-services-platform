@@ -41,32 +41,34 @@ public class StartupConfiguration : IHostingStartup
 
             ExternalApiOptions loginOptions = context.Configuration.GetSection("RpsLogin").Get<ExternalApiOptions>()!;
 
-            if (context.HostingEnvironment.IsDevelopment())
+            if (!context.HostingEnvironment.IsDevelopment())
             {
                 services.AddSingleton<IUserAuthenticationPageClient, MockUserAuthenticationPageClient>();
                 services.AddSingleton<IUserAuthenticationClient, MockUserAuthenticationClient>();
             }
             else
             {
-                services.AddScoped<HttpClientHandler>(_ => new HttpClientHandler { CookieContainer = new CookieContainer() });
+                CookieContainer cc = new CookieContainer();
+                services.AddScoped<CookieContainer>(_ => cc);
+                //services.AddScoped<HttpClientHandler>(_ => new HttpClientHandler { CookieContainer = cc, UseCookies = true });
 
                 services.AddHttpClient<IUserAuthenticationPageClient, UserAuthenticationPageClient>(client =>
                     {
                         client.BaseAddress = new Uri(loginOptions.Url);
                     })
-                    .ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<HttpClientHandler>())
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes))
-                    .AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
-                    .AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
+                    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { CookieContainer = cc, UseCookies = true, AllowAutoRedirect = true })
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes));
+                    //.AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
+                    //.AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
 
                 services.AddHttpClient<IUserAuthenticationClient, UserAuthenticationClient>(client =>
                     {
                         client.BaseAddress = new Uri(loginOptions.Url);
                     })
-                    .ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<HttpClientHandler>())
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes))
-                    .AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
-                    .AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
+                    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { CookieContainer = cc, UseCookies = true, AllowAutoRedirect = false })
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes));
+                    //.AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
+                    //.AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
             }
 
             services.AddSingleton<IUserAuthStoreProvider, TestUserAuthStoreProvider>();

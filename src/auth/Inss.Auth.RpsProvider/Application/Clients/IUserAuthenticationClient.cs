@@ -6,3 +6,8 @@ public interface IUserAuthenticationClient
 {
     Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken);
 }
+
+public interface IUserAuthenticationClient2
+{
+    Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password);
+}
