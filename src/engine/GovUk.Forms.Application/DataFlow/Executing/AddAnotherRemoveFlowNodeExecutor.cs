@@ -5,9 +5,9 @@ namespace GovUk.Forms.Application.DataFlow.Executing;
 
 public sealed class AddAnotherRemoveFlowNodeExecutor : IFlowNodeExecutor
 {
-    public ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
+    public ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
-        RemoveModel remove = context.UpdatedPage.As<RemoveModel>();
+        RemoveModel remove = context.CurrentPage.As<RemoveModel>();
 
         if (remove.RemoveConfirmed)
         {

@@ -19,13 +19,13 @@ public class SectionSummaryFlowNodeLoaderTests
         SectionModel section = _form.Sections.First();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = summary.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = summary,
+            CurrentPage = summary,
             State = NoState
         };
         
@@ -44,13 +44,13 @@ public class SectionSummaryFlowNodeLoaderTests
         SectionModel section = _form.Sections.First();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = summary.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = summary,
+            CurrentPage = summary,
             State = NoState
         };
         
@@ -69,13 +69,13 @@ public class SectionSummaryFlowNodeLoaderTests
         SectionModel section = _form.Sections.First();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = summary.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = summary,
+            CurrentPage = summary,
             State = NoState
         };
         
@@ -96,13 +96,13 @@ public class SectionSummaryFlowNodeLoaderTests
         section.SetCompleted();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = summary.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = summary,
+            CurrentPage = summary,
             State = NoState
         };
         

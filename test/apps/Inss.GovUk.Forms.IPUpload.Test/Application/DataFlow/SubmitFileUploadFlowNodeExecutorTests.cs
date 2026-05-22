@@ -17,7 +17,7 @@ public class SubmitFileUploadFlowNodeExecutorTests
     private readonly FormModel _form;
     private readonly SectionModel _section;
     private readonly FlowNode _node;
-    private readonly ExecuteContext _context;
+    private readonly FlowNodeContext _context;
 
     public SubmitFileUploadFlowNodeExecutorTests()
     {
@@ -25,13 +25,13 @@ public class SubmitFileUploadFlowNodeExecutorTests
         _section = _form.Sections["IP Upload"];
         SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
         _node = new FlowNode { Id = "NodeId1", PagePath = summary.Path, NextNodes = ["NodeId2"] };
-        _context = new ExecuteContext
+        _context = new FlowNodeContext
         {
             Nodes = [_node],
             CurrentNode = _node,
             Form = _form,
             Section = _section,
-            UpdatedPage = new IPUploadDeclarationModel { Path = summary.Path }
+            CurrentPage = new IPUploadDeclarationModel { Path = summary.Path }
         };
         _submitUploadedXmlService = Substitute.For<ISubmitUploadedXmlService>();
         _submitFileUploadFlowNodeExecutor = new SubmitFileUploadFlowNodeExecutor(_submitUploadedXmlService);

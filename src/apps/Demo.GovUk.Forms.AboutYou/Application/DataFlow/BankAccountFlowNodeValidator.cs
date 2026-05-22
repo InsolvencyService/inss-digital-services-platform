@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
@@ -10,11 +11,11 @@ public sealed partial class BankAccountFlowNodeValidator : IFlowNodeValidator
 {
     private static readonly Regex _regex = BuildingSocietyRollNumberRegex();
     
-    public async ValueTask<ValidationResult[]> ValidateAsync(ValidateContext context)
+    public async ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context)
     {
         ValidationResult[] baseValidationResults = await DefaultFlowNodeValidator.Default.ValidateAsync(context);
         List<ValidationResult> validationResults = baseValidationResults.ToList();
-        BankAccountModel bankAccount = context.Page.As<BankAccountModel>();
+        BankAccountModel bankAccount = context.CurrentPage.As<BankAccountModel>();
 
         if (bankAccount is { AccountNumber: "12345678", SortCode: "11-22-33" })
         {

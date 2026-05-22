@@ -17,13 +17,13 @@ public class AddAnotherRemoveFlowNodeExecutorTests
         SectionModel section = form.Sections[0];
         RemoveModel remove = section.Pages.GetFirstOf<RemoveModel>();
         FlowNode node = new() { Id = "NodeId2", PagePath = remove.Path, NextNodes = ["NodeId1"]};
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = remove
+            CurrentPage = remove
         };
 
         NodeId? nextNodeId = await _executor.ExecuteAsync(context);
@@ -47,13 +47,13 @@ public class AddAnotherRemoveFlowNodeExecutorTests
         age.Value = 45;
         addAnother.Items.Add(age.Clone());
         FlowNode node = new() { Id = "NodeId2", PagePath = remove.Path, NextNodes = ["NodeId1"]};
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = remove
+            CurrentPage = remove
         };
 
         await _executor.ExecuteAsync(context);
@@ -76,13 +76,13 @@ public class AddAnotherRemoveFlowNodeExecutorTests
         age.Value = 45;
         addAnother.Items.Add(age.Clone());
         FlowNode node = new() { Id = "NodeId2", PagePath = remove.Path, NextNodes = ["NodeId1"]};
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = remove
+            CurrentPage = remove
         };
 
         await _executor.ExecuteAsync(context);
@@ -105,13 +105,13 @@ public class AddAnotherRemoveFlowNodeExecutorTests
         age.Value = 45;
         addAnother.Items.Add(age.Clone());
         FlowNode node = new() { Id = "NodeId2", PagePath = remove.Path, NextNodes = ["NodeId1"]};
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = remove
+            CurrentPage = remove
         };
 
         await _executor.ExecuteAsync(context);

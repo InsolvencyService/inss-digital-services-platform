@@ -18,13 +18,13 @@ public class YourSalaryFlowNodeExecutorTests
         SectionModel yourDetails = form.Sections["Your Details"];
         SalaryModel salary = yourDetails.Pages.GetFirstOf<SalaryModel>();
         salary.Value = 9_999;
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = yourDetails,
-            UpdatedPage = salary
+            CurrentPage = salary
         };
         
         NodeId? nextNodeId = await processor.ExecuteAsync(context);
@@ -43,13 +43,13 @@ public class YourSalaryFlowNodeExecutorTests
         SectionModel yourDetails = form.Sections["Your Details"];
         SalaryModel salary = yourDetails.Pages.GetFirstOf<SalaryModel>();
         salary.Value = value;
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = yourDetails,
-            UpdatedPage = salary
+            CurrentPage = salary
         };
         
         NodeId? nextNodeId = await processor.ExecuteAsync(context);

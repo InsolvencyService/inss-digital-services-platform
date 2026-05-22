@@ -12,7 +12,7 @@ public sealed class NoopFlowNodeLoader : IFlowNodeLoader
     {
     }
     
-    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
         return ValueTask.FromResult<NodeId?>(null);
     }

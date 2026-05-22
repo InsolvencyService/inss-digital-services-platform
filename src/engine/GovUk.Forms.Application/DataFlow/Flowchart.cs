@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
+using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Application.DataFlow.Validating;
+using GovUk.Forms.Application.DataFlow.Visiting;
 using GovUk.Forms.Application.Exceptions;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
@@ -35,7 +37,12 @@ public sealed class Flowchart : IFlowchart
         }
     }
     
-    public async ValueTask<ContentPath> PreProcessAsync(FormModel form, SectionModel section, PageModel page, string? state)
+    public async ValueTask<ContentPath> PreProcessAsync(
+        FormModel form, 
+        SectionModel section, 
+        PageModel page, 
+        ContentPath refererPath, 
+        string? state)
     {
         _logger.LoadingPage(page.Path, section.Title);
         
@@ -53,6 +60,7 @@ public sealed class Flowchart : IFlowchart
 
         section.SetInProgress();
 
+        await UpdateBackButtonAsync(form, section, page, refererPath);
         return pageAssociatedToNode.Path;
     }
     
@@ -62,7 +70,7 @@ public sealed class Flowchart : IFlowchart
         
         FlowNode node = GetNode(page.LinkedToNode);
         IFlowNodeValidator validator = _serviceProvider.GetKeyedService<IFlowNodeValidator>(node.Id) ?? DefaultFlowNodeValidator.Default;
-        ValidateContext context = new() { Nodes = Nodes, CurrentNode = node, Page = page };
+        FlowNodeContext context = new() { Nodes = Nodes, CurrentNode = node, CurrentPage = page };
         return await validator.ValidateAsync(context);
     }
     
@@ -70,7 +78,17 @@ public sealed class Flowchart : IFlowchart
     {
         _logger.ProcessingPage(page.Path, section.Title);
         
+        
         FlowNode node = GetNode(page.LinkedToNode);
+
+        IFlowNodeVisitor flowNodeVisitor = _serviceProvider.GetKeyedService<IFlowNodeVisitor>(node.Id) ??
+                                           _serviceProvider.GetRequiredService<IFlowNodeVisitor>();
+        FlowNodeContext context = new()
+        {
+            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page
+        };
+        await flowNodeVisitor.VisitAsync(context);
+        
         PageModel targetPage = section.Pages.GetPage(page.Path);
         
         CopyPageData(page, targetPage);
@@ -110,7 +128,6 @@ public sealed class Flowchart : IFlowchart
 
             PageModel nextPage = section.Pages.GetPage(nextPagePath);
             nextPage.LinkedToNode = nextNodeId;
-            nextPage.PreviousPagePath = page.Path;
         }
 
         return nextPagePath;
@@ -125,6 +142,18 @@ public sealed class Flowchart : IFlowchart
         }
 
         throw new FlowchartException($"Unable to find a node Id for page with path {page.Path}");
+    }
+
+    private async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page, ContentPath refererPath)
+    {
+        FlowNode node = GetNode(page.LinkedToNode);
+        IFlowNodePreviousPathProvider flowNodePreviousPathProvider = _serviceProvider.GetKeyedService<IFlowNodePreviousPathProvider>(node.Id) 
+                                               ?? _serviceProvider.GetRequiredService<IFlowNodePreviousPathProvider>();
+        FlowNodeContext context = new()
+        {
+            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page, RefererPath = refererPath
+        };
+        await flowNodePreviousPathProvider.UpdateAsync(context);
     }
     
     private FlowNode GetNode(NodeId? nodeId)
@@ -152,7 +181,10 @@ public sealed class Flowchart : IFlowchart
         string? state)
     {
         IFlowNodeLoader loader = _serviceProvider.GetKeyedService<IFlowNodeLoader>(node.Id) ?? NoopFlowNodeLoader.Default;
-        LoadContext context = new() { Nodes = Nodes, CurrentNode = node, Form = form, Section = section, Page = page, State = state };
+        FlowNodeContext context = new()
+        {
+            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page, State = state
+        };
         return await loader.LoadAsync(context);
     }
     
@@ -163,9 +195,9 @@ public sealed class Flowchart : IFlowchart
         SectionModel section)
     {
         IFlowNodeExecutor executor = _serviceProvider.GetKeyedService<IFlowNodeExecutor>(node.Id) ?? NoopFlowNodeExecutor.Default;
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
-            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, UpdatedPage = updatedPage
+            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = updatedPage
         };
         return await executor.ExecuteAsync(context);
     }
