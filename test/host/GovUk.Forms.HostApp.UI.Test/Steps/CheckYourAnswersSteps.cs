@@ -1,7 +1,7 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
-namespace GovUk.Forms.HostApp.UI.Test;
+namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
 [Binding]
 public class CheckYourAnswersSteps
@@ -25,7 +25,7 @@ public class CheckYourAnswersSteps
     {
         await GivenIAmUploadingAnRPAForm();
         await WhenIContinueToTheCheckYourAnswersPage();
-        await _checkYourAnswersCoordinator.VerifySummaryPageIsDisplayedAsync();
+        await _checkYourAnswersCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
     }
 
     [Given("I am uploading an RP14A form")]
@@ -55,13 +55,13 @@ public class CheckYourAnswersSteps
     [When("I submit the RP14A form")]
     public async Task WhenISubmitTheRPAForm()
     {
-        await _checkYourAnswersCoordinator.SubmitAsync();
+        await _checkYourAnswersCoordinator.ClickOnSubmitButtonAsync();
     }
 
     [Then("I should be able to review my uploaded document")]
     public async Task ThenIShouldBeAbleToReviewMyUploadedDocument()
     {
-        await _checkYourAnswersCoordinator.VerifySummaryPageIsDisplayedAsync();
+        await _checkYourAnswersCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
     }
 
     [Then("I should be returned to the document upload page")]
@@ -75,5 +75,4 @@ public class CheckYourAnswersSteps
     {
         await _checkYourAnswersCoordinator.VerifySubmitCompletedPageIsDisplayedAsync();
     }
-
 }

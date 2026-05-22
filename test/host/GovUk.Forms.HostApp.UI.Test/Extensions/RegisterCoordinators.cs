@@ -15,6 +15,7 @@ public static class RegisterCoordinators
         services.AddScoped<CommonCoordinator>();
         services.AddScoped<UploadErrorDetailsCoordinator>();
         services.AddScoped<CheckYourAnswersCoordinator>();
+        services.AddScoped<SubmissionConfirmationCoordinator>();
         services.AddScoped<IUploadPageCoordinator, UploadPageCoordinator>();
         services.AddScoped<IFileUploadCoordinator, FileUploadCoordinator>();
         services.AddScoped<IRp14aScenarioCoordinator, Rp14aScenarioCoordinator>();

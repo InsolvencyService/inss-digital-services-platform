@@ -16,6 +16,7 @@ public abstract class ValidationStepsBase
     protected const string InvalidHolidayOwedKey = "InvalidHolidayOwed";
     protected const string AffectedEmployeesByErrorTypeKey = "AffectedEmployeesByErrorType";
     protected const string UploadErrorsContextKey = "UploadErrors";
+    protected const string InvalidArrearsCountKey = "InvalidArrearsOfPayOwedCount";
 
 
     protected ValidationStepsBase(

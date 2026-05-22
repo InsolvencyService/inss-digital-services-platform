@@ -1,5 +1,4 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Builders;
-using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -13,7 +12,6 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
     private const string DefaultBaselineFilePath = "Resources/Rp14a/rp14A.xml";
     private const string AffectedEmployeesContextKey = "AffectedEmployees";
     private const string AffectedEmployeesByErrorTypeKey = "AffectedEmployeesByErrorType";
-
     private readonly IFileUploadCoordinator _fileUploadCoordinator;
     private readonly ScenarioContext _scenarioContext;
     private readonly TestArtifacts _testArtifacts;
@@ -37,82 +35,55 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         _baselineFilePath = ValidateBaselineFilePath(baselineFilePath);
     }
 
-    public async Task UploadValidRp14aAsync()
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture().FilePath,
-            "valid RP14A fixture");
-    }
+    public Task UploadValidRp14aAsync() =>
+        BuildAndUploadAsync(
+            configure: null,
+            "valid RP14A file");
 
-    public async Task UploadRp14aWithCaseReferenceAsync(string? caseReference)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithCaseReference(caseReference)).FilePath,
+    public Task UploadRp14aWithCaseReferenceAsync(string? caseReference) =>
+        BuildAndUploadAsync(
+            builder => builder.WithCaseReference(caseReference),
             $"RP14A with case reference '{ToLogValue(caseReference)}'");
-    }
 
-    public async Task UploadRp14aWithEmployerNameAsync(string? employerName)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithEmployerName(employerName)).FilePath,
+    public Task UploadRp14aWithEmployerNameAsync(string? employerName) =>
+        BuildAndUploadAsync(
+            builder => builder.WithEmployerName(employerName),
             $"RP14A with employer name '{ToLogValue(employerName)}'");
-    }
 
-    public async Task UploadRp14aWithHolidayDaysTakenAsync(
-    string? holidayDaysTaken)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithHolidayDaysTaken(holidayDaysTaken)).FilePath,
+    public Task UploadRp14aWithHolidayDaysTakenAsync(string? holidayDaysTaken) =>
+        BuildAndUploadAsync(
+            builder => builder.WithHolidayDaysTaken(holidayDaysTaken),
             $"RP14A with holiday days taken '{ToLogValue(holidayDaysTaken)}'");
-    }
 
     public async Task UploadRp14aWithEmployerNameLengthAsync(int length)
     {
         ValidatePositiveNumber(length, nameof(length));
 
-        string employerName = new('A', length);
-        await UploadRp14aWithEmployerNameAsync(employerName);
+        await UploadRp14aWithEmployerNameAsync(new string('A', length));
     }
 
-    public async Task UploadRp14aWithEmployeeNameAsync(
+    public Task UploadRp14aWithEmployeeNameAsync(
         string? surname,
         string? forename,
-        string? title = null)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithEmployeeName(surname, forename, title)).FilePath,
+        string? title = null) =>
+        BuildAndUploadAsync(
+            builder => builder.WithEmployeeName(surname, forename, title),
             $"RP14A with employee forename '{ToLogValue(forename)}', surname '{ToLogValue(surname)}', title '{ToLogValue(title)}'");
-    }
 
-    public async Task UploadRp14aWithEmployeeBasicPayPerWeekAsync(
-        string? basicPayPerWeek)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithEmployeeBasicPayPerWeek(basicPayPerWeek)).FilePath,
+    public Task UploadRp14aWithEmployeeBasicPayPerWeekAsync(string? basicPayPerWeek) =>
+        BuildAndUploadAsync(
+            builder => builder.WithEmployeeBasicPayPerWeek(basicPayPerWeek),
             $"RP14A with employee basic pay per week '{ToLogValue(basicPayPerWeek)}'");
-    }
 
-    public async Task UploadRp14aWithArrearsOfPayOwedAsync(string? arrearsOfPay)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithArrearsAmount(1, arrearsOfPay)).FilePath,
+    public Task UploadRp14aWithArrearsOfPayOwedAsync(string? arrearsOfPay) =>
+        BuildAndUploadAsync(
+            builder => builder.WithArrearsAmount(1, arrearsOfPay),
             $"RP14A with arrears of pay '{ToLogValue(arrearsOfPay)}'");
-    }
 
-    public async Task UploadRp14aWithHolidayOwedAsync(
-    string? holidayOwed)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithHolidayOwed(holidayOwed)).FilePath,
+    public Task UploadRp14aWithHolidayOwedAsync(string? holidayOwed) =>
+        BuildAndUploadAsync(
+            builder => builder.WithHolidayOwed(holidayOwed),
             $"RP14A with holiday owed '{ToLogValue(holidayOwed)}'");
-    }
 
     public async Task UploadRp14aWithInvalidArrearsOfPayOwedAsync(int count)
     {
@@ -120,130 +91,98 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
 
         List<AffectedEmployee> affectedEmployees = CreateInvalidArrearsScenario(count);
 
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
+        await BuildAndUploadAsync(
+            builder =>
             {
-                string[] invalidValues = ["15.3", "12.345", "-100"];
-
                 for (int i = 1; i <= count; i++)
                 {
                     builder.WithArrearsAmount(
                         i,
-                        invalidValues[(i - 1) % invalidValues.Length]);
+                        InvalidArrearsAmounts.All[(i - 1) % InvalidArrearsAmounts.All.Count]);
                 }
-            }).FilePath,
+            },
             $"RP14A with {count} invalid arrears values");
 
-        _scenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+        _scenarioContext.Set(
+            affectedEmployees,
+            AffectedEmployeesContextKey);
     }
 
-    public async Task UploadRp14aWithHolidayNotPaidDatesAsync(DateOnly? startDate, DateOnly? endDate)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithHolidayNotPaidDates(
-                    startDate,
-                    endDate)).FilePath,
+    public Task UploadRp14aWithHolidayNotPaidDatesAsync(
+        DateOnly? startDate,
+        DateOnly? endDate) =>
+        BuildAndUploadAsync(
+            builder => builder.WithHolidayNotPaidDates(startDate, endDate),
             $"RP14A with holiday not paid dates '{FormatDate(startDate)}' to '{FormatDate(endDate)}'");
-    }
 
-    public async Task UploadRp14aWithNationalInsuranceNumberAsync(
+    public Task UploadRp14aWithNationalInsuranceNumberAsync(
         string? insuranceNumber,
         int occurrenceIndex)
     {
         ValidateNonNegativeNumber(occurrenceIndex, nameof(occurrenceIndex));
 
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder
-                    .WithEmployeeIndex(occurrenceIndex)
-                    .WithCustomMutation(
-                        RP14AElementNames.NationalInsuranceNumber,
-                        ToXmlValue(insuranceNumber))).FilePath,
+        return BuildAndUploadAsync(
+            builder => builder
+                .WithEmployeeIndex(occurrenceIndex)
+                .WithCustomMutation(
+                    RP14AElementNames.NationalInsuranceNumber,
+                    ToXmlValue(insuranceNumber)),
             $"RP14A with NI number '{ToLogValue(insuranceNumber)}' at index {occurrenceIndex}");
     }
 
-    public async Task UploadRp14aWithMoneyOwedToEmployerAsync(string? moneyOwed)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithMoneyOwedToEmployer(moneyOwed)).FilePath,
+    public Task UploadRp14aWithMoneyOwedToEmployerAsync(string? moneyOwed) =>
+        BuildAndUploadAsync(
+            builder => builder.WithMoneyOwedToEmployer(moneyOwed),
             $"RP14A with money owed to employer '{ToLogValue(moneyOwed)}'");
-    }
 
-    public async Task UploadRp14aWithEmploymentDatesAsync(DateOnly? startDate, DateOnly? endDate)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithEmploymentDates(startDate, endDate)).FilePath,
+    public Task UploadRp14aWithEmploymentDatesAsync(
+        DateOnly? startDate,
+        DateOnly? endDate) =>
+        BuildAndUploadAsync(
+            builder => builder.WithEmploymentDates(startDate, endDate),
             $"RP14A with employment dates {FormatDate(startDate)} to {FormatDate(endDate)}");
-    }
 
-    public async Task UploadRp14aWithHolidayContractedEntitlementDaysAsync(
-     string? entitlementDays)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithHolidayContractedEntitlementDays(entitlementDays)).FilePath,
+    public Task UploadRp14aWithHolidayContractedEntitlementDaysAsync(string? entitlementDays) =>
+        BuildAndUploadAsync(
+            builder => builder.WithHolidayContractedEntitlementDays(entitlementDays),
             $"RP14A with holiday contracted entitlement days '{ToLogValue(entitlementDays)}'");
-    }
 
-    public async Task UploadRp14aWithHolidayDaysCarriedForwardAsync(
-    string? daysCarriedForward)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithHolidayDaysCarriedForward(daysCarriedForward)).FilePath,
+    public Task UploadRp14aWithHolidayDaysCarriedForwardAsync(string? daysCarriedForward) =>
+        BuildAndUploadAsync(
+            builder => builder.WithHolidayDaysCarriedForward(daysCarriedForward),
             $"RP14A with holiday days carried forward '{ToLogValue(daysCarriedForward)}'");
-    }
 
-    public async Task UploadRp14aWithArrearsDatesAsync(DateOnly? startDate, DateOnly? endDate)
-    {
-        await UploadFixtureAsync(
-            () => BuildFixture(builder =>
-                builder.WithArrearsDates(startDate, endDate)).FilePath,
-            $"RP14A with arrears dates '{ToLogValue(FormatDate(startDate))}' to '{ToLogValue(FormatDate(endDate))}'");
-    }
+    public Task UploadRp14aWithArrearsDatesAsync(
+        DateOnly? startDate,
+        DateOnly? endDate) =>
+        BuildAndUploadAsync(
+            builder => builder.WithArrearsDates(startDate, endDate),
+            $"RP14A with arrears dates '{FormatDate(startDate)}' to '{FormatDate(endDate)}'");
 
     public async Task UploadComplexRp14aScenarioAsync(
-     string? caseReference = null,
-     string? employerName = null,
-     string? surname = null,
-     string? forename = null,
-     string? title = null,
-     string? arrearsAmount = null,
-     string? basicPayPerWeek = null,
-     string? holidayOwed = null,
-     DateOnly? employmentStartDate = null,
-     DateOnly? employmentEndDate = null)
+        string? caseReference = null,
+        string? employerName = null,
+        string? surname = null,
+        string? forename = null,
+        string? title = null,
+        string? arrearsAmount = null,
+        string? basicPayPerWeek = null,
+        string? holidayOwed = null,
+        DateOnly? employmentStartDate = null,
+        DateOnly? employmentEndDate = null)
     {
         ValidateDateOrder(employmentStartDate, employmentEndDate);
 
-        Rp14aFixture fixture = BuildFixture(builder =>
+        Rp14aTestFile testFile = BuildTestFile(builder =>
         {
-            if (caseReference is not null)
-            {
-                builder.WithCaseReference(caseReference);
-            }
-
-            if (employerName is not null)
-            {
-                builder.WithEmployerName(employerName);
-            }
+            ApplyIfNotNull(caseReference, builder.WithCaseReference);
+            ApplyIfNotNull(employerName, builder.WithEmployerName);
+            ApplyIfNotNull(basicPayPerWeek, builder.WithEmployeeBasicPayPerWeek);
+            ApplyIfNotNull(holidayOwed, builder.WithHolidayOwed);
 
             if (surname is not null || forename is not null || title is not null)
             {
                 builder.WithEmployeeName(surname, forename, title);
-            }
-
-            if (basicPayPerWeek is not null)
-            {
-                builder.WithEmployeeBasicPayPerWeek(basicPayPerWeek);
-            }
-
-            if (holidayOwed is not null)
-            {
-                builder.WithHolidayOwed(holidayOwed);
             }
 
             if (arrearsAmount is not null)
@@ -253,45 +192,18 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
 
             if (employmentStartDate.HasValue || employmentEndDate.HasValue)
             {
-                builder.WithEmploymentDates(
-                    employmentStartDate,
-                    employmentEndDate);
+                builder.WithEmploymentDates(employmentStartDate, employmentEndDate);
             }
         });
 
-        Dictionary<string, List<AffectedEmployee>> affectedEmployeesByError = new()
-        {
-            ["Employee surname|1 missing employee surname"] =
-                Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
-                    fixture.FilePath,
-                    employeeCount: 1,
-                    cellValue: surname ?? string.Empty),
+        SetComplexAffectedEmployees(
+            testFile.FilePath,
+            surname,
+            basicPayPerWeek,
+            holidayOwed);
 
-            ["Employee basic pay per week|1 invalid basic pay per week"] =
-                Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
-                    fixture.FilePath,
-                    employeeCount: 1,
-                    cellValue: basicPayPerWeek ?? string.Empty),
-            ["Holiday owed|1 invalid holiday owed"] =
-                Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
-                    fixture.FilePath,
-                    employeeCount: 1,
-                    cellValue: holidayOwed ?? string.Empty),
-
-            ["Holiday owed|1 invalid range of holiday owed"] =
-                Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
-                    fixture.FilePath,
-                    employeeCount: 1,
-                    cellValue: holidayOwed ?? string.Empty)
-        };
-
-
-        _scenarioContext.Set(
-            affectedEmployeesByError,
-            AffectedEmployeesByErrorTypeKey);
-
-        await UploadFixtureAsync(
-            () => fixture.FilePath,
+        await UploadFileAsync(
+            testFile.FilePath,
             "complex RP14A scenario");
     }
 
@@ -299,48 +211,57 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        Rp14aFixture fixture = BuildFixture(builder =>
+        Rp14aTestFile testFile = BuildTestFile(builder =>
             builder.WithMissingSurnames(employeeCount));
 
         List<AffectedEmployee> affectedEmployees =
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
-                fixture.FilePath,
+                testFile.FilePath,
                 employeeCount,
                 cellValue: string.Empty);
 
-        await UploadFixtureAsync(
-            () => fixture.FilePath,
+        await UploadFileAsync(
+            testFile.FilePath,
             $"RP14A with {employeeCount} employees missing surname");
 
         _scenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
     }
 
-    public async Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(int employeeCount, params string[] invalidValues)
+    public async Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(
+        int employeeCount,
+        params string[] invalidValues)
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        Rp14aFixture fixture = BuildFixture(builder =>
+        Rp14aTestFile testFile = BuildTestFile(builder =>
             builder.WithInvalidHolidayOwedForEmployees(
                 employeeCount,
                 invalidValues));
 
         List<AffectedEmployee> affectedEmployees =
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
-                fixture.FilePath,
+                testFile.FilePath,
                 employeeCount,
-               cellValues: invalidValues);
+                cellValues: invalidValues);
 
-        await UploadFixtureAsync(
-            () => fixture.FilePath,
+        await UploadFileAsync(
+            testFile.FilePath,
             $"RP14A with {employeeCount} employees invalid holiday owed");
 
-        _scenarioContext.Set(
-            affectedEmployees,
-            AffectedEmployeesContextKey);
+        _scenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
     }
 
-    private Rp14aFixture BuildFixture(
-    Action<Rp14aFixtureBuilder>? configure = null)
+    private Task BuildAndUploadAsync(
+        Action<Rp14aFixtureBuilder>? configure,
+        string description)
+    {
+        return UploadFileAsync(
+            BuildTestFile(configure).FilePath,
+            description);
+    }
+
+    private Rp14aTestFile BuildTestFile(
+        Action<Rp14aFixtureBuilder>? configure = null)
     {
         Rp14aFixtureBuilder builder = new();
 
@@ -352,20 +273,16 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
             ScenarioName);
     }
 
-    private async Task UploadFixtureAsync(
-        Func<string> fixtureFactory,
+    private async Task UploadFileAsync(
+        string filePath,
         string description)
     {
         try
         {
-            LogInfo($"Creating {description}...");
-
-            string filePath = fixtureFactory();
-
             if (!File.Exists(filePath))
             {
                 throw new InvalidOperationException(
-                    $"Fixture file was not created at expected location: {filePath}");
+                    $"RP14A test file was not created at expected location: {filePath}");
             }
 
             LogInfo($"Uploading {description} from {filePath}");
@@ -381,10 +298,45 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         }
     }
 
+    private void SetComplexAffectedEmployees(
+        string filePath,
+        string? surname,
+        string? basicPayPerWeek,
+        string? holidayOwed)
+    {
+        Dictionary<string, List<AffectedEmployee>> affectedEmployeesByError = new()
+        {
+            ["Employee surname|1 missing employee surname"] =
+                ReadAffectedEmployees(filePath, surname),
+
+            ["Employee basic pay per week|1 invalid basic pay per week"] =
+                ReadAffectedEmployees(filePath, basicPayPerWeek),
+
+            ["Holiday owed|1 invalid holiday owed"] =
+                ReadAffectedEmployees(filePath, holidayOwed),
+
+            ["Holiday owed|1 invalid range of holiday owed"] =
+                ReadAffectedEmployees(filePath, holidayOwed)
+        };
+
+        _scenarioContext.Set(
+            affectedEmployeesByError,
+            AffectedEmployeesByErrorTypeKey);
+    }
+
+    private static List<AffectedEmployee> ReadAffectedEmployees(
+        string filePath,
+        string? cellValue)
+    {
+        return Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+            filePath,
+            employeeCount: 1,
+            cellValue: cellValue ?? string.Empty);
+    }
+
     private static List<AffectedEmployee> CreateInvalidArrearsScenario(int count)
     {
         List<AffectedEmployee> affectedEmployees = [];
-        string[] invalidValues = ["15.3", "12.345", "-100"];
 
         for (int i = 1; i <= count; i++)
         {
@@ -392,30 +344,30 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
             {
                 Forename = ScenarioConstant.Forname,
                 Surname = ScenarioConstant.Surname,
-                DateOfBirth = DateTime
-                    .ParseExact(
-                        ScenarioConstant.DOB,
-                        "yyyy-MM-dd",
-                        CultureInfo.InvariantCulture)
-                    .ToString("d/M/yyyy", CultureInfo.InvariantCulture),
+                DateOfBirth = FormatScenarioDob(),
                 NiNumber = ScenarioConstant.NationalInsuranceNumber,
-                CellValue = invalidValues[(i - 1) % invalidValues.Length]
+                CellValue = InvalidArrearsAmounts.All[(i - 1) % InvalidArrearsAmounts.All.Count]
             });
         }
 
         return affectedEmployees;
     }
 
+    private static void ApplyIfNotNull(
+        string? value,
+        Func<string?, Rp14aFixtureBuilder> apply)
+    {
+        if (value is not null)
+        {
+            apply(value);
+        }
+    }
+
     private static string ValidateBaselineFilePath(string? baselineFilePath)
     {
         string effectivePath = baselineFilePath ?? DefaultBaselineFilePath;
 
-        if (string.IsNullOrWhiteSpace(effectivePath))
-        {
-            throw new ArgumentException(
-                "Baseline file path cannot be null, empty, or whitespace",
-                nameof(baselineFilePath));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(effectivePath);
 
         string absolutePath = Path.IsPathRooted(effectivePath)
             ? effectivePath
@@ -431,7 +383,9 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         return effectivePath;
     }
 
-    private static void ValidateDateOrder(DateOnly? startDate, DateOnly? endDate)
+    private static void ValidateDateOrder(
+        DateOnly? startDate,
+        DateOnly? endDate)
     {
         if (startDate.HasValue &&
             endDate.HasValue &&
@@ -446,15 +400,19 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
     private string ScenarioName =>
         _scenarioContext.ScenarioInfo?.Title ?? "Unknown Scenario";
 
-    private static string FormatDate(DateOnly? date)
-    {
-        return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
-    }
+    private static string FormatDate(DateOnly? date) =>
+        date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
 
-    private static string ToXmlValue(string? value)
-    {
-        return value ?? string.Empty;
-    }
+    private static string FormatScenarioDob() =>
+        DateTime
+            .ParseExact(
+                ScenarioConstant.DOB,
+                "yyyy-MM-dd",
+                CultureInfo.InvariantCulture)
+            .ToString("d/M/yyyy", CultureInfo.InvariantCulture);
+
+    private static string ToXmlValue(string? value) =>
+        value ?? string.Empty;
 
     private static string ToLogValue(string? value)
     {
@@ -467,7 +425,9 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         };
     }
 
-    private static void ValidatePositiveNumber(int value, string parameterName)
+    private static void ValidatePositiveNumber(
+        int value,
+        string parameterName)
     {
         if (value <= 0)
         {
@@ -477,7 +437,9 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         }
     }
 
-    private static void ValidateNonNegativeNumber(int value, string parameterName)
+    private static void ValidateNonNegativeNumber(
+        int value,
+        string parameterName)
     {
         if (value < 0)
         {

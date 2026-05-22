@@ -1,6 +1,6 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
+using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 

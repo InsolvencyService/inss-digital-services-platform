@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using GovUk.Forms.Components;
 using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
@@ -10,6 +9,7 @@ using Inss.GovUk.Forms.IPUpload.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 [assembly: HostingStartup(typeof(Inss.GovUk.Forms.IPUpload.StartupConfiguration))]
 
@@ -24,13 +24,13 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
-            
+
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
-            
+
             ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
 
             // Enable below once we have the dynamics work complete
-            
+
             /*if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddTypedClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(submissionOptions);
@@ -40,26 +40,26 @@ public class StartupConfiguration : IHostingStartup
                 services.AddTypedClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(submissionOptions);
             }*/
 
-            services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
+            services.AddHttpClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(client =>
                 {
                     client.BaseAddress = new Uri(submissionOptions.Url);
                 })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(submissionOptions.LifetimeMinutes))
                 .AddPolicyHandler(Resilience.GetRetryPolicy(submissionOptions.RetryCount))
-                .AddPolicyHandler((Resilience.GetCircuitBreaker(submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds)));
-            
+                .AddPolicyHandler(Resilience.GetCircuitBreaker(submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
+
             RpsApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<RpsApiOptions>()!;
-            
+
             services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
                 {
                     client.BaseAddress = new Uri(rpsOptions.Url);
                 })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(rpsOptions.LifetimeMinutes))
                 .AddPolicyHandler(Resilience.GetRetryPolicy(rpsOptions.RetryCount))
-                .AddPolicyHandler((Resilience.GetCircuitBreaker(rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds)));
-            
+                .AddPolicyHandler(Resilience.GetCircuitBreaker(rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds));
+
             // Enable below once we have deployment of the listener in the RPS environment
-            
+
             /*if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddTypedClient<ICaseReferenceClient, MockCaseReferenceClient>(rpsOptions);
@@ -72,9 +72,9 @@ public class StartupConfiguration : IHostingStartup
                     .ValidateOnStart();
                 services.AddTypedClient<ICaseReferenceClient, CaseReferenceClient>(rpsOptions);
             }*/
-            
+
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();
-            
+
             IPUploadFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
         });

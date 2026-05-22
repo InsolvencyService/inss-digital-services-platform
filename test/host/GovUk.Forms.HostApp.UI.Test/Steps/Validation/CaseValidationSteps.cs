@@ -1,5 +1,6 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Models;
+using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
@@ -120,7 +121,7 @@ public sealed class CaseValidationSteps
         {
             Forename = ScenarioConstant.Forname,
             Surname = ScenarioConstant.Surname,
-            DateOfBirth = TestData.UiDateOfBirth(),
+            DateOfBirth = TestFactory.UiDateOfBirth(),
             NiNumber = ScenarioConstant.NationalInsuranceNumber,
             CellValue = cellValue
         };

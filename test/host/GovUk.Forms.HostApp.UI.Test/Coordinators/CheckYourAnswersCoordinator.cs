@@ -7,10 +7,10 @@ namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 public class CheckYourAnswersCoordinator(
         IUploadDocumentSummaryPage summaryPage,
         IUploadNavigationCoordinator uploadNavigationCoordinator,
-        ISubmitCompletedPage submitCompletedPage,
+        ISubmissionConfirmationPage submitCompletedPage,
         ScenarioContext scenarioContext)
 {
-    public async Task VerifySummaryPageIsDisplayedAsync()
+    public async Task VerifyCheckYourAnswersPageIsDisplayedAsync()
     {
         await summaryPage.WaitForPageToLoadAsync();
 
@@ -20,7 +20,7 @@ public class CheckYourAnswersCoordinator(
         await summaryPage.VerifyUploadedDocumentAsync(uploadedFileName);
     }
 
-    public async Task SubmitAsync()
+    public async Task ClickOnSubmitButtonAsync()
     {
         await summaryPage.ClickSubmitAsync();
     }

@@ -20,7 +20,6 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
     [global::NUnit.Framework.TestFixtureAttribute()]
     [global::NUnit.Framework.DescriptionAttribute("Check Your Answers")]
     [global::NUnit.Framework.FixtureLifeCycleAttribute(global::NUnit.Framework.LifeCycle.InstancePerTestCase)]
-    [global::NUnit.Framework.IgnoreAttribute("Ignored feature")]
     [global::NUnit.Framework.CategoryAttribute("MEDS-1046")]
     public partial class CheckYourAnswersFeature
     {
@@ -28,7 +27,6 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "ignore",
                 "MEDS-1046"};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Functional", "Check Your Answers", "As an Insolvency Practitioner\r\nI want to see the file that I have uploaded\r\nSo th" +
@@ -108,6 +106,15 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
             await testRunner.CollectScenarioErrorsAsync();
         }
         
+        public virtual async global::System.Threading.Tasks.Task FeatureBackgroundAsync()
+        {
+#line 9
+#line hidden
+#line 10
+  await testRunner.GivenAsync("I am on the upload page as a \"Admin\" user", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+        }
+        
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
             return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Functional/CheckYourAnswers.feature.ndjson", 5);
@@ -127,7 +134,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Return to the upload page from the review page", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 11
+#line 13
   this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -137,13 +144,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
             else
             {
                 await this.ScenarioStartAsync();
-#line 12
-    await testRunner.GivenAsync("I am reviewing my uploaded RP14A document", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 13
-    await testRunner.WhenAsync("I navigate back from the review page", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 9
+await this.FeatureBackgroundAsync();
 #line hidden
 #line 14
+    await testRunner.GivenAsync("I am reviewing my uploaded RP14A document", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 15
+    await testRunner.WhenAsync("I navigate back from the review page", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 16
     await testRunner.ThenAsync("I should be returned to the document upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -166,7 +176,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Functional
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Review and submit an uploaded RP14A form", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 18
+#line 20
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -176,14 +186,20 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 19
-    await testRunner.GivenAsync("I am reviewing my uploaded RP14A document", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 20
-    await testRunner.WhenAsync("I submit the RP14A form", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 9
+await this.FeatureBackgroundAsync();
 #line hidden
 #line 21
+    await testRunner.GivenAsync("I am reviewing my uploaded RP14A document", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 22
+    await testRunner.WhenAsync("I submit the RP14A form", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 23
     await testRunner.ThenAsync("the RP14A form should be successfully submitted", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 24
+     await testRunner.AndAsync("I should be able to log out successfully", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -203,7 +219,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Change the uploaded RP14A form before submitting", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 24
+#line 27
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -213,13 +229,16 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 9
+await this.FeatureBackgroundAsync();
+#line hidden
+#line 28
     await testRunner.GivenAsync("I am reviewing my uploaded RP14A document", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 26
+#line 29
     await testRunner.WhenAsync("I choose to change the uploaded document", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 27
+#line 30
     await testRunner.ThenAsync("I should be returned to the document upload page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }

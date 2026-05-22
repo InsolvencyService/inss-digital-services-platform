@@ -124,12 +124,14 @@ namespace GovUk.Forms.HostApp.UI.Test.Features
         [global::NUnit.Framework.CategoryAttribute("functional")]
         [global::NUnit.Framework.CategoryAttribute("upload")]
         [global::NUnit.Framework.CategoryAttribute("Addvideo")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
         public async global::System.Threading.Tasks.Task UploadAValidRP14AFileSuccessfully()
         {
             string[] tagsOfScenario = new string[] {
                     "functional",
                     "upload",
-                    "Addvideo"};
+                    "Addvideo",
+                    "rp14a"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Upload a valid RP14A file successfully", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
@@ -163,12 +165,14 @@ await this.FeatureBackgroundAsync();
         [global::NUnit.Framework.CategoryAttribute("functional")]
         [global::NUnit.Framework.CategoryAttribute("upload")]
         [global::NUnit.Framework.CategoryAttribute("addVideo")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
         public async global::System.Threading.Tasks.Task PreventUploadingTheSameFileTwice()
         {
             string[] tagsOfScenario = new string[] {
                     "functional",
                     "upload",
-                    "addVideo"};
+                    "addVideo",
+                    "rp14a"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Prevent uploading the same file twice", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
@@ -312,11 +316,13 @@ await this.FeatureBackgroundAsync();
         [global::NUnit.Framework.DescriptionAttribute("Display validation error when XML content is invalid")]
         [global::NUnit.Framework.CategoryAttribute("regression")]
         [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
         public async global::System.Threading.Tasks.Task DisplayValidationErrorWhenXMLContentIsInvalid()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
-                    "validation"};
+                    "validation",
+                    "rp14a"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "5";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display validation error when XML content is invalid", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);

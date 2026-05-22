@@ -1,7 +1,8 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Models;
+using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Steps.Base;
-using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
+using static GovUk.Forms.HostApp.UI.Test.Models.TestData.TestFactory;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
@@ -165,7 +166,7 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     [Then("I should see the following validation errors")]
     public async Task ThenIShouldSeeTheFollowingContractedHolidayEntitlementValidationErrors(DataTable dataTable)
     {
-        Errors error = dataTable.CreateInstance<Errors>();
+        Error error = dataTable.CreateInstance<Error>();
         UploadErrorSummary expectedError = CreateErrorSummary(error.Type, error.Message, error.Hint);
         await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
         ScenarioContext.Set(expectedError);
@@ -175,7 +176,7 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     public async Task ThenIShouldSeeTheFollowingMultipleValidationErrors(DataTable dataTable)
     {
         List<UploadErrorSummary> expectedErrors = dataTable
-            .CreateSet<Errors>()
+            .CreateSet<Error>()
             .Select(error => CreateErrorSummary(error.Type, error.Message, error.Hint))
             .ToList();
 

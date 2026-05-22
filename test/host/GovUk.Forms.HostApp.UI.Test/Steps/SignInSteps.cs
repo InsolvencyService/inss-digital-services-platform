@@ -1,6 +1,6 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
+using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -101,7 +101,7 @@ public sealed class SignInSteps
 
         try
         {
-            List<string> errors = table.CreateSet<Errors>()
+            List<string> errors = table.CreateSet<Error>()
                 .Select(e => e.Message)
                 .Where(m => !string.IsNullOrWhiteSpace(m))
                 .ToList();
