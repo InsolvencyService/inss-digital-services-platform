@@ -18,13 +18,13 @@ public class YourAgeFlowNodeExecutorTests
         SectionModel yourDetails = form.Sections["Your Details"];
         AgeModel age = yourDetails.Pages.GetFirstOf<AgeModel>();
         age.Value = 17;
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = yourDetails,
-            UpdatedPage = age
+            CurrentPage = age
         };
         
         NodeId? nextNodeId = await executor.ExecuteAsync(context);
@@ -43,13 +43,13 @@ public class YourAgeFlowNodeExecutorTests
         SectionModel yourDetails = form.Sections["Your Details"];
         AgeModel age = yourDetails.Pages.GetFirstOf<AgeModel>();
         age.Value = value;
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = yourDetails,
-            UpdatedPage = age
+            CurrentPage = age
         };
         
         NodeId? nextNodeId = await executor.ExecuteAsync(context);

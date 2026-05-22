@@ -18,7 +18,7 @@ public class DefaultFlowNodeValidatorTests
         bankAccount.AccountNumber = "12345678";
         IFlowNodeValidator validator = DefaultFlowNodeValidator.Default;
         FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
@@ -36,7 +36,7 @@ public class DefaultFlowNodeValidatorTests
         bankAccount.AccountNumber = "12345678";
         IFlowNodeValidator validator = DefaultFlowNodeValidator.Default;
         FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 

@@ -4,5 +4,5 @@ namespace GovUk.Forms.Application.DataFlow.Validating;
 
 public interface IFlowNodeValidator
 {
-    ValueTask<ValidationResult[]> ValidateAsync(ValidateContext context);
+    ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context);
 }

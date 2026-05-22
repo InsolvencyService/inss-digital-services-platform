@@ -1,3 +1,4 @@
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -9,9 +10,9 @@ public sealed class YourAgeFlowNodeExecutor : IFlowNodeExecutor
     private const int EqualToOrAbove18NodeIndex = 0;
     private const int Below18NodeIndex = 1;
     
-    public ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
+    public ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
-        AgeModel age = context.UpdatedPage.As<AgeModel>();
+        AgeModel age = context.CurrentPage.As<AgeModel>();
         return ValueTask.FromResult<NodeId?>(age.Value >= 18 
             ? context.CurrentNode.NextNodes[EqualToOrAbove18NodeIndex] 
             : context.CurrentNode.NextNodes[Below18NodeIndex]);

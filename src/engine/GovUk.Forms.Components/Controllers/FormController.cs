@@ -23,7 +23,9 @@ public class FormController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(string? state = null)
     {
-        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(new ContentPath(Request.Path), state);
+        ContentPath requestPath = new(Request.Path);
+        ContentPath refererPath = GetRefererPath();//new(Request.Headers.Referer.ToString().Replace(Request.PathBase, "") + "/");
+        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, refererPath, state);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
 
@@ -53,5 +55,16 @@ public class FormController : Controller
     public IActionResult LogOut()
     {
         return SignOut(OpenIdConnectDefaults.AuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
+    }
+
+    private ContentPath GetRefererPath()
+    {
+        //const string trailingSlash = "/";
+     
+        string referer = Request.Headers.Referer.ToString();
+
+        Uri refererUri = new(referer);
+
+        return new ContentPath(refererUri.PathAndQuery);
     }
 }

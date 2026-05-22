@@ -18,13 +18,13 @@ public class AddAnotherWorkingPageFlowNodeExecutorTests
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();
         fullName.Value = "Homer Simpson";
         FlowNode node = new() { Id = "NodeId1", PagePath = fullName.Path, NextNodes = ["NodeId2"] };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = fullName
+            CurrentPage = fullName
         };
         
         await _executor.ExecuteAsync(context);
@@ -46,13 +46,13 @@ public class AddAnotherWorkingPageFlowNodeExecutorTests
         addAnother.Items.Add(fullName.Clone());
         fullName.Value = "Marge Simpson";
         FlowNode node = new() { Id = "NodeId1", PagePath = fullName.Path, NextNodes = ["NodeId2"] };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = fullName
+            CurrentPage = fullName
         };
         
         await _executor.ExecuteAsync(context);
