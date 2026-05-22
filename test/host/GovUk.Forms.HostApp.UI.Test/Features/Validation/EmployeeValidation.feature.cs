@@ -310,16 +310,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 37
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table2.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             "1 invalid arrears of pay owed",
                             "Expected format is 12.34 or 100",
                             "Employee arrears of payment owed"});
 #line 38
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table2, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table1, "Then ");
 #line hidden
 #line 41
               await testRunner.AndAsync("I should be able to view employee arrears of pay owed error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -373,16 +373,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 53
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table3.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             string.Format("{0} invalid arrears of pay owed", count),
                             "Expected format is 12.34 or 100",
                             "Employee arrears of payment owed"});
 #line 54
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table3, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table2, "Then ");
 #line hidden
 #line 57
               await testRunner.AndAsync("I should be able to view employee arrears of pay owed error details for multiple " +
@@ -546,16 +546,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 86
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table4.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "1 invalid money owed to employer",
                             "Expected format is 12.34 or 100",
                             "Money owed to employer"});
 #line 87
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table4, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table3, "Then ");
 #line hidden
 #line 90
               await testRunner.AndAsync("I should be able to view money owed to employer error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -603,16 +603,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 102
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table5.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "1 invalid employment dates for the employee",
                             "Start date must be before the end date",
                             "Employee employment dates"});
 #line 103
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table5, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table4, "Then ");
 #line hidden
 #line 106
               await testRunner.AndAsync("I should be able to view the employee employment dates error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -664,16 +664,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 113
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table6.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "1 invalid arrears of dates",
                             "Start date must be before the end date",
                             "Employee arrears of payment dates"});
 #line 114
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table6, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table5, "Then ");
 #line hidden
 #line 117
               await testRunner.AndAsync("I should be able to view error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");

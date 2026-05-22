@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.RegularExpressions;
 using Inss.Auth.RpsProvider.Application.Clients;
 using Inss.Auth.RpsProvider.Domain.Enums;
 
@@ -7,19 +8,14 @@ namespace Inss.Auth.RpsProvider.Infrastructure.Clients;
 public sealed class UserAuthenticationClient : IUserAuthenticationClient
 {
     private readonly HttpClient _client;
-    //private readonly HttpClientHandler _handler;
 
-    public UserAuthenticationClient(HttpClient client)//, HttpClientHandler handler)
+    public UserAuthenticationClient(HttpClient client)
     {
         _client = client;
-        //_handler = handler;
     }
 
     public async Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken)
     {
-        //_handler.AllowAutoRedirect = false;
-        //_handler.CookieContainer = new CookieContainer();
-        
         // Build form data
         FormUrlEncodedContent formData = new(
         [
