@@ -15,6 +15,8 @@ public class SectionModel : ContentModel
 
     public NodeId[] VisitedNodes { get; set; } = [];
     
+    public ContentPath? PreviousPagePath { get; set; }
+    
     [JsonIgnore]
     public PageModel FirstPage
     {

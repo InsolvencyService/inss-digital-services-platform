@@ -20,27 +20,24 @@ public sealed class FormService : IFormService
         _pagePropertiesProvider = pagePropertiesProvider;
     }
     
-    public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(ContentPath path, string? state)
+    public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(
+        ContentPath requestPath, 
+        ContentPath refererPath, 
+        string? state)
     {
-        FormModel form = await _userFormService.GetAsync(path);
+        FormModel form = await _userFormService.GetAsync(requestPath);
         
         try
         {
-            ContentModel content = form.GetContent(path);
+            ContentModel content = form.GetContent(requestPath);
 
             if (content is PageModel page)
             {
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, state);
-                _pagePropertiesProvider.PreviousPagePath = page.PreviousPagePath;
-
-                if (_pagePropertiesProvider.PreviousPagePath is null && page == section.FirstPage)
-                {
-                    _pagePropertiesProvider.PreviousPagePath = form.Sections.Count == 1 ? "/" : form.Path;
-                }
-                
-                return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != path ? altPath : null);
+                ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, refererPath, state);
+                section.PreviousPagePath = _pagePropertiesProvider.PreviousPagePath;
+                return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != requestPath ? altPath : null);
             }
 
             if (form.Sections.Count == 1)
@@ -74,7 +71,7 @@ public sealed class FormService : IFormService
             {
                 PageModel savedPage = section.Pages.GetPage(page.Path);
                 savedPage.MetaData.CopyTo(page.MetaData);
-                _pagePropertiesProvider.PreviousPagePath = page.PreviousPagePath;
+                _pagePropertiesProvider.PreviousPagePath = section.PreviousPagePath;
             }
             
             return validationResults;
@@ -93,9 +90,7 @@ public sealed class FormService : IFormService
             {
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                ContentPath path = await flowchart.ProcessAsync(form, section, page);
-                section.Track(page.LinkedToNode);
-                return path;
+                return await flowchart.ProcessAsync(form, section, page);
             }
 
             FormModel submittableForm = form.GetSubmittable();

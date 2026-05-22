@@ -5,9 +5,9 @@ namespace GovUk.Forms.Application.DataFlow.Loading;
 
 public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
 {
-    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
-        SummaryModel summary = context.Page.As<SummaryModel>();
+        SummaryModel summary = context.CurrentPage.As<SummaryModel>();
         PageModelList savedPages = context.Section.Pages.GetCompletedPages();
         List<SummaryModel.SummaryInfo> overview = [];
         

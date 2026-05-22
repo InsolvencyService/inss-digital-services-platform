@@ -18,13 +18,13 @@ public class AddAnotherFlowNodeExecutorTests
         SectionModel section = form.Sections[0];
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();
         FlowNode node = new() { Id = "NodeId", PagePath = fullName.Path };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = fullName
+            CurrentPage = fullName
         };
         
         ModelException exception = await Assert.ThrowsAsync<ModelException>(async () => await _executor.ExecuteAsync(context));
@@ -40,13 +40,13 @@ public class AddAnotherFlowNodeExecutorTests
         AddAnotherModel addAnother = section.Pages.GetFirstOf<AddAnotherModel>();
         addAnother.AddAnotherItem = false;
         FlowNode node = new() { Id = "NodeId", PagePath = addAnother.Path, NextNodes = ["NodeId1", "NodeId2"] };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = addAnother
+            CurrentPage = addAnother
         };
         
         NodeId? result = await _executor.ExecuteAsync(context);
@@ -63,13 +63,13 @@ public class AddAnotherFlowNodeExecutorTests
         AddAnotherModel addAnother = section.Pages.GetFirstOf<AddAnotherModel>();
         addAnother.AddAnotherItem = true;
         FlowNode node = new() { Id = "NodeId", PagePath = addAnother.Path, NextNodes = ["NodeId1", "NodeId2"] };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = addAnother
+            CurrentPage = addAnother
         };
         
         NodeId? result = await _executor.ExecuteAsync(context);
@@ -91,13 +91,13 @@ public class AddAnotherFlowNodeExecutorTests
         AgeModel age = groupInfo.WorkingPages.GetFirstOf<AgeModel>();
         age.Value = 45;
         FlowNode node = new() { Id = "NodeId", PagePath = addAnother.Path, NextNodes = ["NodeId1", "NodeId2"] };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = addAnother
+            CurrentPage = addAnother
         };
         
         await _executor.ExecuteAsync(context);

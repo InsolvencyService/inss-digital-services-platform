@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
@@ -26,7 +25,7 @@ public class FileUploadErrorDetailsFlowNodeLoaderTests
     [Fact]
     public async Task NullState_LoadAsync_ThrowsException()
     {
-        LoadContext context = new() { State = null };
+        FlowNodeContext context = new() { State = null };
 
         IPUploadException exception = await Assert.ThrowsAsync<IPUploadException>(() => _loader.LoadAsync(context).AsTask());
         
@@ -46,20 +45,19 @@ public class FileUploadErrorDetailsFlowNodeLoaderTests
         ErrorInfo[] errors = fileUploadErrors.GetErrors("Case");
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = fileUploadErrorDetails.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            Page = fileUploadErrorDetails,
+            CurrentPage = fileUploadErrorDetails,
             State = errors[0].Id
         };
 
         await _loader.LoadAsync(context);
         
         Assert.Equal(errors[0], fileUploadErrorDetails.CurrentErrorDetail);
-        Assert.Equal(fileUploadErrors.Path, fileUploadErrorDetails.PreviousPagePath);
     }
     
     [Fact]
@@ -75,13 +73,13 @@ public class FileUploadErrorDetailsFlowNodeLoaderTests
         ErrorInfo[] errors = fileUploadErrors.GetErrors("Case");
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = fileUploadErrorDetails.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            Page = fileUploadErrorDetails,
+            CurrentPage = fileUploadErrorDetails,
             State = errors[0].Id
         };
 

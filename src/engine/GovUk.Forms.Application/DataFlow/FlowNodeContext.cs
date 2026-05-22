@@ -1,9 +1,9 @@
-using GovUk.Forms.Domain;
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+﻿using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Primitives;
 
-namespace GovUk.Forms.Application.DataFlow.Loading;
+namespace GovUk.Forms.Application.DataFlow;
 
-public sealed class LoadContext
+public sealed class FlowNodeContext
 {
     public FlowNode[] Nodes { get; init; } = [];
     
@@ -13,7 +13,9 @@ public sealed class LoadContext
     
     public SectionModel Section { get; init; }
     
-    public PageModel Page { get; init; }
+    public PageModel CurrentPage { get; init; }
     
     public string? State { get; init; }
+
+    public ContentPath? RefererPath { get; init; }
 }
