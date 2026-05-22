@@ -1,17 +1,19 @@
 ﻿using System.Net;
-using System.Text.RegularExpressions;
 using Inss.Auth.RpsProvider.Application.Clients;
 using Inss.Auth.RpsProvider.Domain.Enums;
+using Inss.Auth.RpsProvider.Extensions;
 
 namespace Inss.Auth.RpsProvider.Infrastructure.Clients;
 
 public sealed class UserAuthenticationClient : IUserAuthenticationClient
 {
     private readonly HttpClient _client;
+    private readonly ILogger<UserAuthenticationClient> _logger;
 
-    public UserAuthenticationClient(HttpClient client)
+    public UserAuthenticationClient(HttpClient client, ILogger<UserAuthenticationClient> logger)
     {
         _client = client;
+        _logger = logger;
     }
 
     public async Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken)
@@ -24,56 +26,54 @@ public sealed class UserAuthenticationClient : IUserAuthenticationClient
             new KeyValuePair<string, string>("password", password)
         ]);
         
-        // TODO: Do we need this? Is so could be set in StartupConfiguration _client.Timeout = TimeSpan.FromSeconds(30);
-
         HttpResponseMessage loginResponse = await _client.PostAsync("/login", formData);
         
-        // Check Login result
-        if (loginResponse.StatusCode is HttpStatusCode.Found or
-            HttpStatusCode.Redirect)
+        if (loginResponse.StatusCode is HttpStatusCode.Found) // or HttpStatusCode.Redirect)
         {
             string redirectUrl = loginResponse.Headers.Location?.ToString() ?? string.Empty;
-            Console.WriteLine($"Login response: {(int)loginResponse.StatusCode} {loginResponse.StatusCode}");
-            Console.WriteLine($"Redirect location: {redirectUrl}");
-
-            // Sucessful login....
-            if (!string.IsNullOrWhiteSpace(redirectUrl) &&
-                redirectUrl.Contains("/ip-hub/hub", StringComparison.OrdinalIgnoreCase))
+            _logger.LoginResponse(loginResponse.StatusCode.ToString(), redirectUrl);
+            
+            if (IsLoginSuccess(redirectUrl))
             {
-                Console.WriteLine("Login successful - redirected to authenticated area.");
+                _logger.LoginSuccessResponse();
                 return RpsAuthenticationTypes.Matched;
             }
 
-            // Failed Login - invalid credentials...
-            if (!string.IsNullOrWhiteSpace(redirectUrl) &&
-                redirectUrl.Contains("/login?error=credentials", StringComparison.OrdinalIgnoreCase))
+            if (IsMismatchedCredentials(redirectUrl))
             {
-                Console.WriteLine("Login failed - invalid credentials.");
+                _logger.LoginFailedResponse();
                 return RpsAuthenticationTypes.Unknown;
             }
 
-            //Locked...
-            //if (!string.IsNullOrWhiteSpace(redirectUrl) &&
-            //         redirectUrl.Contains("/login?error=credentials", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    Console.WriteLine("Login Locked.");
-            //    return RpsAuthenticationTypes.Locked;
-            //}
-            else
+            if (IsAccountLocked(redirectUrl))
             {
-                // Something else... invalid!
-                Console.WriteLine("Redirect received, but location was not recognised.");
-                return RpsAuthenticationTypes.Unknown;
+                _logger.LoginAccountLockedResponse();
+                return RpsAuthenticationTypes.Locked;
             }
-        }
-        else
-        {
-            string responseBody = await loginResponse.Content.ReadAsStringAsync();
 
-            Console.WriteLine("Unexpected login response.");
-            Console.WriteLine(responseBody);
-
+            _logger.LoginUnknownFailureResponse();
             return RpsAuthenticationTypes.Unknown;
         }
+
+        string responseBody = await loginResponse.Content.ReadAsStringAsync();
+        _logger.LoginUnexpectedResponseResponse(responseBody);
+        return RpsAuthenticationTypes.Unknown;
+    }
+
+    private static bool IsLoginSuccess(string redirectUrl)
+    {
+        return !string.IsNullOrWhiteSpace(redirectUrl) && redirectUrl.Contains("/ip-hub/hub", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMismatchedCredentials(string redirectUrl)
+    {
+        return !string.IsNullOrWhiteSpace(redirectUrl) && 
+               redirectUrl.Contains("/login?error=credentials", StringComparison.OrdinalIgnoreCase);
+    }
+    
+    private static bool IsAccountLocked(string redirectUrl)
+    {
+        return !string.IsNullOrWhiteSpace(redirectUrl) && 
+               redirectUrl.Contains("/login?error=locked", StringComparison.OrdinalIgnoreCase);
     }
 }
