@@ -140,7 +140,7 @@ public sealed class DeclarationCoordinator(
     }
     private static void AddAllureLog(string message)
     {
-        string tempFile = Path.Combine(
+        string tempFile = Path.Join(
             Path.GetTempPath(),
             $"{Guid.NewGuid()}.txt");
 
