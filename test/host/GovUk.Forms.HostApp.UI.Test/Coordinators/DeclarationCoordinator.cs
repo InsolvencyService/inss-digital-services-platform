@@ -140,26 +140,11 @@ public sealed class DeclarationCoordinator(
     }
     private static void AddAllureLog(string message)
     {
-        string tempRoot = Path.GetFullPath(Path.GetTempPath());
-        if (!tempRoot.EndsWith(Path.DirectorySeparatorChar))
-        {
-            tempRoot += Path.DirectorySeparatorChar;
-        }
-
-        string tempFile = Path.GetFullPath(
-            Path.Combine(tempRoot, $"{Guid.NewGuid()}.txt"));
-
-        if (!tempFile.StartsWith(tempRoot, StringComparison.Ordinal))
-        {
-            throw new InvalidOperationException("Resolved temp file path is outside the temporary directory.");
-        }
-
-        File.WriteAllText(tempFile, message);
-
         AllureApi.AddAttachment(
             $"Log_{DateTime.UtcNow:HHmmssfff}",
             "text/plain",
-            tempFile);
+            System.Text.Encoding.UTF8.GetBytes(message),
+            "txt");
     }
 
     private static string SanitizeFileName(string value)
