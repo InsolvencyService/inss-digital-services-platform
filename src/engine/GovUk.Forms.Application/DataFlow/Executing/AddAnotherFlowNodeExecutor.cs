@@ -8,9 +8,9 @@ public sealed class AddAnotherFlowNodeExecutor : IFlowNodeExecutor
     private const int FirstWorkingPageNodeIdIndex = 0;
     private const int NextPageNodeIdIndex = 1;
     
-    public ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
+    public ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
-        AddAnotherModel addAnother = context.UpdatedPage.As<AddAnotherModel>();
+        AddAnotherModel addAnother = context.CurrentPage.As<AddAnotherModel>();
         AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(addAnother.MetaData.Group);
         
         if (addAnother.AddAnotherItem)

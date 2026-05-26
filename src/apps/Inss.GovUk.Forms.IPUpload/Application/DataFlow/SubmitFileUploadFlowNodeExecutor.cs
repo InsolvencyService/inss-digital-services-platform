@@ -1,3 +1,4 @@
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
@@ -15,7 +16,7 @@ public sealed class SubmitFileUploadFlowNodeExecutor : IFlowNodeExecutor
         _submitUploadedXmlService = submitUploadedXmlService;
     }
     
-    public async ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
+    public async ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
         context.Section.SetCompleted();
         string referenceNumber = await _submitUploadedXmlService.SubmitAsync(context.Section, context.Form.Id);

@@ -12,7 +12,7 @@ public sealed class NoopFlowNodeExecutor : IFlowNodeExecutor
     {
     }
     
-    public ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
+    public ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
         return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[0]);
     }

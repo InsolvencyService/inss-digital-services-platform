@@ -2,7 +2,6 @@
 using Demo.GovUk.Forms.ContactUs.Domain;
 using Demo.GovUk.Forms.ContactUs.Factories;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Domain;
 using Xunit;
 
@@ -24,13 +23,13 @@ public class AddAnotherUploadFilesFlowNodeLoaderTests
         FlowNode addAnotherNode = new() { Id = "NodeId1", PagePath = addAnother.Path, NextNodes = ["NodeId2", "NodeId3"] };
         FlowNode removeNode = new() { Id = "NodeId4", PagePath = remove.Path, NextNodes = ["NodeId1"] };
         
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [addAnotherNode, removeNode],
             CurrentNode = addAnotherNode,
             Form = form,
             Section = section,
-            Page = addAnother
+            CurrentPage = addAnother
         };
         
         await _loader.LoadAsync(context);
@@ -51,13 +50,13 @@ public class AddAnotherUploadFilesFlowNodeLoaderTests
         FlowNode addAnotherNode = new() { Id = "NodeId1", PagePath = addAnother.Path, NextNodes = ["NodeId2", "NodeId3"] };
         FlowNode removeNode = new() { Id = "NodeId4", PagePath = remove.Path, NextNodes = ["NodeId1"] };
         
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [addAnotherNode, removeNode],
             CurrentNode = addAnotherNode,
             Form = form,
             Section = section,
-            Page = addAnother
+            CurrentPage = addAnother
         };
         
         await _loader.LoadAsync(context);

@@ -4,5 +4,6 @@ public enum RpsAuthenticationTypes
 {
     Matched,
     Unknown,
-    Locked
+    Locked,
+    Outage
 }

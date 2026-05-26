@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Application.Extensions;
 using Inss.Common.IPUpload;
@@ -20,12 +21,12 @@ public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
         _logger = logger;
     }
     
-    public async ValueTask<ValidationResult[]> ValidateAsync(ValidateContext context)
+    public async ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context)
     {
         ValidationResult[] baseValidationResults = await DefaultFlowNodeValidator.Default.ValidateAsync(context);
         List<ValidationResult> validationResults = baseValidationResults.ToList();
         
-        XmlFileUploadModel fileUpload = context.Page.As<XmlFileUploadModel>();
+        XmlFileUploadModel fileUpload = context.CurrentPage.As<XmlFileUploadModel>();
 
         foreach (var checkAction in _checkActions)
         {

@@ -1,5 +1,7 @@
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
+using GovUk.Forms.Application.DataFlow.Providing;
+using GovUk.Forms.Application.DataFlow.Visiting;
 using GovUk.Forms.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,6 +32,18 @@ public sealed class EndFlowNodeBuilder
     public EndFlowNodeBuilder WithExecutor<TExecutor>() where TExecutor : class, IFlowNodeExecutor
     {
         _services.AddKeyedTransient<IFlowNodeExecutor, TExecutor>(_node.Id);
+        return this;
+    }
+    
+    public EndFlowNodeBuilder WithPreviousPathProvider<TNavigator>() where TNavigator : class, IFlowNodePreviousPathProvider
+    {
+        _services.AddKeyedTransient<IFlowNodePreviousPathProvider, TNavigator>(_node.Id);
+        return this;
+    }
+    
+    public EndFlowNodeBuilder WithVisitor<TVisitor>() where TVisitor : class, IFlowNodeVisitor
+    {
+        _services.AddKeyedTransient<IFlowNodeVisitor, TVisitor>(_node.Id);
         return this;
     }
     

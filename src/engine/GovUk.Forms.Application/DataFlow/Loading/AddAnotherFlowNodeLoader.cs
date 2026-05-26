@@ -7,9 +7,9 @@ public class AddAnotherFlowNodeLoader : IFlowNodeLoader
 {
     private const int FirstWorkingPageNodeIdIndex = 0;
     
-    public virtual ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public virtual ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
-        AddAnotherModel addAnother = context.Page.As<AddAnotherModel>();
+        AddAnotherModel addAnother = context.CurrentPage.As<AddAnotherModel>();
         AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(addAnother.MetaData.Group);
         groupInfo.Remove.LinkedToNode = context.Nodes.First(n => n.PagePath == groupInfo.Remove.Path).Id; // TODO: Context helper
         

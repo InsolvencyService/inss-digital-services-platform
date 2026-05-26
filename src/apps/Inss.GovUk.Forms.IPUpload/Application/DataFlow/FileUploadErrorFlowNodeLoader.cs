@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.Application.DataFlow.Loading;
+﻿using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Domain;
 
@@ -8,7 +9,7 @@ public sealed class FileUploadErrorFlowNodeLoader : IFlowNodeLoader
 {
     private const int FileUploadErrorDetailIndex = 1;
     
-    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
         // Link the error details to the correct node Id as this is a spur page that is accessed without a call to action
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = context.Section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();

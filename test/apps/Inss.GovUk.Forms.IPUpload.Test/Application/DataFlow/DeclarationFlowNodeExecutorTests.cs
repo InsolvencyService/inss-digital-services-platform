@@ -1,5 +1,4 @@
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
@@ -19,13 +18,13 @@ public class DeclarationFlowNodeExecutorTests
         IPUploadDeclarationModel declaration = ipUploadSection.Pages.GetFirstOf<IPUploadDeclarationModel>();
         declaration.Accepted = false;
         FlowNode node = new() { Id = "NodeId1", PagePath = declaration.Path, NextNodes = ["NodeId2"] };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            UpdatedPage = new IPUploadDeclarationModel { Path = declaration.Path }
+            CurrentPage = new IPUploadDeclarationModel { Path = declaration.Path }
         };
         
         await executor.ExecuteAsync(context);
@@ -42,13 +41,13 @@ public class DeclarationFlowNodeExecutorTests
         IPUploadDeclarationModel declaration = ipUploadSection.Pages.GetFirstOf<IPUploadDeclarationModel>();
         declaration.Accepted = false;
         FlowNode node = new() { Id = "NodeId1", PagePath = declaration.Path, NextNodes = ["NodeId2"] };
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            UpdatedPage = new IPUploadDeclarationModel { Path = declaration.Path }
+            CurrentPage = new IPUploadDeclarationModel { Path = declaration.Path }
         };
         
         NodeId? nextNodeId = await executor.ExecuteAsync(context);

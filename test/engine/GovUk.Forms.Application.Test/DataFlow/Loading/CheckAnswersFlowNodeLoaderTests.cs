@@ -21,13 +21,13 @@ public class CheckAnswersPreProcessNodeTests
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();
         fullName.Value = "Homer Simpson";
         FlowNode node = new() { Id = "NodeId1", PagePath = fullName.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = checkAnswers,
+            CurrentPage = checkAnswers,
             State = NoState
         };
         
@@ -45,13 +45,13 @@ public class CheckAnswersPreProcessNodeTests
         AgeModel age = section.Pages.GetFirstOf<AgeModel>();
         age.Value = 45;
         FlowNode node = new() { Id = "NodeId1", PagePath = age.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = checkAnswers,
+            CurrentPage = checkAnswers,
             State = NoState
         };
         
@@ -68,13 +68,13 @@ public class CheckAnswersPreProcessNodeTests
         SectionModel section = _form.Sections.First();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = checkAnswers.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = checkAnswers,
+            CurrentPage = checkAnswers,
             State = changeState
         };
         
@@ -91,13 +91,13 @@ public class CheckAnswersPreProcessNodeTests
         AddAnotherModel addAnother = CreateAddAnother();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = checkAnswers.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = checkAnswers,
+            CurrentPage = checkAnswers,
             State = changeState
         };
         
@@ -120,13 +120,13 @@ public class CheckAnswersPreProcessNodeTests
         AddAnotherModel addAnother = CreateAddAnother();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = checkAnswers.Path, NextNodes = ["NodeId2"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = _form,
             Section = section,
-            Page = checkAnswers,
+            CurrentPage = checkAnswers,
             State = changeState
         };
         
