@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
+﻿using GovUk.Forms.HostApp.UI.Test.Models.TestData;
+using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
@@ -48,7 +49,7 @@ public class UploadVerificationCoordinator : IUploadVerificationCoordinator
             $"Actual files: {string.Join(", ", uploadedFiles)}");
     }
 
-    public async Task VerifyInvalidFileExtensionErrorAsync(Models.TestData.UploadFileError uploadFileError)
+    public async Task VerifyInvalidFileExtensionErrorAsync(UploadFileError uploadFileError)
     {
         await _uploadDocumentPage.VerifyUploadFileErrorAsync(uploadFileError);
     }

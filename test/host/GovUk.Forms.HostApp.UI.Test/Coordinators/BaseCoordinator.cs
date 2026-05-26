@@ -67,21 +67,16 @@ public abstract class BaseCoordinator
     }
 
     protected static void AddAllureLog(
-    string name,
-    string message)
+        string name,
+        string message)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
 
-        string tempFile = Path.Join(
-            Path.GetTempPath(),
-            $"{Guid.NewGuid()}.txt");
-
-        File.WriteAllText(tempFile, message);
-
         AllureApi.AddAttachment(
             name,
             "text/plain",
-            tempFile);
+            System.Text.Encoding.UTF8.GetBytes(message),
+            "txt");
     }
 }
