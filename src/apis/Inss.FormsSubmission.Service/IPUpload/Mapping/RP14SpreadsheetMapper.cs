@@ -44,7 +44,9 @@ public sealed class RP14SpreadsheetMapper : IMapper
             new JsonMessage
             {
                 CorrelationId = companyInformation.CorrelationId.ToString(),
-                Json = JsonSerializer.Serialize(companyInformation)
+                Json = JsonSerializer.Serialize(companyInformation),
+                Entity = "inss_inboundemployermessage",
+                MessageName = "Inbound Employer Message"
             }
         ];
     }

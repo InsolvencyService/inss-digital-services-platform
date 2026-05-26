@@ -43,7 +43,13 @@ public sealed class RP14AApiMapper : IMapper
         }).ToArray();
 
         return employeeInformationList
-            .Select(e => new JsonMessage { CorrelationId = e.CorrelationId.ToString(), Json = JsonSerializer.Serialize(e) })
+            .Select(e => new JsonMessage
+            {
+                CorrelationId = e.CorrelationId.ToString(), 
+                Json = JsonSerializer.Serialize(e),
+                Entity = "inss_inboundemployeeinformationmessage",
+                MessageName = "Inbound Employee Information Message"
+            })
             .ToArray();
     }
 

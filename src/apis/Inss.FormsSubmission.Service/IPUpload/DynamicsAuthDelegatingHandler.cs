@@ -10,14 +10,14 @@ internal sealed class DynamicsAuthDelegatingHandler : DelegatingHandler
     private readonly IConfidentialClientApplication _clientApplication;
     private readonly string _scope;
 
-    public DynamicsAuthDelegatingHandler(DynamicsOptions options)
+    public DynamicsAuthDelegatingHandler(DynamicsOptions options) : base(new HttpClientHandler())
     {
         _clientApplication = ConfidentialClientApplicationBuilder
             .Create(options.ClientId)
             .WithClientSecret(options.ClientSecret)
-            .WithAuthority($"{options.Url}/api/data/")
+            .WithAuthority($"https://login.microsoftonline.com/{options.TenantId}/")
             .Build();
-        _scope = $"{options.Url}/api/data/.default";
+        _scope = $"{options.Url}/.default";
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
