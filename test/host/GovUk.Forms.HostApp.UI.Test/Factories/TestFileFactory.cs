@@ -8,12 +8,10 @@ public static class TestFileFactory
     private const int OneMb = 1024 * 1024;
 
     private static readonly string _baselineRp14aFilePath = Path.GetFullPath(
-        Path.Combine(
-            Path.Combine(
-                Path.Combine(
-                    Path.GetDirectoryName(typeof(TestFileFactory).Assembly.Location)!,
-                    "Resources"),
-                "Rp14a"),
+        Path.Join(
+            Path.GetDirectoryName(typeof(TestFileFactory).Assembly.Location)!,
+            "Resources",
+            "Rp14a",
             "rp14A.xml"));
 
     private const string ClosingTag = "</ns1:RP14A>";
