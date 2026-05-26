@@ -14,7 +14,7 @@ public static class TestFactory
         return new AffectedEmployee
         {
             Surname = surname ?? ScenarioConstant.Surname,
-            Forename = forename ?? ScenarioConstant.Forname,
+            Forename = forename ?? ScenarioConstant.Forename,
             DateOfBirth = UiDateOfBirth(),
             NiNumber = niNumber ?? ScenarioConstant.NationalInsuranceNumber,
             CellValue = cellValue ?? string.Empty

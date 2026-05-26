@@ -1,6 +1,7 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using GovUk.Forms.HostApp.UI.Test.Tags;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -14,13 +15,16 @@ public sealed class SignInSteps
 
     private readonly SignInCoordinator _signInCoordinator;
     private readonly DeclarationCoordinator _declarationCoordinator;
+    private readonly StartPageCoordinator _startPageCoordinator;
 
     public SignInSteps(
      SignInCoordinator signInCoordinator,
-     DeclarationCoordinator declarationCoordinator)
+     DeclarationCoordinator declarationCoordinator,
+     StartPageCoordinator startPageCoordinator)
     {
         _signInCoordinator = signInCoordinator;
         _declarationCoordinator = declarationCoordinator;
+        _startPageCoordinator = startPageCoordinator;
     }
 
 
@@ -36,7 +40,7 @@ public sealed class SignInSteps
         const string validEmail = ScenarioConstant.EmailAddress;
         const string validPassword = ScenarioConstant.Password;
 
-        await _signInCoordinator.EnterCredentilasAsync(validEmail, validPassword);
+        await _signInCoordinator.EnterCredentialsAsync(validEmail, validPassword);
     }
 
     [When("I provide valid sign in details")]
@@ -140,9 +144,9 @@ public sealed class SignInSteps
         if (!Enum.TryParse(
             field,
             ignoreCase: true,
-            out SignInCoordinator.FieldErrorType fieldType))
+            out FieldErrorType fieldType))
         {
-            string validFields = string.Join(", ", Enum.GetNames<SignInCoordinator.FieldErrorType>());
+            string validFields = string.Join(", ", Enum.GetNames<FieldErrorType>());
             throw new ArgumentException(
                 $"Invalid field '{field}'. Valid values: {validFields}",
                 nameof(field));
@@ -165,6 +169,12 @@ public sealed class SignInSteps
         await _declarationCoordinator.VerifyDeclarationPageIsDisplayedAsync();
     }
 
+    [Then("I should be able to return to the start page")]
+    public async Task ThenIShouldBeAbleToReturnToTheStartPage()
+    {
+        await _signInCoordinator.GoBackAsync();
+        await _startPageCoordinator.VerifyStartPageIsDisplayedAsync();
+    }
 
     private static string ResolveSpecialValues(string value)
     {

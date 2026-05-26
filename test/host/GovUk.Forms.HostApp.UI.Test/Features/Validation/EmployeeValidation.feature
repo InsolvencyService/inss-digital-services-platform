@@ -38,7 +38,7 @@ Feature: Employee Validation
              Then I should see the national insurance number validation error "[COUNT] missing the employee national insurance number"
               And I should be able to view national insurance number error details
 
-        @regression @validation @rp14a @allure.subSuite:NationalInsurance
+       @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo
         Scenario Outline: RP14A Display error for invalid employee national insurance number format
             Given the RP14A contains employee national insurance number "<nationalInsuranceNumber>"
              When I attempt to submit the RP14A
@@ -63,7 +63,7 @@ Feature: Employee Validation
               And I should be able to go to the previous page from the error details page
 
 
-        @regression @validation @rp14a @allure.subSuite:Employee
+         @regression @validation @rp14a @allure.subSuite:Employee @addVideo
          Scenario: RP14A Display aggregated count for repeated employee surname errors
             Given the RP14A contains 3 employees with no surname
              When I attempt to submit the RP14A

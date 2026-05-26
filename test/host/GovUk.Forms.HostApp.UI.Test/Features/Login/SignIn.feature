@@ -26,6 +26,7 @@ Scenario: Error when email and password are blank
     | Message                |
     | Enter an email address |
     | Enter a password       |
+   And I should be able to return to the start page
 
 @smoke
 Scenario Outline: Sign in validation errors

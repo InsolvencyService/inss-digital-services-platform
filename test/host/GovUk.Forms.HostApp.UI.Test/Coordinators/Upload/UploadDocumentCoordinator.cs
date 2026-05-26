@@ -124,15 +124,6 @@ public sealed class UploadDocumentCoordinator :
         await UploadFileAsync(filePath);
     }
 
-    public async Task UploadValidXmlFileAtMaximumSizeAsync()
-    {
-        string filePath = TestFileFactory.CreateValidXmlFileAtSize(
-            TestArtifacts,
-            10);
-
-        await UploadFileAsync(filePath);
-    }
-
     public async Task UploadValidXmlFileAboveMaximumSizeAsync()
     {
         string filePath = TestFileFactory.CreateValidXmlFileAboveSize(

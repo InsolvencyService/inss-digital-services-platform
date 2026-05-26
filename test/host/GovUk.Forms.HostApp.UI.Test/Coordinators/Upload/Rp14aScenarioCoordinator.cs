@@ -4,6 +4,7 @@ using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Diagnostics;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
@@ -12,6 +13,10 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
     private const string DefaultBaselineFilePath = "Resources/Rp14a/rp14A.xml";
     private const string AffectedEmployeesContextKey = "AffectedEmployees";
     private const string AffectedEmployeesByErrorTypeKey = "AffectedEmployeesByErrorType";
+    private const string SurnameErrorKey = "Employee surname|1 missing employee surname";
+    private const string BasicPayErrorKey = "Employee basic pay per week|1 invalid basic pay per week";
+    private const string HolidayOwedErrorKey = "Holiday owed|1 invalid holiday owed";
+    private const string HolidayOwedRangeErrorKey = "Holiday owed|1 invalid range of holiday owed";
     private readonly IFileUploadCoordinator _fileUploadCoordinator;
     private readonly ScenarioContext _scenarioContext;
     private readonly TestArtifacts _testArtifacts;
@@ -175,10 +180,10 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
 
         Rp14aTestFile testFile = BuildTestFile(builder =>
         {
-            ApplyIfNotNull(caseReference, builder.WithCaseReference);
-            ApplyIfNotNull(employerName, builder.WithEmployerName);
-            ApplyIfNotNull(basicPayPerWeek, builder.WithEmployeeBasicPayPerWeek);
-            ApplyIfNotNull(holidayOwed, builder.WithHolidayOwed);
+            ApplyIfNotNull(caseReference, v => builder.WithCaseReference(v));
+            ApplyIfNotNull(employerName, v => builder.WithEmployerName(v));
+            ApplyIfNotNull(basicPayPerWeek, v => builder.WithEmployeeBasicPayPerWeek(v));
+            ApplyIfNotNull(holidayOwed, v => builder.WithHolidayOwed(v));
 
             if (surname is not null || forename is not null || title is not null)
             {
@@ -304,20 +309,25 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         string? basicPayPerWeek,
         string? holidayOwed)
     {
-        Dictionary<string, List<AffectedEmployee>> affectedEmployeesByError = new()
+        XDocument document = XDocument.Load(filePath);
+        Dictionary<string, List<AffectedEmployee>> affectedEmployeesByError = new();
+
+        if (surname is not null)
         {
-            ["Employee surname|1 missing employee surname"] =
-                ReadAffectedEmployees(filePath, surname),
+            affectedEmployeesByError[SurnameErrorKey] = ReadAffectedEmployees(document, surname);
+        }
 
-            ["Employee basic pay per week|1 invalid basic pay per week"] =
-                ReadAffectedEmployees(filePath, basicPayPerWeek),
+        if (basicPayPerWeek is not null)
+        {
+            affectedEmployeesByError[BasicPayErrorKey] = ReadAffectedEmployees(document, basicPayPerWeek);
+        }
 
-            ["Holiday owed|1 invalid holiday owed"] =
-                ReadAffectedEmployees(filePath, holidayOwed),
-
-            ["Holiday owed|1 invalid range of holiday owed"] =
-                ReadAffectedEmployees(filePath, holidayOwed)
-        };
+        if (holidayOwed is not null)
+        {
+            List<AffectedEmployee> holidayOwedEmployees = ReadAffectedEmployees(document, holidayOwed);
+            affectedEmployeesByError[HolidayOwedErrorKey] = holidayOwedEmployees;
+            affectedEmployeesByError[HolidayOwedRangeErrorKey] = holidayOwedEmployees;
+        }
 
         _scenarioContext.Set(
             affectedEmployeesByError,
@@ -325,11 +335,11 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
     }
 
     private static List<AffectedEmployee> ReadAffectedEmployees(
-        string filePath,
+        XDocument document,
         string? cellValue)
     {
         return Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
-            filePath,
+            document,
             employeeCount: 1,
             cellValue: cellValue ?? string.Empty);
     }
@@ -342,7 +352,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         {
             affectedEmployees.Add(new AffectedEmployee
             {
-                Forename = ScenarioConstant.Forname,
+                Forename = ScenarioConstant.Forename,
                 Surname = ScenarioConstant.Surname,
                 DateOfBirth = FormatScenarioDob(),
                 NiNumber = ScenarioConstant.NationalInsuranceNumber,
@@ -355,7 +365,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
 
     private static void ApplyIfNotNull(
         string? value,
-        Func<string?, Rp14aFixtureBuilder> apply)
+        Action<string?> apply)
     {
         if (value is not null)
         {
@@ -380,7 +390,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
                 absolutePath);
         }
 
-        return effectivePath;
+        return absolutePath;
     }
 
     private static void ValidateDateOrder(
@@ -403,13 +413,12 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
     private static string FormatDate(DateOnly? date) =>
         date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
 
-    private static string FormatScenarioDob() =>
+    private static readonly string _scenarioDob =
         DateTime
-            .ParseExact(
-                ScenarioConstant.DOB,
-                "yyyy-MM-dd",
-                CultureInfo.InvariantCulture)
-            .ToString("d/M/yyyy", CultureInfo.InvariantCulture);
+            .ParseExact(ScenarioConstant.DOB, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+            .ToString("M/d/yyyy", CultureInfo.InvariantCulture);
+
+    private static string FormatScenarioDob() => _scenarioDob;
 
     private static string ToXmlValue(string? value) =>
         value ?? string.Empty;

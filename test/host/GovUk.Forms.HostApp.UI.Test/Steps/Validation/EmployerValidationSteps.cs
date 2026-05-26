@@ -5,6 +5,7 @@ using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using GovUk.Forms.HostApp.UI.Test.Tags;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
@@ -52,7 +53,7 @@ public class EmployerValidationSteps : ValidationStepsBase
             caseReference: string.Empty,
             employerName: LengthHelper.AtMax(100),
             surname: string.Empty,
-            forename: ScenarioConstant.Forname,
+            forename: ScenarioConstant.Forename,
             title: ScenarioConstant.Title,
             basicPayPerWeek: invalidBasicPayPerWeek,
             holidayOwed: invalidHolidayOwed);
@@ -135,7 +136,7 @@ public class EmployerValidationSteps : ValidationStepsBase
 
         AffectedEmployee affectedEmployee = new()
         {
-            Forename = ScenarioConstant.Forname,
+            Forename = ScenarioConstant.Forename,
             Surname = ScenarioConstant.Surname,
             DateOfBirth = TestFactory.UiDateOfBirth(),
             NiNumber = ScenarioConstant.NationalInsuranceNumber,

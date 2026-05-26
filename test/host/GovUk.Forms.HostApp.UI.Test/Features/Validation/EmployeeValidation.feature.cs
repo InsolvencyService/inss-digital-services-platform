@@ -320,6 +320,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:NationalInsurance")]
+        [global::NUnit.Framework.CategoryAttribute("addVideo")]
         [global::NUnit.Framework.TestCaseAttribute("123456789", "4", null)]
         [global::NUnit.Framework.TestCaseAttribute("AB12345C", "5", null)]
         [global::NUnit.Framework.TestCaseAttribute("QQ123456A", "6", null)]
@@ -330,7 +331,8 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "regression",
                     "validation",
                     "rp14a",
-                    "allure.subSuite:NationalInsurance"};
+                    "allure.subSuite:NationalInsurance",
+                    "addVideo"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
@@ -411,16 +413,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 58
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table17.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             "1 invalid employment dates for the employee",
                             "Start date must be before the end date",
                             "Employee employment dates"});
 #line 59
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table17, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table1, "Then ");
 #line hidden
 #line 62
               await testRunner.AndAsync("I should be able to view the employee employment dates error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -438,13 +440,15 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:Employee")]
+        [global::NUnit.Framework.CategoryAttribute("addVideo")]
         public async global::System.Threading.Tasks.Task RP14ADisplayAggregatedCountForRepeatedEmployeeSurnameErrors()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
                     "validation",
                     "rp14a",
-                    "allure.subSuite:Employee"};
+                    "allure.subSuite:Employee",
+                    "addVideo"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "9";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display aggregated count for repeated employee surname errors", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
