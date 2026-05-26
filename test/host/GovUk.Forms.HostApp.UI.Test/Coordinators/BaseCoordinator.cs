@@ -73,7 +73,7 @@ public abstract class BaseCoordinator
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
 
-        string tempFile = Path.Combine(
+        string tempFile = Path.Join(
             Path.GetTempPath(),
             $"{Guid.NewGuid()}.txt");
 
