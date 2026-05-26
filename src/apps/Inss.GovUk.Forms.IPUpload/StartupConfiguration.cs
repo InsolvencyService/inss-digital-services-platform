@@ -53,6 +53,26 @@ public class StartupConfiguration : IHostingStartup
             }
             else
             {
+                services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
+                    {
+                        client.BaseAddress = new Uri(rpsOptions.Url);
+                    })
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(rpsOptions.LifetimeMinutes))
+                    .AddPolicyHandler(Resilience.GetRetryPolicy(rpsOptions.RetryCount))
+                    .AddPolicyHandler((Resilience.GetCircuitBreaker(
+                        rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds)));
+                
+                services.AddHttpClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(client =>
+                    {
+                        client.BaseAddress = new Uri(submissionOptions.Url);
+                    })
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(submissionOptions.LifetimeMinutes))
+                    .AddPolicyHandler(Resilience.GetRetryPolicy(submissionOptions.RetryCount))
+                    .AddPolicyHandler((Resilience.GetCircuitBreaker(
+                        submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds)));
+                
+                // Disabled until we get the RPS listener in place
+                /*
                 services.AddOptions<RpsApiOptions>()
                     .Bind(context.Configuration.GetSection("Rps"))
                     .ValidateDataAnnotations()
@@ -75,6 +95,7 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler(Resilience.GetRetryPolicy(submissionOptions.RetryCount))
                     .AddPolicyHandler((Resilience.GetCircuitBreaker(
                         submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds)));
+                */
             }
             
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();
