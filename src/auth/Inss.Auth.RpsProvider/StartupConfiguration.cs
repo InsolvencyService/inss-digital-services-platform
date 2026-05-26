@@ -41,7 +41,7 @@ public class StartupConfiguration : IHostingStartup
 
             ExternalApiOptions loginOptions = context.Configuration.GetSection("RpsLogin").Get<ExternalApiOptions>()!;
 
-            if (!context.HostingEnvironment.IsDevelopment())
+            if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddSingleton<IUserAuthenticationPageClient, MockUserAuthenticationPageClient>();
                 services.AddSingleton<IUserAuthenticationClient, MockUserAuthenticationClient>();
