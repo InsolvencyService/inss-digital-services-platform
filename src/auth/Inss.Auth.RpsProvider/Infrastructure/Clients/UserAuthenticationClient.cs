@@ -5,6 +5,8 @@ using Inss.Auth.RpsProvider.Extensions;
 
 namespace Inss.Auth.RpsProvider.Infrastructure.Clients;
 
+// Cases from: https://github.com/InsolvencyService/insolvency-practitioner-service/blob/develop/ips-ui/src/main/java/uk/gov/insolvency/ipui/CustomAuthenticationFailureHandler.java
+
 public sealed class UserAuthenticationClient : IUserAuthenticationClient
 {
     private readonly HttpClient _client;
@@ -18,7 +20,6 @@ public sealed class UserAuthenticationClient : IUserAuthenticationClient
 
     public async Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken)
     {
-        // Build form data
         FormUrlEncodedContent formData = new(
         [
             new KeyValuePair<string, string>("_csrf", csrfToken),
@@ -28,7 +29,7 @@ public sealed class UserAuthenticationClient : IUserAuthenticationClient
         
         HttpResponseMessage loginResponse = await _client.PostAsync("/login", formData);
         
-        if (loginResponse.StatusCode is HttpStatusCode.Found) // or HttpStatusCode.Redirect)
+        if (loginResponse.StatusCode is HttpStatusCode.Found)
         {
             string redirectUrl = loginResponse.Headers.Location?.ToString() ?? string.Empty;
             _logger.LoginResponse(loginResponse.StatusCode.ToString(), redirectUrl);
@@ -50,7 +51,12 @@ public sealed class UserAuthenticationClient : IUserAuthenticationClient
                 _logger.LoginAccountLockedResponse();
                 return RpsAuthenticationTypes.Locked;
             }
-
+            
+            if (IsAccountOutage(redirectUrl))
+            {
+                _logger.LoginAccountLockedResponse();
+                return RpsAuthenticationTypes.Outage;
+            }
             _logger.LoginUnknownFailureResponse();
             return RpsAuthenticationTypes.Unknown;
         }
@@ -75,5 +81,11 @@ public sealed class UserAuthenticationClient : IUserAuthenticationClient
     {
         return !string.IsNullOrWhiteSpace(redirectUrl) && 
                redirectUrl.Contains("/login?error=locked", StringComparison.OrdinalIgnoreCase);
+    }
+    
+    private static bool IsAccountOutage(string redirectUrl)
+    {
+        return !string.IsNullOrWhiteSpace(redirectUrl) && 
+               redirectUrl.Contains("/login?error=outage", StringComparison.OrdinalIgnoreCase);
     }
 }
