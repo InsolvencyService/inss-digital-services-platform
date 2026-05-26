@@ -9,7 +9,9 @@ public static class TestFileFactory
 
     private static readonly string _baselineRp14aFilePath = Path.Combine(
         Path.GetDirectoryName(typeof(TestFileFactory).Assembly.Location)!,
-        "Resources/Rp14a/rp14A.xml");
+        "Resources",
+        "Rp14a",
+        "rp14A.xml");
 
     private const string ClosingTag = "</ns1:RP14A>";
 
