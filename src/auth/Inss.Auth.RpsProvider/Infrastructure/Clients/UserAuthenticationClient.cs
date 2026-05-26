@@ -20,14 +20,14 @@ public sealed class UserAuthenticationClient : IUserAuthenticationClient
 
     public async Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken)
     {
-        FormUrlEncodedContent formData = new(
+        using FormUrlEncodedContent formData = new(
         [
             new KeyValuePair<string, string>("_csrf", csrfToken),
             new KeyValuePair<string, string>("username", email),
             new KeyValuePair<string, string>("password", password)
         ]);
         
-        HttpResponseMessage loginResponse = await _client.PostAsync("/login", formData);
+        using HttpResponseMessage loginResponse = await _client.PostAsync("/login", formData);
         
         if (loginResponse.StatusCode is HttpStatusCode.Found)
         {
