@@ -19,13 +19,13 @@ public class OwnHomeFlowNodeExecutorTests
         SectionModel yourAssets = form.Sections["Your Assets"];
         OwnHomeModel ownHome = yourAssets.Pages.GetFirstOf<OwnHomeModel>();
         ownHome.OwnsHome = false;
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = yourAssets,
-            UpdatedPage = ownHome
+            CurrentPage = ownHome
         };
         NodeId? nextNodeId = await executor.ExecuteAsync(context);
         
@@ -41,13 +41,13 @@ public class OwnHomeFlowNodeExecutorTests
         SectionModel yourAssets = form.Sections["Your Assets"];
         OwnHomeModel ownHome = yourAssets.Pages.GetFirstOf<OwnHomeModel>();
         ownHome.OwnsHome = true;
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = yourAssets,
-            UpdatedPage = ownHome
+            CurrentPage = ownHome
         };
 
         NodeId? nextNodeId = await executor.ExecuteAsync(context);

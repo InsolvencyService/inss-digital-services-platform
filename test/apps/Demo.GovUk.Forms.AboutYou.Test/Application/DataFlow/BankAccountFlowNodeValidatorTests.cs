@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Demo.GovUk.Forms.AboutYou.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Domain;
 using Xunit;
 
@@ -15,7 +14,7 @@ public class BankAccountFlowNodeValidatorTests
         BankAccountFlowNodeValidator validator = new();
         BankAccountModel bankAccount = new() { AccountName = "H J Simpson", AccountNumber = "12345678", SortCode = "11-22-33" };
         FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
@@ -36,7 +35,7 @@ public class BankAccountFlowNodeValidatorTests
             BuildingSocietyRollNumber = "ABC-123$"
         };
         FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
@@ -51,7 +50,7 @@ public class BankAccountFlowNodeValidatorTests
         BankAccountFlowNodeValidator validator = new();
         BankAccountModel bankAccount = new() { AccountName = "H J Simpson", AccountNumber = "11223344", SortCode = "11-22-33" };
         FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = bankAccount };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
         Assert.Empty(validationResults);

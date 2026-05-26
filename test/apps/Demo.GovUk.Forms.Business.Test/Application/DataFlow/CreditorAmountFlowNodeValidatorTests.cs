@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Demo.GovUk.Forms.Business.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Domain;
 using Xunit;
 
@@ -17,7 +16,7 @@ public class CreditorAmountFlowNodeValidatorTests
         CreditorAmountFlowNodeValidator validator = new();
         MoneyModel money = new() { Amount = amount };
         FlowNode node = new() { Id = "NodeId1", PagePath = money.Path };
-        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = money };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = money };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
@@ -34,7 +33,7 @@ public class CreditorAmountFlowNodeValidatorTests
         CreditorAmountFlowNodeValidator validator = new();
         MoneyModel money = new() { Amount = amount };
         FlowNode node = new() { Id = "NodeId1", PagePath = money.Path };
-        ValidateContext context = new() { Nodes = [node], CurrentNode = node, Page = money };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = money };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 

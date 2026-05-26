@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Validating;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
@@ -7,12 +8,12 @@ namespace Demo.GovUk.Forms.Bankruptcy.Application.DataFlow;
 
 public sealed class BankruptcyDateFlowNodeValidator : IFlowNodeValidator
 {
-    public async ValueTask<ValidationResult[]> ValidateAsync(ValidateContext context)
+    public async ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context)
     {
         ValidationResult[] baseValidationResults = await DefaultFlowNodeValidator.Default.ValidateAsync(context);
         List<ValidationResult> validationResults = baseValidationResults.ToList();
         
-        DateModel bankruptcyDate = context.Page.As<DateModel>();
+        DateModel bankruptcyDate = context.CurrentPage.As<DateModel>();
 
         if (bankruptcyDate.Value == DateOnly.MinValue)
         {

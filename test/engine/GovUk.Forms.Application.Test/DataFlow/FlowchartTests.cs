@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
+using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Application.DataFlow.Validating;
+using GovUk.Forms.Application.DataFlow.Visiting;
 using GovUk.Forms.Application.Exceptions;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
@@ -65,11 +67,13 @@ public class FlowchartTests
     [Fact]
     public async Task NoNextNodeToLoad_PreProcessAsync_PutsSectionInStartedMode()
     {
-        BuildTestFlowchart([]);
+        ServiceCollection services = [];
+        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodePreviousPathProvider>());
+        BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
+        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", NoState);
 
         Assert.NotNull(_yourDetails.StartedDate);
     }
@@ -77,11 +81,13 @@ public class FlowchartTests
     [Fact]
     public async Task NoNextNodeToLoad_PreProcessAsync_ReturnsPagePath()
     {
-        BuildTestFlowchart([]);
+        ServiceCollection services = [];
+        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodePreviousPathProvider>());
+        BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", NoState);
         
         Assert.Equal(fullName.Path, path);
     }
@@ -92,13 +98,14 @@ public class FlowchartTests
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         AgeModel age = _yourDetails.Pages.GetFirstOf<AgeModel>();
         IFlowNodeLoader testLoader = Substitute.For<IFlowNodeLoader>();
-        testLoader.LoadAsync(Arg.Is<LoadContext>(c => c.Page.Path == fullName.Path)).Returns(_ageNode.Id);
+        testLoader.LoadAsync(Arg.Is<FlowNodeContext>(c => c.CurrentPage.Path == fullName.Path)).Returns(_ageNode.Id);
         ServiceCollection services = [];
         services.AddKeyedSingleton(_fullNameNode.Id, testLoader);
+        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodePreviousPathProvider>());
         BuildTestFlowchart(services);
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", NoState);
         
         Assert.Equal(age.Path, path);
     }
@@ -106,7 +113,9 @@ public class FlowchartTests
     [Fact]
     public async Task PostedPageWithChange_ProcessAsync_UpdatesSourcePage()
     {
-        BuildTestFlowchart([]);
+        ServiceCollection services = [];
+        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodeVisitor>());
+        BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         fullName.Value = string.Empty;
@@ -119,26 +128,11 @@ public class FlowchartTests
     }
     
     [Fact]
-    public async Task PostedPageWithChange_ProcessAsync_SetsNextPagePreviousUrl()
-    {
-        BuildTestFlowchart([]);
-        FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
-        fullName.LinkedToNode = _fullNameNode.Id;
-        fullName.Value = string.Empty;
-        FullNameModel copyOfFullName = (FullNameModel)fullName.Clone();
-        copyOfFullName.Value = "Homer Simpson";
-        AddressModel address = _yourDetails.Pages.GetFirstOf<AddressModel>();
-        address.PreviousPagePath = "/";
-        
-        await _flowchart.ProcessAsync(_form, _yourDetails, copyOfFullName);
-        
-        Assert.Equal(fullName.Path, address.PreviousPagePath);
-    }
-    
-    [Fact]
     public async Task PostedPageWithChange_ProcessAsync_UpdatesSourcePageCompleted()
     {
-        BuildTestFlowchart([]);
+        ServiceCollection services = [];
+        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodeVisitor>());
+        BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         fullName.Value = string.Empty;
@@ -153,7 +147,9 @@ public class FlowchartTests
     [Fact]
     public async Task PostedPageWithChangeAndReturnUrl_ProcessAsync_ReturnsPageReturnUrl()
     {
-        BuildTestFlowchart([]);
+        ServiceCollection services = [];
+        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodeVisitor>());
+        BuildTestFlowchart(services);
         AgeModel age = _yourDetails.Pages.GetFirstOf<AgeModel>();
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
@@ -247,12 +243,12 @@ public class FlowchartTests
     
     private sealed class TestBankAccountFlowNodeValidator : IFlowNodeValidator
     {
-        public async ValueTask<ValidationResult[]> ValidateAsync(ValidateContext context)
+        public async ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context)
         {
             ValidationResult[] baseValidationResults = await DefaultFlowNodeValidator.Default.ValidateAsync(context);
             List<ValidationResult> validationResults = baseValidationResults.ToList();
             
-            BankAccountModel bankAccount = context.Page.As<BankAccountModel>();
+            BankAccountModel bankAccount = context.CurrentPage.As<BankAccountModel>();
 
             if (bankAccount is { AccountNumber: "12345678", SortCode: "11-22-33" })
             {

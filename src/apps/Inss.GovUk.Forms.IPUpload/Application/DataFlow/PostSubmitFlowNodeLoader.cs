@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.Application.DataFlow.Loading;
+﻿using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain.Primitives;
 
@@ -13,10 +14,9 @@ public sealed class PostSubmitFlowNodeLoader : IFlowNodeLoader
         _userFormService = userFormService;
     }
     
-    public async ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public async ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
         await _userFormService.RemoveAsync(context.Form);
-        context.Page.PreviousPagePath = null;
         return null;
     }
 }

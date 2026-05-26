@@ -14,8 +14,6 @@ public abstract class PageModel : ContentModel
     public NodeId? LinkedToNode { get; set; }
     
     public NodeId? LinkedToNextNode { get; set; }
-
-    public ContentPath? PreviousPagePath { get; set; }
     
     public DateTimeOffset? CompletedDate { get; set; }
     
@@ -28,7 +26,6 @@ public abstract class PageModel : ContentModel
             
         ReturnUrl = null;
         CompletedDate = null;
-        PreviousPagePath = "/";
     }
 
     public PageModel Clone()

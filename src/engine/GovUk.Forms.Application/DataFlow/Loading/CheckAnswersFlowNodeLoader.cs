@@ -7,9 +7,9 @@ namespace GovUk.Forms.Application.DataFlow.Loading;
 
 public sealed class CheckAnswersFlowNodeLoader : IFlowNodeLoader
 {
-    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
-        CheckAnswersModel checkAnswers = context.Page.As<CheckAnswersModel>();
+        CheckAnswersModel checkAnswers = context.CurrentPage.As<CheckAnswersModel>();
         AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(checkAnswers.MetaData.Group);
 
         if (context.State is not null)

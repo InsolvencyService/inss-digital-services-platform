@@ -1,3 +1,4 @@
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Domain;
@@ -6,7 +7,7 @@ namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 
 public sealed class FileUploadFlowNodeLoader : IFlowNodeLoader
 {
-    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
         IPUploadDeclarationModel declaration = context.Section.Pages.GetFirstOf<IPUploadDeclarationModel>();
 
@@ -14,9 +15,6 @@ public sealed class FileUploadFlowNodeLoader : IFlowNodeLoader
         {
             throw new InvalidOperationException("You must accept the declaration.");
         }
-
-        XmlFileUploadModel fileUpload = context.Section.Pages.GetFirstOf<XmlFileUploadModel>();
-        fileUpload.PreviousPagePath = declaration.Path;
         
         IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         fileUploadErrors.ClearValues();

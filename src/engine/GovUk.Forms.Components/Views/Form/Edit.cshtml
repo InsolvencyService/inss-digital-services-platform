@@ -21,11 +21,6 @@
         }
 
         @Html.HiddenFor(m => page.MetaData.Group.Value)
-
-        @if (page.PreviousPagePath is not null)
-        {
-            @Html.HiddenFor(m => page.PreviousPagePath.Value)
-        }
     }
     
     @await Html.PartialAsync(Model.ViewName, Model)

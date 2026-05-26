@@ -17,13 +17,13 @@ public class SectionSummaryFlowNodeExecutorTests
         SectionModel section = form.Sections[0];
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId2", PagePath = summary.Path};
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = summary
+            CurrentPage = summary
         };
 
         NodeId? nextNodeId = await _executor.ExecuteAsync(context);
@@ -39,13 +39,13 @@ public class SectionSummaryFlowNodeExecutorTests
         section.SetInProgress();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         FlowNode node = new() { Id = "NodeId2", PagePath = summary.Path};
-        ExecuteContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = section,
-            UpdatedPage = summary
+            CurrentPage = summary
         };
 
         await _executor.ExecuteAsync(context);

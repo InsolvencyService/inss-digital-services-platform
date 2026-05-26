@@ -11,11 +11,11 @@ public sealed class DefaultFlowNodeValidator : IFlowNodeValidator
     {
     }
     
-    public ValueTask<ValidationResult[]> ValidateAsync(ValidateContext context)
+    public ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context)
     {
         List<ValidationResult> validationResults = [];
-        ValidationContext validationContext = new(context.Page);
-        Validator.TryValidateObject(context.Page, validationContext, validationResults, AllProperties);
+        ValidationContext validationContext = new(context.CurrentPage);
+        Validator.TryValidateObject(context.CurrentPage, validationContext, validationResults, AllProperties);
         return ValueTask.FromResult(validationResults.ToArray());
     }
 }
