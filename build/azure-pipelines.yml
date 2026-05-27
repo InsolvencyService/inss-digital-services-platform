@@ -87,7 +87,6 @@ stages:
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'WebApps'
-      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - stage: DeployDev
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
