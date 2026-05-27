@@ -54,7 +54,7 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds));
                 
-                services.AddHttpClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(client =>
+                services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
                     {
                         client.BaseAddress = new Uri(submissionOptions.Url);
                     })
@@ -78,15 +78,6 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, rpsOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp, 
                         rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds));
-                
-                services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
-                    {
-                        client.BaseAddress = new Uri(submissionOptions.Url);
-                    })
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(submissionOptions.LifetimeMinutes))
-                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, submissionOptions.RetryCount))
-                    .AddPolicyHandler(Resilience.GetCircuitBreaker(sp,
-                        submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
                 */
             }
             
