@@ -1,11 +1,13 @@
 ﻿
-@ignore @MEDS-1046
+@MEDS-1046
 Feature: Check Your Answers
 
 As an Insolvency Practitioner
 I want to see the file that I have uploaded
 So that I can confirm it’s the correct file and continue
 
+Background: 
+  Given I am on the upload page as a "Admin" user
 
   @functional @rp14a
   Scenario: Return to the upload page from the review page
@@ -19,6 +21,7 @@ Scenario: Review and submit an uploaded RP14A form
     Given I am reviewing my uploaded RP14A document
     When I submit the RP14A form
     Then the RP14A form should be successfully submitted
+     And I should be able to log out successfully
 
 @functional @rp14a
 Scenario: Change the uploaded RP14A form before submitting

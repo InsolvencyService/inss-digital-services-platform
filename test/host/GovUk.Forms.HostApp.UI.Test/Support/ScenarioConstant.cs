@@ -24,7 +24,7 @@ public class ScenarioConstant
 
     // Default Employee details 
     public const string Surname = "Surname Test";
-    public const string Forname = "Forname Test";
+    public const string Forename = "Forname Test";
     public const string Title = "Mr";
     public const string EmployerName = "Employer Test";
     public const string DOB = "1990-01-01";

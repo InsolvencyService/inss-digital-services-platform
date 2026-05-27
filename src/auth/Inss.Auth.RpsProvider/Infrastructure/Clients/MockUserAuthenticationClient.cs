@@ -11,12 +11,10 @@ public sealed class MockUserAuthenticationClient : IUserAuthenticationClient
     {
         _client = client;
     }
-    
+
     public async Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken)
     {
         Console.WriteLine("Calling login...");
-        HttpResponseMessage response = await _client.GetAsync("/");
-        response.EnsureSuccessStatusCode();
 
         // Test cases...
         return email switch

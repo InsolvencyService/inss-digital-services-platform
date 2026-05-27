@@ -78,4 +78,23 @@ public class CommonPage : ICommonPage
             """
         });
     }
+
+    public async Task SignOutAsync(IPage page)
+    {
+        ILocator signOutButton = page.Locator("a[href=\"/sign-out\"]");
+        if (signOutButton != null)
+        {
+            await signOutButton.ClickAsync();
+            await page.WaitForLoadStateAsync(LoadState.Load);
+        }
+    }
+
+    public async Task VerifyTextsAsync(ILocator locator, params string[] expectedTexts)
+    {
+        foreach (string text in expectedTexts)
+        {
+            await Expect(locator)
+                .ToHaveTextAsync(text);
+        }
+    }
 }
