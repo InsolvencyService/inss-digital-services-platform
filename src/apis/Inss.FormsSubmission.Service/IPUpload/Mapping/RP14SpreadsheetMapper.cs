@@ -22,13 +22,13 @@ public sealed class RP14SpreadsheetMapper : IMapper
         CompanyInformation companyInformation = new()
         {
             CorrelationId = Guid.NewGuid(),
-            CaseReference = _model.Header.CaseReference,
+            CaseReference = _model.Header?.CaseReference ?? null!,
             Company = MapCompany(_model),
             Directors = MapDirectors(_model.Directors),
             DirectorsClaimingRedundancy = _model.Directors.ClaimingRPAsEmployeeSpecified 
                 ? MapYesNo(_model.Directors.ClaimingRPAsEmployee) : null,
             Shareholders = MapShareholders(_model.Shareholders),
-            LegallyAssociatedCompanies = _model.AssociatedCompanies.LegallyAssociatedCompaniesSpecified 
+            LegallyAssociatedCompanies = _model.AssociatedCompanies?.LegallyAssociatedCompaniesSpecified == true 
                 ? MapYesNo(_model.AssociatedCompanies.LegallyAssociatedCompanies) : null,
             AssociatedCompanies = MapAssociatedCompanies(_model.AssociatedCompanies),
             Insolvency = MapInsolvency(_model.InsolvencyDetails),
@@ -98,7 +98,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             Continuity = employees.EmployeesClaimingContinuity is not null &&
                          employees.CarryOverHolidayEntitlementSpecified
                 ? MapYesNo(employees.EmployeesClaimingContinuity.ClaimingContinuity) : null,
-            PreviousEmployer = MapPreviousEmployer(employees)
+            PreviousEmployer = employees.EmployeesClaimingContinuity is not null ? MapPreviousEmployer(employees) : null!
         };
     }
 

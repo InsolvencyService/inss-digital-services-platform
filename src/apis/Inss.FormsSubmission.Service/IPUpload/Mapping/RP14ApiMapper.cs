@@ -21,15 +21,15 @@ public sealed class RP14ApiMapper : IMapper
         CompanyInformation companyInformation = new()
         {
             CorrelationId = Guid.NewGuid(),
-            CaseReference = _model.Header.CaseReference,
+            CaseReference = _model.Header?.CaseReference ?? null!,
             Company = MapCompany(_model),
             Directors = MapDirectors(_model.Directors.Director),
             DirectorsClaimingRedundancy = _model.Directors.ClaimingRPAsEmployeeSpecified 
                 ? MapYesNo(_model.Directors.ClaimingRPAsEmployee) : null,
             Shareholders = MapShareholders(_model.Shareholders),
-            LegallyAssociatedCompanies = _model.AssociatedCompanies.LegallyAssociatedCompaniesSpecified 
+            LegallyAssociatedCompanies = _model.AssociatedCompanies?.LegallyAssociatedCompaniesSpecified == true 
                 ? MapYesNo(_model.AssociatedCompanies.LegallyAssociatedCompanies) : null,
-            AssociatedCompanies = MapAssociatedCompanies(_model.AssociatedCompanies.AssociatedCompany),
+            AssociatedCompanies = MapAssociatedCompanies(_model.AssociatedCompanies?.AssociatedCompany ?? []),
             Insolvency = MapInsolvency(_model.InsolvencyDetails),
             Transfer = MapTransferDetails(_model.TransferDetails),
             Paye = MapPaye(_model.PAYE),
@@ -135,6 +135,7 @@ public sealed class RP14ApiMapper : IMapper
     private static List<Director> MapDirectors(RP14DirectorsDirector[] directors)
     {
         return directors
+            .Where(d => d.Name is not null && !string.IsNullOrEmpty(d.Name.Surname))
             .Select(d => new Director
             {
                 Initials = d.Name.Initials,

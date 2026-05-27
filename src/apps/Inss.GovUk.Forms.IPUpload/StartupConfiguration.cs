@@ -38,7 +38,7 @@ public class StartupConfiguration : IHostingStartup
                         client.BaseAddress = new Uri(rpsOptions.Url);
                     });
                 
-                services.AddHttpClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(client =>
+                services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
                     {
                         client.BaseAddress = new Uri(submissionOptions.Url);
                     });
