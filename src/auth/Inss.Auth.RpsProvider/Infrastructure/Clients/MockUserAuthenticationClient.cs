@@ -11,7 +11,7 @@ public sealed class MockUserAuthenticationClient : IUserAuthenticationClient
     {
         _client = client;
     }
-    
+
     public async Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken)
     {
         await Task.Delay(10);

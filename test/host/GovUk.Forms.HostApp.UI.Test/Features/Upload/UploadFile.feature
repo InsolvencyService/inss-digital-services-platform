@@ -6,12 +6,12 @@ A short summary of the feature
 Background: 
   Given I am on the upload page as a "Admin" user
 
-@functional @upload @Addvideo
+@functional @upload @Addvideo @rp14a
 Scenario: Upload a valid RP14A file successfully
   When I upload a valid RP14A file
   Then the uploaded file should appear in the file list
 
- @functional @upload @addVideo
+ @functional @upload @addVideo @rp14a
 Scenario: Prevent uploading the same file twice
   When I upload a valid RP14A file
   And I upload the same file again
@@ -32,7 +32,7 @@ Scenario: Display error when submitting without uploading a file
   When I click the continue button without selecting a file
   Then I should see the file upload error "The file must end with an XML extension"
 
-@regression @validation
+@regression @validation @rp14a
 Scenario: Display validation error when XML content is invalid
   When I upload an XML file with invalid RP14A content
     And I proceed to the check answers page

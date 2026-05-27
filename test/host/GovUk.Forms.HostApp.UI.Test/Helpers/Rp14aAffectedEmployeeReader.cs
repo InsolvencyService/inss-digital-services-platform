@@ -1,4 +1,4 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Models;
+using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Globalization;
 using System.Xml.Linq;
@@ -11,30 +11,25 @@ public static class Rp14aAffectedEmployeeReader
         string filePath,
         int employeeCount,
         string cellValue)
-    {
-        XDocument document = XDocument.Load(filePath);
-        XNamespace ns = document.Root!.Name.Namespace;
-
-        return document
-            .Descendants(ns + RP14AElementNames.Employee)
-            .Take(employeeCount)
-            .Select(employee => new AffectedEmployee
-            {
-                Forename = GetValue(employee, ns, RP14AElementNames.Forenames),
-                Surname = GetValue(employee, ns, RP14AElementNames.Surname),
-                DateOfBirth = FormatUiDate(GetValue(employee, ns, RP14AElementNames.DateOfBirth)),
-                NiNumber = GetValue(employee, ns, RP14AElementNames.NationalInsuranceNumber),
-                CellValue = cellValue
-            })
-            .ToList();
-    }
+        => ReadEmployees(XDocument.Load(filePath), employeeCount, _ => cellValue);
 
     public static List<AffectedEmployee> ReadAffectedEmployees(
-    string filePath,
-    int employeeCount,
-    string[] cellValues)
+        string filePath,
+        int employeeCount,
+        string[] cellValues)
+        => ReadEmployees(XDocument.Load(filePath), employeeCount, i => cellValues[i % cellValues.Length]);
+
+    public static List<AffectedEmployee> ReadAffectedEmployees(
+        XDocument document,
+        int employeeCount,
+        string cellValue)
+        => ReadEmployees(document, employeeCount, _ => cellValue);
+
+    private static List<AffectedEmployee> ReadEmployees(
+        XDocument document,
+        int employeeCount,
+        Func<int, string> getCellValue)
     {
-        XDocument document = XDocument.Load(filePath);
         XNamespace ns = document.Root!.Name.Namespace;
 
         return document
@@ -42,11 +37,11 @@ public static class Rp14aAffectedEmployeeReader
             .Take(employeeCount)
             .Select((employee, index) => new AffectedEmployee
             {
-                Forename = GetValue(employee, ns, RP14AElementNames.Forenames),
-                Surname = GetValue(employee, ns, RP14AElementNames.Surname),
+                Forename    = GetValue(employee, ns, RP14AElementNames.Forenames),
+                Surname     = GetValue(employee, ns, RP14AElementNames.Surname),
                 DateOfBirth = FormatUiDate(GetValue(employee, ns, RP14AElementNames.DateOfBirth)),
-                NiNumber = GetValue(employee, ns, RP14AElementNames.NationalInsuranceNumber),
-                CellValue = cellValues[index % cellValues.Length]
+                NiNumber    = GetValue(employee, ns, RP14AElementNames.NationalInsuranceNumber),
+                CellValue   = getCellValue(index)
             })
             .ToList();
     }

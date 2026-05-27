@@ -1,4 +1,4 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
+using GovUk.Forms.HostApp.UI.Test.Helpers;
 using System.Text;
 
 namespace GovUk.Forms.HostApp.UI.Test.Factories;
@@ -7,42 +7,17 @@ public static class TestFileFactory
 {
     private const int OneMb = 1024 * 1024;
 
-    private const string BaselineRp14aFilePath =
-        "Resources/Rp14a/rp14A.xml";
+    private static readonly string _baselineRp14aFilePath = Path.GetFullPath(
+        Path.Join(
+            Path.GetDirectoryName(typeof(TestFileFactory).Assembly.Location)!,
+            "Resources",
+            "Rp14a",
+            "rp14A.xml"));
 
-    public static string CreateValidXmlFileAtSize(
-        TestArtifacts artifacts,
-        int targetSizeMb)
-    {
-        ArgumentNullException.ThrowIfNull(artifacts);
+    private const string ClosingTag = "</ns1:RP14A>";
 
-        string filePath = artifacts.FilePath(
-            $"rp14a-{targetSizeMb}mb.xml");
-
-        string xml = File.ReadAllText(
-            BaselineRp14aFilePath,
-            Encoding.UTF8);
-
-        StringBuilder builder = new(xml);
-
-        int targetBytes = targetSizeMb * OneMb;
-
-        while (Encoding.UTF8.GetByteCount(builder.ToString()) < targetBytes)
-        {
-            builder.Insert(
-                builder.Length - "</ns1:RP14A>".Length,
-                """
-                <!-- Padding Padding Padding Padding Padding -->
-                """);
-        }
-
-        File.WriteAllText(
-            filePath,
-            builder.ToString(),
-            Encoding.UTF8);
-
-        return filePath;
-    }
+    private const string PaddingComment =
+        "\n<!-- Padding Padding Padding Padding Padding -->";
 
     public static string CreateValidXmlFileAboveSize(
         TestArtifacts artifacts,
@@ -50,32 +25,10 @@ public static class TestFileFactory
     {
         ArgumentNullException.ThrowIfNull(artifacts);
 
-        string filePath = artifacts.FilePath(
-            $"rp14a-above-{maxSizeMb}mb.xml");
-
-        string xml = File.ReadAllText(
-            BaselineRp14aFilePath,
-            Encoding.UTF8);
-
-        StringBuilder builder = new(xml);
-
-        int targetBytes = (maxSizeMb * OneMb) + 1;
-
-        while (Encoding.UTF8.GetByteCount(builder.ToString()) < targetBytes)
-        {
-            builder.Insert(
-                builder.Length - "</ns1:RP14A>".Length,
-                """
-                <!-- Padding Padding Padding Padding Padding -->
-                """);
-        }
-
-        File.WriteAllText(
-            filePath,
-            builder.ToString(),
-            Encoding.UTF8);
-
-        return filePath;
+        return BuildPaddedXmlFile(
+            artifacts,
+            $"rp14a-above-{maxSizeMb}mb.xml",
+            (maxSizeMb * OneMb) + 1);
     }
 
     public static string CreateFile(
@@ -87,7 +40,7 @@ public static class TestFileFactory
 
         string filePath = artifacts.FilePath(fileName);
 
-        File.WriteAllText(filePath, content);
+        File.WriteAllText(filePath, content, Encoding.UTF8);
 
         return filePath;
     }
@@ -121,7 +74,39 @@ public static class TestFileFactory
                 <EmployerName>Employer Test</EmployerName>
               </Employee>
             </InvalidRP14A>
-            """);
+            """,
+            Encoding.UTF8);
+
+        return filePath;
+    }
+
+    private static string BuildPaddedXmlFile(
+        TestArtifacts artifacts,
+        string fileName,
+        int targetBytes)
+    {
+        string filePath = artifacts.FilePath(fileName);
+
+        string xml = File.ReadAllText(_baselineRp14aFilePath, Encoding.UTF8);
+
+        int closingTagStart = xml.LastIndexOf(ClosingTag, StringComparison.Ordinal);
+        string xmlBody = xml[..closingTagStart];
+        string xmlClose = xml[closingTagStart..];
+
+        int bodyBytes = Encoding.UTF8.GetByteCount(xmlBody);
+        int closeBytes = Encoding.UTF8.GetByteCount(xmlClose);
+        int paddingBytes = Encoding.UTF8.GetByteCount(PaddingComment);
+        int paddingCount = Math.Max(0, (targetBytes - bodyBytes - closeBytes + paddingBytes - 1) / paddingBytes);
+
+        StringBuilder builder = new(bodyBytes + (paddingCount * PaddingComment.Length) + closeBytes);
+        builder.Append(xmlBody);
+        for (int i = 0; i < paddingCount; i++)
+        {
+            builder.Append(PaddingComment);
+        }
+        builder.Append(xmlClose);
+
+        File.WriteAllText(filePath, builder.ToString(), Encoding.UTF8);
 
         return filePath;
     }

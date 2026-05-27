@@ -28,4 +28,10 @@ public sealed class ComonSteps
         await _commonCoordinator.VerifyThatUploadDocumentPageIsDisplayedAsync(user);
     }
 
+    [Then("I should be able to log out successfully")]
+    public async Task ThenIShouldBeAbleToLogOutSuccessfully()
+    {
+        await _commonCoordinator.SignOutAndVerifyAsync();
+    }
+
 }

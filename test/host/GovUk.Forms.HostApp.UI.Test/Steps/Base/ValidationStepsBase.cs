@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using GovUk.Forms.HostApp.UI.Test.Tags;
 using System.Globalization;
 
 
@@ -16,6 +17,7 @@ public abstract class ValidationStepsBase
     protected const string InvalidHolidayOwedKey = "InvalidHolidayOwed";
     protected const string AffectedEmployeesByErrorTypeKey = "AffectedEmployeesByErrorType";
     protected const string UploadErrorsContextKey = "UploadErrors";
+    protected const string InvalidArrearsCountKey = "InvalidArrearsOfPayOwedCount";
 
 
     protected ValidationStepsBase(

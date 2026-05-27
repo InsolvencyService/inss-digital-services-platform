@@ -8,4 +8,6 @@ public interface ICommonPage
     Task<IResponse> PageGoBackAsync(IPage page, PageGoBackOptions? options = null);
     Task<byte[]> CaptureVisualAsync(ILocator locator);
     Task HideUnstableElementsAsync(IPage page);
+    Task SignOutAsync(IPage page);
+    Task VerifyTextsAsync(ILocator locator, params string[] expectedTexts);
 }

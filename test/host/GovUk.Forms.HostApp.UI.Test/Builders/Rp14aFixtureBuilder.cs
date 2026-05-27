@@ -1,5 +1,5 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Factories;
-using GovUk.Forms.HostApp.UI.Test.Helpers;
+﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
+using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Diagnostics;
 using System.Globalization;
@@ -16,95 +16,88 @@ public class Rp14aFixtureBuilder
     private readonly Dictionary<int, Dictionary<string, string?>> _employeeMutations = [];
 
     private int _targetEmployeeIndex;
-    private string? _baselineFilePath;
-    private TestArtifacts? _testArtifacts;
-    private string? _scenarioName = "Default";
 
     public Rp14aFixtureBuilder WithEmployeeIndex(int index)
     {
         if (index < 0)
         {
-            throw new ArgumentException(
-                "Employee index must be non-negative",
-                nameof(index));
+            throw new ArgumentException("Employee index must be non-negative.", nameof(index));
         }
 
         _targetEmployeeIndex = index;
         return this;
     }
 
-    public Rp14aFixtureBuilder WithCaseReference(string? caseReference)
-    {
-        _mutations[RP14AElementNames.CaseReference] = caseReference ?? string.Empty;
-        return this;
-    }
+    public Rp14aFixtureBuilder WithCaseReference(string? value) =>
+        Set(RP14AElementNames.CaseReference, value);
 
-    public Rp14aFixtureBuilder WithEmployerName(string? employerName)
-    {
-        _mutations[RP14AElementNames.EmployerName] = employerName ?? string.Empty;
-        return this;
-    }
+    public Rp14aFixtureBuilder WithEmployerName(string? value) =>
+        Set(RP14AElementNames.EmployerName, value);
+
+    public Rp14aFixtureBuilder WithEmployeeBasicPayPerWeek(string? value) =>
+        Set(RP14AElementNames.BasicPayPerWeek, value);
+
+    public Rp14aFixtureBuilder WithMoneyOwedToEmployer(string? value) =>
+        Set(RP14AElementNames.MoneyOwedToEmployer, value);
+
+    public Rp14aFixtureBuilder WithHolidayContractedEntitlementDays(string? value) =>
+        Set(RP14AElementNames.HolidayContractedEntitlementDays, value, nullMeansEmpty: false);
+
+    public Rp14aFixtureBuilder WithHolidayDaysCarriedForward(string? value) =>
+        Set(RP14AElementNames.HolidayDaysCarriedForward, value, nullMeansEmpty: false);
+
+    public Rp14aFixtureBuilder WithHolidayDaysTaken(string? value) =>
+        Set(RP14AElementNames.HolidayDaysTaken, value, nullMeansEmpty: false);
+
+    public Rp14aFixtureBuilder WithHolidayOwed(string? value) =>
+        Set(RP14AElementNames.NoDaysHolidayOwed, value, nullMeansEmpty: false);
 
     public Rp14aFixtureBuilder WithEmployeeName(
         string? surname,
         string? forename,
         string? title)
     {
-        _mutations[RP14AElementNames.Surname] = surname ?? string.Empty;
-        _mutations[RP14AElementNames.Forenames] = forename ?? string.Empty;
-        _mutations[RP14AElementNames.Title] = title ?? string.Empty;
-
-        return this;
-    }
-
-    public Rp14aFixtureBuilder WithEmployeeBasicPayPerWeek(string? basicPayPerWeek)
-    {
-        _mutations[RP14AElementNames.BasicPayPerWeek] =
-            basicPayPerWeek ?? string.Empty;
-
-        return this;
-    }
-
-    public Rp14aFixtureBuilder WithHolidayContractedEntitlementDays(string? entitlementDays)
-    {
-        _mutations[RP14AElementNames.HolidayContractedEntitlementDays] =
-            entitlementDays;
-
-        return this;
-    }
-
-    public Rp14aFixtureBuilder WithMoneyOwedToEmployer(string? moneyOwed)
-    {
-        _mutations[RP14AElementNames.MoneyOwedToEmployer] =
-            moneyOwed ?? string.Empty;
-
-        return this;
+        return Set(RP14AElementNames.Surname, surname)
+            .Set(RP14AElementNames.Forenames, forename)
+            .Set(RP14AElementNames.Title, title);
     }
 
     public Rp14aFixtureBuilder WithEmploymentDates(DateOnly? startDate, DateOnly? endDate)
     {
-        _mutations[RP14AElementNames.StartDate] = FormatDate(startDate);
-        _mutations[RP14AElementNames.EndDate] = FormatDate(endDate);
-
-        return this;
+        return Set(RP14AElementNames.StartDate, FormatDate(startDate), nullMeansEmpty: false)
+            .Set(RP14AElementNames.EndDate, FormatDate(endDate), nullMeansEmpty: false);
     }
 
     public Rp14aFixtureBuilder WithArrearsDates(DateOnly? startDate, DateOnly? endDate)
     {
-        _mutations[RP14AElementNames.AOP1StartDate] = FormatDate(startDate);
-        _mutations[RP14AElementNames.AOP1EndDate] = FormatDate(endDate);
-        return this;
+        return Set(RP14AElementNames.AOP1StartDate, FormatDate(startDate), nullMeansEmpty: false)
+            .Set(RP14AElementNames.AOP1EndDate, FormatDate(endDate), nullMeansEmpty: false);
     }
 
-    public Rp14aFixtureBuilder WithInvalidHolidayOwedForEmployees(int employeeCount, params string[] invalidValues)
+    public Rp14aFixtureBuilder WithHolidayNotPaidDates(DateOnly? startDate, DateOnly? endDate)
+    {
+        return Set(RP14AElementNames.Holiday1StartDate, FormatDate(startDate), nullMeansEmpty: false)
+            .Set(RP14AElementNames.Holiday1EndDate, FormatDate(endDate), nullMeansEmpty: false);
+    }
+
+    public Rp14aFixtureBuilder WithArrearsAmount(int periodNumber, string? amountOwed)
+    {
+        ValidatePositiveNumber(periodNumber, nameof(periodNumber));
+
+        return Set(
+            $"{RP14AElementNames.AOPOwed}{periodNumber}",
+            amountOwed);
+    }
+
+    public Rp14aFixtureBuilder WithInvalidHolidayOwedForEmployees(
+        int employeeCount,
+        params string[] invalidValues)
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
         if (invalidValues.Length == 0)
         {
-            throw new ArgumentException(
-                "At least one invalid value must be provided.",
-                nameof(invalidValues));
+            throw new ArgumentException("At least one invalid value must be provided.", nameof(invalidValues));
         }
 
         for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
@@ -117,15 +110,7 @@ public class Rp14aFixtureBuilder
 
         return this;
     }
-    public Rp14aFixtureBuilder WithArrearsAmount(int periodNumber, string? amountOwed)
-    {
-        ValidatePositiveNumber(periodNumber, nameof(periodNumber));
 
-        _mutations[$"{RP14AElementNames.AOPOwed}{periodNumber}"] =
-            amountOwed ?? string.Empty;
-
-        return this;
-    }
     public Rp14aFixtureBuilder WithMissingSurnames(int employeeCount)
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
@@ -143,73 +128,36 @@ public class Rp14aFixtureBuilder
 
     public Rp14aFixtureBuilder WithCustomMutation(string elementName, string? value)
     {
-        if (string.IsNullOrWhiteSpace(elementName))
-        {
-            throw new ArgumentException(
-                "Element name cannot be empty",
-                nameof(elementName));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementName);
 
         _mutations[elementName] = value;
-
-        return this;
-    }
-    public Rp14aFixtureBuilder WithHolidayDaysCarriedForward(string? daysCarriedForward)
-    {
-        _mutations[RP14AElementNames.HolidayDaysCarriedForward] =
-            daysCarriedForward;
-
         return this;
     }
 
-    public Rp14aFixtureBuilder WithHolidayDaysTaken(string? holidayDaysTaken)
-    {
-        _mutations[RP14AElementNames.HolidayDaysTaken] =
-            holidayDaysTaken;
-
-        return this;
-    }
-
-    public Rp14aFixtureBuilder WithHolidayOwed(string? holidayOwed)
-    {
-        _mutations[RP14AElementNames.NoDaysHolidayOwed] =
-            holidayOwed;
-
-        return this;
-    }
-
-    public Rp14aFixtureBuilder WithHolidayNotPaidDates(DateOnly? startDate, DateOnly? endDate)
-    {
-        _mutations[RP14AElementNames.Holiday1StartDate] =
-            FormatDate(startDate);
-
-        _mutations[RP14AElementNames.Holiday1EndDate] =
-            FormatDate(endDate);
-
-        return this;
-    }
-    public Rp14aFixture Build(
+    public Rp14aTestFile Build(
         TestArtifacts testArtifacts,
         string baselineFilePath,
         string scenarioName = "Default")
     {
-        _testArtifacts = testArtifacts
-            ?? throw new ArgumentNullException(nameof(testArtifacts));
-
-        _baselineFilePath = baselineFilePath;
-        _scenarioName = scenarioName;
+        ArgumentNullException.ThrowIfNull(testArtifacts);
+        ArgumentException.ThrowIfNullOrWhiteSpace(baselineFilePath);
 
         if (_mutations.Count == 0 && _employeeMutations.Count == 0)
         {
-            LogInfo($"Scenario '{scenarioName}': No mutations specified, creating clean copy");
-            return CreateValidCopy();
+            LogInfo($"Scenario '{scenarioName}': No mutations specified, creating clean copy.");
+
+            string cleanFilePath = CreateValidCopy(testArtifacts, baselineFilePath);
+
+            return CreateFixture(
+                cleanFilePath,
+                []);
         }
 
-        LogInfo($"Scenario '{scenarioName}': Building fixture with {_mutations.Count} mutations");
+        LogInfo($"Scenario '{scenarioName}': Building fixture with {_mutations.Count} global mutations.");
 
         try
         {
-            string filePath = CreateAndMutateFile();
+            string filePath = CreateAndMutateFile(testArtifacts, baselineFilePath);
 
             Dictionary<string, string> appliedMutations = _mutations
                 .Where(mutation => mutation.Value is not null)
@@ -217,14 +165,9 @@ public class Rp14aFixtureBuilder
                     mutation => mutation.Key,
                     mutation => mutation.Value!);
 
-            Rp14aFixture fixture = new(
-                filePath,
-                appliedMutations,
-                _targetEmployeeIndex,
-                DateTime.UtcNow);
-
             LogInfo($"Scenario '{scenarioName}': Fixture created successfully at {filePath}");
-            return fixture;
+
+            return CreateFixture(filePath, appliedMutations);
         }
         catch (Exception ex)
         {
@@ -233,14 +176,84 @@ public class Rp14aFixtureBuilder
         }
     }
 
-    private Rp14aFixture CreateValidCopy()
+    private Rp14aFixtureBuilder Set(
+        string elementName,
+        string? value,
+        bool nullMeansEmpty = true)
     {
-        ArgumentNullException.ThrowIfNull(_testArtifacts);
-        ArgumentNullException.ThrowIfNull(_baselineFilePath);
+        _mutations[elementName] = nullMeansEmpty
+            ? value ?? string.Empty
+            : value;
 
-        string absolutePath = ResolveBaselinePath(_baselineFilePath);
+        return this;
+    }
+
+    private static Rp14aTestFile CreateFixture(
+        string filePath,
+        Dictionary<string, string> appliedMutations,
+        int targetEmployeeIndex = 0)
+    {
+        return new Rp14aTestFile(
+            filePath,
+            appliedMutations,
+            targetEmployeeIndex,
+            DateTime.UtcNow);
+    }
+
+    private string CreateAndMutateFile(
+        TestArtifacts testArtifacts,
+        string baselineFilePath)
+    {
+        string filePath = CreateValidCopy(testArtifacts, baselineFilePath);
+
+        XDocument document = LoadXmlDocument(filePath);
+        XNamespace ns = ExtractNamespace(document);
+
+        XElement targetEmployee = GetEmployeeByIndex(
+            document,
+            ns,
+            _targetEmployeeIndex);
+
+        foreach ((string elementName, string? value) in _mutations)
+        {
+            ApplyMutation(
+                document,
+                ns,
+                targetEmployee,
+                elementName,
+                value);
+        }
+
+        foreach ((int employeeIndex, Dictionary<string, string?> mutations) in _employeeMutations)
+        {
+            XElement employee = GetEmployeeByIndex(
+                document,
+                ns,
+                employeeIndex);
+
+            foreach ((string elementName, string? value) in mutations)
+            {
+                ApplyMutation(
+                    document,
+                    ns,
+                    employee,
+                    elementName,
+                    value);
+            }
+        }
+
+        SaveXmlDocument(document, filePath);
+
+        return filePath;
+    }
+
+    private static string CreateValidCopy(
+        TestArtifacts testArtifacts,
+        string baselineFilePath)
+    {
+        string absolutePath = ResolveBaselinePath(baselineFilePath);
         string uniqueFileName = $"rp14a-{Guid.NewGuid():N}.xml";
-        string targetPath = _testArtifacts.FilePath(uniqueFileName);
+        string targetPath = testArtifacts.FilePath(uniqueFileName);
 
         try
         {
@@ -251,97 +264,19 @@ public class Rp14aFixtureBuilder
 
             LogInfo($"Created clean copy at {targetPath}");
 
-            return new Rp14aFixture(
-                targetPath,
-                new Dictionary<string, string>(),
-                _targetEmployeeIndex,
-                DateTime.UtcNow);
+            return targetPath;
         }
-        catch (IOException ex) when (ex.Message.Contains(
-                   "already exists",
-                   StringComparison.OrdinalIgnoreCase))
+        catch (IOException ex) when (ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
         {
-            LogWarning(
-                $"File already exists due to race condition: {targetPath}. Retrying...");
-
-            return CreateValidCopy();
+            LogWarning($"File already exists due to race condition: {targetPath}. Retrying.");
+            return CreateValidCopy(testArtifacts, baselineFilePath);
         }
-        catch (UnauthorizedAccessException ex)
+        catch (Exception ex) when (IsFileException(ex))
         {
-            throw CreateFixtureCopyException(ex);
+            throw new InvalidOperationException(
+                $"Failed to create RP14A fixture copy: {ex.Message}",
+                ex);
         }
-        catch (DirectoryNotFoundException ex)
-        {
-            throw CreateFixtureCopyException(ex);
-        }
-        catch (PathTooLongException ex)
-        {
-            throw CreateFixtureCopyException(ex);
-        }
-        catch (NotSupportedException ex)
-        {
-            throw CreateFixtureCopyException(ex);
-        }
-        catch (SecurityException ex)
-        {
-            throw CreateFixtureCopyException(ex);
-        }
-    }
-
-    private static InvalidOperationException CreateFixtureCopyException(
-        Exception ex)
-    {
-        return new InvalidOperationException(
-            $"Failed to create RP14A fixture copy: {ex.Message}",
-            ex);
-    }
-
-    private string CreateAndMutateFile()
-    {
-        ArgumentNullException.ThrowIfNull(_testArtifacts);
-        ArgumentNullException.ThrowIfNull(_baselineFilePath);
-
-        Rp14aFixture cleanFixture = CreateValidCopy();
-
-        XDocument document = LoadXmlDocument(cleanFixture.FilePath);
-        XNamespace ns = ExtractNamespace(document);
-
-        XElement targetEmployee = GetEmployeeByIndex(
-            document,
-            ns,
-            _targetEmployeeIndex);
-
-        foreach (KeyValuePair<string, string?> mutation in _mutations)
-        {
-            ApplyMutation(
-                document,
-                ns,
-                targetEmployee,
-                mutation.Key,
-                mutation.Value);
-        }
-
-        foreach (KeyValuePair<int, Dictionary<string, string?>> employeeMutation in _employeeMutations)
-        {
-            XElement employee = GetEmployeeByIndex(
-                document,
-                ns,
-                employeeMutation.Key);
-
-            foreach (KeyValuePair<string, string?> mutation in employeeMutation.Value)
-            {
-                ApplyMutation(
-                    document,
-                    ns,
-                    employee,
-                    mutation.Key,
-                    mutation.Value);
-            }
-        }
-
-        SaveXmlDocument(document, cleanFixture.FilePath);
-
-        return cleanFixture.FilePath;
     }
 
     private void ApplyMutation(
@@ -362,7 +297,7 @@ public class Rp14aFixtureBuilder
         if (element is null)
         {
             throw new InvalidOperationException(
-                $"Element '{elementName}' not found in RP14A XML for employee index {_targetEmployeeIndex}");
+                $"Element '{elementName}' not found in RP14A XML for employee index {_targetEmployeeIndex}.");
         }
 
         if (value is null)
@@ -373,14 +308,26 @@ public class Rp14aFixtureBuilder
         }
 
         element.Value = value;
+        LogInfo($"Applied mutation: {elementName} = '{value}'");
+    }
 
-        if (element.Value != value)
+    private void AddEmployeeMutation(
+        int employeeIndex,
+        string elementName,
+        string? value)
+    {
+        if (employeeIndex < 0)
         {
-            throw new InvalidOperationException(
-                $"Mutation of '{elementName}' failed. Expected '{value}', but found '{element.Value}'.");
+            throw new ArgumentException("Employee index must be non-negative.", nameof(employeeIndex));
         }
 
-        LogInfo($"Applied mutation: {elementName} = '{value}'");
+        if (!_employeeMutations.TryGetValue(employeeIndex, out Dictionary<string, string?>? mutations))
+        {
+            mutations = [];
+            _employeeMutations[employeeIndex] = mutations;
+        }
+
+        mutations[elementName] = value;
     }
 
     private static XElement GetEmployeeByIndex(
@@ -394,8 +341,7 @@ public class Rp14aFixtureBuilder
 
         if (employees.Count == 0)
         {
-            throw new InvalidOperationException(
-                "No Employee elements found in RP14A XML.");
+            throw new InvalidOperationException("No Employee elements found in RP14A XML.");
         }
 
         if (index < 0 || index >= employees.Count)
@@ -426,52 +372,17 @@ public class Rp14aFixtureBuilder
                 filePath,
                 LoadOptions.PreserveWhitespace);
         }
-        catch (FileNotFoundException ex)
+        catch (Exception ex) when (IsFileException(ex) || ex is XmlException)
         {
-            throw CreateXmlLoadException(filePath, ex);
+            throw new InvalidOperationException(
+                $"Failed to load XML from '{filePath}': {ex.Message}",
+                ex);
         }
-        catch (DirectoryNotFoundException ex)
-        {
-            throw CreateXmlLoadException(filePath, ex);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            throw CreateXmlLoadException(filePath, ex);
-        }
-        catch (PathTooLongException ex)
-        {
-            throw CreateXmlLoadException(filePath, ex);
-        }
-        catch (NotSupportedException ex)
-        {
-            throw CreateXmlLoadException(filePath, ex);
-        }
-        catch (SecurityException ex)
-        {
-            throw CreateXmlLoadException(filePath, ex);
-        }
-        catch (IOException ex)
-        {
-            throw CreateXmlLoadException(filePath, ex);
-        }
-        catch (XmlException ex)
-        {
-            throw CreateXmlLoadException(filePath, ex);
-        }
-    }
-
-    private static InvalidOperationException CreateXmlLoadException(
-        string filePath,
-        Exception ex)
-    {
-        return new InvalidOperationException(
-            $"Failed to load XML from '{filePath}': {ex.Message}",
-            ex);
     }
 
     private static void SaveXmlDocument(
-    XDocument document,
-    string filePath)
+        XDocument document,
+        string filePath)
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
@@ -481,46 +392,18 @@ public class Rp14aFixtureBuilder
             using StreamWriter writer = new(
                 filePath,
                 append: false,
-                encoding: new UTF8Encoding(
-                    encoderShouldEmitUTF8Identifier: false));
+                encoding: new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
             document.Save(
                 writer,
                 SaveOptions.DisableFormatting);
         }
-        catch (UnauthorizedAccessException ex)
+        catch (Exception ex) when (IsFileException(ex))
         {
-            throw CreateXmlSaveException(filePath, ex);
+            throw new InvalidOperationException(
+                $"Failed to save XML to '{filePath}': {ex.Message}",
+                ex);
         }
-        catch (DirectoryNotFoundException ex)
-        {
-            throw CreateXmlSaveException(filePath, ex);
-        }
-        catch (PathTooLongException ex)
-        {
-            throw CreateXmlSaveException(filePath, ex);
-        }
-        catch (NotSupportedException ex)
-        {
-            throw CreateXmlSaveException(filePath, ex);
-        }
-        catch (SecurityException ex)
-        {
-            throw CreateXmlSaveException(filePath, ex);
-        }
-        catch (IOException ex)
-        {
-            throw CreateXmlSaveException(filePath, ex);
-        }
-    }
-
-    private static InvalidOperationException CreateXmlSaveException(
-        string filePath,
-        Exception ex)
-    {
-        return new InvalidOperationException(
-            $"Failed to save XML to '{filePath}': {ex.Message}",
-            ex);
     }
 
     private static string ResolveBaselinePath(string baselineFilePath)
@@ -558,20 +441,24 @@ public class Rp14aFixtureBuilder
         }
     }
 
-    private static void LogInfo(string message)
+    private static bool IsFileException(Exception ex)
     {
+        return ex is IOException
+            or UnauthorizedAccessException
+            or DirectoryNotFoundException
+            or PathTooLongException
+            or NotSupportedException
+            or SecurityException;
+    }
+
+    private static void LogInfo(string message) =>
         LogMessage("INFO", message);
-    }
 
-    private static void LogWarning(string message)
-    {
+    private static void LogWarning(string message) =>
         LogMessage("WARN", message);
-    }
 
-    private static void LogError(string message)
-    {
+    private static void LogError(string message) =>
         LogMessage("ERROR", message);
-    }
 
     private static void LogMessage(string level, string message)
     {
@@ -580,24 +467,6 @@ public class Rp14aFixtureBuilder
             CultureInfo.InvariantCulture);
 
         Debug.WriteLine($"[{timestamp}] [{level}] [RP14A] {message}");
-    }
-
-    private void AddEmployeeMutation(int employeeIndex, string elementName, string? value)
-    {
-        if (employeeIndex < 0)
-        {
-            throw new ArgumentException(
-                "Employee index must be non-negative.",
-                nameof(employeeIndex));
-        }
-
-        if (!_employeeMutations.TryGetValue(employeeIndex, out Dictionary<string, string?>? mutations))
-        {
-            mutations = [];
-            _employeeMutations[employeeIndex] = mutations;
-        }
-
-        mutations[elementName] = value;
     }
 }
 
