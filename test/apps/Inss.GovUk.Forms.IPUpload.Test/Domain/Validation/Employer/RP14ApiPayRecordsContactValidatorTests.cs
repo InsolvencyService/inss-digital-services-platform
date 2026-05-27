@@ -15,7 +15,8 @@ public class RP14ApiPayRecordsContactValidatorTests
         RP14PayRecordsContact model = new()
         {
             Name = new string('X', 61),
-            PhoneNumber = "01234556677"
+            PhoneNumber = "01234556677",
+            EmailAddress = "lisa@simpsons.com"
         };
 
         var result = _validator.TestValidate(model);
@@ -29,7 +30,23 @@ public class RP14ApiPayRecordsContactValidatorTests
         RP14PayRecordsContact model = new()
         {
             Name = "Lisa Simpson",
-            PhoneNumber = new string('0', 13)
+            PhoneNumber = new string('0', 13),
+            EmailAddress = "lisa@simpsons.com"
+        };
+
+        var result = _validator.TestValidate(model);
+        
+        Assert.False(result.IsValid);
+    }
+    
+    [Fact]
+    public void InvalidContactEmail_TestValidate_ReturnsInvalidResult()
+    {
+        RP14PayRecordsContact model = new()
+        {
+            Name = "Lisa Simpson",
+            PhoneNumber = "01234556677",
+            EmailAddress = new string('0', 101)
         };
 
         var result = _validator.TestValidate(model);
@@ -43,7 +60,8 @@ public class RP14ApiPayRecordsContactValidatorTests
         RP14PayRecordsContact model = new()
         {
             Name = "Lisa Simpson",
-            PhoneNumber = "01234556677"
+            PhoneNumber = "01234556677",
+            EmailAddress = "lisa@simpsons.com"
         };
 
         var result = _validator.TestValidate(model);

@@ -6,6 +6,8 @@ public sealed class RP14ApiDirectorValidator : AbstractValidator<Inss.Common.IPU
 {
     public RP14ApiDirectorValidator()
     {
+        RuleFor(p => p.Name.Initials).ValidateDirectorInitials().When(p => p.Name is not null);
+        RuleFor(p => p.Name.Surname).ValidateDirectorSurname().When(p => p.Name is not null);
         RuleFor(p => p.NINO).ValidateDirectorNino();
     }
 }

@@ -15,6 +15,8 @@ internal sealed class RP14ValidationInfo : ValidationInfo
     
     // Directors
     internal static readonly RP14ValidationInfo DirectorInvalidNinoFormat = new("Director", "Director national insurance number", "[COUNT] invalid director national insurance number format", "Format is AB112233C");
+    internal static readonly RP14ValidationInfo InvalidDirectorInitialsLength = new("Director", "Director initials", "[COUNT] too long initials of director", "Up to 100 characters are allowed");
+    internal static readonly RP14ValidationInfo InvalidDirectorSurnameLength = new("Director", "Director surname", "[COUNT] too long surname of director", "Up to 100 characters are allowed");
     
     // Shareholders
     internal static readonly RP14ValidationInfo InvalidShareholderPercentage = new("Shareholders", "Shareholder percentage", "[COUNT] invalid shareholder percentage", "Expected format is 50.50 or 100");
@@ -22,6 +24,7 @@ internal sealed class RP14ValidationInfo : ValidationInfo
     
     // Associated companies
     internal static readonly RP14ValidationInfo InvalidAssociatedCompanyNameLength = new("Associated company", "Associated company name", "[COUNT] too long name of associated company", "Up to 60 characters are allowed");
+    internal static readonly RP14ValidationInfo InvalidAssociatedCompanyNumberLength = new("Associated company", "Associated company number", "[COUNT] too long number of associated company", "Up to 9 characters are allowed");
     internal static readonly RP14ValidationInfo InvalidAssociationReasonLength = new("Associated company", "Reason for association", "[COUNT] too long reason for association", "Up to 255 characters are allowed");
     
     // Employment continuity
@@ -34,6 +37,7 @@ internal sealed class RP14ValidationInfo : ValidationInfo
     internal static readonly RP14ValidationInfo MissingPayRecordName = new("Pay records contact", "Pay records contact name", "[COUNT] missing a Pay records contact name");
     internal static readonly RP14ValidationInfo InvalidPayRecordNameLength = new("Pay records contact", "Pay records contact name", "[COUNT] too long Pay records contact name", "Up to 60 characters are allowed");
     internal static readonly RP14ValidationInfo InvalidPayRecordPhoneLength = new("Pay records contact", "Pay records contact phone number", "[COUNT] too long Pay records contact phone number", "Up to 12 characters are allowed");
+    internal static readonly RP14ValidationInfo InvalidPayRecordEmailLength = new("Pay records contact", "Pay records contact email address", "[COUNT] too long Pay records contact email address", "Up to 100 characters are allowed");
 
     // Address
     internal static readonly RP14ValidationInfo InvalidLinesLength = new("[CATEGORY]", "Address lines", "[COUNT] too many address lines provided", "Up to 4 lines are allowed");
@@ -45,7 +49,10 @@ internal sealed class RP14ValidationInfo : ValidationInfo
     
     // IP
     internal static readonly RP14ValidationInfo InvalidIPRegistrationNumberLength = new("Insolvency practitioner", "Registration number", "[COUNT] too long registration number", "Up to 9 characters are allowed");
-    internal static readonly RP14ValidationInfo InvalidIPFirmNameLength = new("Insolvency practitioner", "Firm name", "[COUNT] too long form name", "Up to 255 characters are allowed");
+    internal static readonly RP14ValidationInfo InvalidIPFirmNameLength = new("Insolvency practitioner", "Firm name", "[COUNT] too long firm name", "Up to 255 characters are allowed");
+    internal static readonly RP14ValidationInfo InvalidIPNameLength = new("Insolvency practitioner", "Name", "[COUNT] too long name", "Up to 60 characters are allowed");
+    internal static readonly RP14ValidationInfo InvalidIPEmailLength = new("Insolvency practitioner", "Email", "[COUNT] too long email", "Up to 100 characters are allowed");
+    internal static readonly RP14ValidationInfo InvalidIPPhoneLength = new("Insolvency practitioner", "Phone", "[COUNT] too long phone", "Up to 40 characters are allowed");
 
     private RP14ValidationInfo(string category, string property, string error, string? hint = null) : base(category, property, error, hint)
     {
