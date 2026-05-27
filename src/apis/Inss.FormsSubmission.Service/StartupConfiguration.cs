@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Inss.FormsSubmission.Service;
 using Inss.FormsSubmission.Service.Endpoints;
 using Inss.FormsSubmission.Service.Endpoints.Security;
@@ -33,6 +34,7 @@ public class StartupConfiguration : IHostingStartup
                 .AddSubmissionPolicy();
 
             services.AddIPUploadServices(context);
+            services.AddOpenTelemetry().UseAzureMonitor();
         });
         
         builder.Configure(app =>
