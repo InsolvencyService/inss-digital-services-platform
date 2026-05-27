@@ -47,7 +47,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             {
                 CorrelationId = e.CorrelationId.ToString(), 
                 Json = JsonSerializer.Serialize(e),
-                Entity = "inss_inboundemployeeinformationmessage",
+                Entity = "inss_inboundemployeeinformationmessages",
                 MessageName = "Inbound Employee Information Message"
             })
             .ToArray();
