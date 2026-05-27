@@ -43,7 +43,7 @@ internal static class ServiceCollectionExtensions
                 
                 DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
             
-                services.AddHttpClient<IDynamicsClient, MockDynamicsClient>(client =>
+                services.AddHttpClient<IDynamicsClient, DynamicsClient>(client =>
                     {
                         client.BaseAddress = new Uri($"{dynamicsOptions.Url}/");
                         client.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");

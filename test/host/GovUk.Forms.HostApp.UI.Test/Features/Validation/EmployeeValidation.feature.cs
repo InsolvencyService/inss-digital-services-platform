@@ -413,16 +413,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 58
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table1.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "1 invalid employment dates for the employee",
                             "Start date must be before the end date",
                             "Employee employment dates"});
 #line 59
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table1, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table17, "Then ");
 #line hidden
 #line 62
               await testRunner.AndAsync("I should be able to view the employee employment dates error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
