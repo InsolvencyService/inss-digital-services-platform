@@ -64,7 +64,7 @@ jobs:
                 appType: 'webApp'
                 WebAppName: ${{ variables.submissionAppName }}
                 resourceGroupName: ${{ variables.resourceGroupName }}
-                package: '$(Pipeline.Workspace)/**/GovUk.FormsSubmission.Service.zip'
+                package: '$(Pipeline.Workspace)/**/Inss.FormsSubmission.Service.zip'
                 deployToSlotOrASE: false
                 slotName: 'production'
                 
