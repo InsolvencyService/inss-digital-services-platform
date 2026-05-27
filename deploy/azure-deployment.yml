@@ -14,6 +14,7 @@ jobs:
       ipUploadAppName: app-ipupload-${{ parameters.location }}-${{ lower(parameters.environment) }}
       brokerAppName: app-broker-${{ parameters.location }}-${{ lower(parameters.environment) }}
       rpsAppName: app-rps-${{ parameters.location }}-${{ lower(parameters.environment) }}
+      submissionAppName: app-submission-${{ parameters.location }}-${{ lower(parameters.environment) }}
     environment: ${{ parameters.environment }}
     strategy:
       runOnce:
@@ -55,6 +56,18 @@ jobs:
                 deployToSlotOrASE: false
                 slotName: 'production'
 
+            - task: AzureRmWebAppDeployment@4
+              displayName: Deploy Submission Service API
+              inputs:
+                ConnectionType: 'AzureRM'
+                azureSubscription: ${{ parameters.azureSubscription }}
+                appType: 'webApp'
+                WebAppName: ${{ variables.submissionAppName }}
+                resourceGroupName: ${{ variables.resourceGroupName }}
+                package: '$(Pipeline.Workspace)/**/GovUk.FormsSubmission.Service.zip'
+                deployToSlotOrASE: false
+                slotName: 'production'
+                
             #- task: AzureAppServiceManage@0
             #  displayName: Start Staging Slot
             #  inputs:
