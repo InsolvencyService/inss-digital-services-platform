@@ -72,12 +72,21 @@ stages:
         projects: '**/Inss.Auth.RpsProvider.csproj'
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Submission Service'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/Inss.FormsSubmission.Service.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Artifacts'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'WebApps'
-      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - stage: DeployDev
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))

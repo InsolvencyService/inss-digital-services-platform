@@ -7,6 +7,7 @@ public sealed class RP14ApiAssociatedCompanyValidator : AbstractValidator<Inss.C
     public RP14ApiAssociatedCompanyValidator()
     {
         RuleFor(p => p.CompanyName).ValidateAssociatedCompanyName();
+        RuleFor(p => p.CompanyNumber).ValidateAssociatedCompanyNumber();
         RuleFor(p => p.ReasonForAssociation).ValidateAssociationReason();
         RuleFor(p => p.Address).SetValidator(new RP14ApiAddressValidator("Associated company"));
     }

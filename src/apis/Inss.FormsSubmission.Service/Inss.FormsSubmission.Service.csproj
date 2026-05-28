@@ -5,8 +5,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />  
     <PackageReference Include="Microsoft.Azure.Cosmos" />
+    <PackageReference Include="Microsoft.Identity.Web.TokenCache" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="OpenTelemetry.Api" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Inss.Common.Infrastructure\Inss.Common.Infrastructure.csproj" />

@@ -25,15 +25,15 @@ public sealed class RP14AApiMapper : IMapper
             EmployerName = _model.EmployerName,
             Employee = new Employee.Employee
             {
-                Title = e.EmployeeName.Title,
-                FirstNames = e.EmployeeName.Forenames,
-                LastName = e.EmployeeName.Surname,
+                Title = e.EmployeeName?.Title ?? null!,
+                FirstNames = e.EmployeeName?.Forenames ?? null!,
+                LastName = e.EmployeeName?.Surname ?? null!,
                 NationalInsuranceNumber = e.NINO,
                 DateOfBirth = e.DateOfBirthSpecified ? e.DateOfBirth : null,
                 StartDate = e.StartDateSpecified ? e.StartDate : null,
                 EndDate = e.EndDateSpecified ? e.EndDate : null,
                 DateNoticeGiven = e.DateNoticeGivenSpecified ? e.DateNoticeGiven : null,
-                Pay = MapPay(e.PayDetails, e.Holiday),
+                Pay = MapPay(e.PayDetails, e.Holiday) ?? null!,
                 IsDirector = e.IsDirectorSpecified ? e.IsDirector.ToString() : null!,
                 AverageHoursWorked = e.AverageHoursWorkedSpecified ? e.AverageHoursWorked : null,
                 MoneyOwedToEmployer = e.MoneyOwedToEmployerSpecified ? e.MoneyOwedToEmployer : null,
@@ -43,12 +43,23 @@ public sealed class RP14AApiMapper : IMapper
         }).ToArray();
 
         return employeeInformationList
-            .Select(e => new JsonMessage { CorrelationId = e.CorrelationId.ToString(), Json = JsonSerializer.Serialize(e) })
+            .Select(e => new JsonMessage
+            {
+                CorrelationId = e.CorrelationId.ToString(), 
+                Json = JsonSerializer.Serialize(e),
+                Entity = "inss_inboundemployeeinformationmessages",
+                MessageName = "Inbound Employee Information Message"
+            })
             .ToArray();
     }
 
-    private static Pay MapPay(RP14AEmployeePayDetails payDetails, RP14AEmployeeHoliday holiday)
+    private static Pay? MapPay(RP14AEmployeePayDetails? payDetails, RP14AEmployeeHoliday holiday)
     {
+        if (payDetails is null)
+        {
+            return null;
+        }
+        
         return new Pay
         {
             PayPerWeek = payDetails.BasicPayPerWeekSpecified ? payDetails.BasicPayPerWeek : null,

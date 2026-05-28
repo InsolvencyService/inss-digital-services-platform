@@ -60,8 +60,9 @@ public class StartupConfiguration : IHostingStartup
                         CookieContainer = cookieContainer, UseCookies = true, AllowAutoRedirect = true
                     })
                     .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes))
-                    .AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
-                    .AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
+                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, loginOptions.RetryCount))
+                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp, 
+                        loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds));
 
                 services.AddHttpClient<IUserAuthenticationClient, UserAuthenticationClient>(client =>
                     {
@@ -72,8 +73,9 @@ public class StartupConfiguration : IHostingStartup
                         CookieContainer = cookieContainer, UseCookies = true, AllowAutoRedirect = false
                     })
                     .SetHandlerLifetime(TimeSpan.FromMinutes(loginOptions.LifetimeMinutes))
-                    .AddPolicyHandler(Resilience.GetRetryPolicy(loginOptions.RetryCount))
-                    .AddPolicyHandler((Resilience.GetCircuitBreaker(loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds)));
+                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, loginOptions.RetryCount))
+                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
+                        loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds));
             }
 
             services.AddSingleton<IUserAuthStoreProvider, TestUserAuthStoreProvider>();

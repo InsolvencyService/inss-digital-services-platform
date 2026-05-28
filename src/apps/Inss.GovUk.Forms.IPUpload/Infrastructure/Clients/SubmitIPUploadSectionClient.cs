@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using Inss.Common;
@@ -33,7 +34,7 @@ public sealed class SubmitIPUploadSectionClient : ISubmitIPUploadSectionClient
         string? accessToken = await _httpContextAccessor.HttpContext!.GetTokenAsync("access_token");
         HttpRequestMessage apiRequest = new(HttpMethod.Post, "/ipupload/submit");
         apiRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        apiRequest.Content = new StringContent(JsonSerializer.Serialize(submitRequest), Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+        apiRequest.Content = new StringContent(JsonSerializer.Serialize(submitRequest), Encoding.UTF8, MediaTypeNames.Application.Json);
         return apiRequest;
     }
 
