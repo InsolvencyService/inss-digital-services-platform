@@ -25,7 +25,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     private ILocator NoFileChosenText => Page.GetByText(UploadLocators.Labels.NoFileChosen, new() { Exact = true });
     private ILocator CommonIssuesWhenUploadingRP14AForms => Page.GetByText(UploadLocators.Labels.CommonIssuesWhenUploadingRP14AForms, new() { Exact = true });
     private ILocator RPSStakeholderEmail => Page.GetByText(UploadLocators.Labels.RPSStakeholderEmail, new() { Exact = true });
-    private ILocator GuidanceText => Page.GetByText(UploadLocators.Labels.Guidance, new() { Exact = true });
+    private ILocator CommonUploadErrorsText => Page.GetByText(UploadLocators.Labels.CommonUploadErrors, new() { Exact = true });
     private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton });
     private ILocator FileUploadInput => Page.Locator(UploadLocators.Selectors.FileInput);
     private ILocator UploadedFileStatus => Page.Locator(UploadLocators.Selectors.UploadStatus);
@@ -45,7 +45,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
         await Expect(NoFileChosenText).ToBeVisibleAsync();
         await Expect(CommonIssuesWhenUploadingRP14AForms).ToBeVisibleAsync();
         await Expect(RPSStakeholderEmail).ToBeVisibleAsync();
-        await Expect(GuidanceText).ToBeVisibleAsync();
+        await Expect(CommonUploadErrorsText).ToBeVisibleAsync();
         await Expect(ContinueButton).ToBeVisibleAsync();
     }
 

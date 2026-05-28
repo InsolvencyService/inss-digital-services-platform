@@ -9,7 +9,8 @@ public class StartPageLocators
         public const string StartNowButton = "Start now";
         public const string FeedbackLink = "give your feedback (opens in new tab)";
         public const string UploadRedundancyPaymentFormsLink = "Upload redundancy payment forms (RP14/A)";
-        public const string OnceLoggedInText = "Once logged into the system you will be able to upload RP14/A forms.";
+        public const string OnceLoggedInText = "Access to this service is restricted to Insolvency Practitioners, authorised Agents " +
+                                               "acting on their behalf, Service Managers and Staff.";
         public const string GOVUKLink = "GOV.UK";
     }
 }

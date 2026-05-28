@@ -6,7 +6,7 @@ public class UploadLocators
     {
         public const string UploadFile = "Upload a file";
         public const string NoFileChosen = "No file chosen";
-        public const string Guidance = "Guidance";
+        public const string CommonUploadErrors = "Errors during the upload process";
         public const string ThereIsAProblem = "There is a problem";
         public const string RPSStakeholderEmail = "RPS.Stakeholder@insolvency.gov.uk";
         public const string CommonIssuesWhenUploadingRP14AForms = "Common issues when uploading RP14/A forms";
