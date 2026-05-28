@@ -4,5 +4,5 @@ namespace Inss.Auth.RpsProvider.Application.Clients;
 
 public interface IUserAuthenticationClient
 {
-    Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password);
+    Task<RpsAuthenticationTypes> AuthenticateAsync(string email, string password, string csrfToken);
 }

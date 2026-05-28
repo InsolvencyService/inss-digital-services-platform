@@ -1,4 +1,5 @@
 using FluentValidation.Results;
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Primitives;
 using Inss.Common.IPUpload;
@@ -22,9 +23,9 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         _serviceProvider = serviceProvider;
     }
     
-    public async ValueTask<NodeId?> ExecuteAsync(ExecuteContext context)
+    public async ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
-        XmlFileUploadModel fileUpload = context.UpdatedPage.As<XmlFileUploadModel>();
+        XmlFileUploadModel fileUpload = context.CurrentPage.As<XmlFileUploadModel>();
         IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         fileUploadErrors.ClearErrors();
         fileUploadErrors.Filename = fileUpload.Filename;

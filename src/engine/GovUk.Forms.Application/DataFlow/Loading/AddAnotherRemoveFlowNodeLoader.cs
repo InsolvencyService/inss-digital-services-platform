@@ -6,9 +6,9 @@ namespace GovUk.Forms.Application.DataFlow.Loading;
 
 public sealed class AddAnotherRemoveFlowNodeLoader : IFlowNodeLoader
 {
-    public ValueTask<NodeId?> LoadAsync(LoadContext context)
+    public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
-        RemoveModel remove = context.Page.As<RemoveModel>();
+        RemoveModel remove = context.CurrentPage.As<RemoveModel>();
         AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(remove.MetaData.Group);
         remove.SetIndex = int.Parse(context.State!, CultureInfo.CurrentCulture); // TODO: Sort bang!
         remove.ReturnUrl = groupInfo.AddAnother.Path;

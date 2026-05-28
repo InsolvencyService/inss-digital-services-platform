@@ -14,7 +14,9 @@ public class RP14ApiInsolvencyPractitionerValidatorTests
     {
         RP14InsolvencyPractitioner model = new()
         {
-            RegistrationNumber = new string('X', 10)
+            RegistrationNumber = new string('X', 10),
+            Name = "Marge Simpson",
+            EmailAddress = "marge@simpsons.com"
         };
 
         var result = _validator.TestValidate(model);
@@ -28,7 +30,41 @@ public class RP14ApiInsolvencyPractitionerValidatorTests
         RP14InsolvencyPractitioner model = new()
         {
             RegistrationNumber = "AB112233C",
-            FirmName = new string('X', 256)
+            FirmName = new string('X', 256),
+            Name = "Marge Simpson",
+            EmailAddress = "marge@simpsons.com"
+        };
+
+        var result = _validator.TestValidate(model);
+        
+        Assert.False(result.IsValid);
+    }
+    
+    [Fact]
+    public void InvalidIPName_TestValidate_ReturnsInvalidResult()
+    {
+        RP14InsolvencyPractitioner model = new()
+        {
+            RegistrationNumber = "AB112233C",
+            FirmName = "Springfield Insolvency",
+            Name = new string('X', 61),
+            EmailAddress = "marge@simpsons.com"
+        };
+
+        var result = _validator.TestValidate(model);
+        
+        Assert.False(result.IsValid);
+    }
+    
+    [Fact]
+    public void InvalidIPEmail_TestValidate_ReturnsInvalidResult()
+    {
+        RP14InsolvencyPractitioner model = new()
+        {
+            RegistrationNumber = "AB112233C",
+            FirmName = "Springfield Insolvency",
+            Name = "Marge Simpson",
+            EmailAddress = new string('X', 101)
         };
 
         var result = _validator.TestValidate(model);
@@ -42,7 +78,9 @@ public class RP14ApiInsolvencyPractitionerValidatorTests
         RP14InsolvencyPractitioner model = new()
         {
             RegistrationNumber = "AB112233C",
-            FirmName = "Springfield Insolvency"
+            FirmName = "Springfield Insolvency",
+            Name = "Marge Simpson",
+            EmailAddress = "marge@simpsons.com"
         };
 
         var result = _validator.TestValidate(model);

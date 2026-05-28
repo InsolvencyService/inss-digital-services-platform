@@ -8,6 +8,9 @@ public sealed class RP14ApiInsolvencyPractitionerValidator : AbstractValidator<I
     {
         RuleFor(p => p.RegistrationNumber).ValidateIPRegistrationNumber();
         RuleFor(p => p.FirmName).ValidateIPFirmName();
+        RuleFor(p => p.Name).ValidateIPName();
+        RuleFor(p => p.EmailAddress).ValidateIPEmail();
+        RuleFor(p => p.TelephoneNumber).ValidateIPPhone();
         RuleFor(p => p.Address).SetValidator(new RP14ApiAddressValidator("Insolvency practitioner"));
     }
 }

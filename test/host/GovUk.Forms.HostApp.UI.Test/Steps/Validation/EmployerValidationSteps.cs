@@ -2,9 +2,10 @@ using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
+using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
+using GovUk.Forms.HostApp.UI.Test.Tags;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
@@ -52,7 +53,7 @@ public class EmployerValidationSteps : ValidationStepsBase
             caseReference: string.Empty,
             employerName: LengthHelper.AtMax(100),
             surname: string.Empty,
-            forename: ScenarioConstant.Forname,
+            forename: ScenarioConstant.Forename,
             title: ScenarioConstant.Title,
             basicPayPerWeek: invalidBasicPayPerWeek,
             holidayOwed: invalidHolidayOwed);
@@ -73,7 +74,7 @@ public class EmployerValidationSteps : ValidationStepsBase
         {
             case "accepted":
                 await _uploadDocumentSummaryCoordinator
-                    .VerifySummaryPageIsDisplayedAsync();
+                    .VerifyCheckYourAnswersPageIsDisplayedAsync();
                 return;
 
             case "rejected":
@@ -99,7 +100,7 @@ public class EmployerValidationSteps : ValidationStepsBase
 
         if (outcome.Equals("accepted", StringComparison.OrdinalIgnoreCase))
         {
-            await _uploadDocumentSummaryCoordinator.VerifySummaryPageIsDisplayedAsync();
+            await _uploadDocumentSummaryCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
             return;
         }
 
@@ -123,7 +124,7 @@ public class EmployerValidationSteps : ValidationStepsBase
 
         if (outcome.Equals("accepted", StringComparison.OrdinalIgnoreCase))
         {
-            await _uploadDocumentSummaryCoordinator.VerifySummaryPageIsDisplayedAsync();
+            await _uploadDocumentSummaryCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
             return;
         }
 
@@ -135,9 +136,9 @@ public class EmployerValidationSteps : ValidationStepsBase
 
         AffectedEmployee affectedEmployee = new()
         {
-            Forename = ScenarioConstant.Forname,
+            Forename = ScenarioConstant.Forename,
             Surname = ScenarioConstant.Surname,
-            DateOfBirth = TestData.UiDateOfBirth(),
+            DateOfBirth = TestFactory.UiDateOfBirth(),
             NiNumber = ScenarioConstant.NationalInsuranceNumber,
             CellValue = employerName
         };
@@ -171,7 +172,7 @@ public class EmployerValidationSteps : ValidationStepsBase
      DataTable dataTable)
     {
         List<UploadErrorSummary> expectedErrors = dataTable
-            .CreateSet<Errors>()
+            .CreateSet<Error>()
             .Select(error => CreateErrorSummary(
                 error.Type,
                 error.Message,

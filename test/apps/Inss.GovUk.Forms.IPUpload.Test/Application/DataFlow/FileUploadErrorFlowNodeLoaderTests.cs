@@ -1,5 +1,4 @@
 ﻿using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Domain;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 using Inss.GovUk.Forms.IPUpload.Domain;
@@ -18,13 +17,13 @@ public class FileUploadErrorFlowNodeLoaderTests
         SectionModel ipUploadSection = form.Sections["IP Upload"];
         IPUploadXmlErrorsModel fileUploadErrors = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = fileUploadErrors.Path, NextNodes = ["NodeId2", "NodeId3"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [node],
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            Page = fileUploadErrors
+            CurrentPage = fileUploadErrors
         };
 
         await _fileUploadErrorFlowNodeLoader.LoadAsync(context);

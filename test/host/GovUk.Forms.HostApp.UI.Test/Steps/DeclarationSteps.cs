@@ -79,5 +79,10 @@ public class DeclarationSteps
             .UseFileName(ScenarioConstant.DeclarationPage);
     }
 
-
+    [Then("I should have the ability to sign out")]
+    [Then("I should be able to sign out directly from the file upload page")]
+    public async Task ThenIShouldBeAbleToSignOutDirectlyFromTheFileUploadPage()
+    {
+        await _commonCoordinator.SignOutAndVerifyAsync();
+    }
 }

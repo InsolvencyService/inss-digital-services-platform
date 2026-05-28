@@ -1,5 +1,6 @@
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
+using GovUk.Forms.Application.DataFlow.Visiting;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -40,12 +41,14 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .WithLoader<FileUploadFlowNodeLoader>()
             .WithValidator<FileUploadFlowNodeValidator>()
             .WithExecutor<FileUploadFlowNodeExecutor>()
+            .WithPreviousPathProvider<FileUploadFlowNodePreviousPathProvider>()
             .Next()
             .AddSpurNode(fileUploadErrorId, uploadErrors.Path, fileUploadId, fileUploadErrorDetailsId)
             .WithLoader<FileUploadErrorFlowNodeLoader>()
             .Next()
             .AddTransitionNode(fileUploadErrorDetailsId, errorDetails.Path, fileUploadErrorId)
             .WithLoader<FileUploadErrorDetailsFlowNodeLoader>()
+            .WithPreviousPathProvider<FileUploadErrorDetailsFlowNodePreviousPathProvider>()
             .Next()
             .AddTransitionNode(summaryId, summary.Path, postSubmitSuccessId)
             .WithLoader<SectionSummaryFlowNodeLoader>()
@@ -53,6 +56,8 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .Next()
             .AddEndNode(postSubmitSuccessId, postSubmit.Path, declarationId)
             .WithLoader<PostSubmitFlowNodeLoader>()
+            .WithVisitor<ResetTrackingFlowNodeVisitor>()
+            .WithPreviousPathProvider<PostSubmitFlowNodePreviousPathProvider>()
             .BuildAndRegister();
     }
 }

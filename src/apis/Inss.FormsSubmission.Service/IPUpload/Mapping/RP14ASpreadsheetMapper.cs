@@ -28,7 +28,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
                 Title = e.EmployeeName.Title,
                 FirstNames = e.EmployeeName.Forenames,
                 LastName = e.EmployeeName.Surname,
-                NationalInsuranceNumber = e.NINO,
+                NationalInsuranceNumber = e.NINO.ToUpper(),
                 DateOfBirth = e.DateOfBirthSpecified ? e.DateOfBirth : null,
                 StartDate = e.StartDateSpecified ? e.StartDate : null,
                 EndDate = e.EndDateSpecified ? e.EndDate : null,
@@ -43,7 +43,13 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         }).ToArray();
 
         return employeeInformationList
-            .Select(e => new JsonMessage { CorrelationId = e.CorrelationId.ToString(), Json = JsonSerializer.Serialize(e) })
+            .Select(e => new JsonMessage
+            {
+                CorrelationId = e.CorrelationId.ToString(), 
+                Json = JsonSerializer.Serialize(e),
+                Entity = "inss_inboundemployeeinformationmessages",
+                MessageName = "Inbound Employee Information Message"
+            })
             .ToArray();
     }
 
@@ -170,7 +176,9 @@ public sealed class RP14ASpreadsheetMapper : IMapper
     {
         List<ArrearsOfPay> arrearsOfPayList = [];
 
-        if (arrearsOfPay.ArrearsOfPayPeriod1 is not null)
+        if (arrearsOfPay.ArrearsOfPayPeriod1 is not null &&
+            arrearsOfPay.ArrearsOfPayPeriod1.AOP1StartDateSpecified &&
+            arrearsOfPay.ArrearsOfPayPeriod1.AOP1EndDateSpecified)
         {
             arrearsOfPayList.Add(new ArrearsOfPay
             {
@@ -183,7 +191,9 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
 
-        if (arrearsOfPay.ArrearsOfPayPeriod2 is not null)
+        if (arrearsOfPay.ArrearsOfPayPeriod2 is not null &&
+            arrearsOfPay.ArrearsOfPayPeriod2.AOP2StartDateSpecified &&
+            arrearsOfPay.ArrearsOfPayPeriod2.AOP2EndDateSpecified)
         {
             arrearsOfPayList.Add(new ArrearsOfPay
             {
@@ -196,7 +206,9 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
 
-        if (arrearsOfPay.ArrearsOfPayPeriod3 is not null)
+        if (arrearsOfPay.ArrearsOfPayPeriod3 is not null &&
+            arrearsOfPay.ArrearsOfPayPeriod3.AOP3StartDateSpecified &&
+            arrearsOfPay.ArrearsOfPayPeriod3.AOP3EndDateSpecified)
         {
             arrearsOfPayList.Add(new ArrearsOfPay
             {
@@ -209,7 +221,9 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
 
-        if (arrearsOfPay.ArrearsOfPayPeriod4 is not null)
+        if (arrearsOfPay.ArrearsOfPayPeriod4 is not null &&
+            arrearsOfPay.ArrearsOfPayPeriod4.AOP4StartDateSpecified &&
+            arrearsOfPay.ArrearsOfPayPeriod4.AOP4EndDateSpecified)
         {
             arrearsOfPayList.Add(new ArrearsOfPay
             {
@@ -229,7 +243,9 @@ public sealed class RP14ASpreadsheetMapper : IMapper
     {
         List<TakenAndNotPaid> takenAndNotPaidList = [];
 
-        if (holiday.HolidayNotPaid?.Holiday1 is not null)
+        if (holiday.HolidayNotPaid?.Holiday1 is not null &&
+            holiday.HolidayNotPaid?.Holiday1.Holiday1StartDateSpecified == true &&
+            holiday.HolidayNotPaid?.Holiday1.Holiday1EndDateSpecified == true)
         {
             takenAndNotPaidList.Add(new TakenAndNotPaid
             {
@@ -238,7 +254,9 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
         
-        if (holiday.HolidayNotPaid?.Holiday2 is not null)
+        if (holiday.HolidayNotPaid?.Holiday2 is not null &&
+            holiday.HolidayNotPaid?.Holiday2.Holiday2StartDateSpecified == true &&
+            holiday.HolidayNotPaid?.Holiday2.Holiday2EndDateSpecified == true)
         {
             takenAndNotPaidList.Add(new TakenAndNotPaid
             {
@@ -247,7 +265,9 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
         
-        if (holiday.HolidayNotPaid?.Holiday3 is not null)
+        if (holiday.HolidayNotPaid?.Holiday3 is not null &&
+            holiday.HolidayNotPaid?.Holiday3.Holiday3StartDateSpecified == true &&
+            holiday.HolidayNotPaid?.Holiday3.Holiday3EndDateSpecified == true)
         {
             takenAndNotPaidList.Add(new TakenAndNotPaid
             {

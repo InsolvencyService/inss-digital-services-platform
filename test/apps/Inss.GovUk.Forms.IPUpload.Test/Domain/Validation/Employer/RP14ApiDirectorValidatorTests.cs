@@ -14,7 +14,48 @@ public class RP14ApiDirectorValidatorTests
     {
         RP14DirectorsDirector model = new()
         {
-            NINO = "XX112233YY"
+            NINO = "XX112233YY",
+            Name = new NameType
+            {
+                Surname = "Flanders",
+                Initials = "N"
+            }
+        };
+
+        var result = _validator.TestValidate(model);
+        
+        Assert.False(result.IsValid);
+    }
+    
+    [Fact]
+    public void InvalidSurname_TestValidate_ReturnsInvalidResult()
+    {
+        RP14DirectorsDirector model = new()
+        {
+            NINO = "AB112233C",
+            Name = new NameType
+            {
+                Surname = new string('X', 101),
+                Initials = "N"
+            }
+        };
+
+        var result = _validator.TestValidate(model);
+        
+        Assert.False(result.IsValid);
+    }
+    
+    [Fact]
+    public void InvalidInitials_TestValidate_ReturnsInvalidResult()
+    {
+        RP14DirectorsDirector model = new()
+        {
+            NINO = "AB112233C",
+            Name = new NameType
+            {
+                Surname = "Flanders",
+                Initials = new string('X', 101)
+            }
         };
 
         var result = _validator.TestValidate(model);
@@ -27,7 +68,12 @@ public class RP14ApiDirectorValidatorTests
     {
         RP14DirectorsDirector model = new()
         {
-            NINO = "AB112233C"
+            NINO = "AB112233C",
+            Name = new NameType
+            {
+                Surname = "Flanders",
+                Initials = "N"
+            }
         };
 
         var result = _validator.TestValidate(model);

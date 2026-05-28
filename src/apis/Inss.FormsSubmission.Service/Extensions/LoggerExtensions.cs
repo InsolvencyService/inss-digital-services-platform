@@ -25,4 +25,10 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 507, Level = LogLevel.Error, Message = "Unable to find the stored message for {Id} and {Reference}.")]
     public static partial void StoredMessageNotFound(this ILogger logger, string id, string reference);
+    
+    [LoggerMessage(EventId = 508, Level = LogLevel.Information, Message = "Submitted message to Dynamics successfully for {CorrelationId}.")]
+    public static partial void SuccessfulSubmissionToDynamics(this ILogger logger, string correlationId);
+    
+    [LoggerMessage(EventId = 509, Level = LogLevel.Error, Message = "Failed to successfully submit message to Dynamics for {CorrelationId}.")]
+    public static partial void FailedSubmissionToDynamics(this ILogger logger, string correlationId);
 }

@@ -19,13 +19,13 @@ public class AddAnotherRemoveFlowNodeLoaderTests
         RemoveModel remove = section.Pages.GetFirstOf<RemoveModel>();
         FlowNode addAnotherNode = new() { Id = "NodeId1", PagePath = addAnother.Path, NextNodes = ["NodeId3"] };
         FlowNode removeNode = new() { Id = "NodeId2", PagePath = remove.Path, NextNodes = ["NodeId1"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [addAnotherNode, removeNode],
             CurrentNode = addAnotherNode,
             Form = _form,
             Section = section,
-            Page = remove,
+            CurrentPage = remove,
             State = "0"
         };
         
@@ -42,13 +42,13 @@ public class AddAnotherRemoveFlowNodeLoaderTests
         RemoveModel remove = section.Pages.GetFirstOf<RemoveModel>();
         FlowNode addAnotherNode = new() { Id = "NodeId1", PagePath = addAnother.Path, NextNodes = ["NodeId3"] };
         FlowNode removeNode = new() { Id = "NodeId2", PagePath = remove.Path, NextNodes = ["NodeId1"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [addAnotherNode, removeNode],
             CurrentNode = addAnotherNode,
             Form = _form,
             Section = section,
-            Page = remove,
+            CurrentPage = remove,
             State = "0"
         };
         
@@ -65,13 +65,13 @@ public class AddAnotherRemoveFlowNodeLoaderTests
         RemoveModel remove = section.Pages.GetFirstOf<RemoveModel>();
         FlowNode addAnotherNode = new() { Id = "NodeId1", PagePath = addAnother.Path, NextNodes = ["NodeId3"] };
         FlowNode removeNode = new() { Id = "NodeId2", PagePath = remove.Path, NextNodes = ["NodeId1"] };
-        LoadContext context = new()
+        FlowNodeContext context = new()
         {
             Nodes = [addAnotherNode, removeNode],
             CurrentNode = addAnotherNode,
             Form = _form,
             Section = section,
-            Page = remove,
+            CurrentPage = remove,
             State = "0"
         };
         

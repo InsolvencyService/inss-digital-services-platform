@@ -59,6 +59,10 @@ public class LoginController : Controller
         {
             ModelState.AddModelError("Email.Value", "Your account is locked");
         }
+        else if (authenticationType == RpsAuthenticationTypes.Outage)
+        {
+            ModelState.AddModelError("Email.Value", "There is an account login outage");
+        }
         
         return View(model);
     }

@@ -1,14 +1,9 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
+﻿using GovUk.Forms.HostApp.UI.Test.Models.TestData;
+using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using static GovUk.Forms.HostApp.UI.Test.Models.TestData;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
-/// <summary>
-/// Implementation of upload verification operations.
-/// THREAD-SAFE: All context data is scenario-scoped
-/// RESPONSIBILITY: Encapsulates all verification and assertion operations
-/// </summary>
 public class UploadVerificationCoordinator : IUploadVerificationCoordinator
 {
     private readonly IUploadDocumentPage _uploadDocumentPage;

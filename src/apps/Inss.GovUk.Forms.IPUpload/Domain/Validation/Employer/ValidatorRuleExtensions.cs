@@ -66,12 +66,36 @@ internal static partial class ValidatorRuleExtensions
                 .WithMessage(RP14ValidationInfo.DirectorInvalidNinoFormat.ErrorFormat);
         }
         
+        internal IRuleBuilderOptions<T, string> ValidateDirectorInitials()
+        {
+            return rule
+                .MaximumLength(100)
+                .OverridePropertyName(RP14ValidationInfo.InvalidDirectorInitialsLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidDirectorInitialsLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateDirectorSurname()
+        {
+            return rule
+                .MaximumLength(100)
+                .OverridePropertyName(RP14ValidationInfo.InvalidDirectorSurnameLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidDirectorSurnameLength.ErrorFormat);
+        }
+        
         internal IRuleBuilderOptions<T, string> ValidateAssociatedCompanyName()
         {
             return rule
                 .MaximumLength(60)
                 .OverridePropertyName(RP14ValidationInfo.InvalidAssociatedCompanyNameLength.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.InvalidAssociatedCompanyNameLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateAssociatedCompanyNumber()
+        {
+            return rule
+                .MaximumLength(9)
+                .OverridePropertyName(RP14ValidationInfo.InvalidAssociatedCompanyNumberLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidAssociatedCompanyNumberLength.ErrorFormat);
         }
         
         internal IRuleBuilderOptions<T, string> ValidateAssociationReason()
@@ -115,6 +139,14 @@ internal static partial class ValidatorRuleExtensions
                 .MaximumLength(12)
                 .OverridePropertyName(RP14ValidationInfo.InvalidPayRecordPhoneLength.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.InvalidPayRecordPhoneLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidatePayRecordContactEmail()
+        {
+            return rule
+                .MaximumLength(100)
+                .OverridePropertyName(RP14ValidationInfo.InvalidPayRecordEmailLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidPayRecordEmailLength.ErrorFormat);
         }
         
         internal IRuleBuilderOptions<T, string> ValidateAddressLine(string category)
@@ -171,6 +203,30 @@ internal static partial class ValidatorRuleExtensions
                 .MaximumLength(255)
                 .OverridePropertyName(RP14ValidationInfo.InvalidIPFirmNameLength.PropertyFormat)
                 .WithMessage(RP14ValidationInfo.InvalidIPFirmNameLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateIPName()
+        {
+            return rule
+                .MaximumLength(60)
+                .OverridePropertyName(RP14ValidationInfo.InvalidIPNameLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidIPNameLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateIPEmail()
+        {
+            return rule
+                .MaximumLength(100)
+                .OverridePropertyName(RP14ValidationInfo.InvalidIPEmailLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidIPEmailLength.ErrorFormat);
+        }
+        
+        internal IRuleBuilderOptions<T, string> ValidateIPPhone()
+        {
+            return rule
+                .MaximumLength(40)
+                .OverridePropertyName(RP14ValidationInfo.InvalidIPPhoneLength.PropertyFormat)
+                .WithMessage(RP14ValidationInfo.InvalidIPPhoneLength.ErrorFormat);
         }
         
         internal IRuleBuilderOptions<T, string> ValidateShareholderName()
