@@ -1,14 +1,13 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Builders;
+using GovUk.Forms.HostApp.UI.Test.Builders;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using System.Diagnostics;
 using System.Globalization;
 using System.Xml.Linq;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
-public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
+public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aScenarioCoordinator
 {
     private const string DefaultBaselineFilePath = "Resources/Rp14a/rp14A.xml";
     private const string AffectedEmployeesContextKey = "AffectedEmployees";
@@ -17,43 +16,31 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
     private const string BasicPayErrorKey = "Employee basic pay per week|1 invalid basic pay per week";
     private const string HolidayOwedErrorKey = "Holiday owed|1 invalid holiday owed";
     private const string HolidayOwedRangeErrorKey = "Holiday owed|1 invalid range of holiday owed";
-    private readonly IFileUploadCoordinator _fileUploadCoordinator;
-    private readonly ScenarioContext _scenarioContext;
-    private readonly TestArtifacts _testArtifacts;
-    private readonly string _baselineFilePath;
+
+    private static readonly string _formattedScenarioDob =
+        DateTime
+            .ParseExact(ScenarioConstant.DOB, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+            .ToString("M/d/yyyy", CultureInfo.InvariantCulture);
 
     public Rp14aScenarioCoordinator(
         IFileUploadCoordinator fileUploadCoordinator,
         ScenarioContext scenarioContext,
         TestArtifacts testArtifacts,
         string? baselineFilePath = null)
+        : base(
+            fileUploadCoordinator,
+            scenarioContext,
+            testArtifacts,
+            logTag: "RP14A",
+            defaultBaselineFilePath: DefaultBaselineFilePath,
+            baselineFilePath: baselineFilePath)
     {
-        _fileUploadCoordinator = fileUploadCoordinator
-            ?? throw new ArgumentNullException(nameof(fileUploadCoordinator));
-
-        _scenarioContext = scenarioContext
-            ?? throw new ArgumentNullException(nameof(scenarioContext));
-
-        _testArtifacts = testArtifacts
-            ?? throw new ArgumentNullException(nameof(testArtifacts));
-
-        _baselineFilePath = ValidateBaselineFilePath(baselineFilePath);
     }
 
     public Task UploadValidRp14aAsync() =>
         BuildAndUploadAsync(
             configure: null,
             "valid RP14A file");
-
-    public Task UploadRp14aWithCaseReferenceAsync(string? caseReference) =>
-        BuildAndUploadAsync(
-            builder => builder.WithCaseReference(caseReference),
-            $"RP14A with case reference '{ToLogValue(caseReference)}'");
-
-    public Task UploadRp14aWithEmployerNameAsync(string? employerName) =>
-        BuildAndUploadAsync(
-            builder => builder.WithEmployerName(employerName),
-            $"RP14A with employer name '{ToLogValue(employerName)}'");
 
     public Task UploadRp14aWithHolidayDaysTakenAsync(string? holidayDaysTaken) =>
         BuildAndUploadAsync(
@@ -108,17 +95,21 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
             },
             $"RP14A with {count} invalid arrears values");
 
-        _scenarioContext.Set(
+        ScenarioContext.Set(
             affectedEmployees,
             AffectedEmployeesContextKey);
     }
 
     public Task UploadRp14aWithHolidayNotPaidDatesAsync(
         DateOnly? startDate,
-        DateOnly? endDate) =>
-        BuildAndUploadAsync(
+        DateOnly? endDate)
+    {
+        ValidateDateOrder(startDate, endDate);
+
+        return BuildAndUploadAsync(
             builder => builder.WithHolidayNotPaidDates(startDate, endDate),
             $"RP14A with holiday not paid dates '{FormatDate(startDate)}' to '{FormatDate(endDate)}'");
+    }
 
     public Task UploadRp14aWithNationalInsuranceNumberAsync(
         string? insuranceNumber,
@@ -142,10 +133,14 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
 
     public Task UploadRp14aWithEmploymentDatesAsync(
         DateOnly? startDate,
-        DateOnly? endDate) =>
-        BuildAndUploadAsync(
+        DateOnly? endDate)
+    {
+        ValidateDateOrder(startDate, endDate);
+
+        return BuildAndUploadAsync(
             builder => builder.WithEmploymentDates(startDate, endDate),
             $"RP14A with employment dates {FormatDate(startDate)} to {FormatDate(endDate)}");
+    }
 
     public Task UploadRp14aWithHolidayContractedEntitlementDaysAsync(string? entitlementDays) =>
         BuildAndUploadAsync(
@@ -159,10 +154,14 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
 
     public Task UploadRp14aWithArrearsDatesAsync(
         DateOnly? startDate,
-        DateOnly? endDate) =>
-        BuildAndUploadAsync(
+        DateOnly? endDate)
+    {
+        ValidateDateOrder(startDate, endDate);
+
+        return BuildAndUploadAsync(
             builder => builder.WithArrearsDates(startDate, endDate),
             $"RP14A with arrears dates '{FormatDate(startDate)}' to '{FormatDate(endDate)}'");
+    }
 
     public async Task UploadComplexRp14aScenarioAsync(
         string? caseReference = null,
@@ -229,7 +228,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
             testFile.FilePath,
             $"RP14A with {employeeCount} employees missing surname");
 
-        _scenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
     }
 
     public async Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(
@@ -253,54 +252,86 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
             testFile.FilePath,
             $"RP14A with {employeeCount} employees invalid holiday owed");
 
-        _scenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
     }
 
+    public async Task UploadRp14aWithCaseReferenceAsync(params string?[] caseReferences)
+    {
+        if (caseReferences is null || caseReferences.Length == 0)
+        {
+            throw new ArgumentException(
+                "At least one case reference must be provided.",
+                nameof(caseReferences));
+        }
+
+        int employeeCount = caseReferences.Length;
+
+        Rp14aTestFile testFile = BuildTestFile(
+            builder => builder.WithCaseReferences(caseReferences));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValues: caseReferences
+                    .Select(x => x ?? string.Empty)
+                    .ToArray());
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} invalid case reference(s)");
+
+        ScenarioContext.Set(
+            affectedEmployees,
+            AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithEmployerNameAsync(params string?[] employerNames)
+    {
+        if (employerNames is null || employerNames.Length == 0)
+        {
+            throw new ArgumentException(
+                "At least one employer name must be provided.",
+                nameof(employerNames));
+        }
+
+        int employeeCount = employerNames.Length;
+
+        Rp14aTestFile testFile = BuildTestFile(
+            builder => builder.WithEmployerNames(employerNames));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValues: employerNames
+                    .Select(x => x ?? string.Empty)
+                    .ToArray());
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with employer name(s) '{string.Join(", ", employerNames.Select(ToLogValue))}'");
+
+        ScenarioContext.Set(
+            affectedEmployees,
+            AffectedEmployeesContextKey);
+    }
     private Task BuildAndUploadAsync(
         Action<Rp14aFixtureBuilder>? configure,
         string description)
     {
-        return UploadFileAsync(
-            BuildTestFile(configure).FilePath,
-            description);
+        Rp14aTestFile testFile = BuildTestFile(configure);
+
+        return UploadFileAsync(testFile.FilePath, description);
     }
 
-    private Rp14aTestFile BuildTestFile(
-        Action<Rp14aFixtureBuilder>? configure = null)
+    private Rp14aTestFile BuildTestFile(Action<Rp14aFixtureBuilder>? configure = null)
     {
         Rp14aFixtureBuilder builder = new();
 
         configure?.Invoke(builder);
 
-        return builder.Build(
-            _testArtifacts,
-            _baselineFilePath,
-            ScenarioName);
-    }
-
-    private async Task UploadFileAsync(
-        string filePath,
-        string description)
-    {
-        try
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new InvalidOperationException(
-                    $"RP14A test file was not created at expected location: {filePath}");
-            }
-
-            LogInfo($"Uploading {description} from {filePath}");
-
-            await _fileUploadCoordinator.UploadFileAsync(filePath);
-
-            LogInfo($"Successfully uploaded {description}");
-        }
-        catch (Exception ex)
-        {
-            LogError($"Failed to upload {description}: {ex.GetType().Name} - {ex.Message}");
-            throw;
-        }
+        return builder.Build(TestArtifacts, BaselineFilePath, ScenarioName);
     }
 
     private void SetComplexAffectedEmployees(
@@ -310,7 +341,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         string? holidayOwed)
     {
         XDocument document = XDocument.Load(filePath);
-        Dictionary<string, List<AffectedEmployee>> affectedEmployeesByError = new();
+        Dictionary<string, List<AffectedEmployee>> affectedEmployeesByError = [];
 
         if (surname is not null)
         {
@@ -329,9 +360,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
             affectedEmployeesByError[HolidayOwedRangeErrorKey] = holidayOwedEmployees;
         }
 
-        _scenarioContext.Set(
-            affectedEmployeesByError,
-            AffectedEmployeesByErrorTypeKey);
+        ScenarioContext.Set(affectedEmployeesByError, AffectedEmployeesByErrorTypeKey);
     }
 
     private static List<AffectedEmployee> ReadAffectedEmployees(
@@ -354,7 +383,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
             {
                 Forename = ScenarioConstant.Forename,
                 Surname = ScenarioConstant.Surname,
-                DateOfBirth = FormatScenarioDob(),
+                DateOfBirth = _formattedScenarioDob,
                 NiNumber = ScenarioConstant.NationalInsuranceNumber,
                 CellValue = InvalidArrearsAmounts.All[(i - 1) % InvalidArrearsAmounts.All.Count]
             });
@@ -363,9 +392,7 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         return affectedEmployees;
     }
 
-    private static void ApplyIfNotNull(
-        string? value,
-        Action<string?> apply)
+    private static void ApplyIfNotNull(string? value, Action<string> apply)
     {
         if (value is not null)
         {
@@ -373,99 +400,6 @@ public sealed class Rp14aScenarioCoordinator : IRp14aScenarioCoordinator
         }
     }
 
-    private static string ValidateBaselineFilePath(string? baselineFilePath)
-    {
-        string effectivePath = baselineFilePath ?? DefaultBaselineFilePath;
-
-        ArgumentException.ThrowIfNullOrWhiteSpace(effectivePath);
-
-        string absolutePath = Path.IsPathRooted(effectivePath)
-            ? effectivePath
-            : Path.Join(AppContext.BaseDirectory, effectivePath);
-
-        if (!File.Exists(absolutePath))
-        {
-            throw new FileNotFoundException(
-                $"Baseline RP14A file not found at: {absolutePath}",
-                absolutePath);
-        }
-
-        return absolutePath;
-    }
-
-    private static void ValidateDateOrder(
-        DateOnly? startDate,
-        DateOnly? endDate)
-    {
-        if (startDate.HasValue &&
-            endDate.HasValue &&
-            endDate < startDate)
-        {
-            throw new ArgumentException(
-                $"End date ({endDate:yyyy-MM-dd}) cannot be before start date ({startDate:yyyy-MM-dd})",
-                nameof(endDate));
-        }
-    }
-
-    private string ScenarioName =>
-        _scenarioContext.ScenarioInfo?.Title ?? "Unknown Scenario";
-
-    private static string FormatDate(DateOnly? date) =>
-        date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
-
-    private static readonly string _scenarioDob =
-        DateTime
-            .ParseExact(ScenarioConstant.DOB, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-            .ToString("M/d/yyyy", CultureInfo.InvariantCulture);
-
-    private static string FormatScenarioDob() => _scenarioDob;
-
     private static string ToXmlValue(string? value) =>
         value ?? string.Empty;
-
-    private static string ToLogValue(string? value)
-    {
-        return value switch
-        {
-            null => "<null>",
-            "" => "<empty>",
-            _ when string.IsNullOrWhiteSpace(value) => "<whitespace>",
-            _ => value
-        };
-    }
-
-    private static void ValidatePositiveNumber(
-        int value,
-        string parameterName)
-    {
-        if (value <= 0)
-        {
-            throw new ArgumentException(
-                $"Parameter '{parameterName}' must be greater than 0. Received: {value}",
-                parameterName);
-        }
-    }
-
-    private static void ValidateNonNegativeNumber(
-        int value,
-        string parameterName)
-    {
-        if (value < 0)
-        {
-            throw new ArgumentException(
-                $"Parameter '{parameterName}' must be non-negative. Received: {value}",
-                parameterName);
-        }
-    }
-
-    private static void LogInfo(string message)
-    {
-        Debug.WriteLine($"[{DateTime.UtcNow:HH:mm:ss.fff}] [INFO] [RP14A] {message}");
-    }
-
-    private static void LogError(string message)
-    {
-        Debug.WriteLine($"[{DateTime.UtcNow:HH:mm:ss.fff}] [ERROR] [RP14A] {message}");
-    }
 }
-

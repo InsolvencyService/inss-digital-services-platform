@@ -133,6 +133,45 @@ public class Rp14aFixtureBuilder
         _mutations[elementName] = value;
         return this;
     }
+    public Rp14aFixtureBuilder WithCaseReferences(params string?[] caseReferences)
+    {
+        if (caseReferences is null || caseReferences.Length == 0)
+        {
+            throw new ArgumentException(
+                "At least one case reference must be provided.",
+                nameof(caseReferences));
+        }
+
+        for (int employeeIndex = 0; employeeIndex < caseReferences.Length; employeeIndex++)
+        {
+            AddEmployeeMutation(
+                employeeIndex,
+                RP14AElementNames.CaseReference,
+                caseReferences[employeeIndex] ?? string.Empty);
+        }
+
+        return this;
+    }
+
+    public Rp14aFixtureBuilder WithEmployerNames(params string?[] employerNames)
+    {
+        if (employerNames is null || employerNames.Length == 0)
+        {
+            throw new ArgumentException(
+                "At least one employer name must be provided.",
+                nameof(employerNames));
+        }
+
+        for (int employeeIndex = 0; employeeIndex < employerNames.Length; employeeIndex++)
+        {
+            AddEmployeeMutation(
+                employeeIndex,
+                RP14AElementNames.EmployerName,
+                employerNames[employeeIndex] ?? string.Empty);
+        }
+
+        return this;
+    }
 
     public Rp14aTestFile Build(
         TestArtifacts testArtifacts,

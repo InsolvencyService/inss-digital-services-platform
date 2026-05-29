@@ -16,4 +16,6 @@ public interface IUploadDocumentPage
     Task<IReadOnlyList<string>> GetUploadedFileNamesAsync();
     Task VerifyUploadFileErrorAsync(UploadFileError expected);
     Task ClickErrorSummaryLinkAsync();
+    Task VerifyUploadContentAriaSnapshotAsync();
+    Task VerifyCommonIssuesWhenUploadingAriaSnapshotAsync();
 }

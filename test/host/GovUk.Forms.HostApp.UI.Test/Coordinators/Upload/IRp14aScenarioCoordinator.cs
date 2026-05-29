@@ -3,8 +3,7 @@
 public interface IRp14aScenarioCoordinator
 {
     Task UploadValidRp14aAsync();
-    Task UploadRp14aWithCaseReferenceAsync(string? caseReference);
-    Task UploadRp14aWithEmployerNameAsync(string? employerName);
+    Task UploadRp14aWithEmployerNameAsync(params string?[] employerNames);
     Task UploadRp14aWithEmployerNameLengthAsync(int length);
     Task UploadRp14aWithEmployeeNameAsync(
         string? surname,
@@ -35,4 +34,5 @@ public interface IRp14aScenarioCoordinator
     Task UploadRp14aWithHolidayNotPaidDatesAsync(DateOnly? startDate, DateOnly? endDate);
     Task UploadRp14aWithMissingEmployeeSurnamesAsync(int employeeCount);
     Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(int employeeCount, params string[] invalidValues);
+    Task UploadRp14aWithCaseReferenceAsync(params string?[] caseReferences);
 }

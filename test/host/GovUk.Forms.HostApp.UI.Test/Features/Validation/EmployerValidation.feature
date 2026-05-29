@@ -42,3 +42,12 @@ Scenario: RP14A Display multiple validation categories together
         | Employee holiday | Holiday owed                | 1 invalid holiday owed                | Expected format is 28.25 or 33   |
         | Employee holiday | Holiday owed                | 1 invalid range of holiday owed       | 0 to 365 days allowed            |
     And I should be able to view error details for all validation categories
+
+
+  @regression @validation @rp14a
+  Scenario: Multiple employer names exceeding allowed length are rejected
+         Given I have uploaded an RP14A file with 3 employer names of length 100
+         When I submit the RP14A file
+         Then the submission should be "rejected"
+          And the error summary should "3 invalid length of the employer name" with "Maximum of 99 characters allowed"
+          And I should be able to view error details for multiple employees     

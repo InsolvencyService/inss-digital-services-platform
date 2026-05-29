@@ -56,13 +56,18 @@ public class UploadErrorsPage : BasePage, IUploadErrorsPage
 
         await Expect(row).ToHaveCountAsync(1);
 
-        // Verify all expected fields are present
         await VerifyRowContent(row, expected);
 
-        // Verify the action link exists
-        await Expect(
-            row.GetByRole(AriaRole.Link, new() { Name = expected.ActionText })
-        ).ToBeVisibleAsync();
+        if (string.IsNullOrWhiteSpace(expected.ActionText))
+        {
+            return;
+        }
+
+        ILocator actionLink = row.GetByRole(
+            AriaRole.Link,
+            new() { Name = expected.ActionText });
+
+        await Expect(actionLink).ToBeVisibleAsync();
     }
 
     public async Task ClickOnViewDetailsAsync(UploadErrorSummary expected)

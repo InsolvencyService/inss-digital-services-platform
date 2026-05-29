@@ -54,4 +54,11 @@ Examples:
   | .zip      |
 
 
+@regression @happyPath @rp14
+ Scenario: Successfully submit a valid RP14 XML file
+    When I upload a valid RP14 XML file
+    Then the uploaded file should appear in the file list
+    And no validation errors should be displayed
+
+
 

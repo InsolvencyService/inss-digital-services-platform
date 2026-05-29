@@ -13,4 +13,10 @@ public class StartPageLocators
                                                "acting on their behalf, Service Managers and Staff.";
         public const string GOVUKLink = "GOV.UK";
     }
+
+    public class Selectors
+    {
+        public const string MainContent = "#main-content";
+
+    }
 }

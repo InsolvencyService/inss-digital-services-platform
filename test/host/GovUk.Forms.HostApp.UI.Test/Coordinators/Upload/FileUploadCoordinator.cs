@@ -37,6 +37,16 @@ public sealed class FileUploadCoordinator : IFileUploadCoordinator
         await UploadFileInternalAsync(filePath, stepName);
     }
 
+    public async Task VerifyUploadDocumentContentSnapShotAsync()
+    {
+        await _uploadDocumentPage.VerifyUploadContentAriaSnapshotAsync();
+    }
+
+    public async Task VerifyUploadCommonIssuesContentVisualSnapShotAsync()
+    {
+        await _uploadDocumentPage.VerifyCommonIssuesWhenUploadingAriaSnapshotAsync();
+    }
+
     private async Task UploadFileInternalAsync(string filePath, string stepName)
     {
         ValidateFilePath(filePath);

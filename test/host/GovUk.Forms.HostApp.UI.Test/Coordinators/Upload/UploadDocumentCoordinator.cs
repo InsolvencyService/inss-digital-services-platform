@@ -1,9 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
-using GovUk.Forms.HostApp.UI.Test.Factories;
+﻿using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
-using GovUk.Forms.HostApp.UI.Test.Pages.Common;
-using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
@@ -12,6 +9,7 @@ public sealed class UploadDocumentCoordinator :
     IUploadPageCoordinator,
     IFileUploadCoordinator,
     IRp14aScenarioCoordinator,
+    IRp14ScenarioCoordinator,
     IUploadVerificationCoordinator,
     IUploadNavigationCoordinator
 {
@@ -20,19 +18,17 @@ public sealed class UploadDocumentCoordinator :
     private readonly IRp14aScenarioCoordinator _scenarioCoordinator;
     private readonly IUploadVerificationCoordinator _verificationCoordinator;
     private readonly IUploadNavigationCoordinator _navigationCoordinator;
-    private readonly ICommonPage _commonPage;
-    private readonly IPlaywrightDriver _playwrightDriver;
+    private readonly IRp14ScenarioCoordinator _rp14ScenarioCoordinator;
 
     public UploadDocumentCoordinator(
-        TestArtifacts testArtifacts,
-        IUploadPageCoordinator pageCoordinator,
-        IFileUploadCoordinator fileUploadCoordinator,
-        IRp14aScenarioCoordinator scenarioCoordinator,
-        IUploadVerificationCoordinator verificationCoordinator,
-        IUploadNavigationCoordinator navigationCoordinator,
-        ICommonPage commonPage,
-        IPlaywrightDriver playwrightDriver)
-        : base(testArtifacts)
+    TestArtifacts testArtifacts,
+    IUploadPageCoordinator pageCoordinator,
+    IFileUploadCoordinator fileUploadCoordinator,
+    IRp14aScenarioCoordinator scenarioCoordinator,
+    IRp14ScenarioCoordinator rp14ScenarioCoordinator,
+    IUploadVerificationCoordinator verificationCoordinator,
+    IUploadNavigationCoordinator navigationCoordinator)
+    : base(testArtifacts)
     {
         _pageCoordinator = pageCoordinator
             ?? throw new ArgumentNullException(nameof(pageCoordinator));
@@ -43,17 +39,14 @@ public sealed class UploadDocumentCoordinator :
         _scenarioCoordinator = scenarioCoordinator
             ?? throw new ArgumentNullException(nameof(scenarioCoordinator));
 
+        _rp14ScenarioCoordinator = rp14ScenarioCoordinator
+            ?? throw new ArgumentNullException(nameof(rp14ScenarioCoordinator));
+
         _verificationCoordinator = verificationCoordinator
             ?? throw new ArgumentNullException(nameof(verificationCoordinator));
 
         _navigationCoordinator = navigationCoordinator
             ?? throw new ArgumentNullException(nameof(navigationCoordinator));
-
-        _commonPage = commonPage
-            ?? throw new ArgumentNullException(nameof(commonPage));
-
-        _playwrightDriver = playwrightDriver
-            ?? throw new ArgumentNullException(nameof(playwrightDriver));
     }
 
     public async Task VerifyUploadDocumentPageIsDisplayedAsync()
@@ -62,23 +55,16 @@ public sealed class UploadDocumentCoordinator :
     public async Task ExpandCommonIssuesWhenUploadingRP14AFormsAsync()
         => await _pageCoordinator.ExpandCommonIssuesWhenUploadingRP14AFormsAsync();
 
-    public async Task<string> CaptureUploadDocumentPageVisualAsync()
-    {
-        return await CapturePageVisualAsync(
-            () => _commonPage.CaptureVisualAsync(_playwrightDriver.Page),
-            ScenarioConstant.UploadPage);
-    }
-
     public async Task UploadFileAsync(string filePath)
         => await _fileUploadCoordinator.UploadFileAsync(filePath);
 
     public async Task UploadValidRp14aAsync()
         => await _scenarioCoordinator.UploadValidRp14aAsync();
 
-    public async Task UploadRp14aWithCaseReferenceAsync(string? caseReference)
-        => await _scenarioCoordinator.UploadRp14aWithCaseReferenceAsync(caseReference);
-    public async Task UploadRp14aWithEmployerNameAsync(string? employerName)
-        => await _scenarioCoordinator.UploadRp14aWithEmployerNameAsync(employerName);
+    public async Task UploadRp14aWithCaseReferenceAsync(params string?[] caseReferences)
+        => await _scenarioCoordinator.UploadRp14aWithCaseReferenceAsync(caseReferences);
+    public async Task UploadRp14aWithEmployerNameAsync(params string?[] employerNames)
+        => await _scenarioCoordinator.UploadRp14aWithEmployerNameAsync(employerNames);
 
     public async Task UploadRp14aWithEmployerNameLengthAsync(int length)
         => await _scenarioCoordinator.UploadRp14aWithEmployerNameLengthAsync(length);
@@ -195,5 +181,106 @@ public sealed class UploadDocumentCoordinator :
             holidayOwed,
             employmentStartDate,
             employmentEndDate);
+    }
+
+    public async Task UploadValidRp14Async()
+    => await _rp14ScenarioCoordinator.UploadValidRp14Async();
+
+    public async Task UploadRp14WithCaseReferenceAsync(string? caseReference)
+        => await _rp14ScenarioCoordinator.UploadRp14WithCaseReferenceAsync(caseReference);
+
+    public async Task UploadRp14WithBusinessNameAsync(string? businessName)
+        => await _rp14ScenarioCoordinator.UploadRp14WithBusinessNameAsync(businessName);
+
+    public async Task UploadRp14WithCompanyNumberAsync(string? companyNumber)
+        => await _rp14ScenarioCoordinator.UploadRp14WithCompanyNumberAsync(companyNumber);
+
+    public async Task UploadRp14WithIncorporationDateAsync(DateOnly? incorporationDate)
+        => await _rp14ScenarioCoordinator.UploadRp14WithIncorporationDateAsync(incorporationDate);
+    public async Task UploadRp14WithNatureOfBusinessAsync(string? natureOfBusiness)
+    => await _rp14ScenarioCoordinator.UploadRp14WithNatureOfBusinessAsync(natureOfBusiness);
+    public async Task UploadRp14WithPayeAsync(string? district, string? reference)
+        => await _rp14ScenarioCoordinator.UploadRp14WithPayeAsync(district, reference);
+    public async Task UploadRp14WithDirectorAsync(
+        int directorNumber,
+        string? surname,
+        string? initials,
+        string? nino)
+        => await _rp14ScenarioCoordinator.UploadRp14WithDirectorAsync(
+            directorNumber,
+            surname,
+            initials,
+            nino);
+
+    public async Task UploadRp14WithShareholderAsync(
+        int shareholderNumber,
+        string? fullName,
+        string? numberOfShares,
+        string? percentage)
+        => await _rp14ScenarioCoordinator.UploadRp14WithShareholderAsync(
+            shareholderNumber,
+            fullName,
+            numberOfShares,
+            percentage);
+
+    public async Task UploadRp14WithNoOfEmployeesAsync(string? noOfEmployees)
+        => await _rp14ScenarioCoordinator.UploadRp14WithNoOfEmployeesAsync(noOfEmployees);
+
+    public async Task UploadRp14WithInsolvencyDetailsAsync(DateOnly? insolvencyDate, string? insolvencyType)
+        => await _rp14ScenarioCoordinator.UploadRp14WithInsolvencyDetailsAsync(insolvencyDate, insolvencyType);
+    public async Task UploadRp14WithStandardIndustrialClassificationAsync(string? standardIndustrialClassification)
+        => await _rp14ScenarioCoordinator.UploadRp14WithStandardIndustrialClassificationAsync(standardIndustrialClassification);
+
+    public async Task UploadRp14WithTransferDetailsAsync(
+        string? transferType,
+        string? transferToName,
+        DateOnly? transferDate,
+        DateOnly? negotiationDate)
+        => await _rp14ScenarioCoordinator.UploadRp14WithTransferDetailsAsync(
+            transferType,
+            transferToName,
+            transferDate,
+            negotiationDate);
+
+    public async Task UploadRp14WithIpDetailsAsync(
+        string? registrationNumber,
+        string? firmName,
+        string? ipName,
+        string? emailAddress)
+        => await _rp14ScenarioCoordinator.UploadRp14WithIpDetailsAsync(
+            registrationNumber,
+            firmName,
+            ipName,
+            emailAddress);
+
+    public async Task UploadRp14WithShareholdersAsync(
+    int shareholderCount,
+    string? fullName,
+    string? numberOfShares,
+    string? percentage)
+    => await _rp14ScenarioCoordinator.UploadRp14WithShareholdersAsync(
+        shareholderCount,
+        fullName,
+        numberOfShares,
+        percentage);
+
+    public async Task UploadRp14WithDirectorsAsync(
+    int directorCount,
+    string? surname,
+    string? initials,
+    string? nino)
+    => await _rp14ScenarioCoordinator.UploadRp14WithDirectorsAsync(
+        directorCount,
+        surname,
+        initials,
+        nino);
+
+    public async Task VerifyUploadDocumentContentSnapShotAsync()
+    {
+        await _fileUploadCoordinator.VerifyUploadDocumentContentSnapShotAsync();
+    }
+    public async Task VerifyUploadCommonIssuesContentVisualSnapShotAsync()
+    {
+        await _fileUploadCoordinator.VerifyUploadCommonIssuesContentVisualSnapShotAsync();
     }
 }
