@@ -1,5 +1,5 @@
 ﻿// ReSharper disable MemberCanBePrivate.Global - Cosmos won't serialize properly
-
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global - Cosmos won't serialize properly
 using System.Globalization;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
@@ -12,8 +12,6 @@ public sealed class ErrorPropertySummary
     
     public string Key { get; init; }
     
-    public bool ShowErrorDetails { get; init; } = true;
-
     public bool IsEmployeeErrors => Errors.Length > 0 && Errors[0] is EmployeeError;
     
     public string GetProperty()
