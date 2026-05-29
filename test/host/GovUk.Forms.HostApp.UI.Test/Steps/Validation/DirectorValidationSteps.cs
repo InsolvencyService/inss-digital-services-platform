@@ -35,6 +35,18 @@ public sealed class DirectorValidationSteps : ValidationStepsBase
             nino: niNumber);
     }
 
+    [Given("the RP14 XML contains {int} directors with national insurance number {string}")]
+    public async Task GivenTheRp14XmlContainsDirectorsWithNationalInsuranceNumber(
+    int directorCount,
+    string niNumber)
+    {
+        await UploadDocumentCoordinator.UploadRp14WithDirectorsAsync(
+            directorCount,
+            surname: new Faker().Name.LastName(),
+            initials: "TS",
+            nino: niNumber);
+    }
+
     [Then("I should see the following director validation errors")]
     public async Task ThenIShouldSeeTheFollowingDirectorValidationErrors(DataTable dataTable)
     {

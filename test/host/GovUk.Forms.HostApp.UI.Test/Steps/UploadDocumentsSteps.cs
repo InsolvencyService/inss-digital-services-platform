@@ -90,20 +90,14 @@ public class UploadDocumentsSteps
     [Then("the upload document page should match the visual snapshot")]
     public async Task ThenTheUploadDocumentPageShouldMatchTheVisualSnapshot()
     {
-        string screenshotPath = await _uploadDocumentCoordinator.CaptureUploadDocumentPageVisualAsync();
-        await VerifyFile(screenshotPath)
-            .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.UploadPage);
+        await _uploadDocumentCoordinator.VerifyUploadDocumentContentSnapShotAsync();
     }
 
 
     [Then("the common issues section should display the correct content")]
     public async Task ThenTheCommonIssuesSectionShouldDisplayTheCorrectContent()
     {
-        string screenshotPath = await _uploadDocumentCoordinator.CaptureUploadDocumentPageVisualAsync();
-        await VerifyFile(screenshotPath)
-            .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.UploadPageWithCommonIssuesSection);
+        await _uploadDocumentCoordinator.VerifyUploadCommonIssuesContentVisualSnapShotAsync();
     }
 
     [Then("I should see the upload error message {string}")]

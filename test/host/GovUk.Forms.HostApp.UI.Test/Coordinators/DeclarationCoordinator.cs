@@ -3,7 +3,6 @@ using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
-using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 
@@ -83,25 +82,11 @@ public sealed class DeclarationCoordinator(
             });
     }
 
-    public async Task<string> CaptureDeclarationVisualFileAsync()
+    public async Task VerifyDeclarationAriaSnapshotAsync()
     {
-        return await ExecuteStepAsync(
-            "Capture Declaration page visual snapshot",
-            async () =>
-            {
-                await playwrightDriver.Page.WaitForLoadStateAsync(LoadState.Load);
-                await playwrightDriver.Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
-
-                string screenshotPath = await CaptureCurrentPageVisualAsync(
-                    ScenarioConstant.DeclarationPage);
-
-                AllureApi.AddAttachment(
-                    "Declaration page visual snapshot",
-                    "image/png",
-                    screenshotPath);
-
-                return screenshotPath;
-            });
+        await ExecuteStepAsync(
+            "Verify Declaration page ARIA snapshot",
+            declarationPage.VerifyAriaSnapshotAsync);
     }
 
     public async Task NavigateToUploadAFilePageAsync()

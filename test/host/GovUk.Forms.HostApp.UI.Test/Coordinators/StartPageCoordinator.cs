@@ -1,8 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
-using GovUk.Forms.HostApp.UI.Test.Helpers;
+﻿using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Pages.Login;
-using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Text.RegularExpressions;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
@@ -11,7 +9,6 @@ public class StartPageCoordinator(
     IStartPage startPage,
     ISignInPage signInPage,
     ICommonPage commonPage,
-    IPlaywrightDriver playwrightDriver,
     ScenarioContext scenarioContext,
     TestArtifacts testArtifacts,
     DirectorConductReportingServicePage conductReportingServicePage) : BaseCoordinator(testArtifacts)
@@ -49,14 +46,9 @@ public class StartPageCoordinator(
         Assert.That(newPageUrl, Is.Not.EqualTo(originalPageUrl), "A new browser tab was not opened.");
     }
 
-    public async Task<string> CaptureStartPageVisualAsync()
+    public async Task CaptureStartPageVisualAsync()
     {
-        await playwrightDriver.Page.WaitForLoadStateAsync(LoadState.Load);
-        await playwrightDriver.Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
-
-        return await CapturePageVisualAsync(
-            () => commonPage.CaptureVisualAsync(playwrightDriver.Page),
-            ScenarioConstant.StartPage);
+        await startPage.VerifyStartPageAriaSnapshotAsync();
     }
 
     public async Task ClickOnFooterLinkAsync(string linkText)

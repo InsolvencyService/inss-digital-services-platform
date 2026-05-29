@@ -1,5 +1,4 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
-using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -60,11 +59,7 @@ public class StartPageSteps
     [Then("the start page should match the visual snapshot")]
     public async Task ThenTheStartPageShouldMatchTheVisualSnapshot()
     {
-        string screenshotPath = await _startPageCoordinator.CaptureStartPageVisualAsync();
-
-        await VerifyFile(screenshotPath)
-            .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.StartPage);
+        await _startPageCoordinator.CaptureStartPageVisualAsync();
     }
 
     [Then("a new page should open with title {string} with url containing {string}")]

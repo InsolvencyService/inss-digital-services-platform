@@ -3,4 +3,6 @@
 public interface IFileUploadCoordinator
 {
     Task UploadFileAsync(string filePath);
+    Task VerifyUploadDocumentContentSnapShotAsync();
+    Task VerifyUploadCommonIssuesContentVisualSnapShotAsync();
 }

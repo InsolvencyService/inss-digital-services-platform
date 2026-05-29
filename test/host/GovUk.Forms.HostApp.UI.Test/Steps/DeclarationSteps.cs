@@ -1,6 +1,5 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
-using GovUk.Forms.HostApp.UI.Test.Support;
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
 [Scope(Feature = "Declaration Page")]
@@ -73,11 +72,7 @@ public class DeclarationSteps
     [Then("I will see the terms I need to agree to")]
     public async Task ThenIWillSeeTheTermsINeedToAgreeTo()
     {
-        string screenshotPath = await _declarationCoordinator.CaptureDeclarationVisualFileAsync();
-
-        await VerifyFile(screenshotPath)
-            .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.DeclarationPage);
+        await _declarationCoordinator.VerifyDeclarationAriaSnapshotAsync();
     }
 
     [Then("I should have the ability to sign out")]

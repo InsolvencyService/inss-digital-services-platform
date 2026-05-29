@@ -1,9 +1,6 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
-using GovUk.Forms.HostApp.UI.Test.Factories;
+﻿using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
-using GovUk.Forms.HostApp.UI.Test.Pages.Common;
-using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
@@ -21,8 +18,6 @@ public sealed class UploadDocumentCoordinator :
     private readonly IRp14aScenarioCoordinator _scenarioCoordinator;
     private readonly IUploadVerificationCoordinator _verificationCoordinator;
     private readonly IUploadNavigationCoordinator _navigationCoordinator;
-    private readonly ICommonPage _commonPage;
-    private readonly IPlaywrightDriver _playwrightDriver;
     private readonly IRp14ScenarioCoordinator _rp14ScenarioCoordinator;
 
     public UploadDocumentCoordinator(
@@ -32,9 +27,7 @@ public sealed class UploadDocumentCoordinator :
     IRp14aScenarioCoordinator scenarioCoordinator,
     IRp14ScenarioCoordinator rp14ScenarioCoordinator,
     IUploadVerificationCoordinator verificationCoordinator,
-    IUploadNavigationCoordinator navigationCoordinator,
-    ICommonPage commonPage,
-    IPlaywrightDriver playwrightDriver)
+    IUploadNavigationCoordinator navigationCoordinator)
     : base(testArtifacts)
     {
         _pageCoordinator = pageCoordinator
@@ -54,12 +47,6 @@ public sealed class UploadDocumentCoordinator :
 
         _navigationCoordinator = navigationCoordinator
             ?? throw new ArgumentNullException(nameof(navigationCoordinator));
-
-        _commonPage = commonPage
-            ?? throw new ArgumentNullException(nameof(commonPage));
-
-        _playwrightDriver = playwrightDriver
-            ?? throw new ArgumentNullException(nameof(playwrightDriver));
     }
 
     public async Task VerifyUploadDocumentPageIsDisplayedAsync()
@@ -67,16 +54,6 @@ public sealed class UploadDocumentCoordinator :
 
     public async Task ExpandCommonIssuesWhenUploadingRP14AFormsAsync()
         => await _pageCoordinator.ExpandCommonIssuesWhenUploadingRP14AFormsAsync();
-
-    public async Task<string> CaptureUploadDocumentPageVisualAsync()
-    {
-        await _playwrightDriver.Page.WaitForLoadStateAsync(LoadState.Load);
-        await _playwrightDriver.Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
-
-        return await CapturePageVisualAsync(
-            () => _commonPage.CaptureVisualAsync(_playwrightDriver.Page),
-            ScenarioConstant.UploadPage);
-    }
 
     public async Task UploadFileAsync(string filePath)
         => await _fileUploadCoordinator.UploadFileAsync(filePath);
@@ -297,4 +274,13 @@ public sealed class UploadDocumentCoordinator :
         surname,
         initials,
         nino);
+
+    public async Task VerifyUploadDocumentContentSnapShotAsync()
+    {
+        await _fileUploadCoordinator.VerifyUploadDocumentContentSnapShotAsync();
+    }
+    public async Task VerifyUploadCommonIssuesContentVisualSnapShotAsync()
+    {
+        await _fileUploadCoordinator.VerifyUploadCommonIssuesContentVisualSnapShotAsync();
+    }
 }

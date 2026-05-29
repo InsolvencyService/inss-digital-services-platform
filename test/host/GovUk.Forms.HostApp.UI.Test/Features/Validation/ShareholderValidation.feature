@@ -8,17 +8,17 @@ So that I know what to change and re-upload
    Given I am on the upload page as a "Admin" user
 
     @regression @validation @rp14
-    Scenario Outline: Display error for invalid shareholder percentage
+    Scenario Outline: RP14 Display error for invalid shareholder percentage
             Given the RP14 XML contains <shareholderCount> shareholder percentages "<percentage>"
              When I attempt to submit the RP14
              Then I should see the following shareholder validation errors
-                  | Message                                     | Hint                            | Type         |
-                  | <errorCount> invalid shareholder percentage | Expected format is 50.50 or 100 | Shareholders |
+                  | Message                                     | Hint                            | Type                   |
+                  | <errorCount> invalid shareholder percentage | Expected format is 50.50 or 100 | Shareholder percentage |
 
         Examples:
                   | shareholderCount | percentage | errorCount |
                   | 1                | 50.5       | 1          |
-                  | 3                | 50.5       | 2          |
+                  | 3                | 50.5       | 3          |
                   | 1                | 50.555     | 1          |
                   | 2                | 50.555     | 2          |
                   | 1                | -10        | 1          |
@@ -45,16 +45,16 @@ Scenario Outline: RP14 shareholder name length boundary validation
              Then the error summary should "<summaryBehaviour>" with "<detailsBehaviour>" With "<type>" 
 
         Examples:
-                  | length | summaryBehaviour               | detailsBehaviour                 | type                |
-                  |    100 | none                           | none                             | Name of shareholder |
-                  |    101 | 1 too long name of shareholder | Up to 100 characters are allowed | Name of shareholder |
+                  | length | summaryBehaviour               | detailsBehaviour                 | type             |
+                  |    100 | none                           | none                             | Shareholder name |
+                  |    101 | 1 too long name of shareholder | Up to 100 characters are allowed | Shareholder name |
 
 
-@regression @validation @rp14 @bug
+@regression @validation @rp14 
  Scenario Outline: RP14 shareholder name length validation for multiple shareholders
             Given the RP14 XML contains <shareholderCount> shareholder names of length <length>
              When I attempt to submit the RP14
              Then the error summary should "<errorMessage>" with "<detailsBehaviour>" With "<type>"
         Examples:
-                  | shareholderCount | length | errorMessage                   | detailsBehaviour                 | type                |
-                  |                3 |    101 | 3 too long name of shareholder | Up to 100 characters are allowed | Name of shareholder |
+                  | shareholderCount | length | errorMessage                   | detailsBehaviour                 | type             |
+                  |                3 |    101 | 3 too long name of shareholder | Up to 100 characters are allowed | Shareholder name |
