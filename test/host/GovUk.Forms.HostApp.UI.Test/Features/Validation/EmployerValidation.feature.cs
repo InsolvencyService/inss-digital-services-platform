@@ -217,63 +217,63 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 27
     await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table25 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "Category"});
-                table25.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Case"});
-                table25.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employer"});
-                table25.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employee"});
-                table25.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employee pay"});
-                table25.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employee holiday"});
 #line 28
-    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table25, "Then ");
+    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table9, "Then ");
 #line hidden
-                global::Reqnroll.Table table26 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "Category",
                             "Type",
                             "Message",
                             "Hint"});
-                table26.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Case",
                             "Case reference",
                             "1 missing a case reference",
                             ""});
-                table26.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Case",
                             "Case reference",
                             "1 invalid case reference format",
                             "Format is CN12345678"});
-                table26.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employer",
                             "Employer name",
                             "1 invalid length of the employer name",
                             "Maximum of 99 characters allowed"});
-                table26.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee",
                             "Employee surname",
                             "1 missing employee surname",
                             ""});
-                table26.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee pay",
                             "Employee basic pay per week",
                             "1 invalid basic pay per week",
                             "Expected format is 12.34 or 100"});
-                table26.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 invalid holiday owed",
                             "Expected format is 28.25 or 33"});
-                table26.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 invalid range of holiday owed",
                             "0 to 365 days allowed"});
 #line 35
-    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table26, "And ");
+    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table10, "And ");
 #line hidden
 #line 44
     await testRunner.AndAsync("I should be able to view error details for all validation categories", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");

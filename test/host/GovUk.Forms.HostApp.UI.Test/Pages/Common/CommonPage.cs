@@ -30,6 +30,9 @@ public class CommonPage : ICommonPage
     {
         ArgumentNullException.ThrowIfNull(page);
 
+        await page.WaitForLoadStateAsync(LoadState.Load);
+        await page.WaitForTimeoutAsync(500);
+
         return await page.ScreenshotAsync(new()
         {
             FullPage = true,

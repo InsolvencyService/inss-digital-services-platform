@@ -51,6 +51,9 @@ public class StartPageCoordinator(
 
     public async Task<string> CaptureStartPageVisualAsync()
     {
+        await playwrightDriver.Page.WaitForLoadStateAsync(LoadState.Load);
+        await playwrightDriver.Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
+
         return await CapturePageVisualAsync(
             () => commonPage.CaptureVisualAsync(playwrightDriver.Page),
             ScenarioConstant.StartPage);

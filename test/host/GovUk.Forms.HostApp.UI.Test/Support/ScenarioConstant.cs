@@ -21,6 +21,7 @@ public class ScenarioConstant
 
     //timeout
     public const int ElementTimeout = 8000;
+    public const int WaitForVisual = 1000;
 
     // Default Employee details 
     public const string Surname = "Surname Test";

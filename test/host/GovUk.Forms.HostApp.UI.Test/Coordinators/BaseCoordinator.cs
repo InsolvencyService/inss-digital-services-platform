@@ -13,9 +13,7 @@ public abstract class BaseCoordinator
             ?? throw new ArgumentNullException(nameof(testArtifacts));
     }
 
-    protected async Task<string> CapturePageVisualAsync(
-        Func<Task<byte[]>> captureAction,
-        string name)
+    protected async Task<string> CapturePageVisualAsync(Func<Task<byte[]>> captureAction, string name)
     {
         ArgumentNullException.ThrowIfNull(captureAction);
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -23,6 +21,8 @@ public abstract class BaseCoordinator
         byte[] screenshot = await captureAction();
 
         string path = TestArtifacts.GetScreenshotPath(name);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
         await File.WriteAllBytesAsync(path, screenshot);
 

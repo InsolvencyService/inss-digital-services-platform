@@ -83,12 +83,15 @@ public sealed class DeclarationCoordinator(
             });
     }
 
-    public async Task<string> CaptureDeclarationVisualAsync()
+    public async Task<string> CaptureDeclarationVisualFileAsync()
     {
         return await ExecuteStepAsync(
             "Capture Declaration page visual snapshot",
             async () =>
             {
+                await playwrightDriver.Page.WaitForLoadStateAsync(LoadState.Load);
+                await playwrightDriver.Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
+
                 string screenshotPath = await CaptureCurrentPageVisualAsync(
                     ScenarioConstant.DeclarationPage);
 

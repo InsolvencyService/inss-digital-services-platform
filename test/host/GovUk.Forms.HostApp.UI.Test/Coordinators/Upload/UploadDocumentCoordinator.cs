@@ -70,6 +70,9 @@ public sealed class UploadDocumentCoordinator :
 
     public async Task<string> CaptureUploadDocumentPageVisualAsync()
     {
+        await _playwrightDriver.Page.WaitForLoadStateAsync(LoadState.Load);
+        await _playwrightDriver.Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
+
         return await CapturePageVisualAsync(
             () => _commonPage.CaptureVisualAsync(_playwrightDriver.Page),
             ScenarioConstant.UploadPage);
