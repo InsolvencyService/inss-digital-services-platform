@@ -1,0 +1,98 @@
+﻿
+                    
+
+                
+
+
+<div class="govuk-width-container">
+    
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                
+
+<form action="/ip-upload" enctype="multipart/form-data" method="post"><input data-val="true" data-val-required="The Value field is required." id="Id_Value" name="Id.Value" type="hidden" value="be12436f-2ac2-4c62-a97e-40f36a986989" style=""><input data-val="true" data-val-required="The Value field is required." id="Path_Value" name="Path.Value" type="hidden" value="/ip-upload/redundancy-payment/upload-document" style=""><input data-val="true" data-val-required="The TypeName field is required." id="TypeName" name="TypeName" type="hidden" value="Inss.GovUk.Forms.IPUpload.Domain.XmlFileUploadModel" style=""><input data-val="true" data-val-required="The ViewName field is required." id="ViewName" name="ViewName" type="hidden" value="_XmlFileUpload" style=""><input data-val="true" data-val-required="The Value field is required." id="page_LinkedToNode_Value" name="page.LinkedToNode.Value" type="hidden" value="FileUpload" style=""><input data-val="true" data-val-required="The Value field is required." id="page_MetaData_Group_Value" name="page.MetaData.Group.Value" type="hidden" value="" style="">
+<h1 class="govuk-heading-l">
+  Upload redundancy payment forms (RP14/A)
+</h1>
+
+<div class="govuk-form-group"><label for="Contents" class="govuk-label govuk-label--m" id="Contents-label">Upload a file</label><div id="Contents-hint" class="govuk-hint">
+    The uploaded file must be XML ending with '.xml'. (Other formats e.g. PDF, XLS are NOT supported).
+  </div><div class="govuk-drop-zone" data-module="govuk-file-upload" data-govuk-file-upload-init=""><button class="govuk-file-upload-button govuk-file-upload-button--empty" type="button" id="Contents" aria-describedby="Contents-hint" aria-labelledby="Contents-label Contents-comma Contents"><span class="govuk-body govuk-file-upload-button__status" aria-live="polite">No file chosen</span><span class="govuk-visually-hidden" id="Contents-comma">, </span><span class="govuk-file-upload-button__pseudo-button-container"><span class="govuk-button govuk-button--secondary govuk-file-upload-button__pseudo-button">Choose file</span> <span class="govuk-body govuk-file-upload-button__instruction">or drop file</span></span></button><input type="file" id="Contents-input" name="Contents" class="govuk-file-upload" aria-describedby="Contents-hint" accept=".xml" hidden="true" tabindex="-1" aria-hidden="true" style=""></div><span class="govuk-file-upload-announcements govuk-visually-hidden" aria-live="assertive"></span></div>
+
+<h2 class="govuk-heading-m">Errors during the upload process</h2>
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+     Common issues when uploading RP14/A forms
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+  <p class="govuk-body">
+  Even if you have followed all the steps in the upload instructions, you might see an error message. Using IP software to upload the data will minimise the risk of errors.
+  </p>
+  <p class="govuk-body">
+  Common issues when uploading RP14/A forms:
+  </p>
+  <h3 class="govuk-heading-s">
+  File size
+  </h3>
+  <p class="govuk-body">
+  The file size must be less than 10MB. If your file is bigger than this, you need to separate it into smaller files so it can be uploaded.</p>
+  <h3 class="govuk-heading-s">
+  Case and company details
+  </h3>
+  <p class="govuk-body">
+  These can cause delays in processing claims. To avoid this, check that: 
+  </p>
+  <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+    <li>the case reference number (CN) is present and correct, and that there are no spaces before or after it. The employer name and case reference must be entered on each line of the spreadsheet</li>  
+    <li>the case reference number (CN) is present and correct, and that there are no spaces before or after it. The employer name and case reference must be entered on each line of the spreadsheet</li>
+    <li>the correct Company Registration Number (CRN) is used, check the CRN match
+    es the case</li>
+    <li>National Insurance numbers are all valid and correct, as temporary or dummy numbers will not be accepted by the platform</li>
+  </ul>
+  <h3 class="govuk-heading-s">
+  Formatting problems
+  </h3>
+  <p class="govuk-body">  
+  These can include:
+  </p>
+  <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+    <li>Empty or blank rows at the end of the file. To remove any empty records:
+      <ol>
+        <li>Highlight the blank row.</li>
+        <li>Right click.</li>
+        <li>Delete the row.</li>
+      </ol>
+    </li>
+    <li>Too many decimal places. You might need to select each cell individually to make sure figures do not have more than 2 decimal places, as it’s not always visible.
+      <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+        <li>In the RP14, you will need to check the Shareholder percentage field</li>
+        <li>In the RP14A, you will need to check 1). basic pay per week, 2). arrears of pay owed and 3). number of days holiday owed</li>
+        <li>Incorrect characters. Only numbers must be put in the numerical fields. If you include any special characters, like £, or any text, the upload will fail.</li>
+      </ul>
+    </li><li>
+	    Incorrect date entries. Date fields must be formatted as DD/MM/YYYY. If you do not know the date and the field is not mandatory, leave it blank.
+    </li>
+    <li>
+	    Overtyped drop-down data. When entering data into a cell with a drop-down box, you must select one of the options provided using the selector, and don’t overtype.
+    </li>
+    <li>
+      Ignoring the smart tag. Do not enter any data after the blue smart tag on the spreadsheet, as it will be lost.
+    </li>
+  </ul>
+ </div>
+ </details>
+
+<p class="govuk-body">
+  If you follow this guidance and your document will still not upload, email us at:
+</p>
+
+<p class="govuk-body">RPS.Stakeholder@insolvency.gov.uk</p>            <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">Continue</button>
+            </div>
+        </div>
+</div>
+
+
+            

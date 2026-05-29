@@ -8,7 +8,6 @@ namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
 public class UploadDocumentPage : BasePage, IUploadDocumentPage
 {
-
     private readonly IPlaywrightDriver _playwrightDriver;
     private readonly ICommonPage _commonPage;
 
@@ -37,8 +36,6 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     private ILocator UploadFileErrorMessage => Page.Locator(UploadLocators.Selectors.ContentError);
     private ILocator UploadFileInput => Page.Locator(UploadLocators.Selectors.UploadForm);
     private ILocator MainContent => Page.Locator(StartPageLocators.Selectors.MainContent);
-    private ILocator govukDetailsText => Page.Locator(".govuk-details__text");
-
 
     protected override async Task PageContentLoadedAsync()
     {
@@ -52,7 +49,6 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
         await Expect(ContinueButton).ToBeVisibleAsync();
     }
 
-
     public async Task ClickOnContinueButtonAsync()
     {
         await ContinueButton.ClickAsync();
@@ -61,6 +57,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     public async Task ClickOnBackButtonAsync()
     {
         await BackButton.ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = ScenarioConstant.ElementTimeout });
     }
 
     public async Task<IPage> ClickOnGiveFeedbackLinkAsync()
@@ -102,7 +99,8 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     public async Task<IReadOnlyList<string>> GetUploadedFileNamesAsync()
     {
-        return await UploadedFileStatus.AllInnerTextsAsync();
+        IReadOnlyList<string> texts = await UploadedFileStatus.AllInnerTextsAsync();
+        return texts.Select(t => t.Trim()).ToList();
     }
 
     public async Task VerifyUploadFileErrorAsync(UploadFileError expected)
@@ -125,19 +123,14 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     public async Task VerifyUploadContentAriaSnapshotAsync()
     {
         await WaitForPageToLoadAsync();
+        await Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
+        string html = await MainContent.InnerHTMLAsync();
 
-        await Expect(MainContent)
-            .ToMatchAriaSnapshotAsync("""
-              - main:
-                - heading "Upload redundancy payment forms (RP14/A)" [level=1]
-                - text: Upload a file The uploaded file must be XML ending with '.xml'. (Other formats e.g. PDF, XLS are NOT supported).
-                - button "Upload a file , No file chosen Choose file or drop file": No file chosen , Choose file or drop file
-                - heading "Errors during the upload process" [level=2]
-                - group: Common issues when uploading RP14/A forms
-                - paragraph: "If you follow this guidance and your document will still not upload, email us at:"
-                - paragraph: RPS.Stakeholder@insolvency.gov.uk
-                - button "Continue"
-              """);
+        await Verify(html)
+        .UseDirectory("Snapshots/UploadDocument")
+        .UseFileName("UploadingRP14AForms")
+        .ScrubLinesContaining("__RequestVerificationToken")
+        .DisableRequireUniquePrefix();
     }
 
     public async Task VerifyCommonIssuesWhenUploadingAriaSnapshotAsync()
@@ -148,9 +141,13 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
         await VerifyCommonIssuesIntroAriaSnapshotAsync();
         await Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
 
-        await Verify(govukDetailsText)
+        string html = await MainContent.InnerHTMLAsync();
+
+        await Verify(html)
             .UseDirectory("Snapshots/UploadDocument")
-            .UseFileName("CommonIssuesWhenUploadingRP14AForms");
+            .UseFileName("CommonIssuesWhenUploadingRP14AForms")
+            .ScrubLinesContaining("__RequestVerificationToken")
+            .DisableRequireUniquePrefix();
     }
 
     private async Task VerifyUploadPageHeaderAriaSnapshotAsync()
