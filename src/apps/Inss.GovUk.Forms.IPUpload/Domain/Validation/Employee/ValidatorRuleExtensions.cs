@@ -14,44 +14,44 @@ internal static partial class ValidatorRuleExtensions
         {
             return rule
                 .NotEmpty()
-                .OverridePropertyName(RP14AValidationInfo.MissingCaseReference.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.MissingCaseReference.ErrorFormat)
+                .OverridePropertyName(CaseValidationInfo.MissingCaseReference.Property)
+                .WithMessage(CaseValidationInfo.MissingCaseReference.Key)
                 .Matches(ValidationInfo.CaseReferenceFormat)
-                .OverridePropertyName(RP14AValidationInfo.InvalidCaseReferenceFormat.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.InvalidCaseReferenceFormat.ErrorFormat)
+                .OverridePropertyName(CaseValidationInfo.InvalidCaseReferenceFormat.Property)
+                .WithMessage(CaseValidationInfo.InvalidCaseReferenceFormat.Key)
                 .MaximumLength(12)
-                .OverridePropertyName(RP14AValidationInfo.InvalidCaseReferenceLength.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.InvalidCaseReferenceLength.ErrorFormat);
+                .OverridePropertyName(CaseValidationInfo.InvalidCaseReferenceLength.Property)
+                .WithMessage(CaseValidationInfo.InvalidCaseReferenceLength.Key);
         }
 
         internal IRuleBuilderOptions<T, string> ValidateNino()
         {
             return rule
                 .NotEmpty()
-                .OverridePropertyName(RP14AValidationInfo.MissingNino.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.MissingNino.ErrorFormat)
+                .OverridePropertyName(EmployeeValidationInfo.MissingEmployeeNino.Property)
+                .WithMessage(EmployeeValidationInfo.MissingEmployeeNino.Key)
                 .Matches(ValidationInfo.NinoFormat)
-                .OverridePropertyName(RP14AValidationInfo.InvalidNinoFormat.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.InvalidNinoFormat.ErrorFormat);
+                .OverridePropertyName(EmployeeValidationInfo.InvalidEmployeeNinoFormat.Property)
+                .WithMessage(EmployeeValidationInfo.InvalidEmployeeNinoFormat.Key);
         }
         
         internal IRuleBuilderOptions<T, string> ValidateEmployerName()
         {
             return rule
                 .MaximumLength(99)
-                .OverridePropertyName(RP14AValidationInfo.InvalidEmployerNameLength.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.InvalidEmployerNameLength.ErrorFormat);
+                .OverridePropertyName(EmployerValidationInfo.InvalidEmployerNameLength.Property)
+                .WithMessage(EmployerValidationInfo.InvalidEmployerNameLength.Key);
         }
         
         internal IRuleBuilderOptions<T, string> ValidateEmployeeSurname()
         {
             return rule
                 .NotEmpty()
-                .OverridePropertyName(RP14AValidationInfo.MissingEmployeeSurname.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.MissingEmployeeSurname.ErrorFormat)
+                .OverridePropertyName(EmployeeValidationInfo.MissingEmployeeSurname.Property)
+                .WithMessage(EmployeeValidationInfo.MissingEmployeeSurname.Key)
                 .MaximumLength(99)
-                .OverridePropertyName(RP14AValidationInfo.InvalidEmployeeSurnameLength.PropertyFormat)
-                .WithMessage(RP14AValidationInfo.InvalidEmployeeSurnameLength.ErrorFormat);
+                .OverridePropertyName(EmployeeValidationInfo.InvalidEmployeeSurnameLength.Property)
+                .WithMessage(EmployeeValidationInfo.InvalidEmployeeSurnameLength.Key);
         }
     }
 
@@ -61,24 +61,24 @@ internal static partial class ValidatorRuleExtensions
         {
             return rule
                 .Must(value => MoneyFormatRegex().IsMatch(value.ToString(CultureInfo.CurrentCulture)))
-                .OverridePropertyName(validationInfo.PropertyFormat)
-                .WithMessage(validationInfo.ErrorFormat);
+                .OverridePropertyName(validationInfo.Property)
+                .WithMessage(validationInfo.Key);
         }
         
         internal IRuleBuilderOptions<T, decimal> ValidateHoliday(ValidationInfo validationInfo)
         {
             return rule
                 .Must(value => HolidayFormatRegex().IsMatch(value.ToString(CultureInfo.CurrentCulture)))
-                .OverridePropertyName(validationInfo.PropertyFormat)
-                .WithMessage(validationInfo.ErrorFormat);
+                .OverridePropertyName(validationInfo.Property)
+                .WithMessage(validationInfo.Key);
         }
         
         internal IRuleBuilderOptions<T, decimal> ValidateDaysInYear(ValidationInfo validationInfo)
         {
             return rule
                 .InclusiveBetween(0, 365)
-                .OverridePropertyName(validationInfo.PropertyFormat)
-                .WithMessage(validationInfo.ErrorFormat);
+                .OverridePropertyName(validationInfo.Property)
+                .WithMessage(validationInfo.Key);
         }
     }
 
@@ -98,8 +98,8 @@ internal static partial class ValidatorRuleExtensions
                     DateTime endDate = endDateProperty(obj);
                     return currentValue < endDate;
                 })
-                .OverridePropertyName(validationInfo.PropertyFormat)
-                .WithMessage(validationInfo.ErrorFormat);
+                .OverridePropertyName(validationInfo.Property)
+                .WithMessage(validationInfo.Key);
         }
     }
     

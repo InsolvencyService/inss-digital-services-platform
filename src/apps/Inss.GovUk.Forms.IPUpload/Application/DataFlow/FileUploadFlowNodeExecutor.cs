@@ -63,21 +63,21 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         Inss.Common.IPUpload.Employee.Spreadsheet.RP14A redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
-
+        List<Error> errors = [];
+        
         foreach (Inss.Common.IPUpload.Employee.Spreadsheet.RP14AEmployee employee in redundancyPayment.Employee)
         {
             if (!(await caseReferenceService.CheckExistsAsync(employee.Header.CaseReference)))
             {
-                fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
-                    "Case",
-                    "Case reference",
-                    "[COUNT] case reference have not been matched in our system",
-                    null,
-                    employee.EmployeeName.Forenames,
-                    employee.EmployeeName.Surname,
-                    DateOnly.FromDateTime(employee.DateOfBirth),
-                    employee.NINO,
-                    employee.Header.CaseReference));
+                errors.Add(new EmployeeError
+                {
+                    Key = CaseValidationInfo.UnknownCaseReference.Key,
+                    Forenames = employee.EmployeeName.Forenames,
+                    Surname = employee.EmployeeName.Surname,
+                    Dob = DateOnly.FromDateTime(employee.DateOfBirth),
+                    Nino = employee.NINO,
+                    Value = employee.Header.CaseReference
+                });
             }
             
             RP14ASpreadsheetEmployeeValidator validator = new();
@@ -87,19 +87,20 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             {
                 foreach (var validationError in validationResult.Errors)
                 {
-                    fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
-                        ValidationInfo.GetCategory(validationError.PropertyName),
-                        ValidationInfo.GetProperty(validationError.PropertyName),
-                        ValidationInfo.GetError(validationError.ErrorMessage),
-                        ValidationInfo.GetHint(validationError.ErrorMessage),
-                        employee.EmployeeName.Forenames,
-                        employee.EmployeeName.Surname,
-                        DateOnly.FromDateTime(employee.DateOfBirth),
-                        employee.NINO,
-                        validationError.AttemptedValue?.ToString()));
+                    errors.Add(new EmployeeError
+                    {
+                        Key = validationError.ErrorMessage,
+                        Forenames = employee.EmployeeName.Forenames,
+                        Surname = employee.EmployeeName.Surname,
+                        Dob = DateOnly.FromDateTime(employee.DateOfBirth),
+                        Nino = employee.NINO,
+                        Value = validationError.AttemptedValue?.ToString()
+                    });
                 }
             }
         }
+        
+        fileUploadErrors.BuildErrorList(errors);
     }
     
     private async Task ValidateSpreadsheetUploadAsync(
@@ -107,18 +108,17 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         Inss.Common.IPUpload.Employer.Spreadsheet.RP14 redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
-
+        List<Error> errors = [];
+        
         if (!string.IsNullOrWhiteSpace(redundancyPayment.Header.CaseReference))
         {
             if (!(await caseReferenceService.CheckExistsAsync(redundancyPayment.Header.CaseReference)))
             {
-                fileUploadErrors.AddOrMergeError(new EmployerErrorInfo(
-                    "Case",
-                    "Case reference",
-                    "[COUNT] case reference have not been matched in our system",
-                    null,
-                    ["Case reference value"],
-                    [redundancyPayment.Header.CaseReference]));
+                errors.Add(new EmployerError
+                {
+                    Key = CaseValidationInfo.UnknownCaseReference.Key,
+                    Value = redundancyPayment.Header.CaseReference
+                });
             }
         }
 
@@ -129,16 +129,15 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         {
             foreach (var validationError in validationResult.Errors)
             {
-                fileUploadErrors.AddOrMergeError(new EmployerErrorInfo(
-                    ValidationInfo.GetCategory(validationError.PropertyName),
-                    ValidationInfo.GetProperty(validationError.PropertyName),
-                    ValidationInfo.GetError(validationError.ErrorMessage),
-                    ValidationInfo.GetHint(validationError.ErrorMessage),
-                    [$"{ValidationInfo.GetProperty(validationError.PropertyName)} value"],
-                    [validationError.AttemptedValue?.ToString()]
-                ));
+                errors.Add(new EmployerError
+                {
+                    Key = validationError.ErrorMessage,
+                    Value = validationError.AttemptedValue?.ToString()
+                });
             }
         }
+        
+        fileUploadErrors.BuildErrorList(errors);
     }
     
     private async Task ValidateApiUploadAsync(
@@ -147,6 +146,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
     {
         RP14AApiValidator apiValidator = new();
         ValidationResult? validationResult = await apiValidator.ValidateAsync(redundancyPayment);
+        List<Error> errors = [];
         
         if (validationResult?.IsValid == false)
         {
@@ -154,16 +154,15 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             
             foreach (var validationError in validationResult.Errors)
             {
-                fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
-                    ValidationInfo.GetCategory(validationError.PropertyName),
-                    ValidationInfo.GetProperty(validationError.PropertyName),
-                    ValidationInfo.GetError(validationError.ErrorMessage),
-                    ValidationInfo.GetHint(validationError.ErrorMessage),
-                    employee.EmployeeName.Forenames,
-                    employee.EmployeeName.Surname,
-                    DateOnly.FromDateTime(employee.DateOfBirth),
-                    employee.NINO,
-                    validationError.AttemptedValue?.ToString()));
+                errors.Add(new EmployeeError
+                {
+                    Key = validationError.ErrorMessage,
+                    Forenames = employee.EmployeeName.Forenames,
+                    Surname = employee.EmployeeName.Surname,
+                    Dob = DateOnly.FromDateTime(employee.DateOfBirth),
+                    Nino = employee.NINO,
+                    Value = validationError.AttemptedValue?.ToString()
+                });
             }
         }
         
@@ -173,16 +172,15 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         {
             Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
             
-            fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
-                "Case",
-                "Case reference",
-                "[COUNT] case reference have not been matched in our system",
-                null,
-                employee.EmployeeName.Forenames,
-                employee.EmployeeName.Surname,
-                DateOnly.FromDateTime(employee.DateOfBirth),
-                employee.NINO,
-                redundancyPayment.Header.CaseReference));
+            errors.Add(new EmployeeError
+            {
+                Key = CaseValidationInfo.UnknownCaseReference.Key,
+                Forenames = employee.EmployeeName.Forenames,
+                Surname = employee.EmployeeName.Surname,
+                Dob = DateOnly.FromDateTime(employee.DateOfBirth),
+                Nino = employee.NINO,
+                Value = redundancyPayment.Header.CaseReference
+            });
         }
         
         foreach (Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee in redundancyPayment.Employee)
@@ -194,19 +192,20 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             {
                 foreach (var validationError in employeeValidationResult.Errors)
                 {
-                    fileUploadErrors.AddOrMergeError(new EmployeeErrorInfo(
-                        ValidationInfo.GetCategory(validationError.PropertyName),
-                        ValidationInfo.GetProperty(validationError.PropertyName),
-                        ValidationInfo.GetError(validationError.ErrorMessage),
-                        ValidationInfo.GetHint(validationError.ErrorMessage),
-                        employee.EmployeeName.Forenames,
-                        employee.EmployeeName.Surname,
-                        DateOnly.FromDateTime(employee.DateOfBirth),
-                        employee.NINO,
-                        validationError.AttemptedValue?.ToString()));
+                    errors.Add(new EmployeeError
+                    {
+                        Key = validationError.ErrorMessage,
+                        Forenames = employee.EmployeeName.Forenames,
+                        Surname = employee.EmployeeName.Surname,
+                        Dob = DateOnly.FromDateTime(employee.DateOfBirth),
+                        Nino = employee.NINO,
+                        Value = validationError.AttemptedValue?.ToString()
+                    });
                 }
             }
         }
+        
+        fileUploadErrors.BuildErrorList(errors);
     }
     
     private async Task ValidateApiUploadAsync(
@@ -214,18 +213,17 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         Inss.Common.IPUpload.Employer.Api.RP14 redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
-
+        List<Error> errors = [];
+        
         if (!string.IsNullOrWhiteSpace(redundancyPayment.Header.CaseReference))
         {
             if (!(await caseReferenceService.CheckExistsAsync(redundancyPayment.Header.CaseReference)))
             {
-                fileUploadErrors.AddOrMergeError(new EmployerErrorInfo(
-                    "Case",
-                    "Case reference",
-                    "[COUNT] case reference have not been matched in our system",
-                    null,
-                    ["Case reference value"],
-                    [redundancyPayment.Header.CaseReference]));
+                errors.Add(new EmployerError
+                {
+                    Key = CaseValidationInfo.UnknownCaseReference.Key,
+                    Value = redundancyPayment.Header.CaseReference
+                });
             }
         }
 
@@ -236,15 +234,14 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         {
             foreach (var validationError in validationResult.Errors)
             {
-                fileUploadErrors.AddOrMergeError(new EmployerErrorInfo(
-                    ValidationInfo.GetCategory(validationError.PropertyName),
-                    ValidationInfo.GetProperty(validationError.PropertyName),
-                    ValidationInfo.GetError(validationError.ErrorMessage),
-                    ValidationInfo.GetHint(validationError.ErrorMessage),
-                    [$"{ValidationInfo.GetProperty(validationError.PropertyName)} value"],
-                    [validationError.AttemptedValue?.ToString()]
-                ));
+                errors.Add(new EmployerError
+                {
+                    Key = validationError.ErrorMessage,
+                    Value = validationError.AttemptedValue?.ToString()
+                });
             }
         }
+        
+        fileUploadErrors.BuildErrorList(errors);
     }
 }

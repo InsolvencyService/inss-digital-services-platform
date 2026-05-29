@@ -12,8 +12,8 @@ public sealed class RP14AApiEmployeeHolidayValidator : AbstractValidator<RP14AEm
             if (p.StartDate > p.EndDate)
             {
                 c.AddFailure(
-                    RP14AValidationInfo.InvalidHolidayNotPaidRange.PropertyFormat, 
-                    RP14AValidationInfo.InvalidHolidayNotPaidRange.ErrorFormat);
+                    EmployeeHolidayValidationInfo.InvalidHolidayNotPaidRange.Property, 
+                    EmployeeHolidayValidationInfo.InvalidHolidayNotPaidRange.Key);
             }
         });
     }

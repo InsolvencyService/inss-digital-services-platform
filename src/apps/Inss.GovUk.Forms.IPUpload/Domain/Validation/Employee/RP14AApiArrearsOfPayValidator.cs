@@ -7,7 +7,7 @@ public sealed class RP14AApiArrearsOfPayValidator : AbstractValidator<RP14AEmplo
 {
     public RP14AApiArrearsOfPayValidator()
     {
-        RuleFor(p => p.AOPOwed).ValidateMoney(RP14AValidationInfo.InvalidAopOwedFormat);
-        RuleFor(p => p.Period.StartDate).ValidateStartEndDates(p => p.Period.EndDate, RP14AValidationInfo.InvalidAopDates);
+        RuleFor(p => p.AOPOwed).ValidateMoney(EmployeeValidationInfo.InvalidAopOwedFormat);
+        RuleFor(p => p.Period.StartDate).ValidateStartEndDates(p => p.Period.EndDate, EmployeeValidationInfo.InvalidEmployeeAopDates);
     }
 }

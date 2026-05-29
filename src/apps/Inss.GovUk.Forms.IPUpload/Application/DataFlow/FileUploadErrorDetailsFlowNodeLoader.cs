@@ -25,7 +25,7 @@ public sealed class FileUploadErrorDetailsFlowNodeLoader : IFlowNodeLoader
 
         IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = context.Section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
-        fileUploadErrorDetails.CurrentErrorDetail = fileUploadErrors.GetError(context.State)!;
+        fileUploadErrorDetails.CurrentErrorDetail = fileUploadErrors.GetPropertyErrors(context.State);
         _pagePropertiesProvider.FullPageLayout = true;
         
         return ValueTask.FromResult<NodeId?>(null);
