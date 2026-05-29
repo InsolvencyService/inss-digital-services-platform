@@ -35,6 +35,7 @@
     <PackageReference Include="Reqnroll.Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Reqnroll.NUnit" />
     <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="Verify.Playwright" />
   </ItemGroup>
 
   <ItemGroup>
