@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns1:RP14A xmlns:ns1="http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application">
+	<ns1:Employee>
+		<ns1:Header/>
+		<ns1:EmployerName>The Insolvency Service The Insolvency Service The Insolvency Service The Insolvency Service The Insolvency Service The Insolvency Service The Insolvency Service The Insolvency Service The Insolvency Service The Insolvency Service</ns1:EmployerName>
+		<ns1:EmployeeName>
+			<ns1:Surname>Simpson</ns1:Surname>
+			<ns1:Forenames>Homer J</ns1:Forenames>
+			<ns1:Title>Mr</ns1:Title>
+		</ns1:EmployeeName>
+		<ns1:NIClass>NI Class</ns1:NIClass>
+		<ns1:NINO>JH787823D</ns1:NINO>
+		<ns1:DateOfBirth>1991-06-02</ns1:DateOfBirth>
+		<ns1:StartDate>2020-01-01</ns1:StartDate>
+		<ns1:DateNoticeGiven>2019-01-01</ns1:DateNoticeGiven>
+		<ns1:EndDate>2019-03-01</ns1:EndDate>
+		<ns1:IsDirector>Yes</ns1:IsDirector>
+		<ns1:AverageHoursWorked>37</ns1:AverageHoursWorked>
+		<ns1:MoneyOwedToEmployer>1000.12</ns1:MoneyOwedToEmployer>
+		<ns1:EntitledToRedundancyPay>Yes</ns1:EntitledToRedundancyPay>
+		<ns1:EntitledToNoticePay>Yes</ns1:EntitledToNoticePay>
+		<ns1:PayDetails>
+			<ns1:BasicPayPerWeek>100.123</ns1:BasicPayPerWeek>
+			<ns1:ComponentPayPerWeek1>
+				<ns1:ComponentType>Holiday Pay Accrued</ns1:ComponentType>
+				<ns1:ComponentRate>200.12</ns1:ComponentRate>
+				<ns1:ComponentRateStatus>Fixed rate of pay</ns1:ComponentRateStatus>
+			</ns1:ComponentPayPerWeek1>
+			<ns1:ComponentPayPerWeek2>
+				<ns1:ComponentType>Holiday Pay Taken Not Paid</ns1:ComponentType>
+				<ns1:ComponentRateStatus>Fixed rate of pay</ns1:ComponentRateStatus>
+			</ns1:ComponentPayPerWeek2>
+			<ns1:WeeklyPayDay>Monday</ns1:WeeklyPayDay>
+			<ns1:ArrearsOfPay>
+				<ns1:ArrearsOfPayPeriod1>
+					<ns1:AOP1StartDate>2021-01-01</ns1:AOP1StartDate>
+					<ns1:AOP1EndDate>2021-01-02</ns1:AOP1EndDate>
+					<ns1:AOPOwed1>1100.45</ns1:AOPOwed1>
+					<ns1:AOPPayType1>attachmentofearnings</ns1:AOPPayType1>
+				</ns1:ArrearsOfPayPeriod1>
+				<ns1:ArrearsOfPayPeriod2>
+					<ns1:AOP2StartDate>2021-01-03</ns1:AOP2StartDate>
+					<ns1:AOP2EndDate>2020-01-04</ns1:AOP2EndDate>
+					<ns1:AOPOwed2>1101</ns1:AOPOwed2>
+					<ns1:AOPPayType2>bouncedcheque</ns1:AOPPayType2>
+				</ns1:ArrearsOfPayPeriod2>
+				<ns1:ArrearsOfPayPeriod3>
+					<ns1:AOP3StartDate>2021-01-05</ns1:AOP3StartDate>
+					<ns1:AOP3EndDate>2021-01-06</ns1:AOP3EndDate>
+					<ns1:AOPOwed3>1102.12</ns1:AOPOwed3>
+					<ns1:AOPPayType3>commission</ns1:AOPPayType3>
+				</ns1:ArrearsOfPayPeriod3>
+				<ns1:ArrearsOfPayPeriod4>
+					<ns1:AOP4StartDate>2021-01-07</ns1:AOP4StartDate>
+					<ns1:AOP4EndDate>2021-01-08</ns1:AOP4EndDate>
+					<ns1:AOPOwed4>1103</ns1:AOPOwed4>
+					<ns1:AOPPayType4>attachmentofearnings</ns1:AOPPayType4>
+				</ns1:ArrearsOfPayPeriod4>
+			</ns1:ArrearsOfPay>
+		</ns1:PayDetails>
+		<ns1:Holiday>
+			<ns1:HolidayYearStart>2021-01-01</ns1:HolidayYearStart>
+			<ns1:HolidayContractedEntitlementDays>30</ns1:HolidayContractedEntitlementDays>
+			<ns1:HolidayDaysCarriedForward>10</ns1:HolidayDaysCarriedForward>
+			<ns1:HolidayDaysTaken>10</ns1:HolidayDaysTaken>
+			<ns1:HolidayNotPaid>
+				<ns1:Holiday1>
+					<ns1:Holiday1StartDate>2023-01-01</ns1:Holiday1StartDate>
+					<ns1:Holiday1EndDate>2023-01-02</ns1:Holiday1EndDate>
+				</ns1:Holiday1>
+				<ns1:Holiday2>
+					<ns1:Holiday2StartDate>2023-01-05</ns1:Holiday2StartDate>
+					<ns1:Holiday2EndDate>2023-01-04</ns1:Holiday2EndDate>
+				</ns1:Holiday2>
+				<ns1:Holiday3>
+					<ns1:Holiday3StartDate>2023-01-05</ns1:Holiday3StartDate>
+					<ns1:Holiday3EndDate>2023-01-06</ns1:Holiday3EndDate>
+				</ns1:Holiday3>
+			</ns1:HolidayNotPaid>
+			<ns1:NoDaysHolidayOwed>8</ns1:NoDaysHolidayOwed>
+		</ns1:Holiday>
+	</ns1:Employee>
+	<ns1:Employee>
+		<ns1:Header>
+			<ns1:CaseReference>CN12345678</ns1:CaseReference>
+		</ns1:Header>
+		<ns1:EmployerName>Employer Name</ns1:EmployerName>
+		<ns1:EmployeeName>
+			<ns1:Surname>Flanders</ns1:Surname>
+			<ns1:Forenames>Marge</ns1:Forenames>
+			<ns1:Title>Mrs</ns1:Title>
+		</ns1:EmployeeName>
+		<ns1:NIClass>NI Class3</ns1:NIClass>
+		<ns1:NINO>JG787823D</ns1:NINO>
+		<ns1:DateOfBirth>1992-10-18</ns1:DateOfBirth>
+		<ns1:StartDate>2020-01-01</ns1:StartDate>
+		<ns1:DateNoticeGiven>2026-01-01</ns1:DateNoticeGiven>
+		<ns1:EndDate>2025-03-01</ns1:EndDate>
+		<ns1:IsDirector>Yes</ns1:IsDirector>
+		<ns1:AverageHoursWorked>37</ns1:AverageHoursWorked>
+		<ns1:MoneyOwedToEmployer>1000.1234</ns1:MoneyOwedToEmployer>
+		<ns1:EntitledToRedundancyPay>Yes</ns1:EntitledToRedundancyPay>
+		<ns1:EntitledToNoticePay>Yes</ns1:EntitledToNoticePay>
+		<ns1:PayDetails>
+			<ns1:BasicPayPerWeek>200.567</ns1:BasicPayPerWeek>
+			<ns1:ComponentPayPerWeek1>
+				<ns1:ComponentType>Holiday Pay Accrued</ns1:ComponentType>
+				<ns1:ComponentRate>200.45</ns1:ComponentRate>
+				<ns1:ComponentRateStatus>Fixed rate of pay</ns1:ComponentRateStatus>
+			</ns1:ComponentPayPerWeek1>
+			<ns1:ComponentPayPerWeek2>
+				<ns1:ComponentType>Holiday Pay Taken Not Paid</ns1:ComponentType>
+				<ns1:ComponentRateStatus>Fixed rate of pay</ns1:ComponentRateStatus>
+			</ns1:ComponentPayPerWeek2>
+			<ns1:WeeklyPayDay>Monday</ns1:WeeklyPayDay>
+			<ns1:ArrearsOfPay>
+				<ns1:ArrearsOfPayPeriod1>
+					<ns1:AOP1StartDate>2021-01-01</ns1:AOP1StartDate>
+					<ns1:AOP1EndDate>2021-01-02</ns1:AOP1EndDate>
+					<ns1:AOPOwed1>1100.67</ns1:AOPOwed1>
+					<ns1:AOPPayType1>attachmentofearnings</ns1:AOPPayType1>
+				</ns1:ArrearsOfPayPeriod1>
+				<ns1:ArrearsOfPayPeriod2>
+					<ns1:AOP2StartDate>2021-01-03</ns1:AOP2StartDate>
+					<ns1:AOP2EndDate>2021-01-04</ns1:AOP2EndDate>
+					<ns1:AOPOwed2>1101</ns1:AOPOwed2>
+					<ns1:AOPPayType2>bouncedcheque</ns1:AOPPayType2>
+				</ns1:ArrearsOfPayPeriod2>
+				<ns1:ArrearsOfPayPeriod3>
+					<ns1:AOP3StartDate>2021-01-05</ns1:AOP3StartDate>
+					<ns1:AOP3EndDate>2021-01-06</ns1:AOP3EndDate>
+					<ns1:AOPOwed3>1102.56</ns1:AOPOwed3>
+					<ns1:AOPPayType3>commission</ns1:AOPPayType3>
+				</ns1:ArrearsOfPayPeriod3>
+				<ns1:ArrearsOfPayPeriod4>
+					<ns1:AOP4StartDate>2021-01-07</ns1:AOP4StartDate>
+					<ns1:AOP4EndDate>2021-01-08</ns1:AOP4EndDate>
+					<ns1:AOPOwed4>1103</ns1:AOPOwed4>
+					<ns1:AOPPayType4>attachmentofearnings</ns1:AOPPayType4>
+				</ns1:ArrearsOfPayPeriod4>
+			</ns1:ArrearsOfPay>
+		</ns1:PayDetails>
+		<ns1:Holiday>
+			<ns1:HolidayYearStart>2021-01-01</ns1:HolidayYearStart>
+			<ns1:HolidayContractedEntitlementDays>30</ns1:HolidayContractedEntitlementDays>
+			<ns1:HolidayDaysCarriedForward>10</ns1:HolidayDaysCarriedForward>
+			<ns1:HolidayDaysTaken>20</ns1:HolidayDaysTaken>
+			<ns1:HolidayNotPaid>
+				<ns1:Holiday1>
+					<ns1:Holiday1StartDate>2023-01-01</ns1:Holiday1StartDate>
+					<ns1:Holiday1EndDate>2023-01-02</ns1:Holiday1EndDate>
+				</ns1:Holiday1>
+				<ns1:Holiday2>
+					<ns1:Holiday2StartDate>2023-01-03</ns1:Holiday2StartDate>
+					<ns1:Holiday2EndDate>2023-01-04</ns1:Holiday2EndDate>
+				</ns1:Holiday2>
+				<ns1:Holiday3>
+					<ns1:Holiday3StartDate>2023-01-05</ns1:Holiday3StartDate>
+					<ns1:Holiday3EndDate>2023-01-06</ns1:Holiday3EndDate>
+				</ns1:Holiday3>
+			</ns1:HolidayNotPaid>
+			<ns1:NoDaysHolidayOwed>9</ns1:NoDaysHolidayOwed>
+		</ns1:Holiday>
+	</ns1:Employee>
+</ns1:RP14A>
