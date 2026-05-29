@@ -118,7 +118,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/CaseValidation.feature.ndjson", 6);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/CaseValidation.feature.ndjson", 15);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -201,11 +201,18 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 21
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint",
+                            "Type"});
+                table2.AddRow(new string[] {
+                            "1 invalid case reference format",
+                            "Format is CN12345678",
+                            "Case reference"});
 #line 22
-             await testRunner.ThenAsync("I should see the validation error \"1 invalid case reference format\" with the hint" +
-                        " \"Format is CN12345678\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table2, "Then ");
 #line hidden
-#line 23
+#line 25
               await testRunner.AndAsync("I should be able to view case reference error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -228,7 +235,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A display error for case reference longer than 12 characters", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 26
+#line 28
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -241,17 +248,24 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 27
+#line 29
             await testRunner.GivenAsync("the RP14A contains a case reference \"CN12345678901\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 28
+#line 30
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 29
-             await testRunner.ThenAsync("I should see the validation error \"1 too long case reference\" with the hint \"Up t" +
-                        "o 12 characters are allowed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint",
+                            "Type"});
+                table3.AddRow(new string[] {
+                            "1 too long case reference",
+                            "Up to 12 characters are allowed",
+                            "Case reference"});
+#line 31
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table3, "Then ");
 #line hidden
-#line 30
+#line 34
               await testRunner.AndAsync("I should be able to view case reference error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -276,7 +290,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error when case reference is not found in RPS", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 33
+#line 37
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -289,18 +303,278 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 34
+#line 38
             await testRunner.GivenAsync("the RP14A contains a valid format case reference", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 35
+#line 39
               await testRunner.AndAsync("the case reference does not exist in RPS", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 36
+#line 40
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 37
+#line 41
              await testRunner.ThenAsync("I should see the validation error \"[COUNT] case reference have not been matched i" +
                         "n our system\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A displays multiple errors for invalid case reference format")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
+        [global::NUnit.Framework.TestCaseAttribute("3", "4", null)]
+        public async global::System.Threading.Tasks.Task RP14ADisplaysMultipleErrorsForInvalidCaseReferenceFormat(string count, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14a"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("count", count);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A displays multiple errors for invalid case reference format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 45
+      this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 46
+            await testRunner.GivenAsync(string.Format("the RP14A contains {0} invalid case references", count), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 47
+             await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint",
+                            "Type"});
+                table4.AddRow(new string[] {
+                            string.Format("{0} invalid case reference format", count),
+                            "Format is CN12345678",
+                            "Case reference"});
+#line 48
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table4, "Then ");
+#line hidden
+#line 51
+              await testRunner.AndAsync("I should be able to view case reference error details for multiple employees", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14 Display error for invalid case reference format")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14")]
+        [global::NUnit.Framework.TestCaseAttribute("AB12345678", "5", null)]
+        [global::NUnit.Framework.TestCaseAttribute("CN1234567A", "6", null)]
+        [global::NUnit.Framework.TestCaseAttribute("12345678", "7", null)]
+        [global::NUnit.Framework.TestCaseAttribute("CN12345", "8", null)]
+        [global::NUnit.Framework.TestCaseAttribute("cnABC45678", "9", null)]
+        public async global::System.Threading.Tasks.Task RP14DisplayErrorForInvalidCaseReferenceFormat(string caseReference, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("caseReference", caseReference);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14 Display error for invalid case reference format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 59
+       this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 60
+            await testRunner.GivenAsync(string.Format("the RP14 XML contains case reference \"{0}\"", caseReference), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 61
+             await testRunner.WhenAsync("I attempt to submit the RP14", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint"});
+                table5.AddRow(new string[] {
+                            "1 invalid case reference format",
+                            "Format is CN12345678"});
+#line 62
+             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table5, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14 display error for case reference longer than 12 characters")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14")]
+        public async global::System.Threading.Tasks.Task RP14DisplayErrorForCaseReferenceLongerThan12Characters()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "10";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14 display error for case reference longer than 12 characters", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 76
+      this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 77
+            await testRunner.GivenAsync("the RP14 XML contains case reference \"CN12345678901\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 78
+             await testRunner.WhenAsync("I attempt to submit the RP14", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint"});
+                table6.AddRow(new string[] {
+                            "1 too long case reference",
+                            "Up to 12 characters are allowed"});
+#line 79
+             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table6, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14 display error for case reference are in the wrong format")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14")]
+        public async global::System.Threading.Tasks.Task RP14DisplayErrorForCaseReferenceAreInTheWrongFormat()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "11";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14 display error for case reference are in the wrong format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 84
+      this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 85
+            await testRunner.GivenAsync("the RP14 XML contains case reference \"001234567890\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 86
+             await testRunner.WhenAsync("I attempt to submit the RP14", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint"});
+                table7.AddRow(new string[] {
+                            "1 invalid case reference format",
+                            "Format is CN12345678"});
+#line 87
+             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table7, "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Display error for unknown case reference")]
+        [global::NUnit.Framework.IgnoreAttribute("Ignored scenario")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14")]
+        public async global::System.Threading.Tasks.Task DisplayErrorForUnknownCaseReference()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "ignore",
+                    "regression",
+                    "validation",
+                    "rp14"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "12";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Display error for unknown case reference", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 95
+        this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 96
+            await testRunner.GivenAsync("the RP14 XML contains a valid format case reference that does not exist in RPS", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 97
+             await testRunner.WhenAsync("I upload and submit the RP14 XML file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 98
+             await testRunner.ThenAsync("I should see the validation error \"1 case reference have not been matched in our " +
+                        "system\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

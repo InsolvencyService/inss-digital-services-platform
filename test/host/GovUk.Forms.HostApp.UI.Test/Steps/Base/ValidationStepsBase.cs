@@ -30,6 +30,7 @@ public abstract class ValidationStepsBase
         ScenarioContext = scenarioContext;
     }
 
+    [When("I attempt to submit the RP14")]
     [When("I attempt to submit the RP14A")]
     public async Task WhenIAttemptToSubmitTheRp14a()
     {
