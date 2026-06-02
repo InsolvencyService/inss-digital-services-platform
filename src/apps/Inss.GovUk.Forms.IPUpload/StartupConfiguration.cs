@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using GovUk.Forms.Components;
 using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Diagnostics.CodeAnalysis;
 
 [assembly: HostingStartup(typeof(Inss.GovUk.Forms.IPUpload.StartupConfiguration))]
 
@@ -25,20 +25,20 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
-            
+
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
-            
+
             RpsApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<RpsApiOptions>()!;
             ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
-            
+
             if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
                     {
                         client.BaseAddress = new Uri(rpsOptions.Url);
                     });
-                
-                services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
+
+                services.AddHttpClient<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>(client =>
                     {
                         client.BaseAddress = new Uri(submissionOptions.Url);
                     });
@@ -53,7 +53,7 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, rpsOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds));
-                
+
                 services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
                     {
                         client.BaseAddress = new Uri(submissionOptions.Url);
@@ -62,7 +62,7 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, submissionOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
-                
+
                 // Disabled until we get the RPS listener in place
                 /*
                 services.AddOptions<RpsApiOptions>()
@@ -80,9 +80,9 @@ public class StartupConfiguration : IHostingStartup
                         rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds));
                 */
             }
-            
+
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();
-            
+
             IPUploadFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
         });

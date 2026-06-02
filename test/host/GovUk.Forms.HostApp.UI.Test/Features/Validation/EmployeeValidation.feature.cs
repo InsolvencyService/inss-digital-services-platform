@@ -118,7 +118,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/EmployeeValidation.feature.ndjson", 12);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/EmployeeValidation.feature.ndjson", 15);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -218,12 +218,12 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("RP14A Display error when employee surname is longer than 99 characters")]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A employee surname of exactly 99 characters passes validation")]
         [global::NUnit.Framework.CategoryAttribute("regression")]
         [global::NUnit.Framework.CategoryAttribute("validation")]
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:Employee")]
-        public async global::System.Threading.Tasks.Task RP14ADisplayErrorWhenEmployeeSurnameIsLongerThan99Characters()
+        public async global::System.Threading.Tasks.Task RP14AEmployeeSurnameOfExactly99CharactersPassesValidation()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
@@ -232,7 +232,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "allure.subSuite:Employee"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error when employee surname is longer than 99 characters", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A employee surname of exactly 99 characters passes validation", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 28
@@ -249,16 +249,58 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         await this.FeatureBackgroundAsync();
 #line hidden
 #line 29
-            await testRunner.GivenAsync("the RP14A contains an employee surname longer than 99 characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+            await testRunner.GivenAsync("the RP14A XML contains an employee surname of length 99", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 30
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 31
-             await testRunner.ThenAsync("I should see the validation error \"1 invalid length of the employee surname\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+             await testRunner.ThenAsync("the submission should succeed", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 32
-              await testRunner.AndAsync("I should be able to view employee error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Display error when employee surname is 100 characters")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
+        [global::NUnit.Framework.CategoryAttribute("allure.subSuite:Employee")]
+        public async global::System.Threading.Tasks.Task RP14ADisplayErrorWhenEmployeeSurnameIs100Characters()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14a",
+                    "allure.subSuite:Employee"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error when employee surname is 100 characters", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 34
+        this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 35
+            await testRunner.GivenAsync("the RP14A XML contains an employee surname of length 100", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 36
+             await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 37
+             await testRunner.ThenAsync("I should see the employee surname error \"1 invalid length of the employee surname" +
+                        "\" with hint \"Maximum of 99 characters allowed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -280,11 +322,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "allure.subSuite:NationalInsurance",
                     "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
+            string pickleIndex = "4";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for missing employee national insurance number", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 35
+#line 41
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -297,17 +339,17 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 36
+#line 42
             await testRunner.GivenAsync("the RP14A contains an employee with no national insurance number", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 37
+#line 43
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 38
-             await testRunner.ThenAsync("I should see the national insurance number validation error \"[COUNT] missing the " +
-                        "employee national insurance number\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 44
+             await testRunner.ThenAsync("I should see the national insurance number validation error \"1 missing the employ" +
+                        "ee national insurance number\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 39
+#line 45
               await testRunner.AndAsync("I should be able to view national insurance number error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -321,10 +363,10 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         [global::NUnit.Framework.CategoryAttribute("rp14a")]
         [global::NUnit.Framework.CategoryAttribute("allure.subSuite:NationalInsurance")]
         [global::NUnit.Framework.CategoryAttribute("addVideo")]
-        [global::NUnit.Framework.TestCaseAttribute("123456789", "4", null)]
-        [global::NUnit.Framework.TestCaseAttribute("AB12345C", "5", null)]
-        [global::NUnit.Framework.TestCaseAttribute("QQ123456A", "6", null)]
-        [global::NUnit.Framework.TestCaseAttribute("AB123456Z", "7", null)]
+        [global::NUnit.Framework.TestCaseAttribute("123456789", "5", null)]
+        [global::NUnit.Framework.TestCaseAttribute("AB12345C", "6", null)]
+        [global::NUnit.Framework.TestCaseAttribute("QQ123456A", "7", null)]
+        [global::NUnit.Framework.TestCaseAttribute("AB123456Z", "8", null)]
         public async global::System.Threading.Tasks.Task RP14ADisplayErrorForInvalidEmployeeNationalInsuranceNumberFormat(string nationalInsuranceNumber, string @__pickleIndex, string[] exampleTags)
         {
             string[] @__tags = new string[] {
@@ -344,7 +386,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for invalid employee national insurance number format", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 42
+#line 48
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -357,18 +399,151 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 43
+#line 49
             await testRunner.GivenAsync(string.Format("the RP14A contains employee national insurance number \"{0}\"", nationalInsuranceNumber), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 44
+#line 50
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 45
+#line 51
              await testRunner.ThenAsync("I should see the national insurance number validation error \"1 invalid employee n" +
                         "ational insurance number format\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 46
+#line 52
               await testRunner.AndAsync("I should be able to view national insurance number error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Display error for multiple invalid employee national insurance number forma" +
+            "ts")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
+        [global::NUnit.Framework.CategoryAttribute("allure.subSuite:NationalInsurance")]
+        [global::NUnit.Framework.CategoryAttribute("addVideo")]
+        [global::NUnit.Framework.TestCaseAttribute("3", "123456789", "9", null)]
+        public async global::System.Threading.Tasks.Task RP14ADisplayErrorForMultipleInvalidEmployeeNationalInsuranceNumberFormats(string employeeCount, string nationalInsuranceNumber, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14a",
+                    "allure.subSuite:NationalInsurance",
+                    "addVideo"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("employeeCount", employeeCount);
+            argumentsOfScenario.Add("nationalInsuranceNumber", nationalInsuranceNumber);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for multiple invalid employee national insurance number forma" +
+                    "ts", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 61
+        this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 62
+            await testRunner.GivenAsync(string.Format("the RP14A contains {0} employees with national insurance number \"{1}\"", employeeCount, nationalInsuranceNumber), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 63
+             await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table30 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint",
+                            "Type"});
+                table30.AddRow(new string[] {
+                            string.Format("{0} invalid employee national insurance number format", employeeCount),
+                            "Format is AB112233C",
+                            "Employee national insurance number"});
+#line 64
+             await testRunner.ThenAsync("I should see the following national insurance number validation errors", ((string)(null)), table30, "Then ");
+#line hidden
+#line 67
+              await testRunner.AndAsync("I should be able to view multiple national insurance numbers error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("RP14A Display error for multiple missing employee national insurance numbers")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
+        [global::NUnit.Framework.CategoryAttribute("allure.subSuite:NationalInsurance")]
+        [global::NUnit.Framework.CategoryAttribute("addVideo")]
+        [global::NUnit.Framework.CategoryAttribute("bug")]
+        [global::NUnit.Framework.TestCaseAttribute("3", "10", null)]
+        public async global::System.Threading.Tasks.Task RP14ADisplayErrorForMultipleMissingEmployeeNationalInsuranceNumbers(string employeeCount, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] @__tags = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14a",
+                    "allure.subSuite:NationalInsurance",
+                    "addVideo",
+                    "bug"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("employeeCount", employeeCount);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error for multiple missing employee national insurance numbers", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 75
+        this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 76
+            await testRunner.GivenAsync(string.Format("the RP14A contains {0} employees with no national insurance number", employeeCount), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 77
+             await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table31 = new global::Reqnroll.Table(new string[] {
+                            "Message",
+                            "Hint",
+                            "Type"});
+                table31.AddRow(new string[] {
+                            string.Format("{0} missing the employee national insurance number", employeeCount),
+                            "Format is AB112233C",
+                            "Employee national insurance number"});
+#line 78
+             await testRunner.ThenAsync("I should see the following national insurance number validation errors", ((string)(null)), table31, "Then ");
+#line hidden
+#line 81
+              await testRunner.AndAsync("I should be able to view multiple national insurance numbers error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -390,11 +565,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "allure.story:Employee",
                     "bug"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
+            string pickleIndex = "11";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display error when employment start date is after employment end date", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 56
+#line 88
         this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -407,27 +582,27 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 57
+#line 89
             await testRunner.GivenAsync("the RP14A contains employment start date \"2026-04-30\" with end date \"2026-04-01\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 58
+#line 90
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table32 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table1.AddRow(new string[] {
+                table32.AddRow(new string[] {
                             "1 invalid employment dates for the employee",
                             "Start date must be before the end date",
                             "Employee employment dates"});
-#line 59
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table1, "Then ");
+#line 91
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table32, "Then ");
 #line hidden
-#line 62
+#line 94
               await testRunner.AndAsync("I should be able to view the employee employment dates error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 63
+#line 95
               await testRunner.AndAsync("I should be able to go to the previous page from the error details page", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -450,11 +625,11 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
                     "allure.subSuite:Employee",
                     "addVideo"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "9";
+            string pickleIndex = "12";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("RP14A Display aggregated count for repeated employee surname errors", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 67
+#line 99
          this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -467,16 +642,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-#line 68
+#line 100
             await testRunner.GivenAsync("the RP14A contains 3 employees with no surname", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 69
+#line 101
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 70
+#line 102
              await testRunner.ThenAsync("I should see the validation error \"3 missing employee surname\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 71
+#line 103
              await testRunner.AndAsync("I should be able to view the validation error details for employees where the sur" +
                         "name is missing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden

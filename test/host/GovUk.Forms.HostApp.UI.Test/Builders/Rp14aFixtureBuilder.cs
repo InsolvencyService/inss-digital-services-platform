@@ -173,10 +173,52 @@ public class Rp14aFixtureBuilder
         return this;
     }
 
-    public Rp14aTestFile Build(
-        TestArtifacts testArtifacts,
-        string baselineFilePath,
-        string scenarioName = "Default")
+    public Rp14aFixtureBuilder WithNationalInsuranceNumberForEmployees(int employeeCount, string? nationalInsuranceNumber)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        {
+            AddEmployeeMutation(
+                employeeIndex,
+                RP14AElementNames.NationalInsuranceNumber,
+                nationalInsuranceNumber ?? string.Empty);
+        }
+
+        return this;
+    }
+
+    public Rp14aFixtureBuilder WithMoneyOwedToEmployerForEmployees(int employeeCount, string? moneyOwed)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        {
+            AddEmployeeMutation(
+                employeeIndex,
+                RP14AElementNames.MoneyOwedToEmployer,
+                moneyOwed ?? string.Empty);
+        }
+
+        return this;
+    }
+
+    public Rp14aFixtureBuilder WithEmployeeBasicPayPerWeekForEmployees(int employeeCount, string? basicPayPerWeek)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        {
+            AddEmployeeMutation(
+                employeeIndex,
+                RP14AElementNames.BasicPayPerWeek,
+                basicPayPerWeek ?? string.Empty);
+        }
+
+        return this;
+    }
+
+    public Rp14aTestFile Build(TestArtifacts testArtifacts, string baselineFilePath, string scenarioName = "Default")
     {
         ArgumentNullException.ThrowIfNull(testArtifacts);
         ArgumentException.ThrowIfNullOrWhiteSpace(baselineFilePath);

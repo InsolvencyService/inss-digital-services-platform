@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
+using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
@@ -158,31 +159,6 @@ public sealed class UploadDocumentCoordinator :
     public async Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(int employeeCount, params string[] invalidValues) =>
         await _scenarioCoordinator.UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(employeeCount, invalidValues);
 
-    public async Task UploadComplexRp14aScenarioAsync(
-        string? caseReference = null,
-        string? employerName = null,
-        string? surname = null,
-        string? forename = null,
-        string? title = null,
-        string? arrearsAmount = null,
-        string? basicPayPerWeek = null,
-        string? holidayOwed = null,
-        DateOnly? employmentStartDate = null,
-        DateOnly? employmentEndDate = null)
-    {
-        await _scenarioCoordinator.UploadComplexRp14aScenarioAsync(
-            caseReference,
-            employerName,
-            surname,
-            forename,
-            title,
-            arrearsAmount,
-            basicPayPerWeek,
-            holidayOwed,
-            employmentStartDate,
-            employmentEndDate);
-    }
-
     public async Task UploadValidRp14Async()
     => await _rp14ScenarioCoordinator.UploadValidRp14Async();
 
@@ -246,12 +222,14 @@ public sealed class UploadDocumentCoordinator :
         string? registrationNumber,
         string? firmName,
         string? ipName,
-        string? emailAddress)
+        string? emailAddress,
+        string? telephoneNumber = null)
         => await _rp14ScenarioCoordinator.UploadRp14WithIpDetailsAsync(
             registrationNumber,
             firmName,
             ipName,
-            emailAddress);
+            emailAddress,
+            telephoneNumber);
 
     public async Task UploadRp14WithShareholdersAsync(
     int shareholderCount,
@@ -276,11 +254,91 @@ public sealed class UploadDocumentCoordinator :
         nino);
 
     public async Task VerifyUploadDocumentContentSnapShotAsync()
-    {
-        await _fileUploadCoordinator.VerifyUploadDocumentContentSnapShotAsync();
-    }
+        => await _fileUploadCoordinator.VerifyUploadDocumentContentSnapShotAsync();
     public async Task VerifyUploadCommonIssuesContentVisualSnapShotAsync()
+        => await _fileUploadCoordinator.VerifyUploadCommonIssuesContentVisualSnapShotAsync();
+
+    public async Task UploadRp14aWithNationalInsuranceNumberForEmployeesAsync(int employeeCount, string? nationalInsuranceNumber)
+        => await _scenarioCoordinator.UploadRp14aWithNationalInsuranceNumberForEmployeesAsync(employeeCount, nationalInsuranceNumber);
+
+    public async Task UploadRp14aWithMoneyOwedToEmployerForEmployeesAsync(int employeeCount, string? moneyOwed)
+        => await _scenarioCoordinator.UploadRp14aWithMoneyOwedToEmployerForEmployeesAsync(employeeCount, moneyOwed);
+
+    public async Task UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(int employeeCount, string? basicPayPerWeek)
+        => await _scenarioCoordinator.UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(employeeCount, basicPayPerWeek);
+    public async Task UploadRp14WithAssociatedCompanyNamesAsync(int associatedCompanyCount, string companyName)
+        => await _rp14ScenarioCoordinator.UploadRp14WithAssociatedCompanyNamesAsync(associatedCompanyCount, companyName);
+
+    public async Task UploadComplexRp14aScenarioAsync(
+        string? caseReference = null,
+        string? employerName = null,
+        string? surname = null,
+        string? forename = null,
+        string? title = null,
+        string? nationalInsuranceNumber = null,
+        string? moneyOwedToEmployer = null,
+        string? arrearsAmount = null,
+        string? basicPayPerWeek = null,
+        string? holidayOwed = null,
+        DateOnly? employmentStartDate = null,
+        DateOnly? employmentEndDate = null)
     {
-        await _fileUploadCoordinator.VerifyUploadCommonIssuesContentVisualSnapShotAsync();
+        await _scenarioCoordinator
+            .UploadComplexRp14aScenarioAsync(
+            caseReference,
+            employerName,
+            surname,
+            forename,
+            title,
+            nationalInsuranceNumber,
+            moneyOwedToEmployer,
+            arrearsAmount,
+            basicPayPerWeek,
+            holidayOwed,
+            employmentStartDate,
+            employmentEndDate);
     }
+
+    public async Task UploadRp14WithAssociatedCompanyReasonsAsync(int associatedCompanyCount, string reason)
+        => await _rp14ScenarioCoordinator.UploadRp14WithAssociatedCompanyReasonsAsync(associatedCompanyCount, reason);
+    public async Task UploadRp14WithAssociatedCompanyNumbersAsync(int associatedCompanyCount, string companyNumber)
+        => await _rp14ScenarioCoordinator.UploadRp14WithAssociatedCompanyNumbersAsync(associatedCompanyCount, companyNumber);
+    public async Task UploadRp14WithEmploymentContinuityEmployerNameAsync(string? employerName)
+        => await _rp14ScenarioCoordinator.UploadRp14WithEmploymentContinuityEmployerNameAsync(employerName);
+    public async Task UploadRp14WithTransferToNameAsync(string? transferToName)
+        => await _rp14ScenarioCoordinator.UploadRp14WithTransferToNameAsync(transferToName);
+    public async Task UploadRp14WithPayRecordsContactNameAsync(string? name)
+        => await _rp14ScenarioCoordinator.UploadRp14WithPayRecordsContactNameAsync(name);
+    public async Task UploadRp14WithPayRecordsContactPhoneNumberAsync(string? phoneNumber)
+        => await _rp14ScenarioCoordinator.UploadRp14WithPayRecordsContactPhoneNumberAsync(phoneNumber);
+    public async Task UploadRp14WithPayRecordsContactEmailAddressAsync(string? emailAddress)
+        => await _rp14ScenarioCoordinator.UploadRp14WithPayRecordsContactEmailAddressAsync(emailAddress);
+    public async Task UploadRp14WithIpNameAsync(string? ipName)
+        => await _rp14ScenarioCoordinator.UploadRp14WithIpNameAsync(ipName);
+    public async Task UploadRp14WithIpRegistrationNumberAsync(string? registrationNumber)
+        => await _rp14ScenarioCoordinator.UploadRp14WithIpRegistrationNumberAsync(registrationNumber);
+
+    public async Task UploadRp14WithIpFirmNameAsync(string? firmName)
+        => await _rp14ScenarioCoordinator.UploadRp14WithIpFirmNameAsync(firmName);
+
+    public async Task UploadRp14WithIpEmailAddressAsync(string? emailAddress)
+        => await _rp14ScenarioCoordinator.UploadRp14WithIpEmailAddressAsync(emailAddress);
+
+    public async Task UploadRp14WithIpTelephoneNumberAsync(string? telephoneNumber)
+        => await _rp14ScenarioCoordinator.UploadRp14WithIpTelephoneNumberAsync(telephoneNumber);
+
+    public async Task UploadRp14WithCompanyAddressLineCountAsync(int lineCount)
+        => await _rp14ScenarioCoordinator.UploadRp14WithCompanyAddressLineCountAsync(lineCount);
+
+    public async Task UploadRp14WithCompanyAddressLine1Async(string? addressLine)
+        => await _rp14ScenarioCoordinator.UploadRp14WithCompanyAddressLine1Async(addressLine);
+
+    public async Task UploadRp14WithCompanyAddressFieldAsync(Rp14AddressField field, string? value)
+        => await _rp14ScenarioCoordinator.UploadRp14WithCompanyAddressFieldAsync(field, value);
+
+    public async Task UploadRp14WithCompanyAddressLinesCountAsync(int lineCount)
+        => await _rp14ScenarioCoordinator.UploadRp14WithCompanyAddressLinesCountAsync(lineCount);
+
+    public async Task UploadRp14WithDirectorSurnamesAsync(int directorCount, string surname)
+        => await _rp14ScenarioCoordinator.UploadRp14WithDirectorSurnamesAsync(directorCount, surname);
 }

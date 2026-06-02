@@ -52,6 +52,12 @@ public sealed class EmployeesPaymentValidationSteps : ValidationStepsBase
         ScenarioContext.Set(employee);
     }
 
+    [Given("the RP14A contains {int} employees with money owed to employer {string}")]
+    public async Task GivenTheRP14AContainsEmployeesWithMoneyOwedToEmployer(int employeeCount, string moneyOwed)
+    {
+        await UploadDocumentCoordinator.UploadRp14aWithMoneyOwedToEmployerForEmployeesAsync(employeeCount, moneyOwed);
+    }
+
     [Given("the RP14A contains arrears of pay start date {string} and end date {string}")]
     public async Task GivenTheRp14aContainsArrearsOfPayStartDateAndEndDate(string startDate, string endDate)
     {
@@ -74,10 +80,16 @@ public sealed class EmployeesPaymentValidationSteps : ValidationStepsBase
         AffectedEmployee employee = CreateAffectedEmployee(
              cellValue: basicPayPerWeek);
 
-        await UploadDocumentCoordinator.UploadRp14aWithEmployeeBasicPayPerWeekAsync(
-            basicPayPerWeek);
+        await UploadDocumentCoordinator.UploadRp14aWithEmployeeBasicPayPerWeekAsync(basicPayPerWeek);
 
         ScenarioContext.Set(employee);
+    }
+
+    [Given("the RP14A contains {int} employees with employee basic pay per week {string}")]
+    public async Task GivenTheRP14AContainsEmployeesWithEmployeeBasicPayPerWeek(int employeeCount, string basicPayPerWeek)
+    {
+        await UploadDocumentCoordinator
+            .UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(employeeCount, basicPayPerWeek);
     }
 
     [Then("I should see the following basic pay per week validation errors")]
@@ -145,5 +157,33 @@ public sealed class EmployeesPaymentValidationSteps : ValidationStepsBase
     public async Task ThenIShouldBeAbleToViewBasicPayPerWeekValidationErrorDetails()
     {
         await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.BasicPayPerWeek);
+    }
+
+    [Then("I should be able to view money owed to multiple employers error details")]
+    public async Task ThenIShouldBeAbleToViewMoneyOwedToMultipleEmployersErrorDetails()
+    {
+        UploadErrorSummary expectedError = ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedError,
+            affectedEmployees,
+            ErrorDetailsHeaderType.MoneyOwedToEmployer);
+    }
+
+    [Then("I should be able to view basic pay per week error details for multiple employees")]
+    public async Task ThenIShouldBeAbleToViewBasicPayPerWeekErrorDetailsForMultipleEmployees()
+    {
+        UploadErrorSummary expectedError = ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedError,
+            affectedEmployees,
+            ErrorDetailsHeaderType.BasicPayPerWeek);
     }
 }

@@ -25,17 +25,23 @@ Feature: Employee Validation
 
                   
         @regression @validation @rp14a @allure.subSuite:Employee
-        Scenario: RP14A Display error when employee surname is longer than 99 characters
-            Given the RP14A contains an employee surname longer than 99 characters
+        Scenario: RP14A employee surname of exactly 99 characters passes validation
+            Given the RP14A XML contains an employee surname of length 99
              When I attempt to submit the RP14A
-             Then I should see the validation error "1 invalid length of the employee surname"
-              And I should be able to view employee error details
+             Then the submission should succeed
+
+        @regression @validation @rp14a @allure.subSuite:Employee
+        Scenario: RP14A Display error when employee surname is 100 characters
+            Given the RP14A XML contains an employee surname of length 100
+             When I attempt to submit the RP14A
+             Then I should see the employee surname error "1 invalid length of the employee surname" with hint "Maximum of 99 characters allowed"
+
 
         @regression @validation @rp14a @allure.subSuite:NationalInsurance @bug
         Scenario: RP14A Display error for missing employee national insurance number
             Given the RP14A contains an employee with no national insurance number
              When I attempt to submit the RP14A
-             Then I should see the national insurance number validation error "[COUNT] missing the employee national insurance number"
+             Then I should see the national insurance number validation error "1 missing the employee national insurance number"
               And I should be able to view national insurance number error details
 
        @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo
@@ -51,6 +57,32 @@ Feature: Employee Validation
                   | QQ123456A               |
                   | AB123456Z               |
 
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo
+        Scenario Outline: RP14A Display error for multiple invalid employee national insurance number formats
+            Given the RP14A contains <employeeCount> employees with national insurance number "<nationalInsuranceNumber>"
+             When I attempt to submit the RP14A
+             Then I should see the following national insurance number validation errors
+                  | Message                                                           | Hint                | Type                               |
+                  | <employeeCount> invalid employee national insurance number format | Format is AB112233C | Employee national insurance number |
+              And I should be able to view multiple national insurance numbers error details
+
+        Examples:
+                  | employeeCount | nationalInsuranceNumber |
+                  | 3             | 123456789               |
+   
+   
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo @bug
+        Scenario Outline: RP14A Display error for multiple missing employee national insurance numbers
+            Given the RP14A contains <employeeCount> employees with no national insurance number
+             When I attempt to submit the RP14A
+             Then I should see the following national insurance number validation errors
+                  | Message                                                        | Hint                | Type                               |
+                  | <employeeCount> missing the employee national insurance number | Format is AB112233C | Employee national insurance number |
+              And I should be able to view multiple national insurance numbers error details
+
+        Examples:
+                  | employeeCount |
+                  | 3             |
 
         @regression @validation @rp14a @allure.story:Employee @bug
         Scenario: RP14A Display error when employment start date is after employment end date

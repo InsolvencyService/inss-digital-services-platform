@@ -17,16 +17,18 @@ public interface IRp14aScenarioCoordinator
     Task UploadRp14aWithEmploymentDatesAsync(DateOnly? startDate, DateOnly? endDate);
     Task UploadRp14aWithArrearsDatesAsync(DateOnly? startDate, DateOnly? endDate);
     Task UploadComplexRp14aScenarioAsync(
-        string? caseReference = null,
-        string? employerName = null,
-        string? surname = null,
-        string? forename = null,
-        string? title = null,
-        string? arrearsAmount = null,
-        string? basicPayPerWeek = null,
-        string? holidayOwed = null,
-        DateOnly? employmentStartDate = null,
-        DateOnly? employmentEndDate = null);
+    string? caseReference = null,
+    string? employerName = null,
+    string? surname = null,
+    string? forename = null,
+    string? title = null,
+    string? nationalInsuranceNumber = null,
+    string? moneyOwedToEmployer = null,
+    string? arrearsAmount = null,
+    string? basicPayPerWeek = null,
+    string? holidayOwed = null,
+    DateOnly? employmentStartDate = null,
+    DateOnly? employmentEndDate = null);
     Task UploadRp14aWithHolidayContractedEntitlementDaysAsync(string? entitlementDays);
     Task UploadRp14aWithHolidayDaysCarriedForwardAsync(string? daysCarriedForward);
     Task UploadRp14aWithHolidayDaysTakenAsync(string? holidayDaysTaken);
@@ -35,4 +37,7 @@ public interface IRp14aScenarioCoordinator
     Task UploadRp14aWithMissingEmployeeSurnamesAsync(int employeeCount);
     Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(int employeeCount, params string[] invalidValues);
     Task UploadRp14aWithCaseReferenceAsync(params string?[] caseReferences);
+    Task UploadRp14aWithNationalInsuranceNumberForEmployeesAsync(int employeeCount, string? nationalInsuranceNumber);
+    Task UploadRp14aWithMoneyOwedToEmployerForEmployeesAsync(int employeeCount, string? moneyOwed);
+    Task UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(int employeeCount, string? basicPayPerWeek);
 }
