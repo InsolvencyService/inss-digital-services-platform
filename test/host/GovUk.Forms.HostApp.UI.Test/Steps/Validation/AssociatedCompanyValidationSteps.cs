@@ -25,7 +25,7 @@ public class AssociatedCompanyValidationSteps : ValidationStepsBase
     [Given("the RP14 XML contains {int} associated companies with name longer than {int} characters")]
     public async Task GivenTheRp14XmlContainsAssociatedCompaniesWithNameLongerThan60Characters(int associatedCompanyCount, int length)
     {
-        string companyName = LengthHelper.AtMax(length);
+        string companyName = LengthHelper.OverMax(length);
         await UploadDocumentCoordinator.UploadRp14WithAssociatedCompanyNamesAsync(associatedCompanyCount, companyName);
     }
 

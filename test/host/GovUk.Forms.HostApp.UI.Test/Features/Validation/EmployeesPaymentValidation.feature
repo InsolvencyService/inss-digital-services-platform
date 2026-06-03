@@ -4,7 +4,7 @@ A short summary of the feature
   Background:
   Given I am on the upload page as a "Admin" user
 
-@regression @validation @rp14a @allure.subSuite:Payment @addVideo
+@regression @validation @rp14a @allure.subSuite:Payment 
  Scenario Outline: RP14A Display error for invalid arrears of pay owed format
             Given the RP14A contains employee arrears of pay owed "<arrearsOfPay>"
              When I attempt to submit the RP14A
@@ -19,7 +19,7 @@ A short summary of the feature
                   | 12.345       |
                   | -100         |
 
-@regression @validation @rp14a @allure.subSuite:Payment @addVideo
+@regression @validation @rp14a @allure.subSuite:Payment 
    Scenario Outline: RP14A Display multiple errors for invalid arrears of pay owed format
             Given the RP14A contains <count> invalid arrears of pay owed
              When I attempt to submit the RP14A
@@ -32,7 +32,7 @@ A short summary of the feature
                   | 2     |
                   | 3     |
 
-@regression @validation @rp14a @allure.subSuite:Payment @addVideo
+@regression @validation @rp14a @allure.subSuite:Payment 
    Scenario Outline: RP14A Display error for invalid money owed to employer format
             Given the RP14A contains money owed to employer "<moneyOwed>"
              When I attempt to submit the RP14A
@@ -70,7 +70,7 @@ A short summary of the feature
                   | 1 invalid arrears of dates | Start date must be before the end date | Employee arrears of payment dates |
               And I should be able to view error details
 
-@regression @validation @rp14a @allure.story:Payment @addVideo
+@regression @validation @rp14a @allure.story:Payment 
   Scenario Outline:RP14A Display error for invalid employee basic pay per week format
             Given the RP14A contains employee basic pay per week "<basicPayPerWeek>"
              When I attempt to submit the RP14A

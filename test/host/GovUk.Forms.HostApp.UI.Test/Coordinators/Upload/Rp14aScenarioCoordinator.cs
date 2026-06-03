@@ -119,7 +119,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             builder => builder
                 .WithEmployeeIndex(occurrenceIndex)
                 .WithCustomMutation(
-                    RP14AElementNames.NationalInsuranceNumber,
+                    RP14AElementNames.NINO,
                     ToXmlValue(insuranceNumber)),
             $"RP14A with NI number '{ToLogValue(insuranceNumber)}' at index {occurrenceIndex}");
     }

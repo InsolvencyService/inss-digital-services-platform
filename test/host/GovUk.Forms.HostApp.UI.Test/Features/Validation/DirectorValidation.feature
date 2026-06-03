@@ -42,7 +42,7 @@ Scenario Outline: RP14 Display error for multiple invalid director national insu
                   | 3             | QQ112233C |
 
 
-@regression @validation @rp14 @addVideo
+@regression @validation @rp14 
 Scenario Outline: RP14 director initials length boundary validation
             Given the RP14 XML contains director initials of length <length>
              When  I attempt to submit the RP14
@@ -54,7 +54,7 @@ Scenario Outline: RP14 director initials length boundary validation
                   |    101 | 1 too long initials of director | Up to 100 characters are allowed | Director initials |
 
 
-@regression @validation @rp14 @addVideo
+@regression @validation @rp14 
 Scenario Outline: RP14 director surname length boundary validation
             Given the RP14 XML contains director surname of length <length>
              When I attempt to submit the RP14

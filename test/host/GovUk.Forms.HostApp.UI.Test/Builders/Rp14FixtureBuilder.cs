@@ -1,11 +1,6 @@
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using System.Diagnostics;
-using System.Globalization;
-using System.Security;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace GovUk.Forms.HostApp.UI.Test.Builders;
@@ -13,7 +8,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Builders;
 public sealed class Rp14FixtureBuilder
 {
     private readonly Dictionary<string, string?> _mutations = [];
-    private readonly List<Action<XDocument, XNamespace>> _customMutations = [];
+    private readonly List<(string Description, Action<XDocument, XNamespace> Apply)> _customMutations = [];
 
     public Rp14FixtureBuilder WithCaseReference(string? value) =>
         Set(Rp14ElementNames.CaseReference, value);
@@ -194,22 +189,24 @@ public sealed class Rp14FixtureBuilder
 
     public Rp14FixtureBuilder WithCompanyAddressLinesCount(int lineCount)
     {
-        if (lineCount <= 4)
-        {
-            return this;
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThan(lineCount, 5);
 
-        _customMutations.Add((document, ns) =>
-        {
-            XElement? addressLine4 = document
-                .Descendants(ns + Rp14ElementNames.CompanyAddressLine(4))
-                .FirstOrDefault() ?? throw new InvalidOperationException(
-                    $"Element '{Rp14ElementNames.CompanyAddressLine(4)}' was not found in the RP14 XML.");
-            addressLine4.AddAfterSelf(
-                new XElement(
-                    ns + Rp14ElementNames.CompanyAddressLine(5),
-                    "Address Line 5"));
-        });
+        _customMutations.Add((
+            $"Add address lines 5 to {lineCount}",
+            (document, ns) =>
+            {
+                XElement previousLine = document
+                    .Descendants(ns + Rp14ElementNames.CompanyAddressLine(4))
+                    .FirstOrDefault() ?? throw new InvalidOperationException(
+                        $"Element '{Rp14ElementNames.CompanyAddressLine(4)}' was not found in the RP14 XML.");
+
+                for (int i = 5; i <= lineCount; i++)
+                {
+                    XElement newLine = new(ns + Rp14ElementNames.CompanyAddressLine(i), $"Address Line {i}");
+                    previousLine.AddAfterSelf(newLine);
+                    previousLine = newLine;
+                }
+            }));
 
         return this;
     }
@@ -237,7 +234,9 @@ public sealed class Rp14FixtureBuilder
             return new Rp14TestFile(filePath, new Dictionary<string, string>(), DateTime.UtcNow);
         }
 
-        LogInfo($"Scenario '{scenarioName}': Building fixture with {_mutations.Count} mutations, {_customMutations.Count} custom mutations.");
+        LogInfo(_customMutations.Count > 0
+            ? $"Scenario '{scenarioName}': Building fixture with {_mutations.Count} mutations and {_customMutations.Count} custom mutations."
+            : $"Scenario '{scenarioName}': Building fixture with {_mutations.Count} mutations.");
 
         try
         {
@@ -249,9 +248,9 @@ public sealed class Rp14FixtureBuilder
                 ApplyMutation(document, ns, elementName, value);
             }
 
-            foreach (Action<XDocument, XNamespace> customMutation in _customMutations)
+            foreach ((string _, Action<XDocument, XNamespace> apply) in _customMutations)
             {
-                customMutation(document, ns);
+                apply(document, ns);
             }
 
             SaveXmlDocument(document, filePath);
@@ -259,6 +258,11 @@ public sealed class Rp14FixtureBuilder
             Dictionary<string, string> appliedMutations = _mutations
                 .Where(x => x.Value is not null)
                 .ToDictionary(x => x.Key, x => x.Value!);
+
+            for (int i = 0; i < _customMutations.Count; i++)
+            {
+                appliedMutations[$"[custom:{i}] {_customMutations[i].Description}"] = "applied";
+            }
 
             LogInfo($"Scenario '{scenarioName}': Fixture created successfully at {filePath}");
 
@@ -348,65 +352,20 @@ public sealed class Rp14FixtureBuilder
         }
     }
 
-    private static string ResolveBaselinePath(string baselineFilePath)
-    {
-        string absolutePath = Path.GetFullPath(
-            baselineFilePath,
-            AppContext.BaseDirectory);
+    private static string ResolveBaselinePath(string baselineFilePath) =>
+        XmlFixtureHelper.ResolveBaselinePath(baselineFilePath, "RP14");
 
-        if (!File.Exists(absolutePath))
-        {
-            throw new FileNotFoundException(
-                $"RP14 baseline XML file not found: {absolutePath}",
-                absolutePath);
-        }
+    private static XDocument LoadXmlDocument(string filePath) =>
+        XmlFixtureHelper.LoadXmlDocument(filePath);
 
-        return absolutePath;
-    }
+    private static void SaveXmlDocument(XDocument document, string filePath) =>
+        XmlFixtureHelper.SaveXmlDocument(document, filePath);
 
-    private static XDocument LoadXmlDocument(string filePath)
-    {
-        try
-        {
-            return XDocument.Load(filePath, LoadOptions.PreserveWhitespace);
-        }
-        catch (Exception ex) when (ex is IOException or XmlException)
-        {
-            throw new InvalidOperationException(
-                $"Failed to load RP14 XML file: {filePath}",
-                ex);
-        }
-    }
+    private static XNamespace ExtractNamespace(XDocument document) =>
+        XmlFixtureHelper.ExtractNamespace(document);
 
-    private static void SaveXmlDocument(XDocument document, string filePath)
-    {
-        try
-        {
-            using StreamWriter writer = new(
-                filePath,
-                append: false,
-                encoding: new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-
-            document.Save(writer, SaveOptions.DisableFormatting);
-        }
-        catch (Exception ex) when (IsFileException(ex))
-        {
-            throw new InvalidOperationException(
-                $"Failed to save RP14 XML to '{filePath}': {ex.Message}",
-                ex);
-        }
-    }
-
-    private static XNamespace ExtractNamespace(XDocument document)
-    {
-        return document.Root?.Name.NamespaceName
-            ?? throw new InvalidOperationException("RP14 XML document is empty.");
-    }
-
-    private static string FormatDate(DateOnly? date)
-    {
-        return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
-    }
+    private static string FormatDate(DateOnly? date) =>
+        XmlFixtureHelper.FormatDate(date);
 
     private static void ValidateRange(
         int value,
@@ -422,29 +381,13 @@ public sealed class Rp14FixtureBuilder
         }
     }
 
-    private static bool IsFileException(Exception ex)
-    {
-        return ex is IOException
-            or UnauthorizedAccessException
-            or DirectoryNotFoundException
-            or PathTooLongException
-            or NotSupportedException
-            or SecurityException;
-    }
+    private static bool IsFileException(Exception ex) =>
+        XmlFixtureHelper.IsFileException(ex);
 
     private static void LogInfo(string message) =>
-        LogMessage("INFO", message);
+        XmlFixtureHelper.Log("RP14", "INFO", message);
 
     private static void LogError(string message) =>
-        LogMessage("ERROR", message);
-
-    private static void LogMessage(string level, string message)
-    {
-        string timestamp = DateTime.UtcNow.ToString(
-            "yyyy-MM-dd HH:mm:ss.fff",
-            CultureInfo.InvariantCulture);
-
-        Debug.WriteLine($"[{timestamp}] [{level}] [RP14] {message}");
-    }
+        XmlFixtureHelper.Log("RP14", "ERROR", message);
 }
 

@@ -285,14 +285,14 @@ public sealed class Rp14ScenarioCoordinator : ScenarioCoordinatorBase, IRp14Scen
             $"RP14 with company address line 1 '{ToLogValue(addressLine)}'");
 
     public Task UploadRp14WithCompanyAddressFieldAsync(Rp14AddressField field, string? value) =>
-    BuildAndUploadAsync(
-        builder => builder.WithCompanyAddressField(field, value),
-        $"RP14 with company address {field} '{ToLogValue(value)}'");
+        BuildAndUploadAsync(
+            builder => builder.WithCompanyAddressField(field, value),
+            $"RP14 with company address {field} '{ToLogValue(value)}'");
 
     public Task UploadRp14WithCompanyAddressLinesCountAsync(int lineCount) =>
-    BuildAndUploadAsync(
-        builder => builder.WithCompanyAddressLinesCount(lineCount),
-        $"RP14 with {lineCount} company address lines");
+        BuildAndUploadAsync(
+            builder => builder.WithCompanyAddressLinesCount(lineCount),
+            $"RP14 with {lineCount} company address lines");
 
     public Task UploadRp14WithDirectorSurnamesAsync(int directorCount, string surname)
     {
