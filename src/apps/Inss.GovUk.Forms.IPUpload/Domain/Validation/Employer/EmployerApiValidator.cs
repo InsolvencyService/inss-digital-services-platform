@@ -71,9 +71,17 @@ internal sealed class EmployerApiValidator : EmployerValidator
 
     private static void ValidateAddress(ValidatorContext context, string category, AddressType? address)
     {
+        // The RP14 API validation differs from the spreadsheet in that the line 1 is mandatory for the API but optional for the spreadsheet!
+        
         if (address is not null)
         {
-            string line1 = address.Line[0];
+            string? line1 = address.Line.Length > 0 ? address.Line[0] : null;
+            
+            if (string.IsNullOrWhiteSpace(line1))
+            {
+                context.AddError(AddressValidationInfo.MissingAddressLine1(category), line1);
+            }
+            
             string? line2 = address.Line.Length > 1 ? address.Line[1] : null;
             string? line3 = address.Line.Length > 2 ? address.Line[2] : null;
             string? town = address.Town;

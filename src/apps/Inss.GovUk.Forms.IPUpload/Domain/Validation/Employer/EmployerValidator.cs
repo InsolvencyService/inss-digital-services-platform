@@ -37,7 +37,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     protected static void ValidateAddress(
         ValidatorContext context, 
         string category,
-        string line1, 
+        string? line1, 
         string? line2, 
         string? line3, 
         string? town, 
@@ -45,7 +45,7 @@ internal abstract partial class EmployerValidator : BaseValidator
         string? postcode, 
         string? country)
     {
-        if (line1.Length > 35)
+        if (!string.IsNullOrEmpty(line1) && line1.Length > 35)
         {
             context.AddError(AddressValidationInfo.InvalidAddressLineLength(category), line1);
         }
@@ -169,7 +169,7 @@ internal abstract partial class EmployerValidator : BaseValidator
         {
             context.AddError(PayRecordsContactValidationInfo.MissingPayRecordName(), contactName);
         }
-        else if (contactName.Length > 9)
+        else if (contactName.Length > 60)
         {
             context.AddError(PayRecordsContactValidationInfo.InvalidPayRecordNameLength(), contactName);
         }

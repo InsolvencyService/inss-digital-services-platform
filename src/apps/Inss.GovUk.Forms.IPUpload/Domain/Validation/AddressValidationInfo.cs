@@ -12,6 +12,16 @@ internal static class AddressValidationInfo
         Hint = "Enter up to 4 address lines"
     };
     
+    internal static ValidationInfo MissingAddressLine1(string category) => new()
+    {
+        Key = nameof(InvalidAddressLineLength),
+        Category = category,
+        Property = "Address lines",
+        SingularErrorPattern = "[1] first address line is missing",
+        PluralErrorPattern = "[COUNT] first address lines are missing",
+        Hint = "Enter up to 35 characters"
+    };
+    
     internal static ValidationInfo InvalidAddressLineLength(string category) => new()
     {
         Key = nameof(InvalidAddressLineLength),

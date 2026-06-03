@@ -60,6 +60,7 @@ internal sealed class EmployerSpreadsheetValidator : EmployerValidator
         ValidateAssociatedCompanyName(context, associatedCompany1.AssocCompany1Name);
         ValidateAssociatedCompanyNumber(context, associatedCompany1.AssocCompany1Number);
         ValidateCompanyAssociationReason(context, associatedCompany1.AssocComp1ReasonForAssociation);
+        
         ValidateAddress(context, "Associated company", associatedCompany1.AssocComp1AddrLine1, associatedCompany1.AssocComp1AddrLine2, 
             associatedCompany1.AssocComp1AddrLine3, associatedCompany1.AssocComp1AddrTown, associatedCompany1.AssocComp1AddrCounty, 
             associatedCompany1.AssocComp1AddrPostcode, associatedCompany1.AssocComp1AddrCountry);
