@@ -195,13 +195,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     public async Task ThenIShouldBeReturnedToTheUploadPage()
     {
         await UploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
-
-        string screenshotPath =
-            await UploadDocumentCoordinator.CaptureUploadDocumentPageVisualAsync();
-
-        await VerifyFile(screenshotPath)
-            .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.UploadPageWithWarning);
+        await UploadDocumentCoordinator.VerifyUploadDocumentContentSnapShotAsync();
     }
 
     [Then("I should be able to view the validation error details for employees where the surname is missing")]

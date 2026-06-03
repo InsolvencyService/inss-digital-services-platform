@@ -29,9 +29,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         private static string[] featureTags = new string[] {
                 "MEDS-1067"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employer Validation", "              As an Insolvency Practitioner user\n              I want RP14A valid" +
-                "ation to run before submission to Dynamics\n  So that I can fix errors immediatel" +
-                "y and avoid delayed rejection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employer Validation", "              As an Insolvency Practitioner user\r\n              I want RP14A vali" +
+                "dation to run before submission to Dynamics\r\n  So that I can fix errors immediat" +
+                "ely and avoid delayed rejection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "EmployerValidation.feature"
 #line hidden
@@ -118,7 +118,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/EmployerValidation.feature.ndjson", 5);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Validation/EmployerValidation.feature.ndjson", 6);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -217,66 +217,115 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 27
     await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "Category"});
-                table1.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Case"});
-                table1.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employer"});
-                table1.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employee"});
-                table1.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employee pay"});
-                table1.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Employee holiday"});
 #line 28
-    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table1, "Then ");
+    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table9, "Then ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "Category",
                             "Type",
                             "Message",
                             "Hint"});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Case",
                             "Case reference",
                             "1 missing a case reference",
                             ""});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Case",
                             "Case reference",
                             "1 invalid case reference format",
                             "Format is CN12345678"});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employer",
                             "Employer name",
                             "1 invalid length of the employer name",
                             "Maximum of 99 characters allowed"});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee",
                             "Employee surname",
                             "1 missing employee surname",
                             ""});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee pay",
                             "Employee basic pay per week",
                             "1 invalid basic pay per week",
                             "Expected format is 12.34 or 100"});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 invalid holiday owed",
                             "Expected format is 28.25 or 33"});
-                table2.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 invalid range of holiday owed",
                             "0 to 365 days allowed"});
 #line 35
-    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table2, "And ");
+    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table10, "And ");
 #line hidden
 #line 44
     await testRunner.AndAsync("I should be able to view error details for all validation categories", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Multiple employer names exceeding allowed length are rejected")]
+        [global::NUnit.Framework.CategoryAttribute("regression")]
+        [global::NUnit.Framework.CategoryAttribute("validation")]
+        [global::NUnit.Framework.CategoryAttribute("rp14a")]
+        public async global::System.Threading.Tasks.Task MultipleEmployerNamesExceedingAllowedLengthAreRejected()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "validation",
+                    "rp14a"};
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Multiple employer names exceeding allowed length are rejected", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 48
+  this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 8
+        await this.FeatureBackgroundAsync();
+#line hidden
+#line 49
+         await testRunner.GivenAsync("I have uploaded an RP14A file with 3 employer names of length 100", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 50
+         await testRunner.WhenAsync("I submit the RP14A file", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 51
+         await testRunner.ThenAsync("the submission should be \"rejected\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 52
+          await testRunner.AndAsync("the error summary should \"3 invalid length of the employer name\" with \"Maximum of" +
+                        " 99 characters allowed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 53
+          await testRunner.AndAsync("I should be able to view error details for multiple employees", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

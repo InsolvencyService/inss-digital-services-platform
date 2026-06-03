@@ -1,6 +1,7 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
+using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using GovUk.Forms.HostApp.UI.Test.Tags;
 
@@ -8,45 +9,59 @@ namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
 [Scope(Feature = "Case Validation")]
 [Binding]
-public sealed class CaseValidationSteps
+public sealed class CaseValidationSteps : ValidationStepsBase
 {
     private const string CaseReferenceKey = "CaseReference";
     private const string ErrorSummaryKey = "ErrorSummary";
     private const string CaseCategory = "Case";
     private const string CaseReferenceErrorType = "Case reference";
 
-    private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
-    private readonly UploadErrorDetailsCoordinator _uploadErrorDetailsCoordinator;
-    private readonly ScenarioContext _scenarioContext;
-
     public CaseValidationSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
         UploadErrorDetailsCoordinator uploadErrorDetailsCoordinator,
         ScenarioContext scenarioContext)
+        : base(uploadDocumentCoordinator, uploadErrorDetailsCoordinator, scenarioContext)
     {
-        _uploadDocumentCoordinator = uploadDocumentCoordinator;
-        _uploadErrorDetailsCoordinator = uploadErrorDetailsCoordinator;
-        _scenarioContext = scenarioContext;
     }
 
     [Given("the RP14A contains an employee row with no case reference")]
     public async Task GivenTheRp14aContainsAnEmployeeRowWithNoCaseReference()
     {
-        await _uploadDocumentCoordinator.UploadRp14aWithCaseReferenceAsync(string.Empty);
+        await UploadDocumentCoordinator.UploadRp14aWithCaseReferenceAsync(string.Empty);
     }
 
     [Given("the RP14A contains a case reference {string}")]
     public async Task GivenTheRp14aContainsACaseReference(string caseReference)
     {
-        await _uploadDocumentCoordinator.UploadRp14aWithCaseReferenceAsync(caseReference);
+        await UploadDocumentCoordinator.UploadRp14aWithCaseReferenceAsync(caseReference);
 
-        _scenarioContext.Set(caseReference, CaseReferenceKey);
+        ScenarioContext.Set(caseReference, CaseReferenceKey);
     }
 
-    [When("I attempt to submit the RP14A")]
-    public async Task WhenIAttemptToSubmitTheRp14a()
+    [Given("the RP14 XML contains case reference {string}")]
+    public async Task GivenTheRp14XmlContainsCaseReference(string caseReference)
     {
-        await _uploadDocumentCoordinator.NavigateToSubmitPageAsync();
+        await UploadDocumentCoordinator.UploadRp14WithCaseReferenceAsync(caseReference);
+    }
+
+    [Given(@"the RP14A contains (.*) invalid case references")]
+    public async Task GivenTheRp14AContainsInvalidCaseReferences(int count)
+    {
+        List<string> invalidCaseReferences = [];
+
+        // Create the requested number of invalid case references.
+        // If the count is greater than the number of available test values,
+        // reuse the values from the beginning of the list.
+        for (int i = 0; i < count; i++)
+        {
+            invalidCaseReferences.Add(
+                InvalidCaseReferences.All[
+                    i % InvalidCaseReferences.All.Count]);
+        }
+
+        await UploadDocumentCoordinator.UploadRp14aWithCaseReferenceAsync(invalidCaseReferences.ToArray());
+
+        ScenarioContext.Set(invalidCaseReferences, CaseReferenceKey);
     }
 
     [Then("I should see the validation error {string}")]
@@ -56,10 +71,10 @@ public sealed class CaseValidationSteps
             errorMessage,
             hintText: null);
 
-        await _uploadErrorDetailsCoordinator
+        await UploadErrorDetailsCoordinator
             .VerifyErrorSummaryIsDisplayedAsync(expectedError);
 
-        _scenarioContext.Set(expectedError, ErrorSummaryKey);
+        ScenarioContext.Set(expectedError, ErrorSummaryKey);
     }
 
     [Then("I should see the validation error {string} with the hint {string}")]
@@ -71,10 +86,10 @@ public sealed class CaseValidationSteps
             errorMessage,
             hintText);
 
-        await _uploadErrorDetailsCoordinator
+        await UploadErrorDetailsCoordinator
             .VerifyErrorSummaryIsDisplayedAsync(expectedError);
 
-        _scenarioContext.Set(expectedError, ErrorSummaryKey);
+        ScenarioContext.Set(expectedError, ErrorSummaryKey);
     }
 
     [Then("I should be able to view case reference error details on a table")]
@@ -85,7 +100,7 @@ public sealed class CaseValidationSteps
         AffectedEmployee affectedEmployee = BuildAffectedEmployee(
             cellValue: string.Empty);
 
-        await _uploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
             errorSummary,
             affectedEmployee,
             ErrorDetailsHeaderType.CaseReference);
@@ -99,21 +114,58 @@ public sealed class CaseValidationSteps
 
         AffectedEmployee affectedEmployee = BuildAffectedEmployee(caseReference);
 
-        await _uploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
             errorSummary,
             affectedEmployee,
             ErrorDetailsHeaderType.CaseReference);
     }
 
+    [Then("I should see the following RP14 validation errors")]
+    public async Task ThenIShouldSeeTheFollowingRPValidationErrors(DataTable dataTable)
+    {
+        Error error = dataTable.CreateInstance<Error>();
+
+        UploadErrorSummary expectedError = BuildCaseErrorSummary(error.Message, error.Hint, false);
+        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+    }
+
+    [Then("I should see the following case reference validation errors")]
+    public async Task ThenIShouldSeeTheFollowingCaseReferenceValidationErrors(DataTable dataTable)
+    {
+        Error error = dataTable.CreateInstance<Error>();
+        UploadErrorSummary expectedError = BuildCaseErrorSummary(error.Message, error.Hint);
+        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+
+        ScenarioContext.Set(expectedError, ErrorSummaryKey);
+    }
+
+    [Then("I should be able to view case reference error details for multiple employees")]
+    public async Task ThenIShouldBeAbleToViewCaseReferenceErrorDetailsForMultipleEmployees()
+    {
+        UploadErrorSummary errorSummary = GetErrorSummaryFromContext();
+
+        List<AffectedEmployee> affectedEmployees =
+         ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            errorSummary,
+            affectedEmployees,
+            ErrorDetailsHeaderType.CaseReference);
+    }
+
+
+
     private static UploadErrorSummary BuildCaseErrorSummary(
         string errorMessage,
-        string? hintText)
+        string? hintText,
+        bool actionText = true)
     {
         return new UploadErrorSummary(
             Category: CaseCategory,
             ErrorType: CaseReferenceErrorType,
             ErrorMessage: errorMessage,
-            HintText: hintText);
+            HintText: hintText,
+            ActionText: actionText ? "View details" : string.Empty);
     }
 
     private static AffectedEmployee BuildAffectedEmployee(string cellValue)
@@ -132,7 +184,7 @@ public sealed class CaseValidationSteps
     {
         try
         {
-            return _scenarioContext.Get<UploadErrorSummary>(ErrorSummaryKey);
+            return ScenarioContext.Get<UploadErrorSummary>(ErrorSummaryKey);
         }
         catch (KeyNotFoundException ex)
         {
@@ -147,7 +199,7 @@ public sealed class CaseValidationSteps
     {
         try
         {
-            string caseReference = _scenarioContext.Get<string>(CaseReferenceKey);
+            string caseReference = ScenarioContext.Get<string>(CaseReferenceKey);
 
             if (string.IsNullOrWhiteSpace(caseReference))
             {

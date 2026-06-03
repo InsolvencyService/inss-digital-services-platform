@@ -1,13 +1,13 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
+using GovUk.Forms.HostApp.UI.Test.Pages.Login;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
 public class UploadDocumentPage : BasePage, IUploadDocumentPage
 {
-
     private readonly IPlaywrightDriver _playwrightDriver;
     private readonly ICommonPage _commonPage;
 
@@ -35,7 +35,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     private ILocator UploadFileFormGroup => Page.Locator(UploadLocators.Selectors.ErrorGroupForm);
     private ILocator UploadFileErrorMessage => Page.Locator(UploadLocators.Selectors.ContentError);
     private ILocator UploadFileInput => Page.Locator(UploadLocators.Selectors.UploadForm);
-
+    private ILocator MainContent => Page.Locator(StartPageLocators.Selectors.MainContent);
 
     protected override async Task PageContentLoadedAsync()
     {
@@ -49,7 +49,6 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
         await Expect(ContinueButton).ToBeVisibleAsync();
     }
 
-
     public async Task ClickOnContinueButtonAsync()
     {
         await ContinueButton.ClickAsync();
@@ -58,6 +57,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     public async Task ClickOnBackButtonAsync()
     {
         await BackButton.ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.Load, new() { Timeout = ScenarioConstant.ElementTimeout });
     }
 
     public async Task<IPage> ClickOnGiveFeedbackLinkAsync()
@@ -99,7 +99,8 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
 
     public async Task<IReadOnlyList<string>> GetUploadedFileNamesAsync()
     {
-        return await UploadedFileStatus.AllInnerTextsAsync();
+        IReadOnlyList<string> texts = await UploadedFileStatus.AllInnerTextsAsync();
+        return texts.Select(t => t.Trim()).ToList();
     }
 
     public async Task VerifyUploadFileErrorAsync(UploadFileError expected)
@@ -116,5 +117,62 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
     {
         await ErrorSummaryLink.ClickAsync();
         await Expect(UploadFileInput).ToBeFocusedAsync();
+    }
+
+
+    public async Task VerifyUploadContentAriaSnapshotAsync()
+    {
+        await WaitForPageToLoadAsync();
+        await Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
+        string html = await MainContent.InnerHTMLAsync();
+
+        await Verify(html)
+        .UseDirectory("Snapshots/UploadDocument")
+        .UseFileName("UploadingRP14AForms")
+        .ScrubLinesContaining("__RequestVerificationToken")
+        .DisableRequireUniquePrefix();
+    }
+
+    public async Task VerifyCommonIssuesWhenUploadingAriaSnapshotAsync()
+    {
+        await WaitForPageToLoadAsync();
+
+        await VerifyUploadPageHeaderAriaSnapshotAsync();
+        await VerifyCommonIssuesIntroAriaSnapshotAsync();
+        await Page.WaitForTimeoutAsync(ScenarioConstant.WaitForVisual);
+
+        string html = await MainContent.InnerHTMLAsync();
+
+        await Verify(html)
+            .UseDirectory("Snapshots/UploadDocument")
+            .UseFileName("CommonIssuesWhenUploadingRP14AForms")
+            .ScrubLinesContaining("__RequestVerificationToken")
+            .DisableRequireUniquePrefix();
+    }
+
+    private async Task VerifyUploadPageHeaderAriaSnapshotAsync()
+    {
+        await Expect(MainContent)
+            .ToMatchAriaSnapshotAsync("""
+        - main:
+          - heading "Upload redundancy payment forms (RP14/A)" [level=1]
+          - text: Upload a file The uploaded file must be XML ending with '.xml'. (Other formats e.g. PDF, XLS are NOT supported).
+          - button "Upload a file , No file chosen Choose file or drop file": No file chosen , Choose file or drop file
+          - heading "Errors during the upload process" [level=2]
+        """);
+    }
+
+    private async Task VerifyCommonIssuesIntroAriaSnapshotAsync()
+    {
+        await Expect(MainContent)
+            .ToMatchAriaSnapshotAsync("""
+        - main:
+          - group:
+            - text: Common issues when uploading RP14/A forms
+            - paragraph: Even if you have followed all the steps in the upload instructions, you might see an error message. Using IP software to upload the data will minimise the risk of errors.
+            - paragraph: "Common issues when uploading RP14/A forms:"
+            - heading "File size" [level=3]
+            - paragraph: The file size must be less than 10MB. If your file is bigger than this, you need to separate it into smaller files so it can be uploaded.
+        """);
     }
 }

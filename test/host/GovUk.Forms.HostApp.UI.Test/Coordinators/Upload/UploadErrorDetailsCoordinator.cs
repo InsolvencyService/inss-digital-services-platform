@@ -68,7 +68,6 @@ public sealed class UploadErrorDetailsCoordinator
                 "Upload Errors Page");
         });
     }
-
     public async Task VerifyErrorDetailsHeaderOnlyAsync(
         UploadErrorSummary expectedError,
         ErrorDetailsHeaderType headerType)

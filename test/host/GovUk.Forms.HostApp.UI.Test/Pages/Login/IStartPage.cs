@@ -7,4 +7,5 @@ public interface IStartPage
     Task<string> GetHeadingTextAsync();
     Task WaitForPageToLoadAsync();
     Task ClickOnFooterLinkAsync(string linkText);
+    Task VerifyStartPageAriaSnapshotAsync();
 }

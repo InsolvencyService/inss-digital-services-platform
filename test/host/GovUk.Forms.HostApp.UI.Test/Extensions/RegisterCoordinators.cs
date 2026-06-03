@@ -21,5 +21,6 @@ public static class RegisterCoordinators
         services.AddScoped<IRp14aScenarioCoordinator, Rp14aScenarioCoordinator>();
         services.AddScoped<IUploadVerificationCoordinator, UploadVerificationCoordinator>();
         services.AddScoped<IUploadNavigationCoordinator, UploadNavigationCoordinator>();
+        services.AddScoped<IRp14ScenarioCoordinator, Rp14ScenarioCoordinator>();
     }
 }

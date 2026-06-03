@@ -13,6 +13,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 [Binding]
 public class EmployerValidationSteps : ValidationStepsBase
 {
+    private const string EmployerNames = "EmployerNames";
     private readonly CheckYourAnswersCoordinator _uploadDocumentSummaryCoordinator;
 
     public EmployerValidationSteps(
@@ -59,6 +60,19 @@ public class EmployerValidationSteps : ValidationStepsBase
             holidayOwed: invalidHolidayOwed);
     }
 
+    [Given(@"I have uploaded an RP14A file with (.*) employer names of length (.*)")]
+    public async Task GivenIHaveUploadedAnRp14AFileWithEmployerNamesOfLength(int count, int length)
+    {
+        string[] employerNames = Enumerable
+            .Range(1, count)
+            .Select(_ => LengthHelper.AtMax(length))
+            .ToArray();
+
+        await UploadDocumentCoordinator.UploadRp14aWithEmployerNameAsync(employerNames);
+
+        ScenarioContext.Set(employerNames, EmployerNames);
+    }
+
     [When("I submit the RP14A file")]
     public async Task WhenISubmitTheRPAFile()
     {
@@ -91,9 +105,7 @@ public class EmployerValidationSteps : ValidationStepsBase
     }
 
     [Then("the error summary should {string} with {string}")]
-    public async Task ThenTheErrorSummaryShouldWith(
-    string summaryBehaviour,
-    string detailsBehaviour)
+    public async Task ThenTheErrorSummaryShouldWith(string summaryBehaviour, string detailsBehaviour)
     {
         string outcome =
             ScenarioContext.Get<string>(ScenarioConstant.SubmissionOutcome);
@@ -227,6 +239,17 @@ public class EmployerValidationSteps : ValidationStepsBase
                 .ClickBackAndVerifyUploadErrorPageIsDisplayedAsync();
         }
     }
+
+    [Then("I should be able to view error details for multiple employees")]
+    public async Task ThenIShouldBeAbleToViewErrorDetailsForMultipleEmployees()
+    {
+        UploadErrorSummary expectedError = ScenarioContext.Get<UploadErrorSummary>();
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(expectedError, affectedEmployees, ErrorDetailsHeaderType.EmployerName);
+    }
+
 
     private static bool TryMapToHeaderType(UploadErrorSummary error, out ErrorDetailsHeaderType headerType)
     {

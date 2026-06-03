@@ -5,4 +5,4 @@ public sealed record UploadErrorSummary(
     string ErrorType,
     string ErrorMessage,
     string? HintText = null,
-    string ActionText = "View details");
+    string? ActionText = "View details");

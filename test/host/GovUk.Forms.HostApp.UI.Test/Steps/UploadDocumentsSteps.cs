@@ -1,3 +1,4 @@
+using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -10,13 +11,16 @@ public class UploadDocumentsSteps
 {
     private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
     private readonly ScenarioContext _scenarioContext;
+    private readonly CheckYourAnswersCoordinator _checkYourAnswersCoordinator;
 
     public UploadDocumentsSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
-        ScenarioContext scenarioContext)
+        ScenarioContext scenarioContext,
+        CheckYourAnswersCoordinator checkYourAnswersCoordinator)
     {
         _uploadDocumentCoordinator = uploadDocumentCoordinator;
         _scenarioContext = scenarioContext;
+        _checkYourAnswersCoordinator = checkYourAnswersCoordinator;
     }
 
     [When("I upload a valid RP14A file")]
@@ -71,6 +75,12 @@ public class UploadDocumentsSteps
         await _uploadDocumentCoordinator.VerifyThatFileIsUploadedAsync();
     }
 
+    [When("I upload a valid RP14 XML file")]
+    public async Task WhenIUploadAValidRP14XMLFile()
+    {
+        await _uploadDocumentCoordinator.UploadValidRp14Async();
+    }
+
     [Then("the file list should contain only one instance of that file")]
     public async Task ThenTheFileListShouldContainOnlyOneInstanceOfThatFile()
     {
@@ -80,20 +90,14 @@ public class UploadDocumentsSteps
     [Then("the upload document page should match the visual snapshot")]
     public async Task ThenTheUploadDocumentPageShouldMatchTheVisualSnapshot()
     {
-        string screenshotPath = await _uploadDocumentCoordinator.CaptureUploadDocumentPageVisualAsync();
-        await VerifyFile(screenshotPath)
-            .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.UploadPage);
+        await _uploadDocumentCoordinator.VerifyUploadDocumentContentSnapShotAsync();
     }
 
 
     [Then("the common issues section should display the correct content")]
     public async Task ThenTheCommonIssuesSectionShouldDisplayTheCorrectContent()
     {
-        string screenshotPath = await _uploadDocumentCoordinator.CaptureUploadDocumentPageVisualAsync();
-        await VerifyFile(screenshotPath)
-            .UseDirectory(ScenarioConstant.SnapShots)
-            .UseFileName(ScenarioConstant.UploadPageWithCommonIssuesSection);
+        await _uploadDocumentCoordinator.VerifyUploadCommonIssuesContentVisualSnapShotAsync();
     }
 
     [Then("I should see the upload error message {string}")]
@@ -110,6 +114,14 @@ public class UploadDocumentsSteps
     public async Task ThenTheFileShouldNotBeUploaded()
     {
         await _uploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
+    }
+
+    [Then("no validation errors should be displayed")]
+    public async Task ThenNoValidationErrorsShouldBeDisplayed()
+    {
+        await _uploadDocumentCoordinator.VerifyOnlyOneFileUploadedAsync();
+        await _uploadDocumentCoordinator.ClickOnContinueButtonAsync();
+        await _checkYourAnswersCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
     }
 
 }

@@ -29,6 +29,7 @@ public class StartPage : BasePage, IStartPage
     private ILocator UploadRedundancyPaymentFormsLink => Page.GetByRole(AriaRole.Link, new() { Name = StartPageLocators.Labels.UploadRedundancyPaymentFormsLink });
     private ILocator OnceLoggedInText => Page.GetByText(StartPageLocators.Labels.OnceLoggedInText, new() { Exact = true });
     private ILocator GOVUKLink => Page.GetByRole(AriaRole.Img, new() { Name = SignInLocators.Labels.GOVUKLink });
+    private ILocator MainContent => Page.Locator(StartPageLocators.Selectors.MainContent);
 
     public async Task ClickOnStartNowAsync()
     {
@@ -67,6 +68,20 @@ public class StartPage : BasePage, IStartPage
     {
         _scenarioContext.Set(Page);
         await GetLink(linkText).ClickAsync();
+    }
+
+    public async Task VerifyStartPageAriaSnapshotAsync()
+    {
+        await WaitForPageToLoadAsync();
+
+        await Expect(MainContent)
+            .ToMatchAriaSnapshotAsync("""
+             - heading "Upload redundancy payment forms (RP14/A)" [level=1]
+             - paragraph: Access to this service is restricted to Insolvency Practitioners, authorised Agents acting on their behalf, Service Managers and Staff.
+             - heading "Before you start" [level=2]
+             - paragraph: Make sure your email address is registered with the Insolvency Service before using this platform.
+             - button "Start now"
+             """);
     }
 
 
