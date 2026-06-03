@@ -18,7 +18,7 @@ internal static class EmployeeHolidayValidationInfo
         Property = "Contracted holiday entitlement",
         SingularErrorPattern = "[1] contracted holiday entitlement is incorrect",
         PluralErrorPattern = "[COUNT] contracted holiday entitlements are incorrect",
-        Hint = "Enter a number like 12.34 or 100"
+        Hint = "Enter a number like 12.5 or 33"
     };
     
     internal static ValidationInfo InvalidContractedHolidayEntitlementRange() => new()
@@ -47,7 +47,7 @@ internal static class EmployeeHolidayValidationInfo
         Property = "Holiday carried forward",
         SingularErrorPattern = "[1] carried forward holiday days is incorrect",
         PluralErrorPattern = "[COUNT] carried forward holiday days are incorrect",
-        Hint = "Enter a number like 28.25 or 33"
+        Hint = "Enter a number like 28.5 or 33"
     };
     
     internal static ValidationInfo InvalidHolidayCarriedForwardRange() => new()
@@ -76,7 +76,7 @@ internal static class EmployeeHolidayValidationInfo
         Property = "Holiday days taken",
         SingularErrorPattern = "[1] holiday days taken is incorrect",
         PluralErrorPattern = "[COUNT] holiday days taken are incorrect",
-        Hint = "Enter a number like 28.25 or 33"
+        Hint = "Enter a number like 28.5 or 33"
     };
     
     internal static ValidationInfo InvalidHolidayDaysTakenRange() => new()

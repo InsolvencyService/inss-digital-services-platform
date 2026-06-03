@@ -185,7 +185,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             {
                 Initials = directors.Director1.Director1Initials,
                 Surname = directors.Director1.Director1Surname,
-                NationalInsuranceNumber = directors.Director1.Director1NINO?.ToUpper() ?? null!
+                NationalInsuranceNumber = directors.Director1.Director1NINO?.ToUpper().Replace(" ", string.Empty) ?? null!
             });
         }
         
@@ -195,7 +195,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             {
                 Initials = directors.Director2.Director2Initials,
                 Surname = directors.Director2.Director2Surname,
-                NationalInsuranceNumber = directors.Director2.Director2NINO?.ToUpper() ?? null!
+                NationalInsuranceNumber = directors.Director2.Director2NINO?.ToUpper().Replace(" ", string.Empty) ?? null!
             });
         }
         
@@ -205,7 +205,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             {
                 Initials = directors.Director3.Director3Initials,
                 Surname = directors.Director3.Director3Surname,
-                NationalInsuranceNumber = directors.Director3.Director3NINO?.ToUpper() ?? null!
+                NationalInsuranceNumber = directors.Director3.Director3NINO?.ToUpper().Replace(" ", string.Empty) ?? null!
             });
         }
         
@@ -215,7 +215,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             {
                 Initials = directors.Director4.Director4Initials,
                 Surname = directors.Director4.Director4Surname,
-                NationalInsuranceNumber = directors.Director4.Director4NINO?.ToUpper() ?? null!
+                NationalInsuranceNumber = directors.Director4.Director4NINO?.ToUpper().Replace(" ", string.Empty) ?? null!
             });
         }
         
@@ -225,7 +225,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             {
                 Initials = directors.Director5.Director5Initials,
                 Surname = directors.Director5.Director5Surname,
-                NationalInsuranceNumber = directors.Director5.Director5NINO?.ToUpper() ?? null!
+                NationalInsuranceNumber = directors.Director5.Director5NINO?.ToUpper().Replace(" ", string.Empty) ?? null!
             });
         }
         
@@ -235,7 +235,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             {
                 Initials = directors.Director6.Director6Initials,
                 Surname = directors.Director6.Director6Surname,
-                NationalInsuranceNumber = directors.Director6.Director6NINO?.ToUpper() ?? null!
+                NationalInsuranceNumber = directors.Director6.Director6NINO?.ToUpper().Replace(" ", string.Empty) ?? null!
             });
         }
 

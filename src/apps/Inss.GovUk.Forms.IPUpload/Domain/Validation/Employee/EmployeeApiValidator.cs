@@ -25,6 +25,7 @@ internal sealed class EmployeeApiValidator : EmployeeValidator
             context.Dob = DateOnly.FromDateTime(employee.DateOfBirth);
             context.Nino = employee.NINO;
             
+            ValidateAverageHoursWorked(context, employee.AverageHoursWorked);
             ValidateEmployerName(context, _model.EmployerName);
             ValidateEmployeeSurname(context, employee.EmployeeName.Surname);
             ValidateEmployeeNino(context, employee.NINO);

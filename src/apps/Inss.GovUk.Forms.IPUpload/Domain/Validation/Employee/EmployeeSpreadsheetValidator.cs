@@ -25,6 +25,7 @@ internal sealed class EmployeeSpreadsheetValidator : EmployeeValidator
             
             await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
 
+            ValidateAverageHoursWorked(context, employee.AverageHoursWorked);
             ValidateEmployerName(context, employee.EmployerName);
             ValidateEmployeeSurname(context, employee.EmployeeName.Surname);
             ValidateEmployeeNino(context, employee.NINO);

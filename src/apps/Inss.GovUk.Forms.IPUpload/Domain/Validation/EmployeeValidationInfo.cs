@@ -2,6 +2,16 @@
 
 internal static class EmployeeValidationInfo
 {
+    internal static ValidationInfo InvalidAverageHoursWorkedFormat() => new()
+    {
+        Key = nameof(InvalidMoneyOwedToEmployerFormat),
+        Category = "Employee",
+        Property = "Average hours worked",
+        SingularErrorPattern = "[1] average hours worked is incorrect",
+        PluralErrorPattern = "[COUNT] average hours worked are incorrect",
+        Hint = "Enter a number like 37 or 37.5"
+    };
+    
     internal static ValidationInfo MissingEmployeeSurname() => new()
     {
         Key = nameof(MissingEmployeeSurname),

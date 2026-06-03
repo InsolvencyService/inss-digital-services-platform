@@ -99,7 +99,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateDirectorNino(ValidatorContext context, string nino)
     {
-        if (!string.IsNullOrEmpty(nino) && !NinoFormatRegex().IsMatch(nino))
+        if (!string.IsNullOrEmpty(nino) && !NinoFormatRegex().IsMatch(nino.Replace(" ", string.Empty)))
         {
             context.AddError(DirectorValidationInfo.DirectorInvalidNinoFormat(), nino);
         } 

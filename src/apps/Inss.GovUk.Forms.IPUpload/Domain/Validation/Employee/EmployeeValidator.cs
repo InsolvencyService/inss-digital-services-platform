@@ -10,6 +10,16 @@ internal abstract partial class EmployeeValidator : BaseValidator
     {
     }
     
+    protected static void ValidateAverageHoursWorked(ValidatorContext context, decimal averageHours)
+    {
+        string value = averageHours.ToString(CultureInfo.CurrentCulture);
+        
+        if (!AverageHoursFormatRegex().IsMatch(value))
+        {
+            context.AddError(EmployeeValidationInfo.InvalidAverageHoursWorkedFormat(), value);
+        }
+    }
+    
     protected static void ValidateEmployerName(ValidatorContext context, string employerName)
     {
         if (employerName.Length > 99)
@@ -36,7 +46,7 @@ internal abstract partial class EmployeeValidator : BaseValidator
         {
             context.AddError(EmployeeValidationInfo.MissingEmployeeNino(), nino);
         }
-        else if (!NinoFormatRegex().IsMatch(nino))
+        else if (!NinoFormatRegex().IsMatch(nino.Replace(" ", string.Empty)))
         {
             context.AddError(EmployeeValidationInfo.InvalidEmployeeNinoFormat(), nino);
         } 
@@ -139,7 +149,7 @@ internal abstract partial class EmployeeValidator : BaseValidator
     {
         string value = holiday.ToString(CultureInfo.CurrentCulture);
         
-        if (!HolidayFormatRegex().IsMatch(value))
+        if (!HolidayOwedFormatRegex().IsMatch(value))
         {
             context.AddError(EmployeeHolidayValidationInfo.InvalidHolidayOwedFormat(), value);
         }
@@ -159,6 +169,9 @@ internal abstract partial class EmployeeValidator : BaseValidator
         }
     }
     
+    [GeneratedRegex(ValidationInfo.AverageHoursFormat)]
+    private static partial Regex AverageHoursFormatRegex();
+    
     [GeneratedRegex(ValidationInfo.NinoFormat)]
     private static partial Regex NinoFormatRegex();
     
@@ -167,4 +180,7 @@ internal abstract partial class EmployeeValidator : BaseValidator
     
     [GeneratedRegex(ValidationInfo.HolidayFormat)]
     private static partial Regex HolidayFormatRegex();
+    
+    [GeneratedRegex(ValidationInfo.HolidayOwedFormat)]
+    private static partial Regex HolidayOwedFormatRegex();
 }

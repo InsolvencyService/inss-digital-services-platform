@@ -31,3 +31,8 @@ a.rebranded-one-login-header__nav__link:active:after {
         padding: 15px 0;
     }
 }
+
+td.govuk-table__cell {
+    word-break: break-all;
+    white-space: normal;
+}

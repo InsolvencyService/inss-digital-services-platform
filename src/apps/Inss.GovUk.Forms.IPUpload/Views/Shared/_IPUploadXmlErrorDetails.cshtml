@@ -33,7 +33,7 @@
                 <td class="govuk-table__cell">@(employeeError.Surname)</td>
                 <td class="govuk-table__cell">@(employeeError.Dob)</td>
                 <td class="govuk-table__cell">@(employeeError.Nino)</td>
-                <td class="govuk-table__cell">@(employeeError.Value ?? "Not entered")</td>
+                <td class="govuk-table__cell">@(!string.IsNullOrWhiteSpace(employeeError.Value) ? employeeError.Value : "Not entered")</td>
             </tr>
         }
         </tbody>
