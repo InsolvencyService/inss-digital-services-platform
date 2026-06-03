@@ -27,11 +27,11 @@ public sealed class IPUploadXmlErrorsModel : PageModel
                 summaryList.Add(existingSummary);
             }
 
-            ErrorPropertySummary? propertySummary = existingSummary.Properties.FirstOrDefault(p => p.Key == error.Info.Key);
+            ErrorPropertySummary? propertySummary = existingSummary.Properties.FirstOrDefault(p => p.Info.Key == error.Info.Key);
 
             if (propertySummary is null)
             {
-                propertySummary = new ErrorPropertySummary { Key = error.Info.Key };
+                propertySummary = new ErrorPropertySummary { Info = error.Info };
                 existingSummary.AddProperty(propertySummary);
             }
                 

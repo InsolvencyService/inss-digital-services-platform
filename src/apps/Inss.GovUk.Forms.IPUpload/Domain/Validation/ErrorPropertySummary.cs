@@ -7,36 +7,43 @@ namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 public sealed class ErrorPropertySummary
 {
     public string Id { get; init; } = Guid.NewGuid().ToString();
-
-    public Error[] Errors { get; set; } = [];
     
-    public string Key { get; init; }
+    public EmployeeError[] EmployeeUploadErrors { get; set; } = [];
     
-    public bool IsEmployeeErrors => Errors.Length > 0 && Errors[0] is EmployeeError;
+    public EmployerError[] EmployerUploadErrors { get; set; } = [];
     
-    internal string GetProperty()
-    {
-        ValidationInfo validationInfo = ValidationInfoLookup.Get(Key);
-        return validationInfo.Property;
-    }
+    public ValidationInfo Info { get; init; }
+    
+    public bool HasEmployeeErrors => EmployeeUploadErrors.Length > 0;
 
     internal string GetFormattedMessage()
     {
-        ValidationInfo validationInfo = ValidationInfoLookup.Get(Key);
-        return Errors.Length == 1
-            ? validationInfo.SingularErrorPattern
-            : validationInfo.PluralErrorPattern.Replace("[COUNT]", Errors.Length.ToString(CultureInfo.CurrentCulture));
-    }
-    
-    internal string? GetHint()
-    {
-        ValidationInfo validationInfo = ValidationInfoLookup.Get(Key);
-        return validationInfo.Hint;
+        if (HasEmployeeErrors)
+        {
+            if (EmployeeUploadErrors.Length > 1)
+            {
+                return Info.PluralErrorPattern.Replace("[COUNT]", EmployeeUploadErrors.Length.ToString(CultureInfo.CurrentCulture));
+            }
+
+            return Info.SingularErrorPattern;
+        }
+
+        return EmployerUploadErrors.Length > 1 
+            ? Info.PluralErrorPattern.Replace("[COUNT]", EmployerUploadErrors.Length.ToString(CultureInfo.CurrentCulture)) 
+            : Info.SingularErrorPattern;
     }
 
     internal void AddError(Error error)
     {
-        List<Error> errors = [..Errors, error];
-        Errors = errors.ToArray();
+        if (error is EmployeeError employeeError)
+        {
+            List<EmployeeError> errors = [..EmployeeUploadErrors, employeeError];
+            EmployeeUploadErrors = errors.ToArray();
+        }
+        else if (error is EmployerError employerError)
+        {
+            List<EmployerError> errors = [..EmployerUploadErrors, employerError];
+            EmployerUploadErrors = errors.ToArray();
+        }
     }
 }

@@ -9,16 +9,16 @@
       <div class="govuk-summary-list__row">
 
         <dt class="govuk-summary-list__key">
-          @(error.GetProperty())
+          @(error.Info.Property)
         </dt>
         <dd class="govuk-summary-list__value">
           <p class="govuk-body">@(error.GetFormattedMessage())</p>
-          @if (error.GetHint() is not null)
+          @if (error.Info.Hint is not null)
           {
-            <p class='govuk-body govuk-hint'>@(error.GetHint())</p>
+            <p class='govuk-body govuk-hint'>@(error.Info.Hint)</p>
           }
         </dd>
-        @if (error.IsEmployeeErrors)
+        @if (error.HasEmployeeErrors)
         {
           <dd class="govuk-summary-list_actions">
             <a class="govuk-link" href="/ip-upload/redundancy-payment/upload-error-details/?state=@error.Id">View details</a>

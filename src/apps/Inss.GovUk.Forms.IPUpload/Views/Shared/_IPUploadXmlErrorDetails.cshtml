@@ -1,19 +1,19 @@
 ﻿@using Inss.GovUk.Forms.IPUpload.Domain.Validation
 @model IPUploadXmlErrorDetailsModel
 
-<h1 class="govuk-heading-l">@(Model.CurrentErrorDetail.GetProperty())</h1>
+<h1 class="govuk-heading-l">@(Model.CurrentErrorDetail.Info.Property)</h1>
 
 <p class="govuk-body">
     @(Model.CurrentErrorDetail.GetFormattedMessage())
 </p>
 
-@if (Model.CurrentErrorDetail.GetHint() is not null)
+@if (Model.CurrentErrorDetail.Info.Hint is not null)
 {
     <h2 class="govuk-heading-m">How to fix it</h2>
-    <p class="govuk-body">@(Model.CurrentErrorDetail.GetHint())</p>
+    <p class="govuk-body">@(Model.CurrentErrorDetail.Info.Hint)</p>
 }
 
-@if (Model.CurrentErrorDetail.IsEmployeeErrors)
+@if (Model.CurrentErrorDetail.HasEmployeeErrors)
 {
     <table class="govuk-table govuk-table--small-text-until-tablet">
         <thead class="govuk-table__head">
@@ -26,7 +26,7 @@
         </tr>
         </thead>
         <tbody class="govuk-table__body">
-        @foreach (EmployeeError employeeError in Model.CurrentErrorDetail.Errors.Cast<EmployeeError>())
+        @foreach (EmployeeError employeeError in Model.CurrentErrorDetail.EmployeeUploadErrors)
         {
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">@(employeeError.Forenames)</td>
