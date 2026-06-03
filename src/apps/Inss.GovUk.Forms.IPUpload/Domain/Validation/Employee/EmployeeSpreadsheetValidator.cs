@@ -15,7 +15,8 @@ internal sealed class EmployeeSpreadsheetValidator : EmployeeValidator
     internal override async Task<ValidatorContext> ValidateAsync()
     {
         EmployeeValidatorContext context = new();
-
+        bool validateCaseReference = true;
+        
         foreach (RP14AEmployee employee in _model.Employee)
         {
             context.Forenames = employee.EmployeeName.Forenames;
@@ -23,8 +24,13 @@ internal sealed class EmployeeSpreadsheetValidator : EmployeeValidator
             context.Dob = DateOnly.FromDateTime(employee.DateOfBirth);
             context.Nino = employee.NINO;
             
-            await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
-
+            // The instructions on the spreadsheet state to define the case ref in the first row - this reflects it in validation
+            if (validateCaseReference)
+            {
+                await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
+                validateCaseReference = false;
+            }
+            
             ValidateAverageHoursWorked(context, employee.AverageHoursWorked);
             ValidateEmployerName(context, employee.EmployerName);
             ValidateEmployeeSurname(context, employee.EmployeeName.Surname);
