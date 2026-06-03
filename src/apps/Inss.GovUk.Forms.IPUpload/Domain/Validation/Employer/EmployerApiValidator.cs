@@ -5,43 +5,38 @@ namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
 internal sealed class EmployerApiValidator : EmployerValidator
 {
-    private readonly ICaseReferenceService _caseReferenceService;
+    private readonly RP14 _model;
 
-    internal EmployerApiValidator(ICaseReferenceService caseReferenceService)
+    internal EmployerApiValidator(RP14 model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
-        _caseReferenceService = caseReferenceService;
+        _model = model;
     }
 
-    internal async Task<ValidatorContext> ValidateAsync(RP14 model)
+    internal override async Task<ValidatorContext> ValidateAsync()
     {
         EmployerValidatorContext context = new();
 
-        bool caseReferenceExists = await _caseReferenceService.CheckExistsAsync(model.Header.CaseReference);
-
-        if (!caseReferenceExists)
-        {
-            context.AddError(CaseValidationInfo.UnknownCaseReference(), model.Header.CaseReference);
-        }
-
-        ValidateBusinessName(context, model.NameOfBusiness);
-        ValidateCompanyNumber(context, model.CompanyNumber);
-        ValidateAddress(context, "Business", model.Address);
-        ValidateSICCode(context, model.SICCode);
+        await ValidateCaseReferenceAsync(context, _model.Header.CaseReference);
         
-        foreach (RP14DirectorsDirector director in model.Directors.Director)
+        ValidateBusinessName(context, _model.NameOfBusiness);
+        ValidateCompanyNumber(context, _model.CompanyNumber);
+        ValidateAddress(context, "Business", _model.Address);
+        ValidateSICCode(context, _model.SICCode);
+        
+        foreach (RP14DirectorsDirector director in _model.Directors.Director)
         {
             ValidateDirectorSurname(context, director.Name.Surname);
             ValidateDirectorInitials(context, director.Name.Initials);
             ValidateDirectorNino(context, director.NINO);
         }
 
-        foreach (RP14Shareholder shareholder in model.Shareholders)
+        foreach (RP14Shareholder shareholder in _model.Shareholders)
         {
             ValidateShareholderName(context, shareholder.Name.FullName);
             ValidateShareholderPercentage(context,shareholder.Percentage);
         }
 
-        foreach (RP14AssociatedCompaniesAssociatedCompany associatedCompany in model.AssociatedCompanies.AssociatedCompany)
+        foreach (RP14AssociatedCompaniesAssociatedCompany associatedCompany in _model.AssociatedCompanies.AssociatedCompany)
         {
             ValidateAssociatedCompanyName(context, associatedCompany.CompanyName);
             ValidateAssociatedCompanyNumber(context, associatedCompany.CompanyNumber);
@@ -49,21 +44,21 @@ internal sealed class EmployerApiValidator : EmployerValidator
             ValidateAddress(context, "Associated company", associatedCompany.Address);
         }
 
-        RP14EmployeesEmployeesClaimingContinuity employeeContinuity = model.Employees.EmployeesClaimingContinuity;
+        RP14EmployeesEmployeesClaimingContinuity employeeContinuity = _model.Employees.EmployeesClaimingContinuity;
         ValidateContinuityEmployerName(context, employeeContinuity.EmployerName);
         ValidateAddress(context, "Employment continuity", employeeContinuity.Address);
         
-        RP14TransferDetailsTransferTo transferTo = model.TransferDetails.TransferTo;
+        RP14TransferDetailsTransferTo transferTo = _model.TransferDetails.TransferTo;
         ValidateTransferToName(context, transferTo.Name);
         ValidateAddress(context, "Transfers", transferTo.Address);
 
-        RP14PayRecordsContact payRecordsContact = model.PayRecordsContact;
+        RP14PayRecordsContact payRecordsContact = _model.PayRecordsContact;
         ValidatePayRecordsContactName(context, payRecordsContact.Name);
         ValidatePayRecordsContactPhone(context, payRecordsContact.PhoneNumber);
         ValidatePayRecordsContactEmail(context, payRecordsContact.EmailAddress);
         ValidateAddress(context, "Pay records contact", payRecordsContact.Address);
 
-        RP14InsolvencyPractitioner ip = model.InsolvencyPractitioner;
+        RP14InsolvencyPractitioner ip = _model.InsolvencyPractitioner;
         ValidateIPRegistrationNumber(context, ip.RegistrationNumber);
         ValidateIPFirmName(context, ip.FirmName);
         ValidateIPName(context, ip.Name);

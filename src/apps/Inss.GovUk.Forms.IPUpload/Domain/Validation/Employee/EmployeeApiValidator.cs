@@ -5,32 +5,27 @@ namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
 internal sealed class EmployeeApiValidator : EmployeeValidator
 {
-    private readonly ICaseReferenceService _caseReferenceService;
+    private readonly RP14A _model;
 
-    internal EmployeeApiValidator(ICaseReferenceService caseReferenceService)
+    internal EmployeeApiValidator(RP14A model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
-        _caseReferenceService = caseReferenceService;
+        _model = model;
     }
     
-    internal async Task<ValidatorContext> ValidateAsync(RP14A model)
+    internal override async Task<ValidatorContext> ValidateAsync()
     {
         EmployeeValidatorContext context = new();
 
-        foreach (RP14AEmployee employee in model.Employee)
+        await ValidateCaseReferenceAsync(context, _model.Header.CaseReference);
+        
+        foreach (RP14AEmployee employee in _model.Employee)
         {
             context.Forenames = employee.EmployeeName.Forenames;
             context.Surname = employee.EmployeeName.Surname;
             context.Dob = DateOnly.FromDateTime(employee.DateOfBirth);
             context.Nino = employee.NINO;
-
-            bool caseReferenceExists = await _caseReferenceService.CheckExistsAsync(model.Header.CaseReference);
-
-            if (!caseReferenceExists)
-            {
-                context.AddError(CaseValidationInfo.UnknownCaseReference(), model.Header.CaseReference);
-            }
             
-            ValidateEmployerName(context, model.EmployerName);
+            ValidateEmployerName(context, _model.EmployerName);
             ValidateEmployeeSurname(context, employee.EmployeeName.Surname);
             ValidateEmployeeNino(context, employee.NINO);
             ValidateMoneyOwedToEmployer(context, employee.MoneyOwedToEmployer);

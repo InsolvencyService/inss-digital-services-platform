@@ -5,30 +5,25 @@ namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
 internal sealed class EmployeeSpreadsheetValidator : EmployeeValidator
 {
-    private readonly ICaseReferenceService _caseReferenceService;
+    private readonly RP14A _model;
 
-    internal EmployeeSpreadsheetValidator(ICaseReferenceService caseReferenceService)
+    internal EmployeeSpreadsheetValidator(RP14A model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
-        _caseReferenceService = caseReferenceService;
+        _model = model;
     }
     
-    internal async Task<ValidatorContext> ValidateAsync(RP14A model)
+    internal override async Task<ValidatorContext> ValidateAsync()
     {
         EmployeeValidatorContext context = new();
 
-        foreach (RP14AEmployee employee in model.Employee)
+        foreach (RP14AEmployee employee in _model.Employee)
         {
             context.Forenames = employee.EmployeeName.Forenames;
             context.Surname = employee.EmployeeName.Surname;
             context.Dob = DateOnly.FromDateTime(employee.DateOfBirth);
             context.Nino = employee.NINO;
             
-            bool caseReferenceExists = await _caseReferenceService.CheckExistsAsync(employee.Header.CaseReference);
-
-            if (!caseReferenceExists)
-            {
-                context.AddError(CaseValidationInfo.UnknownCaseReference(), employee.Header.CaseReference);
-            }
+            await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
 
             ValidateEmployerName(context, employee.EmployerName);
             ValidateEmployeeSurname(context, employee.EmployeeName.Surname);

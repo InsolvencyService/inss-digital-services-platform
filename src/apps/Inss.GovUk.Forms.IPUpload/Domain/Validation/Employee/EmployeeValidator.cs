@@ -1,10 +1,15 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
-internal abstract partial class EmployeeValidator
+internal abstract partial class EmployeeValidator : BaseValidator
 {
+    protected EmployeeValidator(ICaseReferenceService caseReferenceService) : base(caseReferenceService)
+    {
+    }
+    
     protected static void ValidateEmployerName(ValidatorContext context, string employerName)
     {
         if (employerName.Length > 99)
