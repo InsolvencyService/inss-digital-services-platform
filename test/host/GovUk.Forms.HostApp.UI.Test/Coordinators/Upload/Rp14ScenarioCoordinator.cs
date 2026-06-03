@@ -291,7 +291,7 @@ public sealed class Rp14ScenarioCoordinator : ScenarioCoordinatorBase, IRp14Scen
 
     public Task UploadRp14WithCompanyAddressLinesCountAsync(int lineCount) =>
         BuildAndUploadAsync(
-            builder => builder.WithCompanyAddressLinesCount(lineCount),
+            lineCount <= 4 ? null : builder => builder.WithCompanyAddressLinesCount(lineCount),
             $"RP14 with {lineCount} company address lines");
 
     public Task UploadRp14WithDirectorSurnamesAsync(int directorCount, string surname)

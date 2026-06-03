@@ -330,32 +330,36 @@ public sealed class Rp14aFixtureBuilder
         return filePath;
     }
 
+
     private static string CreateValidCopy(
-        TestArtifacts testArtifacts,
-        string baselineFilePath)
+          TestArtifacts testArtifacts,
+          string baselineFilePath)
     {
         string absolutePath = ResolveBaselinePath(baselineFilePath);
+        string uniqueFileName = $"rp14a-{Guid.NewGuid():N}.xml";
+        string targetPath = testArtifacts.FilePath(uniqueFileName);
 
-        while (true)
+        try
         {
-            string targetPath = testArtifacts.FilePath($"rp14a-{Guid.NewGuid():N}.xml");
+            File.Copy(
+                absolutePath,
+                targetPath,
+                overwrite: false);
 
-            try
-            {
-                File.Copy(absolutePath, targetPath, overwrite: false);
-                LogInfo($"Created clean copy at {targetPath}");
-                return targetPath;
-            }
-            catch (IOException ex) when (ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
-            {
-                LogWarning($"File already exists due to race condition: {targetPath}. Retrying.");
-            }
-            catch (Exception ex) when (IsFileException(ex))
-            {
-                throw new InvalidOperationException(
-                    $"Failed to create RP14A fixture copy: {ex.Message}",
-                    ex);
-            }
+            LogInfo($"Created clean copy at {targetPath}");
+
+            return targetPath;
+        }
+        catch (IOException ex) when (ex.Message.Contains("already exists", StringComparison.OrdinalIgnoreCase))
+        {
+            LogWarning($"File already exists due to race condition: {targetPath}. Retrying.");
+            return CreateValidCopy(testArtifacts, baselineFilePath);
+        }
+        catch (Exception ex) when (IsFileException(ex))
+        {
+            throw new InvalidOperationException(
+                $"Failed to create RP14A fixture copy: {ex.Message}",
+                ex);
         }
     }
 

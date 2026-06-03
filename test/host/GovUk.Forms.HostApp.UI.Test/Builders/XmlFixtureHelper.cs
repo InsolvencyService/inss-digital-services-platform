@@ -86,9 +86,7 @@ internal static class XmlFixtureHelper
 
     internal static void Log(string tag, string level, string message)
     {
-        string timestamp = DateTime.UtcNow.ToString(
-            "yyyy-MM-dd HH:mm:ss.fff",
-            CultureInfo.InvariantCulture);
+        string timestamp = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
 
         Debug.WriteLine($"[{timestamp}] [{level}] [{tag}] {message}");
     }
