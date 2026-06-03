@@ -2,7 +2,7 @@
 
 internal static class EmployeeHolidayValidationInfo
 {
-    internal static readonly ValidationInfo MissingContractedHolidayEntitlement = new()
+    internal static ValidationInfo MissingContractedHolidayEntitlement() => new()
     {
         Key = nameof(MissingContractedHolidayEntitlement),
         Category = "Employee holiday",
@@ -11,7 +11,7 @@ internal static class EmployeeHolidayValidationInfo
         PluralErrorPattern = "[COUNT] contracted holiday entitlements are missing"
     };
     
-    internal static readonly ValidationInfo InvalidContractedHolidayEntitlementFormat = new()
+    internal static ValidationInfo InvalidContractedHolidayEntitlementFormat() => new()
     {
         Key = nameof(InvalidContractedHolidayEntitlementFormat),
         Category = "Employee holiday",
@@ -21,7 +21,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a number like 12.34 or 100"
     };
     
-    internal static readonly ValidationInfo InvalidContractedHolidayEntitlementRange = new()
+    internal static ValidationInfo InvalidContractedHolidayEntitlementRange() => new()
     {
         Key = nameof(InvalidContractedHolidayEntitlementRange),
         Category = "Employee holiday",
@@ -31,7 +31,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a value between 0 and 365"
     };
     
-    internal static readonly ValidationInfo MissingHolidayCarriedForward = new()
+    internal static ValidationInfo MissingHolidayCarriedForward() => new()
     {
         Key = nameof(MissingHolidayCarriedForward),
         Category = "Employee holiday",
@@ -40,7 +40,7 @@ internal static class EmployeeHolidayValidationInfo
         PluralErrorPattern = "[COUNT] carried forward holiday days are missing"
     };
     
-    internal static readonly ValidationInfo InvalidHolidayCarriedForwardFormat = new()
+    internal static ValidationInfo InvalidHolidayCarriedForwardFormat() => new()
     {
         Key = nameof(InvalidHolidayCarriedForwardFormat),
         Category = "Employee holiday",
@@ -50,7 +50,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a number like 28.25 or 33"
     };
     
-    internal static readonly ValidationInfo InvalidHolidayCarriedForwardRange = new()
+    internal static ValidationInfo InvalidHolidayCarriedForwardRange() => new()
     {
         Key = nameof(InvalidHolidayCarriedForwardRange),
         Category = "Employee holiday",
@@ -60,7 +60,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a value between 0 and 365"
     };
     
-    internal static readonly ValidationInfo MissingHolidayDaysTakenForward = new()
+    internal static ValidationInfo MissingHolidayDaysTakenForward() => new()
     {
         Key = nameof(MissingHolidayDaysTakenForward),
         Category = "Employee holiday",
@@ -69,7 +69,7 @@ internal static class EmployeeHolidayValidationInfo
         PluralErrorPattern = "[COUNT] holiday days taken are missing"
     };
     
-    internal static readonly ValidationInfo InvalidHolidayDaysTakenFormat = new()
+    internal static ValidationInfo InvalidHolidayDaysTakenFormat() => new()
     {
         Key = nameof(InvalidHolidayDaysTakenFormat),
         Category = "Employee holiday",
@@ -79,7 +79,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a number like 28.25 or 33"
     };
     
-    internal static readonly ValidationInfo InvalidHolidayDaysTakenRange = new()
+    internal static ValidationInfo InvalidHolidayDaysTakenRange() => new()
     {
         Key = nameof(InvalidHolidayDaysTakenRange),
         Category = "Employee holiday",
@@ -89,7 +89,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a value between 0 and 365"
     };
     
-    internal static readonly ValidationInfo MissingHolidayOwedForward = new()
+    internal static ValidationInfo MissingHolidayOwedForward() => new()
     {
         Key = nameof(MissingHolidayOwedForward),
         Category = "Employee holiday",
@@ -98,7 +98,7 @@ internal static class EmployeeHolidayValidationInfo
         PluralErrorPattern = "[COUNT] holiday owed is missing"
     };
     
-    internal static readonly ValidationInfo InvalidHolidayOwedFormat = new()
+    internal static ValidationInfo InvalidHolidayOwedFormat() => new()
     {
         Key = nameof(InvalidHolidayOwedFormat),
         Category = "Employee holiday",
@@ -108,7 +108,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a number like 28.25 or 33"
     };
     
-    internal static readonly ValidationInfo InvalidHolidayOwedRange = new()
+    internal static ValidationInfo InvalidHolidayOwedRange() => new()
     {
         Key = nameof(InvalidHolidayOwedRange),
         Category = "Employee holiday",
@@ -118,7 +118,7 @@ internal static class EmployeeHolidayValidationInfo
         Hint = "Enter a value between 0 and 365"
     };
     
-    internal static readonly ValidationInfo InvalidHolidayNotPaidRange = new()
+    internal static ValidationInfo InvalidHolidayNotPaidRange() => new()
     {
         Key = nameof(InvalidHolidayNotPaidRange),
         Category = "Employee holiday",

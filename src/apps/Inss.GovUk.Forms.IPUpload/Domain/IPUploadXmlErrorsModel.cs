@@ -13,25 +13,25 @@ public sealed class IPUploadXmlErrorsModel : PageModel
 
     public ErrorSummary[] SummaryList { get; set; } = [];
     
-    public void BuildErrorList(List<Error> errors)
+    internal void BuildErrorList(List<Error> errors)
     {
         List<ErrorSummary> summaryList = [];
         
         foreach (Error error in errors)
         {
-            ErrorSummary? existingSummary = summaryList.FirstOrDefault(s => s.Category == error.GetCategory());
+            ErrorSummary? existingSummary = summaryList.FirstOrDefault(s => s.Category == error.Info.Category);
 
             if (existingSummary is null)
             {
-                existingSummary = new ErrorSummary { Category = error.GetCategory() };
+                existingSummary = new ErrorSummary { Category = error.Info.Category };
                 summaryList.Add(existingSummary);
             }
 
-            ErrorPropertySummary? propertySummary = existingSummary.Properties.FirstOrDefault(p => p.Key == error.Key);
+            ErrorPropertySummary? propertySummary = existingSummary.Properties.FirstOrDefault(p => p.Key == error.Info.Key);
 
             if (propertySummary is null)
             {
-                propertySummary = new ErrorPropertySummary { Key = error.Key };
+                propertySummary = new ErrorPropertySummary { Key = error.Info.Key };
                 existingSummary.AddProperty(propertySummary);
             }
                 
@@ -41,12 +41,12 @@ public sealed class IPUploadXmlErrorsModel : PageModel
         SummaryList = summaryList.ToArray();
     }
 
-    public ErrorSummary GetSummaryForCategory(string category)
+    internal ErrorSummary GetSummaryForCategory(string category)
     {
         return SummaryList.FirstOrDefault(s => s.Category == category) ?? new ErrorSummary { Category = category };
     }
 
-    public ErrorPropertySummary GetPropertyErrors(string id)
+    internal ErrorPropertySummary GetPropertyErrors(string id)
     {
         foreach (ErrorSummary errorSummary in SummaryList)
         {

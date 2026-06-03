@@ -2,7 +2,7 @@
 
 internal static class PayRecordsContactValidationInfo
 {
-    internal static readonly ValidationInfo MissingPayRecordName = new()
+    internal static ValidationInfo MissingPayRecordName() => new()
     {
         Key = nameof(MissingPayRecordName),
         Category = "Pay records contact",
@@ -11,7 +11,7 @@ internal static class PayRecordsContactValidationInfo
         PluralErrorPattern = "[COUNT] pay records contact names are missing"
     };
     
-    internal static readonly ValidationInfo InvalidPayRecordNameLength = new()
+    internal static ValidationInfo InvalidPayRecordNameLength() => new()
     {
         Key = nameof(InvalidPayRecordNameLength),
         Category = "Pay records contact",
@@ -21,7 +21,7 @@ internal static class PayRecordsContactValidationInfo
         Hint = "Enter up to 60 characters"
     };
     
-    internal static readonly ValidationInfo InvalidPayRecordPhoneLength = new()
+    internal static ValidationInfo InvalidPayRecordPhoneLength() => new()
     {
         Key = nameof(InvalidPayRecordPhoneLength),
         Category = "Pay records contact",
@@ -31,7 +31,7 @@ internal static class PayRecordsContactValidationInfo
         Hint = "Enter up to 12 characters"
     };
     
-    internal static readonly ValidationInfo InvalidPayRecordEmailLength = new()
+    internal static ValidationInfo InvalidPayRecordEmailLength() => new()
     {
         Key = nameof(InvalidPayRecordEmailLength),
         Category = "Pay records contact",

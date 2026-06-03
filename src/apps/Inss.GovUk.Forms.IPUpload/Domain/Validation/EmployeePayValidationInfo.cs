@@ -2,7 +2,7 @@
 
 internal static class EmployeePayValidationInfo
 {
-    internal static readonly ValidationInfo InvalidEmployeeBasicPayFormat = new()
+    internal static ValidationInfo InvalidEmployeeBasicPayFormat() => new()
     {
         Key = nameof(InvalidEmployeeBasicPayFormat),
         Category = "Employee pay",

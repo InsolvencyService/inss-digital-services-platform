@@ -2,7 +2,7 @@
 
 internal static class InsolvencyPractitionerValidationInfo
 {
-    internal static readonly ValidationInfo InvalidIPRegistrationNumberLength = new()
+    internal static ValidationInfo InvalidIPRegistrationNumberLength() => new()
     {
         Key = nameof(InvalidIPRegistrationNumberLength),
         Category = "Insolvency practitioner",
@@ -12,7 +12,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 9 characters"
     };
     
-    internal static readonly ValidationInfo InvalidIPFirmNameLength = new()
+    internal static ValidationInfo InvalidIPFirmNameLength() => new()
     {
         Key = nameof(InvalidIPFirmNameLength),
         Category = "Insolvency practitioner",
@@ -22,7 +22,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 255 characters"
     };
     
-    internal static readonly ValidationInfo InvalidIPNameLength = new()
+    internal static ValidationInfo InvalidIPNameLength() => new()
     {
         Key = nameof(InvalidIPNameLength),
         Category = "Insolvency practitioner",
@@ -32,7 +32,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 60 characters"
     };
     
-    internal static readonly ValidationInfo InvalidIPEmailLength = new()
+    internal static ValidationInfo InvalidIPEmailLength() => new()
     {
         Key = nameof(InvalidIPEmailLength),
         Category = "Insolvency practitioner",
@@ -42,7 +42,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 100 characters"
     };
     
-    internal static readonly ValidationInfo InvalidIPPhoneLength = new()
+    internal static ValidationInfo InvalidIPPhoneLength() => new()
     {
         Key = nameof(InvalidIPPhoneLength),
         Category = "Insolvency practitioner",

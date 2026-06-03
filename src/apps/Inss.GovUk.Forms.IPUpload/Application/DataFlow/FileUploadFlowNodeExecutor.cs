@@ -1,4 +1,3 @@
-using FluentValidation.Results;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Primitives;
@@ -66,46 +65,6 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         EmployeeSpreadsheetValidator validator = new(caseReferenceService);
         ValidatorContext context = await validator.ValidateAsync(redundancyPayment);
         fileUploadErrors.BuildErrorList(context.Errors);
-        /*
-        List<Error> errors = [];
-        
-        foreach (Inss.Common.IPUpload.Employee.Spreadsheet.RP14AEmployee employee in redundancyPayment.Employee)
-        {
-            if (!(await caseReferenceService.CheckExistsAsync(employee.Header.CaseReference)))
-            {
-                errors.Add(new EmployeeError
-                {
-                    Key = CaseValidationInfo.UnknownCaseReference.Key,
-                    Forenames = employee.EmployeeName.Forenames,
-                    Surname = employee.EmployeeName.Surname,
-                    Dob = DateOnly.FromDateTime(employee.DateOfBirth),
-                    Nino = employee.NINO,
-                    Value = employee.Header.CaseReference
-                });
-            }
-            
-            RP14ASpreadsheetEmployeeValidator validator = new();
-            ValidationResult? validationResult = await validator.ValidateAsync(employee);
-
-            if (validationResult?.IsValid == false)
-            {
-                foreach (var validationError in validationResult.Errors)
-                {
-                    errors.Add(new EmployeeError
-                    {
-                        Key = validationError.ErrorMessage,
-                        Forenames = employee.EmployeeName.Forenames,
-                        Surname = employee.EmployeeName.Surname,
-                        Dob = DateOnly.FromDateTime(employee.DateOfBirth),
-                        Nino = employee.NINO,
-                        Value = validationError.AttemptedValue?.ToString()
-                    });
-                }
-            }
-        }
-        
-        fileUploadErrors.BuildErrorList(errors);
-        */
     }
     
     private async Task ValidateSpreadsheetUploadAsync(
@@ -113,104 +72,19 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         Inss.Common.IPUpload.Employer.Spreadsheet.RP14 redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
-        List<Error> errors = [];
-        
-        if (!string.IsNullOrWhiteSpace(redundancyPayment.Header.CaseReference))
-        {
-            if (!(await caseReferenceService.CheckExistsAsync(redundancyPayment.Header.CaseReference)))
-            {
-                errors.Add(new EmployerError
-                {
-                    Key = CaseValidationInfo.UnknownCaseReference.Key,
-                    Value = redundancyPayment.Header.CaseReference
-                });
-            }
-        }
-
-        RP14SpreadsheetValidator rp14SpreadsheetValidator = new();
-        ValidationResult? validationResult = await rp14SpreadsheetValidator.ValidateAsync(redundancyPayment);
-        
-        if (validationResult?.IsValid == false)
-        {
-            foreach (var validationError in validationResult.Errors)
-            {
-                errors.Add(new EmployerError
-                {
-                    Key = validationError.ErrorMessage,
-                    Value = validationError.AttemptedValue?.ToString()
-                });
-            }
-        }
-        
-        fileUploadErrors.BuildErrorList(errors);
+        EmployerSpreadsheetValidator validator = new(caseReferenceService);
+        ValidatorContext context = await validator.ValidateAsync(redundancyPayment);
+        fileUploadErrors.BuildErrorList(context.Errors);
     }
     
     private async Task ValidateApiUploadAsync(
         IPUploadXmlErrorsModel fileUploadErrors, 
         Inss.Common.IPUpload.Employee.Api.RP14A redundancyPayment)
     {
-        RP14AApiValidator apiValidator = new();
-        ValidationResult? validationResult = await apiValidator.ValidateAsync(redundancyPayment);
-        List<Error> errors = [];
-        
-        if (validationResult?.IsValid == false)
-        {
-            Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
-            
-            foreach (var validationError in validationResult.Errors)
-            {
-                errors.Add(new EmployeeError
-                {
-                    Key = validationError.ErrorMessage,
-                    Forenames = employee.EmployeeName.Forenames,
-                    Surname = employee.EmployeeName.Surname,
-                    Dob = DateOnly.FromDateTime(employee.DateOfBirth),
-                    Nino = employee.NINO,
-                    Value = validationError.AttemptedValue?.ToString()
-                });
-            }
-        }
-        
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
-        
-        if (!(await caseReferenceService.CheckExistsAsync(redundancyPayment.Header.CaseReference)))
-        {
-            Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee = redundancyPayment.Employee.First();
-            
-            errors.Add(new EmployeeError
-            {
-                Key = CaseValidationInfo.UnknownCaseReference.Key,
-                Forenames = employee.EmployeeName.Forenames,
-                Surname = employee.EmployeeName.Surname,
-                Dob = DateOnly.FromDateTime(employee.DateOfBirth),
-                Nino = employee.NINO,
-                Value = redundancyPayment.Header.CaseReference
-            });
-        }
-        
-        foreach (Inss.Common.IPUpload.Employee.Api.RP14AEmployee employee in redundancyPayment.Employee)
-        {
-            RP14AApiEmployeeValidator validator3 = new();
-            ValidationResult? employeeValidationResult = await validator3.ValidateAsync(employee);
-            
-            if (employeeValidationResult?.IsValid == false)
-            {
-                foreach (var validationError in employeeValidationResult.Errors)
-                {
-                    errors.Add(new EmployeeError
-                    {
-                        Key = validationError.ErrorMessage,
-                        Forenames = employee.EmployeeName.Forenames,
-                        Surname = employee.EmployeeName.Surname,
-                        Dob = DateOnly.FromDateTime(employee.DateOfBirth),
-                        Nino = employee.NINO,
-                        Value = validationError.AttemptedValue?.ToString()
-                    });
-                }
-            }
-        }
-        
-        fileUploadErrors.BuildErrorList(errors);
+        EmployeeApiValidator validator = new(caseReferenceService);
+        ValidatorContext context = await validator.ValidateAsync(redundancyPayment);
+        fileUploadErrors.BuildErrorList(context.Errors);
     }
     
     private async Task ValidateApiUploadAsync(
@@ -218,35 +92,8 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         Inss.Common.IPUpload.Employer.Api.RP14 redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
-        List<Error> errors = [];
-        
-        if (!string.IsNullOrWhiteSpace(redundancyPayment.Header.CaseReference))
-        {
-            if (!(await caseReferenceService.CheckExistsAsync(redundancyPayment.Header.CaseReference)))
-            {
-                errors.Add(new EmployerError
-                {
-                    Key = CaseValidationInfo.UnknownCaseReference.Key,
-                    Value = redundancyPayment.Header.CaseReference
-                });
-            }
-        }
-
-        RP14ApiValidator rp14ApiValidator = new();
-        ValidationResult? validationResult = await rp14ApiValidator.ValidateAsync(redundancyPayment);
-        
-        if (validationResult?.IsValid == false)
-        {
-            foreach (var validationError in validationResult.Errors)
-            {
-                errors.Add(new EmployerError
-                {
-                    Key = validationError.ErrorMessage,
-                    Value = validationError.AttemptedValue?.ToString()
-                });
-            }
-        }
-        
-        fileUploadErrors.BuildErrorList(errors);
+        EmployerApiValidator validator = new(caseReferenceService);
+        ValidatorContext context = await validator.ValidateAsync(redundancyPayment);
+        fileUploadErrors.BuildErrorList(context.Errors);
     }
 }

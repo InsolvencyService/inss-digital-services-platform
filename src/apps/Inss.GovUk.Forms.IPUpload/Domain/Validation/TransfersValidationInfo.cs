@@ -2,7 +2,7 @@
 
 internal static class TransfersValidationInfo
 {
-    internal static readonly ValidationInfo InvalidTransferToNameLength = new()
+    internal static ValidationInfo InvalidTransferToNameLength() => new()
     {
         Key = nameof(InvalidTransferToNameLength),
         Category = "Transfers",

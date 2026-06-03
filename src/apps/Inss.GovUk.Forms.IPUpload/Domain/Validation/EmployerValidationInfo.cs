@@ -2,7 +2,7 @@
 
 internal static class EmployerValidationInfo
 {
-    internal static readonly ValidationInfo InvalidEmployerNameLength = new()
+    internal static ValidationInfo InvalidEmployerNameLength() => new()
     {
         Key = nameof(InvalidEmployerNameLength),
         Category = "Employer",

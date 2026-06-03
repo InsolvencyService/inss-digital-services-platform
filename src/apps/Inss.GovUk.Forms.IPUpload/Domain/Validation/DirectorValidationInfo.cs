@@ -2,7 +2,7 @@
 
 internal static class DirectorValidationInfo
 {
-    internal static readonly ValidationInfo DirectorInvalidNinoFormat = new()
+    internal static ValidationInfo DirectorInvalidNinoFormat() => new()
     {
         Key = nameof(DirectorInvalidNinoFormat),
         Category = "Directors",
@@ -12,7 +12,7 @@ internal static class DirectorValidationInfo
         Hint = "Enter a National Insurance number like QQ 12 34 56 C"
     };
     
-    internal static readonly ValidationInfo InvalidDirectorInitialsLength = new()
+    internal static ValidationInfo InvalidDirectorInitialsLength() => new()
     {
         Key = nameof(InvalidDirectorInitialsLength),
         Category = "Directors",
@@ -22,7 +22,7 @@ internal static class DirectorValidationInfo
         Hint = "Enter up to 100 characters"
     };
     
-    internal static readonly ValidationInfo InvalidDirectorSurnameLength = new()
+    internal static ValidationInfo InvalidDirectorSurnameLength() => new()
     {
         Key = nameof(InvalidDirectorSurnameLength),
         Category = "Directors",

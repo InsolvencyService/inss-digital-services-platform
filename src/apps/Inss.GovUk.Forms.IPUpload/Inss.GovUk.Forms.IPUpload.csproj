@@ -5,7 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" />
         <PackageReference Include="Microsoft.Azure.Relay" />
     </ItemGroup>
     

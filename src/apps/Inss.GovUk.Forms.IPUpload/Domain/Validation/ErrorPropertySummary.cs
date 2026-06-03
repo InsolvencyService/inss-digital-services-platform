@@ -14,13 +14,13 @@ public sealed class ErrorPropertySummary
     
     public bool IsEmployeeErrors => Errors.Length > 0 && Errors[0] is EmployeeError;
     
-    public string GetProperty()
+    internal string GetProperty()
     {
         ValidationInfo validationInfo = ValidationInfoLookup.Get(Key);
         return validationInfo.Property;
     }
 
-    public string GetFormattedMessage()
+    internal string GetFormattedMessage()
     {
         ValidationInfo validationInfo = ValidationInfoLookup.Get(Key);
         return Errors.Length == 1
@@ -28,13 +28,13 @@ public sealed class ErrorPropertySummary
             : validationInfo.PluralErrorPattern.Replace("[COUNT]", Errors.Length.ToString(CultureInfo.CurrentCulture));
     }
     
-    public string? GetHint()
+    internal string? GetHint()
     {
         ValidationInfo validationInfo = ValidationInfoLookup.Get(Key);
         return validationInfo.Hint;
     }
 
-    public void AddError(Error error)
+    internal void AddError(Error error)
     {
         List<Error> errors = [..Errors, error];
         Errors = errors.ToArray();

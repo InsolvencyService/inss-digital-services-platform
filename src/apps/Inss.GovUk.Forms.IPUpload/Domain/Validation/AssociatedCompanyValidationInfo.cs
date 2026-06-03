@@ -2,7 +2,7 @@
 
 internal static class AssociatedCompanyValidationInfo
 {
-    internal static readonly ValidationInfo InvalidAssociatedCompanyNameLength = new()
+    internal static ValidationInfo InvalidAssociatedCompanyNameLength() => new()
     {
         Key = nameof(InvalidAssociatedCompanyNameLength),
         Category = "Associated company",
@@ -12,7 +12,7 @@ internal static class AssociatedCompanyValidationInfo
         Hint = "Enter up to 60 characters"
     };
     
-    internal static readonly ValidationInfo InvalidAssociatedCompanyNumberLength = new()
+    internal static ValidationInfo InvalidAssociatedCompanyNumberLength() => new()
     {
         Key = nameof(InvalidAssociatedCompanyNumberLength),
         Category = "Associated company",
@@ -22,7 +22,7 @@ internal static class AssociatedCompanyValidationInfo
         Hint = "Enter up to 255 characters"
     };
     
-    internal static readonly ValidationInfo InvalidAssociationReasonLength = new()
+    internal static ValidationInfo InvalidAssociationReasonLength() => new()
     {
         Key = nameof(InvalidAssociationReasonLength),
         Category = "Associated company",

@@ -2,7 +2,7 @@
 
 internal static class ShareholderValidationInfo
 {
-    internal static readonly ValidationInfo InvalidShareholderPercentage = new()
+    internal static ValidationInfo InvalidShareholderPercentage() => new()
     {
         Key = nameof(InvalidShareholderPercentage),
         Category = "Shareholders",
@@ -12,7 +12,7 @@ internal static class ShareholderValidationInfo
         Hint = "Enter a number like 50.50 or 100"
     };
     
-    internal static readonly ValidationInfo InvalidShareholderNameLength = new()
+    internal static ValidationInfo InvalidShareholderNameLength() => new()
     {
         Key = nameof(InvalidShareholderNameLength),
         Category = "Shareholders",

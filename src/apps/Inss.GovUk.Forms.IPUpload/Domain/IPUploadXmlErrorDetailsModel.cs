@@ -5,7 +5,7 @@ namespace Inss.GovUk.Forms.IPUpload.Domain;
 
 public sealed class IPUploadXmlErrorDetailsModel : PageModel
 {
-    public ErrorPropertySummary CurrentErrorDetail { get; set; }
+    internal ErrorPropertySummary CurrentErrorDetail { get; set; }
     
     public override string? GetButtonText()
     {

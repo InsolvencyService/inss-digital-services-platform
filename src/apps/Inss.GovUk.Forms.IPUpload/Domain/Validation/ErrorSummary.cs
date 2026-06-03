@@ -6,7 +6,7 @@ public sealed class ErrorSummary
 
     public ErrorPropertySummary[] Properties { get; set; } = [];
 
-    public void AddProperty(ErrorPropertySummary propertySummary)
+    internal void AddProperty(ErrorPropertySummary propertySummary)
     {
         List<ErrorPropertySummary> propertySummaryList = [..Properties, propertySummary];
         Properties = propertySummaryList.ToArray();

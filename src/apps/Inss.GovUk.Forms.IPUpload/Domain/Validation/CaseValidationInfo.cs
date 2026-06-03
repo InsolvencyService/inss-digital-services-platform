@@ -2,7 +2,7 @@
 
 internal static class CaseValidationInfo
 {
-    internal static readonly ValidationInfo UnknownCaseReference = new()
+    internal static ValidationInfo UnknownCaseReference() => new()
     {
         Key = nameof(UnknownCaseReference),
         Category = "Case",
@@ -11,7 +11,7 @@ internal static class CaseValidationInfo
         PluralErrorPattern = "[COUNT] case references were not found"
     };
     
-    internal static readonly ValidationInfo MissingCaseReference = new()
+    internal static ValidationInfo MissingCaseReference() => new()
     {
         Key = nameof(MissingCaseReference),
         Category = "Case",
@@ -21,7 +21,7 @@ internal static class CaseValidationInfo
         Hint = "Enter a reference number like CN12345678"
     };
     
-    internal static readonly ValidationInfo InvalidCaseReferenceFormat = new()
+    internal static ValidationInfo InvalidCaseReferenceFormat() => new()
     {
         Key = nameof(InvalidCaseReferenceFormat),
         Category = "Case",
@@ -30,7 +30,7 @@ internal static class CaseValidationInfo
         PluralErrorPattern = "[COUNT] case references are in the wrong format"
     };
     
-    internal static readonly ValidationInfo InvalidCaseReferenceLength = new()
+    internal static ValidationInfo InvalidCaseReferenceLength() => new()
     {
         Key = nameof(InvalidCaseReferenceLength),
         Category = "Case",
