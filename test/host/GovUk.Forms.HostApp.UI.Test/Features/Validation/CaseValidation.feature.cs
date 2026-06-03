@@ -29,9 +29,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         private static string[] featureTags = new string[] {
                 "MEDS-1067"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Case Validation", "              As an Insolvency Practitioner user\r\n              I want RP14A vali" +
-                "dation to run before submission to Dynamics\r\n  So that I can fix errors immediat" +
-                "ely and avoid delayed rejection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Case Validation", "              As an Insolvency Practitioner user\n              I want RP14A valid" +
+                "ation to run before submission to Dynamics\n  So that I can fix errors immediatel" +
+                "y and avoid delayed rejection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "CaseValidation.feature"
 #line hidden

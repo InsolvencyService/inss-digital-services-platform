@@ -63,6 +63,10 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         Inss.Common.IPUpload.Employee.Spreadsheet.RP14A redundancyPayment)
     {
         ICaseReferenceService caseReferenceService = _serviceProvider.GetRequiredService<ICaseReferenceService>();
+        EmployeeSpreadsheetValidator validator = new(caseReferenceService);
+        ValidatorContext context = await validator.ValidateAsync(redundancyPayment);
+        fileUploadErrors.BuildErrorList(context.Errors);
+        /*
         List<Error> errors = [];
         
         foreach (Inss.Common.IPUpload.Employee.Spreadsheet.RP14AEmployee employee in redundancyPayment.Employee)
@@ -101,6 +105,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         }
         
         fileUploadErrors.BuildErrorList(errors);
+        */
     }
     
     private async Task ValidateSpreadsheetUploadAsync(
