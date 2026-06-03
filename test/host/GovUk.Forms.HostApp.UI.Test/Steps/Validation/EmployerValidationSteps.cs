@@ -73,6 +73,21 @@ public class EmployerValidationSteps : ValidationStepsBase
         ScenarioContext.Set(employerNames, EmployerNames);
     }
 
+    [Given("the RP14A contains an employee with:")]
+    public async Task GivenTheRP14AContainsAnEmployeeWith(DataTable dataTable)
+    {
+        EmployeeValidationData employee =
+            dataTable.CreateInstance<EmployeeValidationData>();
+
+        await UploadDocumentCoordinator.UploadComplexRp14aScenarioAsync(
+           surname: employee.Surname,
+           forename: ScenarioConstant.Forename,
+           title: ScenarioConstant.Title,
+           nationalInsuranceNumber: employee.NationalInsuranceNumber,
+           moneyOwedToEmployer: employee.MoneyOwedToEmployer,
+           basicPayPerWeek: employee.BasicPayPerWeek);
+    }
+
     [When("I submit the RP14A file")]
     public async Task WhenISubmitTheRPAFile()
     {
@@ -267,8 +282,40 @@ public class EmployerValidationSteps : ValidationStepsBase
                 headerType = ErrorDetailsHeaderType.EmployeeSurname;
                 return true;
 
+            case "Employee national insurance number":
+                headerType = ErrorDetailsHeaderType.NationalInsuranceNumber;
+                return true;
+
+            case "Employee arrears of payment owed":
+                headerType = ErrorDetailsHeaderType.ArrearsOfPayOwed;
+                return true;
+
+            case "Money owed to employer":
+                headerType = ErrorDetailsHeaderType.MoneyOwedToEmployer;
+                return true;
+
+            case "Employee employment dates":
+                headerType = ErrorDetailsHeaderType.EmploymentDates;
+                return true;
+
+            case "Employee arrears of payment dates":
+                headerType = ErrorDetailsHeaderType.ArrearsOfPayDates;
+                return true;
+
             case "Employee basic pay per week":
                 headerType = ErrorDetailsHeaderType.BasicPayPerWeek;
+                return true;
+
+            case "Contracted holiday entitlement":
+                headerType = ErrorDetailsHeaderType.HolidayContractedEntitlementDays;
+                return true;
+
+            case "Holiday carried forward":
+                headerType = ErrorDetailsHeaderType.HolidayDaysCarriedForward;
+                return true;
+
+            case "Holiday days taken":
+                headerType = ErrorDetailsHeaderType.HolidayDaysTaken;
                 return true;
 
             case "Holiday owed":

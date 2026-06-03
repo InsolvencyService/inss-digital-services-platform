@@ -13,6 +13,8 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
     private const string AffectedEmployeesContextKey = "AffectedEmployees";
     private const string AffectedEmployeesByErrorTypeKey = "AffectedEmployeesByErrorType";
     private const string SurnameErrorKey = "Employee surname|1 missing employee surname";
+    private const string NationalInsuranceNumberErrorKey = "Employee national insurance number|1 invalid employee national insurance number format";
+    private const string MoneyOwedToEmployerErrorKey = "Money owed to employer|1 invalid money owed to employer";
     private const string BasicPayErrorKey = "Employee basic pay per week|1 invalid basic pay per week";
     private const string HolidayOwedErrorKey = "Holiday owed|1 invalid holiday owed";
     private const string HolidayOwedRangeErrorKey = "Holiday owed|1 invalid range of holiday owed";
@@ -104,16 +106,12 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         DateOnly? startDate,
         DateOnly? endDate)
     {
-        ValidateDateOrder(startDate, endDate);
-
         return BuildAndUploadAsync(
             builder => builder.WithHolidayNotPaidDates(startDate, endDate),
             $"RP14A with holiday not paid dates '{FormatDate(startDate)}' to '{FormatDate(endDate)}'");
     }
 
-    public Task UploadRp14aWithNationalInsuranceNumberAsync(
-        string? insuranceNumber,
-        int occurrenceIndex)
+    public Task UploadRp14aWithNationalInsuranceNumberAsync(string? insuranceNumber, int occurrenceIndex)
     {
         ValidateNonNegativeNumber(occurrenceIndex, nameof(occurrenceIndex));
 
@@ -121,7 +119,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             builder => builder
                 .WithEmployeeIndex(occurrenceIndex)
                 .WithCustomMutation(
-                    RP14AElementNames.NationalInsuranceNumber,
+                    RP14AElementNames.NINO,
                     ToXmlValue(insuranceNumber)),
             $"RP14A with NI number '{ToLogValue(insuranceNumber)}' at index {occurrenceIndex}");
     }
@@ -135,8 +133,6 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         DateOnly? startDate,
         DateOnly? endDate)
     {
-        ValidateDateOrder(startDate, endDate);
-
         return BuildAndUploadAsync(
             builder => builder.WithEmploymentDates(startDate, endDate),
             $"RP14A with employment dates {FormatDate(startDate)} to {FormatDate(endDate)}");
@@ -156,7 +152,6 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         DateOnly? startDate,
         DateOnly? endDate)
     {
-        ValidateDateOrder(startDate, endDate);
 
         return BuildAndUploadAsync(
             builder => builder.WithArrearsDates(startDate, endDate),
@@ -164,45 +159,71 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
     }
 
     public async Task UploadComplexRp14aScenarioAsync(
-        string? caseReference = null,
-        string? employerName = null,
-        string? surname = null,
-        string? forename = null,
-        string? title = null,
-        string? arrearsAmount = null,
-        string? basicPayPerWeek = null,
-        string? holidayOwed = null,
-        DateOnly? employmentStartDate = null,
-        DateOnly? employmentEndDate = null)
+     string? caseReference = null,
+     string? employerName = null,
+     string? surname = null,
+     string? forename = null,
+     string? title = null,
+     string? nationalInsuranceNumber = null,
+     string? moneyOwedToEmployer = null,
+     string? arrearsAmount = null,
+     string? basicPayPerWeek = null,
+     string? holidayOwed = null,
+     DateOnly? employmentStartDate = null,
+     DateOnly? employmentEndDate = null)
     {
-        ValidateDateOrder(employmentStartDate, employmentEndDate);
 
         Rp14aTestFile testFile = BuildTestFile(builder =>
         {
-            ApplyIfNotNull(caseReference, v => builder.WithCaseReference(v));
-            ApplyIfNotNull(employerName, v => builder.WithEmployerName(v));
-            ApplyIfNotNull(basicPayPerWeek, v => builder.WithEmployeeBasicPayPerWeek(v));
-            ApplyIfNotNull(holidayOwed, v => builder.WithHolidayOwed(v));
+            ApplyIfNotNull(
+                caseReference,
+                value => builder.WithCaseReference(value));
+
+            ApplyIfNotNull(
+                employerName,
+                value => builder.WithEmployerName(value));
 
             if (surname is not null || forename is not null || title is not null)
             {
-                builder.WithEmployeeName(surname, forename, title);
+                builder.WithEmployeeName(
+                    surname,
+                    forename,
+                    title);
             }
 
-            if (arrearsAmount is not null)
-            {
-                builder.WithArrearsAmount(1, arrearsAmount);
-            }
+            ApplyIfNotNull(
+                nationalInsuranceNumber,
+                value => builder.WithNationalInsuranceNumberForEmployees(1, value));
+
+            ApplyIfNotNull(
+                moneyOwedToEmployer,
+                value => builder.WithMoneyOwedToEmployer(value));
+
+            ApplyIfNotNull(
+                arrearsAmount,
+                value => builder.WithArrearsAmount(1, value));
+
+            ApplyIfNotNull(
+                basicPayPerWeek,
+                value => builder.WithEmployeeBasicPayPerWeek(value));
+
+            ApplyIfNotNull(
+                holidayOwed,
+                value => builder.WithHolidayOwed(value));
 
             if (employmentStartDate.HasValue || employmentEndDate.HasValue)
             {
-                builder.WithEmploymentDates(employmentStartDate, employmentEndDate);
+                builder.WithEmploymentDates(
+                    employmentStartDate,
+                    employmentEndDate);
             }
         });
 
         SetComplexAffectedEmployees(
             testFile.FilePath,
             surname,
+            nationalInsuranceNumber,
+            moneyOwedToEmployer,
             basicPayPerWeek,
             holidayOwed);
 
@@ -316,6 +337,77 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             affectedEmployees,
             AffectedEmployeesContextKey);
     }
+
+    public async Task UploadRp14aWithNationalInsuranceNumberForEmployeesAsync(int employeeCount, string? nationalInsuranceNumber)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithNationalInsuranceNumberForEmployees(
+                employeeCount,
+                nationalInsuranceNumber));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: nationalInsuranceNumber ?? string.Empty);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having NI number '{ToLogValue(nationalInsuranceNumber)}'");
+
+        ScenarioContext.Set(
+            affectedEmployees,
+            AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithMoneyOwedToEmployerForEmployeesAsync(int employeeCount, string? moneyOwed)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithMoneyOwedToEmployerForEmployees(employeeCount, moneyOwed));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: moneyOwed ?? string.Empty);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having money owed to employer '{ToLogValue(moneyOwed)}'");
+
+        ScenarioContext.Set(
+            affectedEmployees,
+            AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(int employeeCount, string? basicPayPerWeek)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithEmployeeBasicPayPerWeekForEmployees(
+                employeeCount,
+                basicPayPerWeek));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: basicPayPerWeek ?? string.Empty);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having basic pay per week '{ToLogValue(basicPayPerWeek)}'");
+
+        ScenarioContext.Set(
+            affectedEmployees,
+            AffectedEmployeesContextKey);
+    }
+
     private Task BuildAndUploadAsync(
         Action<Rp14aFixtureBuilder>? configure,
         string description)
@@ -337,6 +429,8 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
     private void SetComplexAffectedEmployees(
         string filePath,
         string? surname,
+        string? nationalInsuranceNumber,
+        string? moneyOwedToEmployer,
         string? basicPayPerWeek,
         string? holidayOwed)
     {
@@ -346,6 +440,16 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         if (surname is not null)
         {
             affectedEmployeesByError[SurnameErrorKey] = ReadAffectedEmployees(document, surname);
+        }
+
+        if (nationalInsuranceNumber is not null)
+        {
+            affectedEmployeesByError[NationalInsuranceNumberErrorKey] = ReadAffectedEmployees(document, nationalInsuranceNumber);
+        }
+
+        if (moneyOwedToEmployer is not null)
+        {
+            affectedEmployeesByError[MoneyOwedToEmployerErrorKey] = ReadAffectedEmployees(document, moneyOwedToEmployer);
         }
 
         if (basicPayPerWeek is not null)

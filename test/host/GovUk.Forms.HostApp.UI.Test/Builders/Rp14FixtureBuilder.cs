@@ -1,11 +1,6 @@
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using System.Diagnostics;
-using System.Globalization;
-using System.Security;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace GovUk.Forms.HostApp.UI.Test.Builders;
@@ -13,6 +8,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Builders;
 public sealed class Rp14FixtureBuilder
 {
     private readonly Dictionary<string, string?> _mutations = [];
+    private readonly List<(string Description, Action<XDocument, XNamespace> Apply)> _customMutations = [];
 
     public Rp14FixtureBuilder WithCaseReference(string? value) =>
         Set(Rp14ElementNames.CaseReference, value);
@@ -34,8 +30,9 @@ public sealed class Rp14FixtureBuilder
         return Set(Rp14ElementNames.PayeDistrict, district)
             .Set(Rp14ElementNames.PayeReference, reference);
     }
+
     public Rp14FixtureBuilder WithStandardIndustrialClassification(string? value) =>
-     Set(Rp14ElementNames.StandardIndustrialClassification, value);
+        Set(Rp14ElementNames.StandardIndustrialClassification, value);
 
     public Rp14FixtureBuilder WithDirector(
         int directorNumber,
@@ -66,9 +63,6 @@ public sealed class Rp14FixtureBuilder
     public Rp14FixtureBuilder WithNoOfEmployees(string? value) =>
         Set(Rp14ElementNames.NoOfEmployees, value);
 
-    public Rp14FixtureBuilder WithContinuityEmployerName(string? value) =>
-        Set(Rp14ElementNames.EmployerName, value);
-
     public Rp14FixtureBuilder WithInsolvencyDetails(DateOnly? date, string? type)
     {
         return Set(Rp14ElementNames.InsolvencyDate, FormatDate(date))
@@ -91,12 +85,14 @@ public sealed class Rp14FixtureBuilder
         string? registrationNumber,
         string? firmName,
         string? ipName,
-        string? emailAddress)
+        string? emailAddress,
+        string? telephoneNumber = null)
     {
         return Set(Rp14ElementNames.IpRegistrationNumber, registrationNumber)
             .Set(Rp14ElementNames.IpFirmName, firmName)
             .Set(Rp14ElementNames.IpName, ipName)
-            .Set(Rp14ElementNames.IpEmailAddress, emailAddress);
+            .Set(Rp14ElementNames.IpEmailAddress, emailAddress)
+            .Set(Rp14ElementNames.IpTelephoneNumber, telephoneNumber);
     }
 
     public Rp14FixtureBuilder WithCustomMutation(string elementName, string? value)
@@ -104,6 +100,120 @@ public sealed class Rp14FixtureBuilder
         ArgumentException.ThrowIfNullOrWhiteSpace(elementName);
 
         _mutations[elementName] = value;
+        return this;
+    }
+
+    public Rp14FixtureBuilder WithAssociatedCompany(int associatedCompanyNumber, string? companyName)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(associatedCompanyNumber);
+
+        return Set(Rp14ElementNames.AssociatedCompanyName(associatedCompanyNumber), companyName);
+    }
+
+    public Rp14FixtureBuilder WithAssociatedCompanyReason(int associatedCompanyNumber, string? reason)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(associatedCompanyNumber);
+
+        return Set(Rp14ElementNames.AssociatedCompanyReason(associatedCompanyNumber), reason);
+    }
+
+    public Rp14FixtureBuilder WithAssociatedCompanyNumber(int associatedCompanyNumber, string? companyNumber)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(associatedCompanyNumber);
+
+        return Set(Rp14ElementNames.AssociatedCompanyNumber(associatedCompanyNumber), companyNumber);
+    }
+
+    public Rp14FixtureBuilder WithEmploymentContinuityEmployerName(string? employerName) =>
+        Set(Rp14ElementNames.EmployerName, employerName);
+
+    public Rp14FixtureBuilder WithTransferToName(string? transferToName) =>
+        Set(Rp14ElementNames.TransferToName, transferToName);
+
+    public Rp14FixtureBuilder WithPayRecordsContactName(string? name) =>
+        SetScoped(Rp14ElementNames.PayRecordsContact, Rp14ElementNames.PayRecordsContactName, name);
+
+    public Rp14FixtureBuilder WithPayRecordsContactPhoneNumber(string? phoneNumber) =>
+        Set(Rp14ElementNames.PayRecordsPhoneNumber, phoneNumber);
+
+    public Rp14FixtureBuilder WithPayRecordsContactEmailAddress(string? emailAddress) =>
+        Set(Rp14ElementNames.PayRecordsEmailAddress, emailAddress);
+
+    public Rp14FixtureBuilder WithIpName(string? ipName) =>
+        Set(Rp14ElementNames.IpName, ipName);
+
+    public Rp14FixtureBuilder WithIpRegistrationNumber(string? registrationNumber) =>
+        Set(Rp14ElementNames.IpRegistrationNumber, registrationNumber);
+
+    public Rp14FixtureBuilder WithIpFirmName(string? firmName) =>
+        Set(Rp14ElementNames.IpFirmName, firmName);
+
+    public Rp14FixtureBuilder WithIpEmailAddress(string? emailAddress) =>
+        Set(Rp14ElementNames.IpEmailAddress, emailAddress);
+
+    public Rp14FixtureBuilder WithIpTelephoneNumber(string? telephoneNumber) =>
+        Set(Rp14ElementNames.IpTelephoneNumber, telephoneNumber);
+
+    public Rp14FixtureBuilder WithCompanyAddressLineCount(int lineCount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(lineCount);
+
+        for (int i = 2; i <= lineCount; i++)
+        {
+            Set(Rp14ElementNames.CompanyAddressLine(i), $"Address Line {i}");
+        }
+
+        return this;
+    }
+
+    public Rp14FixtureBuilder WithCompanyAddressLine1(string? addressLine) =>
+        Set(Rp14ElementNames.CompanyAddrLine1, addressLine);
+
+    public Rp14FixtureBuilder WithCompanyAddressField(Rp14AddressField field, string? value)
+    {
+        string elementName = field switch
+        {
+            Rp14AddressField.Line1 => Rp14ElementNames.CompanyAddrLine1,
+            Rp14AddressField.Line2 => Rp14ElementNames.CompanyAddressLine(2),
+            Rp14AddressField.Line3 => Rp14ElementNames.CompanyAddressLine(3),
+            Rp14AddressField.Line4 => Rp14ElementNames.CompanyAddressLine(4),
+            Rp14AddressField.Town => Rp14ElementNames.CompanyAddrTown,
+            Rp14AddressField.County => Rp14ElementNames.CompanyAddrCounty,
+            Rp14AddressField.Postcode => Rp14ElementNames.CompanyAddrPostcode,
+            Rp14AddressField.Country => Rp14ElementNames.CompanyAddrCountry,
+            _ => throw new ArgumentOutOfRangeException(nameof(field))
+        };
+
+        return Set(elementName, value);
+    }
+
+    public Rp14FixtureBuilder WithCompanyAddressLinesCount(int lineCount)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(lineCount, 5);
+
+        _customMutations.Add((
+            $"Add address lines 5 to {lineCount}",
+            (document, ns) =>
+            {
+                XElement previousLine = document
+                    .Descendants(ns + Rp14ElementNames.CompanyAddressLine(4))
+                    .FirstOrDefault() ?? throw new InvalidOperationException(
+                        $"Element '{Rp14ElementNames.CompanyAddressLine(4)}' was not found in the RP14 XML.");
+
+                for (int i = 5; i <= lineCount; i++)
+                {
+                    XElement newLine = new(ns + Rp14ElementNames.CompanyAddressLine(i), $"Address Line {i}");
+                    previousLine.AddAfterSelf(newLine);
+                    previousLine = newLine;
+                }
+            }));
+
+        return this;
+    }
+
+    private Rp14FixtureBuilder SetScoped(string parentElementName, string childElementName, string? value)
+    {
+        _mutations[$"{parentElementName}/{childElementName}"] = value;
         return this;
     }
 
@@ -117,14 +227,16 @@ public sealed class Rp14FixtureBuilder
 
         string filePath = CreateValidCopy(testArtifacts, baselineFilePath);
 
-        if (_mutations.Count == 0)
+        if (_mutations.Count == 0 && _customMutations.Count == 0)
         {
             LogInfo($"Scenario '{scenarioName}': No mutations specified, creating clean copy.");
 
             return new Rp14TestFile(filePath, new Dictionary<string, string>(), DateTime.UtcNow);
         }
 
-        LogInfo($"Scenario '{scenarioName}': Building fixture with {_mutations.Count} mutations.");
+        LogInfo(_customMutations.Count > 0
+            ? $"Scenario '{scenarioName}': Building fixture with {_mutations.Count} mutations and {_customMutations.Count} custom mutations."
+            : $"Scenario '{scenarioName}': Building fixture with {_mutations.Count} mutations.");
 
         try
         {
@@ -136,11 +248,21 @@ public sealed class Rp14FixtureBuilder
                 ApplyMutation(document, ns, elementName, value);
             }
 
+            foreach ((string _, Action<XDocument, XNamespace> apply) in _customMutations)
+            {
+                apply(document, ns);
+            }
+
             SaveXmlDocument(document, filePath);
 
             Dictionary<string, string> appliedMutations = _mutations
                 .Where(x => x.Value is not null)
                 .ToDictionary(x => x.Key, x => x.Value!);
+
+            for (int i = 0; i < _customMutations.Count; i++)
+            {
+                appliedMutations[$"[custom:{i}] {_customMutations[i].Description}"] = "applied";
+            }
 
             LogInfo($"Scenario '{scenarioName}': Fixture created successfully at {filePath}");
 
@@ -171,11 +293,35 @@ public sealed class Rp14FixtureBuilder
         string elementName,
         string? value)
     {
-        XElement element = document
-            .Descendants(ns + elementName)
-            .FirstOrDefault()
-            ?? throw new InvalidOperationException(
+        XElement? element;
+
+        if (elementName.Contains('/'))
+        {
+            string[] parts = elementName.Split('/');
+
+            if (parts.Length != 2)
+            {
+                throw new InvalidOperationException(
+                    $"Element path '{elementName}' must contain exactly one '/' separator.");
+            }
+
+            element = document
+                .Descendants(ns + parts[0])
+                .FirstOrDefault()?
+                .Element(ns + parts[1]);
+        }
+        else
+        {
+            element = document
+                .Descendants(ns + elementName)
+                .FirstOrDefault();
+        }
+
+        if (element is null)
+        {
+            throw new InvalidOperationException(
                 $"Element '{elementName}' was not found in the RP14 XML.");
+        }
 
         if (value is null)
         {
@@ -206,65 +352,20 @@ public sealed class Rp14FixtureBuilder
         }
     }
 
-    private static string ResolveBaselinePath(string baselineFilePath)
-    {
-        string absolutePath = Path.GetFullPath(
-            baselineFilePath,
-            AppContext.BaseDirectory);
+    private static string ResolveBaselinePath(string baselineFilePath) =>
+        XmlFixtureHelper.ResolveBaselinePath(baselineFilePath, "RP14");
 
-        if (!File.Exists(absolutePath))
-        {
-            throw new FileNotFoundException(
-                $"RP14 baseline XML file not found: {absolutePath}",
-                absolutePath);
-        }
+    private static XDocument LoadXmlDocument(string filePath) =>
+        XmlFixtureHelper.LoadXmlDocument(filePath);
 
-        return absolutePath;
-    }
+    private static void SaveXmlDocument(XDocument document, string filePath) =>
+        XmlFixtureHelper.SaveXmlDocument(document, filePath);
 
-    private static XDocument LoadXmlDocument(string filePath)
-    {
-        try
-        {
-            return XDocument.Load(filePath, LoadOptions.PreserveWhitespace);
-        }
-        catch (Exception ex) when (ex is IOException or XmlException)
-        {
-            throw new InvalidOperationException(
-                $"Failed to load RP14 XML file: {filePath}",
-                ex);
-        }
-    }
+    private static XNamespace ExtractNamespace(XDocument document) =>
+        XmlFixtureHelper.ExtractNamespace(document);
 
-    private static void SaveXmlDocument(XDocument document, string filePath)
-    {
-        try
-        {
-            using StreamWriter writer = new(
-                filePath,
-                append: false,
-                encoding: new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-
-            document.Save(writer, SaveOptions.DisableFormatting);
-        }
-        catch (Exception ex) when (IsFileException(ex))
-        {
-            throw new InvalidOperationException(
-                $"Failed to save RP14 XML to '{filePath}': {ex.Message}",
-                ex);
-        }
-    }
-
-    private static XNamespace ExtractNamespace(XDocument document)
-    {
-        return document.Root?.Name.NamespaceName
-            ?? throw new InvalidOperationException("RP14 XML document is empty.");
-    }
-
-    private static string FormatDate(DateOnly? date)
-    {
-        return date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
-    }
+    private static string FormatDate(DateOnly? date) =>
+        XmlFixtureHelper.FormatDate(date);
 
     private static void ValidateRange(
         int value,
@@ -280,28 +381,13 @@ public sealed class Rp14FixtureBuilder
         }
     }
 
-    private static bool IsFileException(Exception ex)
-    {
-        return ex is IOException
-            or UnauthorizedAccessException
-            or DirectoryNotFoundException
-            or PathTooLongException
-            or NotSupportedException
-            or SecurityException;
-    }
+    private static bool IsFileException(Exception ex) =>
+        XmlFixtureHelper.IsFileException(ex);
 
     private static void LogInfo(string message) =>
-        LogMessage("INFO", message);
+        XmlFixtureHelper.Log("RP14", "INFO", message);
 
     private static void LogError(string message) =>
-        LogMessage("ERROR", message);
-
-    private static void LogMessage(string level, string message)
-    {
-        string timestamp = DateTime.UtcNow.ToString(
-            "yyyy-MM-dd HH:mm:ss.fff",
-            CultureInfo.InvariantCulture);
-
-        Debug.WriteLine($"[{timestamp}] [{level}] [RP14] {message}");
-    }
+        XmlFixtureHelper.Log("RP14", "ERROR", message);
 }
+

@@ -8,7 +8,7 @@ Feature: Employer Validation
         Background:
             Given I am on the upload page as a "Admin" user
 
-        @regression @validation @rp14a
+       @regression @validation @rp14a @addVideo
         Scenario Outline: Employer name length boundary validation
             Given I have uploaded an RP14A file with employer name of length <length>
              When I submit the RP14A file
@@ -21,7 +21,7 @@ Feature: Employer Validation
                   | 99     | accepted | none                                  | none                             |
                   | 100    | rejected | 1 invalid length of the employer name | Maximum of 99 characters allowed |
 
-@regression @validation @rp14a @addScreencast
+@regression @validation @rp14a @addVideo
 Scenario: RP14A Display multiple validation categories together
     Given the RP14A contains multiple validation issues
     When I attempt to submit the RP14A
@@ -44,10 +44,24 @@ Scenario: RP14A Display multiple validation categories together
     And I should be able to view error details for all validation categories
 
 
-  @regression @validation @rp14a
+@regression @validation @rp14a @addVideo
   Scenario: Multiple employer names exceeding allowed length are rejected
          Given I have uploaded an RP14A file with 3 employer names of length 100
          When I submit the RP14A file
          Then the submission should be "rejected"
           And the error summary should "3 invalid length of the employer name" with "Maximum of 99 characters allowed"
-          And I should be able to view error details for multiple employees     
+          And I should be able to view error details for multiple employees
+          
+@regression @validation @rp14a @addVideo
+Scenario: RP14A Display multiple errors for the same employee
+            Given the RP14A contains an employee with:
+                 | Surname | NationalInsuranceNumber | MoneyOwedToEmployer | BasicPayPerWeek |
+                 |         | QQ123456A               |              12.345 |            12.3 |
+             When I attempt to submit the RP14A
+             Then I should see the following multiple validation errors
+                  | Category     | Type                               | Message                                             | Hint                            |
+                  | Employee     | Employee surname                   | 1 missing employee surname                          |                                 |
+                  | Employee     | Employee national insurance number | 1 invalid employee national insurance number format |                                 |
+                  | Employee     | Money owed to employer             | 1 invalid money owed to employer                    | Expected format is 12.34 or 100 |
+                  | Employee pay | Employee basic pay per week        | 1 invalid basic pay per week                        | Expected format is 12.34 or 100 |
+             And I should be able to view error details for all validation categories

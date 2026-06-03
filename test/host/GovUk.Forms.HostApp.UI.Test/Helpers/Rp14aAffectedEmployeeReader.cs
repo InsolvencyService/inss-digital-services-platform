@@ -37,11 +37,11 @@ public static class Rp14aAffectedEmployeeReader
             .Take(employeeCount)
             .Select((employee, index) => new AffectedEmployee
             {
-                Forename    = GetValue(employee, ns, RP14AElementNames.Forenames),
-                Surname     = GetValue(employee, ns, RP14AElementNames.Surname),
+                Forename = GetValue(employee, ns, RP14AElementNames.Forenames),
+                Surname = GetValue(employee, ns, RP14AElementNames.Surname),
                 DateOfBirth = FormatUiDate(GetValue(employee, ns, RP14AElementNames.DateOfBirth)),
-                NiNumber    = GetValue(employee, ns, RP14AElementNames.NationalInsuranceNumber),
-                CellValue   = getCellValue(index)
+                NiNumber = GetValue(employee, ns, RP14AElementNames.NINO),
+                CellValue = getCellValue(index)
             })
             .ToList();
     }
