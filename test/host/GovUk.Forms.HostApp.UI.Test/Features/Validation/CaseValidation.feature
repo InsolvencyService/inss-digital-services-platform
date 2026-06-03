@@ -33,7 +33,7 @@ Feature: Case Validation
                   | 1 too long case reference | Up to 12 characters are allowed | Case reference |
               And I should be able to view case reference error details
  
-        @regression @validation @rp14a  @ignore
+        @regression @validation @rp14a  @ignore @NotImplemented
         Scenario: Display error when case reference is not found in RPS
             Given the RP14A contains a valid format case reference
               And the case reference does not exist in RPS
@@ -91,7 +91,7 @@ Feature: Case Validation
 
        ### the following scenario is currently ignored as we are not yet calling the RPS API to validate case references.
        ### Once we implement the RPS API call, we can enable this test to ensure we are properly handling cases where the reference is not found in RPS. 
-       @ignore @regression @validation @rp14
+       @ignore @regression @validation @rp14 @NotImplemented
         Scenario: Display error for unknown case reference
             Given the RP14 XML contains a valid format case reference that does not exist in RPS
              When I upload and submit the RP14 XML file

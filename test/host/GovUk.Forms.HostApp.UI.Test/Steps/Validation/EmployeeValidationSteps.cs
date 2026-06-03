@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
@@ -15,13 +16,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 public sealed class EmployeeValidationSteps : ValidationStepsBase
 {
     private readonly Faker _faker = new();
+    private readonly CheckYourAnswersCoordinator _checkYourAnswersCoordinator;
 
     public EmployeeValidationSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
         UploadErrorDetailsCoordinator uploadErrorDetailsCoordinator,
-        ScenarioContext scenarioContext)
+        ScenarioContext scenarioContext,
+        CheckYourAnswersCoordinator checkYourAnswersCoordinator)
         : base(uploadDocumentCoordinator, uploadErrorDetailsCoordinator, scenarioContext)
     {
+        _checkYourAnswersCoordinator = checkYourAnswersCoordinator;
     }
 
     [Given("the RP14A contains an employee with no surname")]
@@ -39,19 +43,17 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
         ScenarioContext.Set(employee);
     }
 
-    [Given("the RP14A contains an employee surname longer than {int} characters")]
-    public async Task GivenTheRp14aContainsAnEmployeeSurnameLongerThanCharacters(int length)
+    [Given("the RP14A XML contains an employee surname of length {int}")]
+    public async Task GivenTheRPAXMLContainsAnEmployeeSurnameOfLength(int length)
     {
-        string surname = LengthHelper.OverMax(length);
+        string surname = LengthHelper.AtMax(length);
 
         AffectedEmployee employee = CreateAffectedEmployee(
             surname: surname,
             forename: _faker.Name.FirstName(),
             cellValue: surname);
 
-        await UploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
-            employee.Surname,
-            employee.Forename);
+        await UploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(employee.Surname, employee.Forename);
 
         ScenarioContext.Set(employee);
     }
@@ -59,12 +61,9 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     [Given("the RP14A contains an employee with no national insurance number")]
     public async Task GivenTheRp14aContainsAnEmployeeWithNoNationalInsuranceNumber()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(
-            niNumber: string.Empty,
-            cellValue: string.Empty);
+        AffectedEmployee employee = CreateAffectedEmployee(niNumber: string.Empty, cellValue: string.Empty);
 
-        await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(
-            string.Empty, occurrenceIndex: 0);
+        await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(string.Empty, occurrenceIndex: 0);
 
         ScenarioContext.Set(employee);
     }
@@ -84,9 +83,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     }
 
     [Given("the RP14A contains employment start date {string} with end date {string}")]
-    public async Task GivenTheRp14aContainsEmploymentStartDateWithEndDate(
-    string startDate,
-    string endDate)
+    public async Task GivenTheRp14aContainsEmploymentStartDateWithEndDate(string startDate, string endDate)
     {
         DateOnly? parsedStartDate = ParseDateOrNull(startDate);
         DateOnly? parsedEndDate = ParseDateOrNull(endDate);
@@ -94,9 +91,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
         AffectedEmployee employee = CreateAffectedEmployee(
             cellValue: FormatDateRange(startDate, endDate));
 
-        await UploadDocumentCoordinator.UploadRp14aWithEmploymentDatesAsync(
-            parsedStartDate,
-            parsedEndDate);
+        await UploadDocumentCoordinator.UploadRp14aWithEmploymentDatesAsync(parsedStartDate, parsedEndDate);
 
         ScenarioContext.Set(employee);
     }
@@ -108,6 +103,17 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
             .UploadRp14aWithMissingEmployeeSurnamesAsync(employeeCount);
     }
 
+    [Given("the RP14A contains {int} employees with national insurance number {string}")]
+    public async Task GivenTheRPAContainsEmployeesWithNationalInsuranceNumber(int employeeCount, string nationalInsuranceNumber)
+    {
+        await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberForEmployeesAsync(employeeCount, nationalInsuranceNumber);
+    }
+
+    [Given("the RP14A contains {int} employees with no national insurance number")]
+    public async Task GivenTheRPAContainsEmployeesWithNoNationalInsuranceNumber(int employeeCount)
+    {
+        await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberForEmployeesAsync(employeeCount, string.Empty);
+    }
 
     [When("I proceed to the check answers page")]
     public async Task WhenIProceedToTheCheckAnswersPage()
@@ -129,8 +135,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     }
 
     [Then("I should see the national insurance number validation error {string}")]
-    public async Task ThenIShouldSeeTheNationalInsuranceNumberValidationError(
-        string errorMessage)
+    public async Task ThenIShouldSeeTheNationalInsuranceNumberValidationError(string errorMessage)
     {
         string resolvedErrorMessage =
             await UploadErrorDetailsCoordinator.ResolveValidationErrorMessageAsync(
@@ -166,23 +171,20 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     [Then("I should be able to view employee error details")]
     public async Task ThenIShouldBeAbleToViewEmployeeErrorDetails()
     {
-        await VerifySingleEmployeeErrorDetailsAsync(
-            ErrorDetailsHeaderType.EmployeeSurname);
+        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.EmployeeSurname);
     }
 
 
     [Then("I should be able to view national insurance number error details")]
     public async Task ThenIShouldBeAbleToViewNationalInsuranceNumberErrorDetails()
     {
-        await VerifySingleEmployeeErrorDetailsAsync(
-            ErrorDetailsHeaderType.NationalInsuranceNumber);
+        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.NationalInsuranceNumber);
     }
 
     [Then("I should be able to view the employee employment dates error details")]
     public async Task ThenIShouldBeAbleToViewTheEmployeeEmploymentDatesErrorDetails()
     {
-        await VerifySingleEmployeeErrorDetailsAsync(
-            ErrorDetailsHeaderType.EmploymentDates);
+        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.EmploymentDates);
     }
 
     [Then("I should be able to go to the previous page from the error details page")]
@@ -211,5 +213,48 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
             expectedError,
             affectedEmployees,
             ErrorDetailsHeaderType.EmployeeSurname);
+    }
+
+    [Then("I should be able to view multiple national insurance numbers error details")]
+    public async Task ThenIShouldBeAbleToViewMultipleNationalInsuranceNumbersErrorDetails()
+    {
+        UploadErrorSummary expectedError =
+           ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedError,
+            affectedEmployees,
+            ErrorDetailsHeaderType.NationalInsuranceNumber);
+    }
+
+    [Then("the submission should succeed")]
+    public async Task ThenTheSubmissionShouldSucceed()
+    {
+        await _checkYourAnswersCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
+    }
+
+    [Then("I should see the employee surname error {string} with hint {string}")]
+    public async Task ThenIShouldSeeTheEmployeeSurnameError(string errorMessage, string hintText)
+    {
+        UploadErrorSummary expectedError = new(
+            Category: "Employee",
+            ErrorType: "Employee surname",
+            ErrorMessage: errorMessage,
+            HintText: hintText);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+    }
+
+    [Then("I should see the following national insurance number validation errors")]
+    public async Task ThenIShouldSeeTheFollowingNationalInsuranceNumberValidationErrors(DataTable dataTable)
+    {
+        Error error = dataTable.CreateInstance<Error>();
+        UploadErrorSummary expectedError = CreateEmployeeErrorSummary(error.Type, error.Message, error.Hint);
+        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+
+        ScenarioContext.Set(expectedError);
     }
 }

@@ -6,6 +6,9 @@
 	<ns2:NameOfBusiness>Livewire Ltd</ns2:NameOfBusiness>
 	<ns2:CompanyNumber>7821478</ns2:CompanyNumber>
 	<ns2:CompanyAddrLine1>9 High Street</ns2:CompanyAddrLine1>
+	<ns2:CompanyAddrLine2>Test </ns2:CompanyAddrLine2>
+	<ns2:CompanyAddrLine3>Test</ns2:CompanyAddrLine3>
+	<ns2:CompanyAddrLine4>Test</ns2:CompanyAddrLine4>
 	<ns2:CompanyAddrTown>Birmingham</ns2:CompanyAddrTown>
 	<ns2:CompanyAddrCounty>West Midlands</ns2:CompanyAddrCounty>
 	<ns2:CompanyAddrPostcode>B2 4LX</ns2:CompanyAddrPostcode>
