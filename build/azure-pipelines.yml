@@ -103,7 +103,7 @@ stages:
         
 - stage: DeploySit
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  dependsOn: BuildTest
+  dependsOn: DeployDev
   displayName: 'Deploy to Sit'
   variables:
     - group: Platform-Sit
