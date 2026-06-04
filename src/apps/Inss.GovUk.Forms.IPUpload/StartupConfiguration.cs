@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
 [assembly: HostingStartup(typeof(Inss.GovUk.Forms.IPUpload.StartupConfiguration))]
 
@@ -82,7 +83,8 @@ public class StartupConfiguration : IHostingStartup
             }
 
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();
-
+            services.AddTransient<IValidationFactory, ValidationFactory>();
+            
             IPUploadFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
         });

@@ -12,7 +12,7 @@ internal sealed class EmployerApiValidator : EmployerValidator
         _model = model;
     }
 
-    internal override async Task<ValidatorContext> ValidateAsync()
+    public override async Task<ValidatorContext> ValidateAsync()
     {
         EmployerValidatorContext context = new();
 

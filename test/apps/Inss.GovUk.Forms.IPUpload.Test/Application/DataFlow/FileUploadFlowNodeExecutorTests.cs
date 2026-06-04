@@ -3,9 +3,9 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
-using Microsoft.Extensions.DependencyInjection;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation;
+using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 using NSubstitute;
 using Xunit;
 
@@ -14,20 +14,20 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
 public class FileUploadFlowNodeExecutorTests
 {
     private readonly FileUploadFlowNodeExecutor _fileUploadFlowNodeExecutor;
-    private readonly ICaseReferenceService _caseReferenceService;
+    private readonly IValidationFactory _validationFactory;
     
     public FileUploadFlowNodeExecutorTests()
     {
-        _caseReferenceService = Substitute.For<ICaseReferenceService>();
-        ServiceCollection services = [];
-        services.AddSingleton(_caseReferenceService);
-        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor(services.BuildServiceProvider());
+        _validationFactory = Substitute.For<IValidationFactory>();
+        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor(_validationFactory);
     }
     
     [Fact]
     public async Task NoErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
-        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(true);
+        IBaseValidator validator = Substitute.For<IBaseValidator>();
+        validator.ValidateAsync().Returns(new EmployeeValidatorContext());
+        _validationFactory.Create(Arg.Any<object>()).Returns(validator);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel ipUploadSection = form.Sections["IP Upload"];
         XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
@@ -50,7 +50,11 @@ public class FileUploadFlowNodeExecutorTests
     [Fact]
     public async Task WithErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
-        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
+        IBaseValidator validator = Substitute.For<IBaseValidator>();
+        var validatorContext = new EmployeeValidatorContext();
+        validatorContext.AddError(new ValidationInfo(), "Error");
+        validator.ValidateAsync().Returns(validatorContext);
+        _validationFactory.Create(Arg.Any<object>()).Returns(validator);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel ipUploadSection = form.Sections["IP Upload"];
         XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
@@ -69,7 +73,7 @@ public class FileUploadFlowNodeExecutorTests
         Assert.NotNull(nextNodeId);
         Assert.Equal("NodeId2", nextNodeId);
     }
-    
+  
     private const string RP14AXmlWithErrors = """
         <?xml version="1.0" standalone="yes"?>
         <ns1:RP14A xmlns:ns1="http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application">

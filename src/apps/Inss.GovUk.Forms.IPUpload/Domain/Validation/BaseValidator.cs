@@ -3,7 +3,7 @@ using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal abstract partial class BaseValidator
+public abstract partial class BaseValidator : IBaseValidator
 {
     private readonly ICaseReferenceService _caseReferenceService;
 
@@ -12,7 +12,7 @@ internal abstract partial class BaseValidator
         _caseReferenceService = caseReferenceService;
     }
 
-    internal abstract Task<ValidatorContext> ValidateAsync();
+    public abstract Task<ValidatorContext> ValidateAsync();
     
     protected async Task ValidateCaseReferenceAsync(ValidatorContext context, string caseReference)
     {
