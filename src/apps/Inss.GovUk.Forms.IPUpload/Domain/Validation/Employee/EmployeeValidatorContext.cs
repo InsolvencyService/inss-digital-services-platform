@@ -1,16 +1,16 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
-internal sealed class EmployeeValidatorContext : ValidatorContext
+public sealed class EmployeeValidatorContext : ValidatorContext
 {
-    internal string Forenames { get; set; }
+    public string Forenames { get; set; }
     
-    internal string Surname { get; set; }
+    public string Surname { get; set; }
     
-    internal DateOnly Dob { get; set; }
+    public DateOnly Dob { get; set; }
     
-    internal string Nino { get; set; }
+    public string Nino { get; set; }
 
-    internal override void AddError(ValidationInfo validationInfo, string? value)
+    public override void AddError(ValidationInfo validationInfo, string? value)
     {
         AddError(new EmployeeError
         {
