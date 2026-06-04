@@ -3,11 +3,11 @@ using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
-internal sealed class EmployeeSpreadsheetValidator : EmployeeValidator
+public sealed class EmployeeSpreadsheetValidator : EmployeeValidator
 {
     private readonly RP14A _model;
 
-    internal EmployeeSpreadsheetValidator(RP14A model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
+    public EmployeeSpreadsheetValidator(RP14A model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
         _model = model;
     }

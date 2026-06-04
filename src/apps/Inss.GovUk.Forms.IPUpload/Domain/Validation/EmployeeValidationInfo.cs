@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class EmployeeValidationInfo
+public static class EmployeeValidationInfo
 {
-    internal static ValidationInfo InvalidAverageHoursWorkedFormat() => new()
+    public static ValidationInfo InvalidAverageHoursWorkedFormat() => new()
     {
         Key = nameof(InvalidMoneyOwedToEmployerFormat),
         Category = "Employee",
@@ -12,7 +12,7 @@ internal static class EmployeeValidationInfo
         Hint = "Enter a number like 37 or 37.5"
     };
     
-    internal static ValidationInfo MissingEmployeeSurname() => new()
+    public static ValidationInfo MissingEmployeeSurname() => new()
     {
         Key = nameof(MissingEmployeeSurname),
         Category = "Employee",
@@ -21,7 +21,7 @@ internal static class EmployeeValidationInfo
         PluralErrorPattern = "[COUNT] employee surnames are missing"
     };
 
-    internal static ValidationInfo InvalidEmployeeSurnameLength() => new()
+    public static ValidationInfo InvalidEmployeeSurnameLength() => new()
     {
         Key = nameof(InvalidEmployeeSurnameLength),
         Category = "Employee",
@@ -31,7 +31,7 @@ internal static class EmployeeValidationInfo
         Hint = "Enter up to 99 characters"
     };
     
-    internal static ValidationInfo InvalidAopOwedFormat() => new()
+    public static ValidationInfo InvalidAopOwedFormat() => new()
     {
         Key = nameof(InvalidAopOwedFormat),
         Category = "Employee",
@@ -41,7 +41,7 @@ internal static class EmployeeValidationInfo
         Hint = "Enter a number like 12.34 or 100"
     };
     
-    internal static ValidationInfo MissingEmployeeNino() => new()
+    public static ValidationInfo MissingEmployeeNino() => new()
     {
         Key = nameof(MissingEmployeeNino),
         Category = "Employee",
@@ -50,7 +50,7 @@ internal static class EmployeeValidationInfo
         PluralErrorPattern = "[COUNT] National Insurance numbers are missing"
     };
     
-    internal static ValidationInfo InvalidEmployeeNinoFormat() => new()
+    public static ValidationInfo InvalidEmployeeNinoFormat() => new()
     {
         Key = nameof(InvalidEmployeeNinoFormat),
         Category = "Employee",
@@ -60,7 +60,7 @@ internal static class EmployeeValidationInfo
         Hint = "Enter a National Insurance number like QQ 12 34 56 C"
     };
     
-    internal static ValidationInfo InvalidMoneyOwedToEmployerFormat() => new()
+    public static ValidationInfo InvalidMoneyOwedToEmployerFormat() => new()
     {
         Key = nameof(InvalidMoneyOwedToEmployerFormat),
         Category = "Employee",
@@ -70,7 +70,7 @@ internal static class EmployeeValidationInfo
         Hint = "Enter a number like 12.34 or 100"
     };
     
-    internal static ValidationInfo InvalidEmployeeEmploymentDates() => new()
+    public static ValidationInfo InvalidEmployeeEmploymentDates() => new()
     {
         Key = nameof(InvalidEmployeeEmploymentDates),
         Category = "Employee",
@@ -80,7 +80,7 @@ internal static class EmployeeValidationInfo
         Hint = "Start date must be before the end date"
     };
     
-    internal static ValidationInfo InvalidEmployeeAopDates() => new()
+    public static ValidationInfo InvalidEmployeeAopDates() => new()
     {
         Key = nameof(InvalidEmployeeAopDates),
         Category = "Employee",
