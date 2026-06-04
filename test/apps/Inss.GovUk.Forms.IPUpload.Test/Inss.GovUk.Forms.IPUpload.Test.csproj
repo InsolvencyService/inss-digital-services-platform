@@ -14,4 +14,8 @@
         <ProjectReference Include="..\..\..\src\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Domain\" />
+    </ItemGroup>
+
 </Project>

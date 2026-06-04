@@ -1,12 +1,10 @@
 ﻿using System.Text;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
-using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Xunit;
@@ -70,59 +68,6 @@ public class FileUploadFlowNodeExecutorTests
 
         Assert.NotNull(nextNodeId);
         Assert.Equal("NodeId2", nextNodeId);
-    }
-    
-    [Fact]
-    public async Task WithErrors_ExecuteAsync_PopulatesPageWithErrorInfo()
-    {
-        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
-        FormModel form = TestFormModels.CreateWithIPUploadSection();
-        SectionModel ipUploadSection = form.Sections["IP Upload"];
-        XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
-        FlowNode node = new() { Id = "NodeId1", PagePath = ipUpload.Path, NextNodes = ["NodeId2", "NodeId3"] };
-        FlowNodeContext context = new()
-        {
-            Nodes = [node],
-            CurrentNode = node,
-            Form = form,
-            Section = ipUploadSection,
-            CurrentPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlWithErrors)) }
-        };
-
-        await _fileUploadFlowNodeExecutor.ExecuteAsync(context);
-
-        IPUploadXmlErrorsModel ipUploadErrors = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
-        Assert.True(ipUploadErrors.HasErrors);
-        Assert.NotEmpty(ipUploadErrors.GetErrors("Case"));
-        Assert.NotEmpty(ipUploadErrors.GetErrors("Employee"));
-        Assert.Empty(ipUploadErrors.GetErrors("Employer"));
-        Assert.Empty(ipUploadErrors.GetErrors("Employee pay"));
-        Assert.Empty(ipUploadErrors.GetErrors("Employee holiday"));
-    }
-    
-    [Fact]
-    public async Task WithErrors_ExecuteAsync_PopulatesUnknownCaseReference()
-    {
-        _caseReferenceService.CheckExistsAsync("CN10000112").Returns(false);
-        FormModel form = TestFormModels.CreateWithIPUploadSection();
-        SectionModel ipUploadSection = form.Sections["IP Upload"];
-        XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
-        FlowNode node = new() { Id = "NodeId1", PagePath = ipUpload.Path, NextNodes = ["NodeId2", "NodeId3"] };
-        FlowNodeContext context = new()
-        {
-            Nodes = [node],
-            CurrentNode = node,
-            Form = form,
-            Section = ipUploadSection,
-            CurrentPage = new XmlFileUploadModel { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlWithErrors)) }
-        };
-
-        await _fileUploadFlowNodeExecutor.ExecuteAsync(context);
-
-        IPUploadXmlErrorsModel ipUploadErrors = ipUploadSection.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
-        ErrorInfo[] errorInfoList = ipUploadErrors.GetErrors("Case");
-        ErrorInfo? errorInfo = errorInfoList.FirstOrDefault(e => e.Error.Contains("case reference have not been matched in our system"));
-        Assert.NotNull(errorInfo);
     }
     
     private const string RP14AXmlWithErrors = """

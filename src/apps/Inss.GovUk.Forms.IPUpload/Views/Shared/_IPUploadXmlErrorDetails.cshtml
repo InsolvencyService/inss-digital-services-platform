@@ -1,37 +1,41 @@
-﻿@model IPUploadXmlErrorDetailsModel
+﻿@using Inss.GovUk.Forms.IPUpload.Domain.Validation
+@model IPUploadXmlErrorDetailsModel
 
-<h1 class="govuk-heading-l">@(Model.CurrentErrorDetail.Property)</h1>
+<h1 class="govuk-heading-l">@(Model.CurrentErrorDetail.Info.Property)</h1>
 
 <p class="govuk-body">
-    @(Model.CurrentErrorDetail.Error.Replace("[COUNT]", Model.CurrentErrorDetail.RowCount.ToString()))
+    @(Model.CurrentErrorDetail.GetFormattedMessage())
 </p>
 
-@if (Model.CurrentErrorDetail.Hint is not null)
+@if (Model.CurrentErrorDetail.Info.Hint is not null)
 {
     <h2 class="govuk-heading-m">How to fix it</h2>
-    <p class="govuk-body">@(Model.CurrentErrorDetail.Hint)</p>
+    <p class="govuk-body">@(Model.CurrentErrorDetail.Info.Hint)</p>
 }
 
-<table class="govuk-table govuk-table--small-text-until-tablet">
-    <caption class="govuk-table__caption govuk-table__caption--m">@(Model.CurrentErrorDetail.HeaderCaption)</caption>
-    <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-        @foreach (string header in Model.CurrentErrorDetail.Headers)
-        {
-            <th scope="col" class="govuk-table__header">@header</th>
-        }
-    </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-    @for (int i = 0; i < Model.CurrentErrorDetail.Rows.Length; i++)
-    {
+@if (Model.CurrentErrorDetail.HasEmployeeErrors)
+{
+    <table class="govuk-table govuk-table--small-text-until-tablet">
+        <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            
-            @for (int j = 0; j < Model.CurrentErrorDetail.ColumnCount; j++)
-            {
-                <td class="govuk-table__cell">@(Model.CurrentErrorDetail.Rows[i][j])</td>
-            }
+            <th scope="col" class="govuk-table__header">Forenames</th>
+            <th scope="col" class="govuk-table__header">Surname</th>
+            <th scope="col" class="govuk-table__header">Date of birth</th>
+            <th scope="col" class="govuk-table__header">NI number</th>
+            <th scope="col" class="govuk-table__header">Cell value</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="govuk-table__body">
+        @foreach (EmployeeError employeeError in Model.CurrentErrorDetail.EmployeeUploadErrors)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@(employeeError.Forenames)</td>
+                <td class="govuk-table__cell">@(employeeError.Surname)</td>
+                <td class="govuk-table__cell">@(employeeError.Dob)</td>
+                <td class="govuk-table__cell">@(employeeError.Nino)</td>
+                <td class="govuk-table__cell">@(!string.IsNullOrWhiteSpace(employeeError.Value) ? employeeError.Value : "Not entered")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

@@ -7,19 +7,20 @@
 <p class="govuk-body">The following errors were found when validating your form. Check the details and try uploading again.</p>
 
 @* Common errors - RP14(A) *@
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Case"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Case"))
 
 @* Employee errors - RP14A *@
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employer"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee pay"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employee holiday"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Employer"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Employee"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Employee pay"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Employee holiday"))
 
 @* Employer errors - RP14 *@
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Business"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Director"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Shareholders"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Associated company"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Employment continuity"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Transfers"))
-@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetErrors("Pay records contact"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Business"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Director"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Shareholders"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Associated company"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Employment continuity"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Transfers"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Pay records contact"))
+@await Html.PartialAsync("_IPUploadXmlCategoryErrors", Model.GetSummaryForCategory("Insolvency practitioner"))

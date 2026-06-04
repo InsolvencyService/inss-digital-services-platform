@@ -17,18 +17,19 @@ public sealed class RP14ASpreadsheetMapper : IMapper
     public JsonMessage[] Map()
     {
         // NOTE: Logic lifted from https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.BL/Mappers/RP14aSpreadSheetMessageMapper.cs
+        string caseReference = _model.Employee.First().Header.CaseReference;
         
         EmployeeInformation[] employeeInformationList = _model.Employee.Select(e => new EmployeeInformation
         {
             CorrelationId = Guid.NewGuid(),
-            CaseReference = e.Header.CaseReference,
+            CaseReference = caseReference,
             EmployerName = e.EmployerName,
             Employee = new Employee.Employee
             {
                 Title = e.EmployeeName.Title,
                 FirstNames = e.EmployeeName.Forenames,
                 LastName = e.EmployeeName.Surname,
-                NationalInsuranceNumber = e.NINO.ToUpper(),
+                NationalInsuranceNumber = e.NINO.Replace(" ", string.Empty).ToUpper(),
                 DateOfBirth = e.DateOfBirthSpecified ? e.DateOfBirth : null,
                 StartDate = e.StartDateSpecified ? e.StartDate : null,
                 EndDate = e.EndDateSpecified ? e.EndDate : null,

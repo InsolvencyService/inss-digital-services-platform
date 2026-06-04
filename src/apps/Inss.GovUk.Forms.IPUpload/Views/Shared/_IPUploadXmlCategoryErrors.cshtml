@@ -1,24 +1,24 @@
-﻿@model Inss.GovUk.Forms.IPUpload.Domain.Validation.ErrorInfo[]
+﻿@model Inss.GovUk.Forms.IPUpload.Domain.Validation.ErrorSummary
 
-@if (Model.Length > 0)
+@if (Model.Properties.Length > 0)
 {
-  <h2 class="govuk-heading-m">@(Model.First().Category)</h2>
+  <h2 class="govuk-heading-m">@(Model.Category)</h2>
   <dl class="govuk-summary-list">
-    @foreach (var error in Model)
+    @foreach (var error in Model.Properties)
     {
       <div class="govuk-summary-list__row">
 
         <dt class="govuk-summary-list__key">
-          @(error.Property)
+          @(error.Info.Property)
         </dt>
         <dd class="govuk-summary-list__value">
-          <p class="govuk-body">@(error.Error.Replace("[COUNT]", error.RowCount.ToString()))</p>
-          @if (error.Hint is not null)
+          <p class="govuk-body">@(error.GetFormattedMessage())</p>
+          @if (error.Info.Hint is not null)
           {
-            <p class='govuk-body govuk-hint'>@(error.Hint)</p>
+            <p class='govuk-body govuk-hint'>@(error.Info.Hint)</p>
           }
         </dd>
-        @if (error.ShowErrorDetails)
+        @if (error.HasEmployeeErrors)
         {
           <dd class="govuk-summary-list_actions">
             <a class="govuk-link" href="/ip-upload/redundancy-payment/upload-error-details/?state=@error.Id">View details</a>

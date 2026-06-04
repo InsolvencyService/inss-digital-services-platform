@@ -12,7 +12,7 @@ namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
 {
     private readonly ILogger<FileUploadFlowNodeValidator> _logger;
-    private readonly XmlFileCheckList _checkActions = [CheckFileExtension, CheckFileSize, CheckFileIsValidXml];
+    private readonly XmlFileCheckList _checkActions = [CheckFileUploadedExtension, CheckFileExtension, CheckFileSize, CheckFileIsValidXml];
     private const string XmlExtension = ".xml";
     private const int MaxFileSizeInMb = 10;
 
@@ -54,6 +54,17 @@ public sealed class FileUploadFlowNodeValidator : IFlowNodeValidator
         {
             self._logger.XmlLoadError(error.Message);
             validationResults.AddResult("The file provided is invalid XML or has invalid field data", [nameof(fileUpload.Contents)]);
+        }
+    }
+    
+    private static void CheckFileUploadedExtension(
+        FileUploadFlowNodeValidator self, 
+        List<ValidationResult> validationResults, 
+        XmlFileUploadModel fileUpload)
+    {
+        if (string.IsNullOrWhiteSpace(fileUpload.Contents))
+        {
+            validationResults.AddResult("An RP14/A file must be provided", [nameof(fileUpload.Contents)]);
         }
     }
     

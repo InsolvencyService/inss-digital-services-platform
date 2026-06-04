@@ -11,11 +11,26 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
 public class FileUploadFlowNodeValidatorTests
 {
     [Fact]
-    public async Task UnsupportedFilenameExtension_ValidateAsync_ReturnsErrorDetails()
+    public async Task EmptyFile_ValidateAsync_ReturnsErrorDetails()
     {
         ILogger<FileUploadFlowNodeValidator> logger = Substitute.For<ILogger<FileUploadFlowNodeValidator>>();
         FileUploadFlowNodeValidator validator = new(logger);
         XmlFileUploadModel xmlFileUpload = new() { Filename = "upload.txt" };
+        FlowNode node = new() { Id = "NodeId1", PagePath = xmlFileUpload.Path };
+        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = xmlFileUpload };
+        
+        ValidationResult[] validationResults = await validator.ValidateAsync(context);
+
+        Assert.Single(validationResults);
+        AssertError(validationResults[0], "An RP14/A file must be provided", "Contents");
+    }
+    
+    [Fact]
+    public async Task UnsupportedFilenameExtension_ValidateAsync_ReturnsErrorDetails()
+    {
+        ILogger<FileUploadFlowNodeValidator> logger = Substitute.For<ILogger<FileUploadFlowNodeValidator>>();
+        FileUploadFlowNodeValidator validator = new(logger);
+        XmlFileUploadModel xmlFileUpload = new() { Filename = "upload.txt", Contents = "XYZ"};
         FlowNode node = new() { Id = "NodeId1", PagePath = xmlFileUpload.Path };
         FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = xmlFileUpload };
         

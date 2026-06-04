@@ -28,7 +28,7 @@ public sealed class RP14AApiMapper : IMapper
                 Title = e.EmployeeName?.Title ?? null!,
                 FirstNames = e.EmployeeName?.Forenames ?? null!,
                 LastName = e.EmployeeName?.Surname ?? null!,
-                NationalInsuranceNumber = e.NINO,
+                NationalInsuranceNumber = e.NINO.ToUpper().Replace(" ", string.Empty),
                 DateOfBirth = e.DateOfBirthSpecified ? e.DateOfBirth : null,
                 StartDate = e.StartDateSpecified ? e.StartDate : null,
                 EndDate = e.EndDateSpecified ? e.EndDate : null,

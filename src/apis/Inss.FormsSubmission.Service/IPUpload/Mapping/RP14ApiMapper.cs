@@ -140,7 +140,7 @@ public sealed class RP14ApiMapper : IMapper
             {
                 Initials = d.Name.Initials,
                 Surname = d.Name.Surname,
-                NationalInsuranceNumber = d.NINO.ToUpper()
+                NationalInsuranceNumber = d.NINO.Replace(" ", string.Empty).ToUpper()
             })
             .ToList();
     }
