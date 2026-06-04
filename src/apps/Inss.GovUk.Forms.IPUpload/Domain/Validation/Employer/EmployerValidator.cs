@@ -12,9 +12,21 @@ internal abstract partial class EmployerValidator : BaseValidator
 
     protected static void ValidateBusinessName(ValidatorContext context, string businessName)
     {
-        if (businessName.Length > 60)
+        if (string.IsNullOrWhiteSpace(businessName))
         {
             context.AddError(BusinessValidationInfo.MissingBusinessName(), businessName);
+        }
+        else if (businessName.Length > 60)
+        {
+            context.AddError(BusinessValidationInfo.InvalidBusinessNameLength(), businessName);
+        } 
+    }
+    
+    protected static void ValidateNatureOfBusiness(ValidatorContext context, string natureOfBusiness)
+    {
+        if (!string.IsNullOrEmpty(natureOfBusiness) && natureOfBusiness.Length > 100)
+        {
+            context.AddError(BusinessValidationInfo.InvalidNatureOfBusinessLength(), natureOfBusiness);
         } 
     }
     
@@ -22,7 +34,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     {
         if (companyNumber.Length > 12)
         {
-            context.AddError(BusinessValidationInfo.MissingBusinessName(), companyNumber);
+            context.AddError(BusinessValidationInfo.InvalidCompanyNumberLength(), companyNumber);
         } 
     }
     
@@ -149,7 +161,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateCompanyAssociationReason(ValidatorContext context, string reason)
     {
-        if (!string.IsNullOrEmpty(reason) && reason.Length > 9)
+        if (!string.IsNullOrEmpty(reason) && reason.Length > 255)
         {
             context.AddError(AssociatedCompanyValidationInfo.InvalidAssociationReasonLength(), reason);
         }

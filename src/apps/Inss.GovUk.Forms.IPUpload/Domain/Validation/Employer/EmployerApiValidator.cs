@@ -19,6 +19,7 @@ internal sealed class EmployerApiValidator : EmployerValidator
         await ValidateCaseReferenceAsync(context, _model.Header.CaseReference);
         
         ValidateBusinessName(context, _model.NameOfBusiness);
+        ValidateNatureOfBusiness(context, _model.NatureOfBusiness);
         ValidateCompanyNumber(context, _model.CompanyNumber);
         ValidateAddress(context, "Business", _model.Address);
         ValidateSICCode(context, _model.SICCode);

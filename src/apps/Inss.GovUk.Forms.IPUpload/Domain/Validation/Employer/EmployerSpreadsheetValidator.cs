@@ -20,6 +20,7 @@ internal sealed class EmployerSpreadsheetValidator : EmployerValidator
 
         ValidateBusinessName(context, _model.NameOfBusiness);
         ValidateCompanyNumber(context, _model.CompanyNumber);
+        ValidateNatureOfBusiness(context, _model.NatureOfBusiness);
         ValidateAddress(context, "Business", _model.CompanyAddrLine1, _model.CompanyAddrLine2, _model.CompanyAddrLine3, 
             _model.CompanyAddrTown, _model.CompanyAddrCounty, _model.CompanyAddrPostcode, _model.CompanyAddrCountry);
         ValidateSICCode(context, _model.SICCode);
