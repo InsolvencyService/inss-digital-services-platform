@@ -100,3 +100,16 @@ stages:
         environment: 'Dev'
         location: ${{ parameters.location }}
         azureSubscription: $(AzureSubscription)
+        
+- stage: DeploySit
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: BuildTest
+  displayName: 'Deploy to Sit'
+  variables:
+    - group: Platform-Sit
+  jobs:
+    - template: ../deploy/azure-deployment.yml
+      parameters:
+        environment: 'Sit'
+        location: ${{ parameters.location }}
+        azureSubscription: $(AzureSubscription)
