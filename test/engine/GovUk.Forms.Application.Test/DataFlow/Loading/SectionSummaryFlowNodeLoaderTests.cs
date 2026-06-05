@@ -59,7 +59,7 @@ public class SectionSummaryFlowNodeLoaderTests
         SummaryModel.SummaryInfo[] infoList = summary.Overview;
         AgeModel age = addAnother.Items.GetFirstOf<AgeModel>();
         Assert.Equal(addAnother.Title, infoList[0].Title);
-        Assert.True(infoList[0].Values.Contains(age.Value.ToString(CultureInfo.CurrentCulture)));
+        Assert.True(infoList[0].Values.Contains(age.Value.ToString(CultureInfo.InvariantCulture)));
     }
     
     [Fact]

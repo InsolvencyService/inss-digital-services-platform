@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class AssociatedCompanyValidationInfo
+public static class AssociatedCompanyValidationInfo
 {
-    internal static ValidationInfo InvalidAssociatedCompanyNameLength() => new()
+    public static ValidationInfo InvalidAssociatedCompanyNameLength() => new()
     {
         Key = nameof(InvalidAssociatedCompanyNameLength),
         Category = "Associated company",
@@ -12,7 +12,7 @@ internal static class AssociatedCompanyValidationInfo
         Hint = "Enter up to 60 characters"
     };
     
-    internal static ValidationInfo InvalidAssociatedCompanyNumberLength() => new()
+    public static ValidationInfo InvalidAssociatedCompanyNumberLength() => new()
     {
         Key = nameof(InvalidAssociatedCompanyNumberLength),
         Category = "Associated company",
@@ -22,7 +22,7 @@ internal static class AssociatedCompanyValidationInfo
         Hint = "Enter up to 255 characters"
     };
     
-    internal static ValidationInfo InvalidAssociationReasonLength() => new()
+    public static ValidationInfo InvalidAssociationReasonLength() => new()
     {
         Key = nameof(InvalidAssociationReasonLength),
         Category = "Associated company",

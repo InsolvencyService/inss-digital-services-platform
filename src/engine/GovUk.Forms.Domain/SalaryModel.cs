@@ -11,7 +11,7 @@ public sealed class SalaryModel : PageModel
     
     public override string[] GetSummaryInfo()
     {
-        return [Value.ToString("C", CultureInfo.CurrentCulture)];
+        return [Value.ToString("C", CultureInfo.InvariantCulture)];
     }
     
     public override void CopyTo(PageModel target)

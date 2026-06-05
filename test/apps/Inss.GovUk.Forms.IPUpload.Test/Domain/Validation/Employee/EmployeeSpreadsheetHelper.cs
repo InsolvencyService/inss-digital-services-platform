@@ -23,8 +23,8 @@ internal static class EmployeeSpreadsheetHelper
                     EmployeeName = new NameType { Forenames = "Homer", Surname = "Simpson" },
                     NINO = "AB123456C",
                     MoneyOwedToEmployer = 1000.00M,
-                    StartDate = DateTime.Parse("2024-01-01", CultureInfo.CurrentCulture),
-                    EndDate = DateTime.Parse("2026-01-01", CultureInfo.CurrentCulture),
+                    StartDate = DateTime.Parse("2024-01-01", CultureInfo.InvariantCulture),
+                    EndDate = DateTime.Parse("2026-01-01", CultureInfo.InvariantCulture),
                     PayDetails = new RP14AEmployeePayDetails
                     {
                         BasicPayPerWeek = 200.00M,
@@ -33,8 +33,8 @@ internal static class EmployeeSpreadsheetHelper
                             ArrearsOfPayPeriod1 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1
                             {
                                 AOPOwed1 = 100.00M,
-                                AOP1StartDate = DateTime.Parse("2026-01-01", CultureInfo.CurrentCulture),
-                                AOP1EndDate = DateTime.Parse("2026-01-10", CultureInfo.CurrentCulture)
+                                AOP1StartDate = DateTime.Parse("2026-01-01", CultureInfo.InvariantCulture),
+                                AOP1EndDate = DateTime.Parse("2026-01-10", CultureInfo.InvariantCulture)
                             },
                             ArrearsOfPayPeriod2 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2(),
                             ArrearsOfPayPeriod3 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3(),
@@ -51,8 +51,8 @@ internal static class EmployeeSpreadsheetHelper
                         {
                             Holiday1 = new RP14AEmployeeHolidayHolidayNotPaidHoliday1
                             {
-                                Holiday1StartDate = DateTime.Parse("2025-01-01", CultureInfo.CurrentCulture),
-                                Holiday1EndDate = DateTime.Parse("2026-01-01", CultureInfo.CurrentCulture)
+                                Holiday1StartDate = DateTime.Parse("2025-01-01", CultureInfo.InvariantCulture),
+                                Holiday1EndDate = DateTime.Parse("2026-01-01", CultureInfo.InvariantCulture)
                             },
                             Holiday2 = new RP14AEmployeeHolidayHolidayNotPaidHoliday2(),
                             Holiday3 = new RP14AEmployeeHolidayHolidayNotPaidHoliday3()

@@ -4,7 +4,7 @@ using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
-internal abstract partial class EmployerValidator : BaseValidator
+public abstract partial class EmployerValidator : BaseValidator
 {
     protected EmployerValidator(ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
@@ -32,7 +32,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateCompanyNumber(ValidatorContext context, string companyNumber)
     {
-        if (companyNumber.Length > 12)
+        if (!string.IsNullOrEmpty(companyNumber) && companyNumber.Length > 12)
         {
             context.AddError(BusinessValidationInfo.InvalidCompanyNumberLength(), companyNumber);
         } 
@@ -57,7 +57,11 @@ internal abstract partial class EmployerValidator : BaseValidator
         string? postcode, 
         string? country)
     {
-        if (!string.IsNullOrEmpty(line1) && line1.Length > 35)
+        if (string.IsNullOrWhiteSpace(line1))
+        {
+            context.AddError(AddressValidationInfo.MissingAddressLine1(category), line1);
+        }
+        else if (line1.Length > 35)
         {
             context.AddError(AddressValidationInfo.InvalidAddressLineLength(category), line1);
         }
@@ -113,7 +117,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     {
         if (!string.IsNullOrEmpty(nino) && !NinoFormatRegex().IsMatch(nino.Replace(" ", string.Empty)))
         {
-            context.AddError(DirectorValidationInfo.DirectorInvalidNinoFormat(), nino);
+            context.AddError(DirectorValidationInfo.InvalidDirectorNinoFormat(), nino);
         } 
     }
     
@@ -127,7 +131,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateShareholderPercentage(ValidatorContext context, decimal percentage)
     {
-        string value = percentage.ToString(CultureInfo.CurrentCulture);
+        string value = percentage.ToString(CultureInfo.InvariantCulture);
         
         if (!PercentRegex().IsMatch(value))
         {
@@ -145,7 +149,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateAssociatedCompanyName(ValidatorContext context, string companyName)
     {
-        if (companyName.Length > 60)
+        if (!string.IsNullOrEmpty(companyName) && companyName.Length > 60)
         {
             context.AddError(AssociatedCompanyValidationInfo.InvalidAssociatedCompanyNameLength(), companyName);
         }
@@ -169,7 +173,7 @@ internal abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateTransferToName(ValidatorContext context, string transferName)
     {
-        if (transferName.Length > 9)
+        if (transferName.Length > 60)
         {
             context.AddError(TransfersValidationInfo.InvalidTransferToNameLength(), transferName);
         }

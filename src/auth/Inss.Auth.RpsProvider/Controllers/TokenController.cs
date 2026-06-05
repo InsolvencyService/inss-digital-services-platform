@@ -59,7 +59,7 @@ public class TokenController : Controller
         {
             new Claim(JwtRegisteredClaimNames.Sub, userAuth.Username),
             new Claim(JwtRegisteredClaimNames.Name, userAuth.Username),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(CultureInfo.CurrentCulture), ClaimValueTypes.Integer64)
+            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture), ClaimValueTypes.Integer64)
         };
 
         var token = new JwtSecurityToken(

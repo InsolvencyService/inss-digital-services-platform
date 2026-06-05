@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class TransfersValidationInfo
+public static class TransfersValidationInfo
 {
-    internal static ValidationInfo InvalidTransferToNameLength() => new()
+    public static ValidationInfo InvalidTransferToNameLength() => new()
     {
         Key = nameof(InvalidTransferToNameLength),
         Category = "Transfers",

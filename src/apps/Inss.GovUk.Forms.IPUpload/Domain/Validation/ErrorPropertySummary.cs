@@ -22,14 +22,14 @@ public sealed class ErrorPropertySummary
         {
             if (EmployeeUploadErrors.Length > 1)
             {
-                return Info.PluralErrorPattern.Replace("[COUNT]", EmployeeUploadErrors.Length.ToString(CultureInfo.CurrentCulture));
+                return Info.PluralErrorPattern.Replace("[COUNT]", EmployeeUploadErrors.Length.ToString(CultureInfo.InvariantCulture));
             }
 
             return Info.SingularErrorPattern;
         }
 
         return EmployerUploadErrors.Length > 1 
-            ? Info.PluralErrorPattern.Replace("[COUNT]", EmployerUploadErrors.Length.ToString(CultureInfo.CurrentCulture)) 
+            ? Info.PluralErrorPattern.Replace("[COUNT]", EmployerUploadErrors.Length.ToString(CultureInfo.InvariantCulture)) 
             : Info.SingularErrorPattern;
     }
 

@@ -58,7 +58,7 @@ public class CheckAnswersPreProcessNodeTests
         await _loader.LoadAsync(context);
 
         Assert.Equal(2, checkAnswers.Items.Length);
-        Assert.Contains(age.Value.ToString(CultureInfo.CurrentCulture), checkAnswers.Items[1].Values);
+        Assert.Contains(age.Value.ToString(CultureInfo.InvariantCulture), checkAnswers.Items[1].Values);
     }
     
     [Fact]

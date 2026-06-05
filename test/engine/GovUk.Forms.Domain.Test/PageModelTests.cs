@@ -64,7 +64,7 @@ public class PageModelTests
 
         string[] values = salary.GetSummaryInfo();
 
-        Assert.True(values.Contains(salary.Value.ToString("C", CultureInfo.CurrentCulture)));
+        Assert.True(values.Contains(salary.Value.ToString("C", CultureInfo.InvariantCulture)));
     }
 
     [Fact]

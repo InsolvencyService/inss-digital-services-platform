@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class AddressValidationInfo
+public static class AddressValidationInfo
 {
-    internal static ValidationInfo InvalidAddressLinesLength(string category) => new()
+    public static ValidationInfo InvalidAddressLinesLength(string category) => new()
     {
         Key = nameof(InvalidAddressLinesLength),
         Category = category,
@@ -12,7 +12,7 @@ internal static class AddressValidationInfo
         Hint = "Enter up to 4 address lines"
     };
     
-    internal static ValidationInfo MissingAddressLine1(string category) => new()
+    public static ValidationInfo MissingAddressLine1(string category) => new()
     {
         Key = nameof(InvalidAddressLineLength),
         Category = category,
@@ -22,7 +22,7 @@ internal static class AddressValidationInfo
         Hint = "Enter up to 35 characters"
     };
     
-    internal static ValidationInfo InvalidAddressLineLength(string category) => new()
+    public static ValidationInfo InvalidAddressLineLength(string category) => new()
     {
         Key = nameof(InvalidAddressLineLength),
         Category = category,
@@ -32,7 +32,7 @@ internal static class AddressValidationInfo
         Hint = "Enter up to 35 characters"
     };
     
-    internal static ValidationInfo InvalidAddressTownLength(string category) => new()
+    public static ValidationInfo InvalidAddressTownLength(string category) => new()
     {
         Key = nameof(InvalidAddressTownLength),
         Category = category,
@@ -42,7 +42,7 @@ internal static class AddressValidationInfo
         Hint = "Enter up to 35 characters"
     };
     
-    internal static ValidationInfo InvalidAddressCountyLength(string category) => new()
+    public static ValidationInfo InvalidAddressCountyLength(string category) => new()
     {
         Key = nameof(InvalidAddressCountyLength),
         Category = category,
@@ -52,7 +52,7 @@ internal static class AddressValidationInfo
         Hint = "Enter up to 35 characters"
     };
     
-    internal static ValidationInfo InvalidAddressPostcodeLength(string category) => new()
+    public static ValidationInfo InvalidAddressPostcodeLength(string category) => new()
     {
         Key = nameof(InvalidAddressPostcodeLength),
         Category = category,
@@ -62,7 +62,7 @@ internal static class AddressValidationInfo
         Hint = "Enter up to 10 characters"
     };
     
-    internal static ValidationInfo InvalidAddressCountryLength(string category) => new()
+    public static ValidationInfo InvalidAddressCountryLength(string category) => new()
     {
         Key = nameof(InvalidAddressCountryLength),
         Category = category,

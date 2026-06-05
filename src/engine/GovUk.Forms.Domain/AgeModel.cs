@@ -11,7 +11,7 @@ public sealed class AgeModel : PageModel
     
     public override string[] GetSummaryInfo()
     {
-        return [Value.ToString(CultureInfo.CurrentCulture)];
+        return [Value.ToString(CultureInfo.InvariantCulture)];
     }
 
     public override void CopyTo(PageModel target)

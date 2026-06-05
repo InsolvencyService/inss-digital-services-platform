@@ -23,8 +23,8 @@ internal static class EmployeeApiHelper
                     EmployeeName = new NameType { Forenames = "Homer", Surname = "Simpson" },
                     NINO = "AB123456C",
                     MoneyOwedToEmployer = 1000.00M,
-                    StartDate = DateTime.Parse("2024-01-01", CultureInfo.CurrentCulture),
-                    EndDate = DateTime.Parse("2026-01-01", CultureInfo.CurrentCulture),
+                    StartDate = DateTime.Parse("2024-01-01", CultureInfo.InvariantCulture),
+                    EndDate = DateTime.Parse("2026-01-01", CultureInfo.InvariantCulture),
                     PayDetails = new RP14AEmployeePayDetails
                     {
                         BasicPayPerWeek = 200.00M,
@@ -34,8 +34,8 @@ internal static class EmployeeApiHelper
                                 AOPOwed = 100.00M,
                                 Period = new PeriodType
                                 {
-                                    StartDate = DateTime.Parse("2026-01-01", CultureInfo.CurrentCulture),
-                                    EndDate = DateTime.Parse("2026-01-10", CultureInfo.CurrentCulture)   
+                                    StartDate = DateTime.Parse("2026-01-01", CultureInfo.InvariantCulture),
+                                    EndDate = DateTime.Parse("2026-01-10", CultureInfo.InvariantCulture)   
                                 }
                             }
                         ]
@@ -49,8 +49,8 @@ internal static class EmployeeApiHelper
                         HolidayNotPaid = [
                             new PeriodType
                             {
-                                StartDate = DateTime.Parse("2025-01-01", CultureInfo.CurrentCulture),
-                                EndDate = DateTime.Parse("2026-01-01", CultureInfo.CurrentCulture)
+                                StartDate = DateTime.Parse("2025-01-01", CultureInfo.InvariantCulture),
+                                EndDate = DateTime.Parse("2026-01-01", CultureInfo.InvariantCulture)
                             }
                         ]
                     }

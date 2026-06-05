@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class BusinessValidationInfo
+public static class BusinessValidationInfo
 {
-    internal static ValidationInfo MissingBusinessName() => new()
+    public static ValidationInfo MissingBusinessName() => new()
     {
         Key = nameof(MissingBusinessName),
         Category = "Business",
@@ -11,7 +11,7 @@ internal static class BusinessValidationInfo
         PluralErrorPattern = "[COUNT] business names are missing"
     };
     
-    internal static ValidationInfo InvalidBusinessNameLength() => new()
+    public static ValidationInfo InvalidBusinessNameLength() => new()
     {
         Key = nameof(InvalidBusinessNameLength),
         Category = "Business",
@@ -21,7 +21,7 @@ internal static class BusinessValidationInfo
         Hint = "Enter up to 60 characters"
     };
     
-    internal static ValidationInfo InvalidNatureOfBusinessLength() => new()
+    public static ValidationInfo InvalidNatureOfBusinessLength() => new()
     {
         Key = nameof(InvalidNatureOfBusinessLength),
         Category = "Business",
@@ -31,7 +31,7 @@ internal static class BusinessValidationInfo
         Hint = "Enter up to 100 characters"
     };
     
-    internal static ValidationInfo InvalidCompanyNumberLength() => new()
+    public static ValidationInfo InvalidCompanyNumberLength() => new()
     {
         Key = nameof(InvalidCompanyNumberLength),
         Category = "Business",
@@ -41,7 +41,7 @@ internal static class BusinessValidationInfo
         Hint = "Enter up to 12 characters"
     };
     
-    internal static ValidationInfo InvalidSICLength() => new()
+    public static ValidationInfo InvalidSICLength() => new()
     {
         Key = nameof(InvalidSICLength),
         Category = "Business",

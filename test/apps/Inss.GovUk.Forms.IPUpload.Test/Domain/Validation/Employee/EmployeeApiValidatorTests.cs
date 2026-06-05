@@ -56,7 +56,7 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task UnknownLengthCaseRef_ValidateAsync_ReturnsError()
+    public async Task UnknownCaseRef_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         _caseReferenceService.CheckExistsAsync(_model.Header.CaseReference).Returns(false);
@@ -155,7 +155,7 @@ public class EmployeeApiValidatorTests
     [InlineData("ABC 11 22 33 G")] // Preceding chars
     [InlineData("ABC112233G")] // Preceding chars - no spaces
     [InlineData("AB 11 22 33 GH")] // Trailing chars
-    [InlineData("AB112233GH")] // Trailing chars = no spaces
+    [InlineData("AB112233GH")] // Trailing chars - no spaces
     public async Task InvalidEmployeeNino_ValidateAsync_ReturnsError(string? nino)
     {
         RP14AEmployee employee = _model.Employee[0];
@@ -189,8 +189,8 @@ public class EmployeeApiValidatorTests
     public async Task InvalidEmploymentDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
-        employee.StartDate = DateTime.Parse("2025-01-30", CultureInfo.CurrentCulture);
-        employee.EndDate = DateTime.Parse("2024-01-30", CultureInfo.CurrentCulture);
+        employee.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
+        employee.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
         ValidatorContext context = await _validator.ValidateAsync();
 
@@ -237,8 +237,8 @@ public class EmployeeApiValidatorTests
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeePayDetailsArrearsOfPayPeriod aop = employee.PayDetails.ArrearsOfPay[0];
-        aop.Period.StartDate = DateTime.Parse("2025-01-30", CultureInfo.CurrentCulture);
-        aop.Period.EndDate = DateTime.Parse("2024-01-30", CultureInfo.CurrentCulture);
+        aop.Period.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
+        aop.Period.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
         ValidatorContext context = await _validator.ValidateAsync();
 
@@ -382,8 +382,8 @@ public class EmployeeApiValidatorTests
     {
         RP14AEmployee employee = _model.Employee[0];
         PeriodType holidayNotPaid = employee.Holiday.HolidayNotPaid[0];
-        holidayNotPaid.StartDate = DateTime.Parse("2025-01-30", CultureInfo.CurrentCulture);
-        holidayNotPaid.EndDate = DateTime.Parse("2024-01-30", CultureInfo.CurrentCulture);
+        holidayNotPaid.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
+        holidayNotPaid.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
         ValidatorContext context = await _validator.ValidateAsync();
 

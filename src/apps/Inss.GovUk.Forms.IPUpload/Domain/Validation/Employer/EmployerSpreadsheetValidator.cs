@@ -3,11 +3,11 @@ using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
-internal sealed class EmployerSpreadsheetValidator : EmployerValidator
+public sealed class EmployerSpreadsheetValidator : EmployerValidator
 {
     private readonly RP14 _model;
 
-    internal EmployerSpreadsheetValidator(RP14 model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
+    public EmployerSpreadsheetValidator(RP14 model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
         _model = model;
     }
@@ -58,20 +58,30 @@ internal sealed class EmployerSpreadsheetValidator : EmployerValidator
         ValidateShareholderPercentage(context, _model.Shareholders.Shareholder6.Shareholder6Percentage);
 
         RP14AssociatedCompaniesAssociatedCompany1 associatedCompany1 = _model.AssociatedCompanies.AssociatedCompany1;
-        ValidateAssociatedCompanyName(context, associatedCompany1.AssocCompany1Name);
-        ValidateAssociatedCompanyNumber(context, associatedCompany1.AssocCompany1Number);
-        ValidateCompanyAssociationReason(context, associatedCompany1.AssocComp1ReasonForAssociation);
         
-        ValidateAddress(context, "Associated company", associatedCompany1.AssocComp1AddrLine1, associatedCompany1.AssocComp1AddrLine2, 
-            associatedCompany1.AssocComp1AddrLine3, associatedCompany1.AssocComp1AddrTown, associatedCompany1.AssocComp1AddrCounty, 
-            associatedCompany1.AssocComp1AddrPostcode, associatedCompany1.AssocComp1AddrCountry);
+        // Only check the associated company details if we have a name - the address line 1 is mandatory! 
+        if (!string.IsNullOrWhiteSpace(associatedCompany1.AssocCompany1Name))
+        {
+            ValidateAssociatedCompanyName(context, associatedCompany1.AssocCompany1Name);
+            ValidateAssociatedCompanyNumber(context, associatedCompany1.AssocCompany1Number);
+            ValidateCompanyAssociationReason(context, associatedCompany1.AssocComp1ReasonForAssociation);
+            ValidateAddress(context, "Associated company", associatedCompany1.AssocComp1AddrLine1, associatedCompany1.AssocComp1AddrLine2,
+                associatedCompany1.AssocComp1AddrLine3, associatedCompany1.AssocComp1AddrTown, associatedCompany1.AssocComp1AddrCounty,
+                associatedCompany1.AssocComp1AddrPostcode, associatedCompany1.AssocComp1AddrCountry);
+        }
+
         RP14AssociatedCompaniesAssociatedCompany2 associatedCompany2 = _model.AssociatedCompanies.AssociatedCompany2;
-        ValidateAssociatedCompanyName(context, associatedCompany2.AssocCompany2Name);
-        ValidateAssociatedCompanyNumber(context, associatedCompany2.AssocCompany2Number);
-        ValidateCompanyAssociationReason(context, associatedCompany2.AssocComp2ReasonForAssociation);
-        ValidateAddress(context, "Associated company", associatedCompany2.AssocComp2AddrLine1, associatedCompany2.AssocComp2AddrLine2, 
-            associatedCompany2.AssocComp2AddrLine3, associatedCompany2.AssocComp2AddrTown, associatedCompany2.AssocComp2AddrCounty, 
-            associatedCompany2.AssocComp2AddrPostcode, associatedCompany2.AssocComp2AddrCountry);
+        
+        // Only check the associated company details if we have a name - the address line 1 is mandatory!
+        if (!string.IsNullOrWhiteSpace(associatedCompany2.AssocCompany2Name))
+        {
+            ValidateAssociatedCompanyName(context, associatedCompany2.AssocCompany2Name);
+            ValidateAssociatedCompanyNumber(context, associatedCompany2.AssocCompany2Number);
+            ValidateCompanyAssociationReason(context, associatedCompany2.AssocComp2ReasonForAssociation);
+            ValidateAddress(context, "Associated company", associatedCompany2.AssocComp2AddrLine1, associatedCompany2.AssocComp2AddrLine2,
+                associatedCompany2.AssocComp2AddrLine3, associatedCompany2.AssocComp2AddrTown, associatedCompany2.AssocComp2AddrCounty,
+                associatedCompany2.AssocComp2AddrPostcode, associatedCompany2.AssocComp2AddrCountry);
+        }
 
         RP14EmployeesEmployeesClaimingContinuity employeeContinuity = _model.Employees.EmployeesClaimingContinuity;
         ValidateContinuityEmployerName(context, employeeContinuity.EmployerName);
@@ -80,9 +90,16 @@ internal sealed class EmployerSpreadsheetValidator : EmployerValidator
             employeeContinuity.EmployerAddrPostcode, employeeContinuity.EmployerAddrCountry);
         
         RP14TransferDetailsTransferTo transferTo = _model.TransferDetails.TransferTo;
-        ValidateTransferToName(context, transferTo.Name);
-        ValidateAddress(context, "Transfers", transferTo.TransferToAddrLine1, transferTo.TransferToAddrLine2, transferTo.TransferToAddrLine3, 
-            transferTo.TransferToAddrTown, transferTo.TransferToAddrCounty, transferTo.TransferToAddrPostcode, transferTo.TransferToAddrCountry);
+
+        // Only validate the transfer to if we have the name set. The address line 1 is mandatory!
+        if (!string.IsNullOrWhiteSpace(transferTo.Name))
+        {
+            ValidateTransferToName(context, transferTo.Name);
+            ValidateAddress(context, "Transfers", transferTo.TransferToAddrLine1, transferTo.TransferToAddrLine2,
+                transferTo.TransferToAddrLine3,
+                transferTo.TransferToAddrTown, transferTo.TransferToAddrCounty, transferTo.TransferToAddrPostcode,
+                transferTo.TransferToAddrCountry);
+        }
 
         RP14PayRecordsContact payRecordsContact = _model.PayRecordsContact;
         ValidatePayRecordsContactName(context, payRecordsContact.Name);
@@ -98,9 +115,14 @@ internal sealed class EmployerSpreadsheetValidator : EmployerValidator
         ValidateIPName(context, ip.IPName);
         ValidateIPEmail(context, ip.IPEmailAddress);
         ValidateIPPhone(context, ip.IPTelephoneNumber);
-        ValidateAddress(context, "Insolvency practitioner", ip.IPAddressLine1, ip.IPAddressLine2, ip.IPAddressLine3, 
-            ip.IPAddressTown, ip.IPAddressCounty, ip.IPAddressPostcode, ip.IPAddressCountry);
-        
+
+        // Only validate the IP address if the address line 1 is set as its optional in this case but mandatory in all other cases!
+        if (!string.IsNullOrWhiteSpace(ip.IPAddressLine1))
+        {
+            ValidateAddress(context, "Insolvency practitioner", ip.IPAddressLine1, ip.IPAddressLine2, ip.IPAddressLine3,
+                ip.IPAddressTown, ip.IPAddressCounty, ip.IPAddressPostcode, ip.IPAddressCountry);
+        }
+
         return context;
     }
 }

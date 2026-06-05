@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class PayRecordsContactValidationInfo
+public static class PayRecordsContactValidationInfo
 {
-    internal static ValidationInfo MissingPayRecordName() => new()
+    public static ValidationInfo MissingPayRecordName() => new()
     {
         Key = nameof(MissingPayRecordName),
         Category = "Pay records contact",
@@ -11,7 +11,7 @@ internal static class PayRecordsContactValidationInfo
         PluralErrorPattern = "[COUNT] pay records contact names are missing"
     };
     
-    internal static ValidationInfo InvalidPayRecordNameLength() => new()
+    public static ValidationInfo InvalidPayRecordNameLength() => new()
     {
         Key = nameof(InvalidPayRecordNameLength),
         Category = "Pay records contact",
@@ -21,7 +21,7 @@ internal static class PayRecordsContactValidationInfo
         Hint = "Enter up to 60 characters"
     };
     
-    internal static ValidationInfo InvalidPayRecordPhoneLength() => new()
+    public static ValidationInfo InvalidPayRecordPhoneLength() => new()
     {
         Key = nameof(InvalidPayRecordPhoneLength),
         Category = "Pay records contact",
@@ -31,7 +31,7 @@ internal static class PayRecordsContactValidationInfo
         Hint = "Enter up to 12 characters"
     };
     
-    internal static ValidationInfo InvalidPayRecordEmailLength() => new()
+    public static ValidationInfo InvalidPayRecordEmailLength() => new()
     {
         Key = nameof(InvalidPayRecordEmailLength),
         Category = "Pay records contact",
