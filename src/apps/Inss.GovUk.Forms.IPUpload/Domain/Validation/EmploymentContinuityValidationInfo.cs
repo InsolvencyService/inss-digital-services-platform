@@ -7,7 +7,7 @@ public static class EmploymentContinuityValidationInfo
         Key = nameof(InvalidContinuityEmployerNameLength),
         Category = "Employment continuity",
         Property = "Employer name",
-        SingularErrorPattern = "[1] employer name is the wrong length",
+        SingularErrorPattern = "1 employer name is the wrong length",
         PluralErrorPattern = "[COUNT] employer names are the wrong length",
         Hint = "Enter up to 60 characters"
     };

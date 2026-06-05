@@ -7,7 +7,7 @@ public static class BusinessValidationInfo
         Key = nameof(MissingBusinessName),
         Category = "Business",
         Property = "Name of business",
-        SingularErrorPattern = "[1] business name is missing",
+        SingularErrorPattern = "1 business name is missing",
         PluralErrorPattern = "[COUNT] business names are missing"
     };
     
@@ -16,7 +16,7 @@ public static class BusinessValidationInfo
         Key = nameof(InvalidBusinessNameLength),
         Category = "Business",
         Property = "Name of business",
-        SingularErrorPattern = "[1] business name is the wrong length",
+        SingularErrorPattern = "1 business name is the wrong length",
         PluralErrorPattern = "[COUNT] business names are the wrong length",
         Hint = "Enter up to 60 characters"
     };
@@ -26,7 +26,7 @@ public static class BusinessValidationInfo
         Key = nameof(InvalidNatureOfBusinessLength),
         Category = "Business",
         Property = "Nature of business",
-        SingularErrorPattern = "[1] nature of business is the wrong length",
+        SingularErrorPattern = "1 nature of business is the wrong length",
         PluralErrorPattern = "[COUNT] nature of businesses are the wrong length",
         Hint = "Enter up to 100 characters"
     };
@@ -36,7 +36,7 @@ public static class BusinessValidationInfo
         Key = nameof(InvalidCompanyNumberLength),
         Category = "Business",
         Property = "Company number",
-        SingularErrorPattern = "[1] company number is the wrong length",
+        SingularErrorPattern = "1 company number is the wrong length",
         PluralErrorPattern = "[COUNT] company numbers are the wrong length",
         Hint = "Enter up to 12 characters"
     };
@@ -46,7 +46,7 @@ public static class BusinessValidationInfo
         Key = nameof(InvalidSICLength),
         Category = "Business",
         Property = "Standard industrial classification",
-        SingularErrorPattern = "[1] standard industrial classification is the wrong length",
+        SingularErrorPattern = "1 standard industrial classification is the wrong length",
         PluralErrorPattern = "[COUNT] standard industrial classifications are the wrong length",
         Hint = "Enter up to 255 characters"
     };
