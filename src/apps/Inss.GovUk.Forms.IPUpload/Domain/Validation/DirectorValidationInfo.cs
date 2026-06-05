@@ -1,10 +1,10 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class DirectorValidationInfo
+public static class DirectorValidationInfo
 {
-    internal static ValidationInfo DirectorInvalidNinoFormat() => new()
+    public static ValidationInfo InvalidDirectorNinoFormat() => new()
     {
-        Key = nameof(DirectorInvalidNinoFormat),
+        Key = nameof(InvalidDirectorNinoFormat),
         Category = "Directors",
         Property = "Director national insurance number",
         SingularErrorPattern = "[1] National Insurance number is in the wrong format",
@@ -12,7 +12,7 @@ internal static class DirectorValidationInfo
         Hint = "Enter a National Insurance number like QQ 12 34 56 C"
     };
     
-    internal static ValidationInfo InvalidDirectorInitialsLength() => new()
+    public static ValidationInfo InvalidDirectorInitialsLength() => new()
     {
         Key = nameof(InvalidDirectorInitialsLength),
         Category = "Directors",
@@ -22,7 +22,7 @@ internal static class DirectorValidationInfo
         Hint = "Enter up to 100 characters"
     };
     
-    internal static ValidationInfo InvalidDirectorSurnameLength() => new()
+    public static ValidationInfo InvalidDirectorSurnameLength() => new()
     {
         Key = nameof(InvalidDirectorSurnameLength),
         Category = "Directors",

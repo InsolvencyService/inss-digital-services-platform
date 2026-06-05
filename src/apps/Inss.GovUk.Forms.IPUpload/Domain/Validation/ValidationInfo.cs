@@ -7,8 +7,8 @@ public sealed class ValidationInfo
     internal const string AverageHoursFormat = @"^\d+(\.\d{1})?$";
     internal const string MoneyFormat = @"^\d+(\.\d{2})?$";
     internal const string HolidayFormat = @"^\d+(\.\d{1})?$";
-    internal const string HolidayOwedFormat = @"^\d+(\.\d{2})?$";
-    internal const string PercentFormat = @"^\d+(\.\d{2})?$";
+    internal const string HolidayOwedFormat = @"^\d+(\.\d{1,2})?$";
+    internal const string PercentFormat = @"^\d+(\.\d{1,2})?$";
     
     public string Key { get; init; }
     

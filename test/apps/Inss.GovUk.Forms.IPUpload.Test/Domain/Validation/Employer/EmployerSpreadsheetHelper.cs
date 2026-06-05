@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Inss.Common.IPUpload.Employer.Spreadsheet;
+﻿using Inss.Common.IPUpload.Employer.Spreadsheet;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Xunit;
 
@@ -30,8 +29,13 @@ internal static class EmployerSpreadsheetHelper
                 {
                     Director1Initials = "M",
                     Director1Surname = "Burns",
-                    Director1NINO = "PQ112233R"
-                }
+                    Director1NINO = "AB112233C"
+                },
+                Director2 = new RP14DirectorsDirector2(),
+                Director3 = new RP14DirectorsDirector3(),
+                Director4 = new RP14DirectorsDirector4(),
+                Director5 = new RP14DirectorsDirector5(),
+                Director6 = new RP14DirectorsDirector6()
             },
             Shareholders = new RP14Shareholders
             {
@@ -44,7 +48,11 @@ internal static class EmployerSpreadsheetHelper
                 {
                     Shareholder2FullName = "Waylon Smithers",
                     Shareholder2Percentage = 10.0M
-                }
+                },
+                Shareholder3 = new RP14ShareholdersShareholder3(),
+                Shareholder4 = new RP14ShareholdersShareholder4(),
+                Shareholder5 = new RP14ShareholdersShareholder5(),
+                Shareholder6 = new RP14ShareholdersShareholder6()
             },
             AssociatedCompanies = new RP14AssociatedCompanies
             {
@@ -58,7 +66,8 @@ internal static class EmployerSpreadsheetHelper
                     AssocComp1AddrTown = "Springfield",
                     AssocComp1AddrPostcode = "TN33 0DN",
                     AssocComp1AddrCounty = "Nevada"
-                }
+                },
+                AssociatedCompany2 = new RP14AssociatedCompaniesAssociatedCompany2()
             },
             Employees = new RP14Employees
             {
@@ -83,13 +92,37 @@ internal static class EmployerSpreadsheetHelper
                     TransferToAddrPostcode = "TN33 0DN",
                     TransferToAddrCounty = "Nevada"
                 }
+            },
+            PayRecordsContact = new RP14PayRecordsContact
+            {
+                Name = "Marge Simpson",
+                PayRecordsEmailAddress = "marge.simpson@springfield.nuclear",
+                PayRecordsPhoneNumber = "01234556677",
+                PayRecordsAddrLine1 = "Springfield Nuclear House",
+                PayRecordsAddrLine2 = "Nuclear Avenue",
+                PayRecordsAddrTown = "Springfield",
+                PayRecordsAddrPostcode = "TN33 0DN",
+                PayRecordsAddrCounty = "Nevada"
+            },
+            InsolvencyPractitioner = new RP14InsolvencyPractitioner
+            {
+                IPRegistrationNumber = "123456789",
+                IPFirmName = "Springfield Insolvency",
+                IPName = "Ned Flanders",
+                IPEmailAddress = "ned.flanders@springfield.insolvency",
+                IPTelephoneNumber = "01234112233",
+                IPAddressLine1 = "Springfield Insolvency House",
+                IPAddressLine2 = "Defunct Avenue",
+                IPAddressTown = "Springfield",
+                IPAddressPostcode = "TN33 0DN",
+                IPAddressCounty = "Nevada"
             }
         };
     }
     
-    internal static void AssertError(List<Error> errors, string? value, ValidationInfo validationInfo)
+    internal static void AssertError(List<Error> errors, ValidationInfo validationInfo)
     {
-        EmployeeError? error = errors.Cast<EmployeeError>().FirstOrDefault(e => e.Value == value && e.Info.Key == validationInfo.Key);
+        EmployerError? error = errors.Cast<EmployerError>().FirstOrDefault(e => e.Info.Key == validationInfo.Key);
         Assert.NotNull(error);
     }
 }

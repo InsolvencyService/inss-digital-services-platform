@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class ShareholderValidationInfo
+public static class ShareholderValidationInfo
 {
-    internal static ValidationInfo InvalidShareholderPercentage() => new()
+    public static ValidationInfo InvalidShareholderPercentage() => new()
     {
         Key = nameof(InvalidShareholderPercentage),
         Category = "Shareholders",
@@ -12,7 +12,7 @@ internal static class ShareholderValidationInfo
         Hint = "Enter a number like 50.50 or 100"
     };
     
-    internal static ValidationInfo InvalidShareholderNameLength() => new()
+    public static ValidationInfo InvalidShareholderNameLength() => new()
     {
         Key = nameof(InvalidShareholderNameLength),
         Category = "Shareholders",

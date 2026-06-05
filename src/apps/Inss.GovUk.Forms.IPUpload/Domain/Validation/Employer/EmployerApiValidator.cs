@@ -3,11 +3,11 @@ using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
-internal sealed class EmployerApiValidator : EmployerValidator
+public sealed class EmployerApiValidator : EmployerValidator
 {
     private readonly RP14 _model;
 
-    internal EmployerApiValidator(RP14 model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
+    public EmployerApiValidator(RP14 model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
         _model = model;
     }
@@ -65,24 +65,27 @@ internal sealed class EmployerApiValidator : EmployerValidator
         ValidateIPName(context, ip.Name);
         ValidateIPEmail(context, ip.EmailAddress);
         ValidateIPPhone(context, ip.TelephoneNumber);
-        ValidateAddress(context, "Insolvency practitioner", ip.Address);
-        
+
+        // Only validate the IP address if the address line 1 is set as its optional in this case but mandatory in all other cases!
+        // Aligned with the spreadsheet for consistency as the same JSON gets sent to Dynamics!
+        if (ip.Address.Line.Length > 0 && !string.IsNullOrWhiteSpace(ip.Address.Line[0]))
+        {
+            ValidateAddress(context, "Insolvency practitioner", ip.Address);
+        }
+
         return context;
     }
 
     private static void ValidateAddress(ValidatorContext context, string category, AddressType? address)
     {
-        // The RP14 API validation differs from the spreadsheet in that the line 1 is mandatory for the API but optional for the spreadsheet!
-        
         if (address is not null)
         {
-            string? line1 = address.Line.Length > 0 ? address.Line[0] : null;
-            
-            if (string.IsNullOrWhiteSpace(line1))
+            if (address.Line.Length > 4)
             {
-                context.AddError(AddressValidationInfo.MissingAddressLine1(category), line1);
+                context.AddError(AddressValidationInfo.InvalidAddressLinesLength(category), $"{address.Line.Length:N0}");
             }
             
+            string? line1 = address.Line.Length > 0 ? address.Line[0] : null;
             string? line2 = address.Line.Length > 1 ? address.Line[1] : null;
             string? line3 = address.Line.Length > 2 ? address.Line[2] : null;
             string? town = address.Town;

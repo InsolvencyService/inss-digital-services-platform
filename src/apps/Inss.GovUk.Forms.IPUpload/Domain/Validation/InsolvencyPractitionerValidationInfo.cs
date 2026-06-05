@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class InsolvencyPractitionerValidationInfo
+public static class InsolvencyPractitionerValidationInfo
 {
-    internal static ValidationInfo InvalidIPRegistrationNumberLength() => new()
+    public static ValidationInfo InvalidIPRegistrationNumberLength() => new()
     {
         Key = nameof(InvalidIPRegistrationNumberLength),
         Category = "Insolvency practitioner",
@@ -12,7 +12,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 9 characters"
     };
     
-    internal static ValidationInfo InvalidIPFirmNameLength() => new()
+    public static ValidationInfo InvalidIPFirmNameLength() => new()
     {
         Key = nameof(InvalidIPFirmNameLength),
         Category = "Insolvency practitioner",
@@ -22,7 +22,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 255 characters"
     };
     
-    internal static ValidationInfo InvalidIPNameLength() => new()
+    public static ValidationInfo InvalidIPNameLength() => new()
     {
         Key = nameof(InvalidIPNameLength),
         Category = "Insolvency practitioner",
@@ -32,7 +32,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 60 characters"
     };
     
-    internal static ValidationInfo InvalidIPEmailLength() => new()
+    public static ValidationInfo InvalidIPEmailLength() => new()
     {
         Key = nameof(InvalidIPEmailLength),
         Category = "Insolvency practitioner",
@@ -42,7 +42,7 @@ internal static class InsolvencyPractitionerValidationInfo
         Hint = "Enter up to 100 characters"
     };
     
-    internal static ValidationInfo InvalidIPPhoneLength() => new()
+    public static ValidationInfo InvalidIPPhoneLength() => new()
     {
         Key = nameof(InvalidIPPhoneLength),
         Category = "Insolvency practitioner",

@@ -56,7 +56,7 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task UnknownLengthCaseRef_ValidateAsync_ReturnsError()
+    public async Task UnknownCaseRef_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         _caseReferenceService.CheckExistsAsync(_model.Header.CaseReference).Returns(false);
@@ -155,7 +155,7 @@ public class EmployeeApiValidatorTests
     [InlineData("ABC 11 22 33 G")] // Preceding chars
     [InlineData("ABC112233G")] // Preceding chars - no spaces
     [InlineData("AB 11 22 33 GH")] // Trailing chars
-    [InlineData("AB112233GH")] // Trailing chars = no spaces
+    [InlineData("AB112233GH")] // Trailing chars - no spaces
     public async Task InvalidEmployeeNino_ValidateAsync_ReturnsError(string? nino)
     {
         RP14AEmployee employee = _model.Employee[0];

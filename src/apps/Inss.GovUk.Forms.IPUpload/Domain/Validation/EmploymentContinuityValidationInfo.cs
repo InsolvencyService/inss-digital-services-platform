@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class EmploymentContinuityValidationInfo
+public static class EmploymentContinuityValidationInfo
 {
-    internal static ValidationInfo InvalidContinuityEmployerNameLength() => new()
+    public static ValidationInfo InvalidContinuityEmployerNameLength() => new()
     {
         Key = nameof(InvalidContinuityEmployerNameLength),
         Category = "Employment continuity",
