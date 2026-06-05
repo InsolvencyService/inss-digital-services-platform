@@ -1,4 +1,6 @@
 ﻿using Inss.GovUk.Forms.IPUpload.Application.Clients;
+using Inss.GovUk.Forms.IPUpload.Domain;
+
 // ReSharper disable UnusedParameter.Local
 
 namespace Inss.GovUk.Forms.IPUpload.Infrastructure.Clients;
@@ -9,10 +11,14 @@ public sealed class MockCaseReferenceClient : ICaseReferenceClient
     {
     }
     
-    public Task<bool> CheckExistsAsync(string caseReference)
+    public Task<CaseDetailModel?> LookupCaseDetails(string caseReference)
     {
-        Console.WriteLine("Calling RPS...");
         const string unknownCaseReference = "CN12345678";
-        return Task.FromResult(caseReference != unknownCaseReference);
+        return caseReference != unknownCaseReference
+            ? Task.FromResult<CaseDetailModel?>(new CaseDetailModel
+            {
+                CaseReference = caseReference, CompanyName = "Springfield Nuclear"
+            })
+            : Task.FromResult<CaseDetailModel?>(null);
     }
 }

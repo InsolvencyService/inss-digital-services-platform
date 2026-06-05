@@ -11,7 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
+using Inss.GovUk.Forms.IPUpload.Infrastructure.Handlers;
 
 [assembly: HostingStartup(typeof(Inss.GovUk.Forms.IPUpload.StartupConfiguration))]
 
@@ -29,14 +32,14 @@ public class StartupConfiguration : IHostingStartup
 
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
 
-            RpsApiOptions rpsOptions = context.Configuration.GetSection("Rps").Get<RpsApiOptions>()!;
+            DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
             ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
 
             if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
                     {
-                        client.BaseAddress = new Uri(rpsOptions.Url);
+                        client.BaseAddress = new Uri(dynamicsOptions.Url);
                     });
 
                 services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
@@ -46,14 +49,18 @@ public class StartupConfiguration : IHostingStartup
             }
             else
             {
-                services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
+                services.AddHttpClient<ICaseReferenceClient, CaseReferenceClient>(client =>
                     {
-                        client.BaseAddress = new Uri(rpsOptions.Url);
+                        client.BaseAddress = new Uri($"{dynamicsOptions.Url}/");
+                        client.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
+                        client.DefaultRequestHeaders.Add("OData-Version", "4.0");
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
                     })
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(rpsOptions.LifetimeMinutes))
-                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, rpsOptions.RetryCount))
-                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
-                        rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds));
+                    .ConfigurePrimaryHttpMessageHandler(() => new DynamicsAuthDelegatingHandler(dynamicsOptions))
+                    .SetHandlerLifetime(TimeSpan.FromMinutes(dynamicsOptions.LifetimeMinutes))
+                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, dynamicsOptions.RetryCount))
+                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
+                        sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
 
                 services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
                     {
@@ -63,23 +70,6 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, submissionOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
-
-                // Disabled until we get the RPS listener in place
-                /*
-                services.AddOptions<RpsApiOptions>()
-                    .Bind(context.Configuration.GetSection("Rps"))
-                    .ValidateDataAnnotations()
-                    .ValidateOnStart();
-                
-                services.AddHttpClient<ICaseReferenceClient, CaseReferenceClient>(client =>
-                    {
-                        client.BaseAddress = new Uri(rpsOptions.Url);
-                    })
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(rpsOptions.LifetimeMinutes))
-                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, rpsOptions.RetryCount))
-                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp, 
-                        rpsOptions.CountBeforeBreaking, rpsOptions.BreakDurationSeconds));
-                */
             }
 
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();

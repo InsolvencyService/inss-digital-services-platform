@@ -1,5 +1,6 @@
 ﻿using Inss.GovUk.Forms.IPUpload.Application.Clients;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
+using Inss.GovUk.Forms.IPUpload.Domain;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
@@ -17,16 +18,25 @@ public class CaseReferenceServiceTests
         _caseReferenceService = new CaseReferenceService(_caseReferenceClient, Substitute.For<ILogger<CaseReferenceService>>());
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task WithCaseReference_CheckExistsAsync_ReturnsClientResponse(bool exists)
+    [Fact]
+    public async Task UnknownCaseReference_CheckExistsAsync_ReturnsFalse()
     {
         const string caseReference = "CN12345678";
-        _caseReferenceClient.CheckExistsAsync(caseReference).Returns(exists);
+        _caseReferenceClient.LookupCaseDetails(caseReference).Returns((CaseDetailModel?)null);
         
         bool result = await _caseReferenceService.CheckExistsAsync(caseReference);
         
-        Assert.Equal(exists, result);
+        Assert.False(result);
+    }
+    
+    [Fact]
+    public async Task KnownCaseReference_CheckExistsAsync_ReturnsTrue()
+    {
+        const string caseReference = "CN12345678";
+        _caseReferenceClient.LookupCaseDetails(caseReference).Returns(new CaseDetailModel());
+        
+        bool result = await _caseReferenceService.CheckExistsAsync(caseReference);
+        
+        Assert.True(result);
     }
 }
