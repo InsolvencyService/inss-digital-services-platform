@@ -1,4 +1,5 @@
 ﻿using Inss.GovUk.Forms.IPUpload.Application.Clients;
+using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Extensions;
 using Microsoft.Extensions.Logging;
 
@@ -17,7 +18,8 @@ public sealed class CaseReferenceService : ICaseReferenceService
 
     public async Task<bool> CheckExistsAsync(string caseReference)
     {
-        _logger.CheckCaseReferenceExists(caseReference);
-        return await _caseReferenceClient.CheckExistsAsync(caseReference);
+        _logger.LookupCaseDetailsExists(caseReference);
+        CaseDetailModel? result = await _caseReferenceClient.LookupCaseDetails(caseReference);
+        return result is not null;
     }
 }

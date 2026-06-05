@@ -1,6 +1,8 @@
-﻿namespace Inss.GovUk.Forms.IPUpload.Application.Clients;
+﻿using Inss.GovUk.Forms.IPUpload.Domain;
+
+namespace Inss.GovUk.Forms.IPUpload.Application.Clients;
 
 public interface ICaseReferenceClient
 {
-    Task<bool> CheckExistsAsync(string caseReference);
+    Task<CaseDetailModel?> LookupCaseDetails(string caseReference);
 }
