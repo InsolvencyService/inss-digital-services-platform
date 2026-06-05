@@ -7,7 +7,7 @@ public static class AddressValidationInfo
         Key = nameof(InvalidAddressLinesLength),
         Category = category,
         Property = "Address lines",
-        SingularErrorPattern = "[1] address lines are the wrong length",
+        SingularErrorPattern = "1 address lines are the wrong length",
         PluralErrorPattern = "[COUNT] address lines are the wrong length",
         Hint = "Enter up to 4 address lines"
     };
@@ -17,7 +17,7 @@ public static class AddressValidationInfo
         Key = nameof(InvalidAddressLineLength),
         Category = category,
         Property = "Address lines",
-        SingularErrorPattern = "[1] first address line is missing",
+        SingularErrorPattern = "1 first address line is missing",
         PluralErrorPattern = "[COUNT] first address lines are missing",
         Hint = "Enter up to 35 characters"
     };
@@ -27,7 +27,7 @@ public static class AddressValidationInfo
         Key = nameof(InvalidAddressLineLength),
         Category = category,
         Property = "Address lines",
-        SingularErrorPattern = "[1] address line is the wrong length",
+        SingularErrorPattern = "1 address line is the wrong length",
         PluralErrorPattern = "[COUNT] address lines are the wrong length",
         Hint = "Enter up to 35 characters"
     };
@@ -37,7 +37,7 @@ public static class AddressValidationInfo
         Key = nameof(InvalidAddressTownLength),
         Category = category,
         Property = "Address town",
-        SingularErrorPattern = "[1] address town is the wrong length",
+        SingularErrorPattern = "1 address town is the wrong length",
         PluralErrorPattern = "[COUNT] address towns are the wrong length",
         Hint = "Enter up to 35 characters"
     };
@@ -47,7 +47,7 @@ public static class AddressValidationInfo
         Key = nameof(InvalidAddressCountyLength),
         Category = category,
         Property = "Address county",
-        SingularErrorPattern = "[1] address county is the wrong length",
+        SingularErrorPattern = "1 address county is the wrong length",
         PluralErrorPattern = "[COUNT] address counties are the wrong length",
         Hint = "Enter up to 35 characters"
     };
@@ -57,7 +57,7 @@ public static class AddressValidationInfo
         Key = nameof(InvalidAddressPostcodeLength),
         Category = category,
         Property = "Address postcode",
-        SingularErrorPattern = "[1] address postcode is the wrong length",
+        SingularErrorPattern = "1 address postcode is the wrong length",
         PluralErrorPattern = "[COUNT] address postcodes are the wrong length",
         Hint = "Enter up to 10 characters"
     };
@@ -67,7 +67,7 @@ public static class AddressValidationInfo
         Key = nameof(InvalidAddressCountryLength),
         Category = category,
         Property = "Address country",
-        SingularErrorPattern = "[1] address country is the wrong length",
+        SingularErrorPattern = "1 address country is the wrong length",
         PluralErrorPattern = "[COUNT] address countries are the wrong length",
         Hint = "Enter up to 10 characters"
     };
