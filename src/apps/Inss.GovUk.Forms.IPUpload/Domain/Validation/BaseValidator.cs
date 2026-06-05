@@ -24,13 +24,13 @@ public abstract partial class BaseValidator : IBaseValidator
         {
             bool isValid = true;
             
-            if (caseReference.Length > 12)
+            if (caseReference.Length > 10)
             {
                 isValid = false;
                 context.AddError(CaseValidationInfo.InvalidCaseReferenceLength(), caseReference);
             }
 
-            if (!CaseRefFormatRegex().IsMatch(caseReference))
+            if (isValid && !CaseRefFormatRegex().IsMatch(caseReference))
             {
                 isValid = false;
                 context.AddError(CaseValidationInfo.InvalidCaseReferenceFormat(), caseReference);

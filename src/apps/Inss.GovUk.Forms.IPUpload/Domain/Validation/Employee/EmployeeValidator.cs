@@ -4,7 +4,7 @@ using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
-internal abstract partial class EmployeeValidator : BaseValidator
+public abstract partial class EmployeeValidator : BaseValidator
 {
     protected EmployeeValidator(ICaseReferenceService caseReferenceService) : base(caseReferenceService)
     {
@@ -111,7 +111,7 @@ internal abstract partial class EmployeeValidator : BaseValidator
         
         if (holiday is < 0 or > 365)
         {
-            context.AddError(EmployeeHolidayValidationInfo.InvalidContractedHolidayEntitlementFormat(), value);
+            context.AddError(EmployeeHolidayValidationInfo.InvalidContractedHolidayEntitlementRange(), value);
         }
     }
     
@@ -126,7 +126,7 @@ internal abstract partial class EmployeeValidator : BaseValidator
         
         if (holiday is < 0 or > 365)
         {
-            context.AddError(EmployeeHolidayValidationInfo.InvalidHolidayCarriedForwardFormat(), value);
+            context.AddError(EmployeeHolidayValidationInfo.InvalidHolidayCarriedForwardRange(), value);
         }
     }
     
@@ -141,7 +141,7 @@ internal abstract partial class EmployeeValidator : BaseValidator
         
         if (holiday is < 0 or > 365)
         {
-            context.AddError(EmployeeHolidayValidationInfo.InvalidHolidayDaysTakenFormat(), value);
+            context.AddError(EmployeeHolidayValidationInfo.InvalidHolidayDaysTakenRange(), value);
         }
     }
     
@@ -156,7 +156,7 @@ internal abstract partial class EmployeeValidator : BaseValidator
         
         if (holiday is < 0 or > 365)
         {
-            context.AddError(EmployeeHolidayValidationInfo.InvalidHolidayOwedFormat(), value);
+            context.AddError(EmployeeHolidayValidationInfo.InvalidHolidayOwedRange(), value);
         }
     }
     

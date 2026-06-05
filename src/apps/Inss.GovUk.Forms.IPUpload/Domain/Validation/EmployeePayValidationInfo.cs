@@ -1,8 +1,8 @@
 ﻿namespace Inss.GovUk.Forms.IPUpload.Domain.Validation;
 
-internal static class EmployeePayValidationInfo
+public static class EmployeePayValidationInfo
 {
-    internal static ValidationInfo InvalidEmployeeBasicPayFormat() => new()
+    public static ValidationInfo InvalidEmployeeBasicPayFormat() => new()
     {
         Key = nameof(InvalidEmployeeBasicPayFormat),
         Category = "Employee pay",
