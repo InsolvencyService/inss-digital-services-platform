@@ -81,7 +81,7 @@ public static class FormCollectionExtensions
             using var memoryStream = new MemoryStream();
             files[0].CopyTo(memoryStream);
             formDictionary.Add("Filename", new StringValues(files[0].FileName));
-            formDictionary.Add("Length", new StringValues(files[0].Length.ToString(CultureInfo.CurrentCulture)));
+            formDictionary.Add("Length", new StringValues(files[0].Length.ToString(CultureInfo.InvariantCulture)));
             formDictionary.Add("Contents", new StringValues(Convert.ToBase64String(memoryStream.ToArray())));
         }
 
@@ -104,6 +104,6 @@ public static class FormCollectionExtensions
                 : null;
         }
 
-        return Convert.ChangeType(value, underlyingType, CultureInfo.CurrentCulture);
+        return Convert.ChangeType(value, underlyingType, CultureInfo.InvariantCulture);
     }
 }

@@ -12,7 +12,7 @@ public abstract partial class EmployeeValidator : BaseValidator
     
     protected static void ValidateAverageHoursWorked(ValidatorContext context, decimal averageHours)
     {
-        string value = averageHours.ToString(CultureInfo.CurrentCulture);
+        string value = averageHours.ToString(CultureInfo.InvariantCulture);
         
         if (!AverageHoursFormatRegex().IsMatch(value))
         {
@@ -54,7 +54,7 @@ public abstract partial class EmployeeValidator : BaseValidator
 
     protected static void ValidateMoneyOwedToEmployer(ValidatorContext context, decimal amountOwed)
     {
-        string value = amountOwed.ToString(CultureInfo.CurrentCulture);
+        string value = amountOwed.ToString(CultureInfo.InvariantCulture);
         
         if (!MoneyFormatRegex().IsMatch(value))
         {
@@ -73,7 +73,7 @@ public abstract partial class EmployeeValidator : BaseValidator
     
     protected static void ValidateBasicPay(ValidatorContext context, decimal basicPay)
     {
-        string value = basicPay.ToString(CultureInfo.CurrentCulture);
+        string value = basicPay.ToString(CultureInfo.InvariantCulture);
         
         if (!MoneyFormatRegex().IsMatch(value))
         {
@@ -83,7 +83,7 @@ public abstract partial class EmployeeValidator : BaseValidator
     
     protected static void ValidateArrearsOfPayOwed(ValidatorContext context, decimal amountOwed)
     {
-        string value = amountOwed.ToString(CultureInfo.CurrentCulture);
+        string value = amountOwed.ToString(CultureInfo.InvariantCulture);
         
         if (!MoneyFormatRegex().IsMatch(value))
         {
@@ -102,7 +102,7 @@ public abstract partial class EmployeeValidator : BaseValidator
     
     protected static void ValidateHolidayEntitlement(ValidatorContext context, decimal holiday)
     {
-        string value = holiday.ToString(CultureInfo.CurrentCulture);
+        string value = holiday.ToString(CultureInfo.InvariantCulture);
         
         if (!HolidayFormatRegex().IsMatch(value))
         {
@@ -117,7 +117,7 @@ public abstract partial class EmployeeValidator : BaseValidator
     
     protected static void ValidateHolidayCarriedForward(ValidatorContext context, decimal holiday)
     {
-        string value = holiday.ToString(CultureInfo.CurrentCulture);
+        string value = holiday.ToString(CultureInfo.InvariantCulture);
         
         if (!HolidayFormatRegex().IsMatch(value))
         {
@@ -132,7 +132,7 @@ public abstract partial class EmployeeValidator : BaseValidator
     
     protected static void ValidateHolidayDaysTaken(ValidatorContext context, decimal holiday)
     {
-        string value = holiday.ToString(CultureInfo.CurrentCulture);
+        string value = holiday.ToString(CultureInfo.InvariantCulture);
         
         if (!HolidayFormatRegex().IsMatch(value))
         {
@@ -147,7 +147,7 @@ public abstract partial class EmployeeValidator : BaseValidator
     
     protected static void ValidateHolidayDaysOwed(ValidatorContext context, decimal holiday)
     {
-        string value = holiday.ToString(CultureInfo.CurrentCulture);
+        string value = holiday.ToString(CultureInfo.InvariantCulture);
         
         if (!HolidayOwedFormatRegex().IsMatch(value))
         {

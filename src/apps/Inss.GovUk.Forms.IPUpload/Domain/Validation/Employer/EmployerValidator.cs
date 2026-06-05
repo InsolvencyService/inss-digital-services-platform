@@ -131,7 +131,7 @@ public abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateShareholderPercentage(ValidatorContext context, decimal percentage)
     {
-        string value = percentage.ToString(CultureInfo.CurrentCulture);
+        string value = percentage.ToString(CultureInfo.InvariantCulture);
         
         if (!PercentRegex().IsMatch(value))
         {

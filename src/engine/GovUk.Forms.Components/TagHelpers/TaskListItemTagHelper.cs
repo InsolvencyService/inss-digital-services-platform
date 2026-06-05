@@ -24,11 +24,11 @@ public class TaskListItemTagHelper : TagHelper
 
         output.Content.SetHtmlContent($@"
             <div class=""govuk-task-list__name-and-hint"">
-                <a class=""govuk-link govuk-task-list__link"" href=""{Url}"" aria-describedby=""{Name.ToLower(CultureInfo.CurrentCulture).Replace(" ", "-")}-status"">
+                <a class=""govuk-link govuk-task-list__link"" href=""{Url}"" aria-describedby=""{Name.ToLower(CultureInfo.InvariantCulture).Replace(" ", "-")}-status"">
                     {Name}
                 </a>
             </div>
-            <div class=""govuk-task-list__status"" id=""{Name.ToLower(CultureInfo.CurrentCulture).Replace(" ", "-")}-status"">
+            <div class=""govuk-task-list__status"" id=""{Name.ToLower(CultureInfo.InvariantCulture).Replace(" ", "-")}-status"">
                 {(IsComplete ? State : $"<strong class=\"govuk-tag govuk-tag--blue\">{State}</strong>")}
             </div>");
     }

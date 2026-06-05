@@ -12,7 +12,7 @@ public sealed class MoneyModel : PageModel
 
     public override string[] GetSummaryInfo()
     {
-        return [Amount.ToString("C", CultureInfo.CurrentCulture)];
+        return [Amount.ToString("C", CultureInfo.InvariantCulture)];
     }
     
     public override void CopyTo(PageModel target)

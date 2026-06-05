@@ -14,7 +14,7 @@ public sealed class CheckAnswersFlowNodeLoader : IFlowNodeLoader
 
         if (context.State is not null)
         {
-            int setIndex = int.Parse(context.State, CultureInfo.CurrentCulture);
+            int setIndex = int.Parse(context.State, CultureInfo.InvariantCulture);
             PageModel[] pages = groupInfo.AddAnother.Items.Skip(setIndex * groupInfo.WorkingPages.Count).Take(groupInfo.WorkingPages.Count).ToArray();
             
             if (groupInfo.WorkingPages.Count != pages.Length)

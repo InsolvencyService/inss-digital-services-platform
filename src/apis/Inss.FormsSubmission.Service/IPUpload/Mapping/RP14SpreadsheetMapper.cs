@@ -259,7 +259,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
                 Percentage = shareholders.Shareholder1.Shareholder1Percentage,
                 Fullname = shareholders.Shareholder1.Shareholder1FullName,
                 NumberOfSharesHeld = int.Parse(
-                    shareholders.Shareholder1.Shareholder1NoOfSharesHeld, NumberStyles.Integer, CultureInfo.CurrentCulture)
+                    shareholders.Shareholder1.Shareholder1NoOfSharesHeld, NumberStyles.Integer, CultureInfo.InvariantCulture)
             });
         }
         
@@ -271,7 +271,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
                 Percentage = shareholders.Shareholder2.Shareholder2Percentage,
                 Fullname = shareholders.Shareholder2.Shareholder2FullName,
                 NumberOfSharesHeld = int.Parse(
-                    shareholders.Shareholder2.Shareholder2NoOfSharesHeld, NumberStyles.Integer, CultureInfo.CurrentCulture)
+                    shareholders.Shareholder2.Shareholder2NoOfSharesHeld, NumberStyles.Integer, CultureInfo.InvariantCulture)
             });
         }
         
@@ -283,7 +283,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
                 Percentage = shareholders.Shareholder3.Shareholder3Percentage,
                 Fullname = shareholders.Shareholder3.Shareholder3FullName,
                 NumberOfSharesHeld = int.Parse(
-                    shareholders.Shareholder3.Shareholder3NoOfSharesHeld, NumberStyles.Integer, CultureInfo.CurrentCulture)
+                    shareholders.Shareholder3.Shareholder3NoOfSharesHeld, NumberStyles.Integer, CultureInfo.InvariantCulture)
             });
         }
         
@@ -295,7 +295,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
                 Percentage = shareholders.Shareholder4.Shareholder4Percentage,
                 Fullname = shareholders.Shareholder4.Shareholder4FullName,
                 NumberOfSharesHeld = int.Parse(
-                    shareholders.Shareholder4.Shareholder4NoOfSharesHeld, NumberStyles.Integer, CultureInfo.CurrentCulture)
+                    shareholders.Shareholder4.Shareholder4NoOfSharesHeld, NumberStyles.Integer, CultureInfo.InvariantCulture)
             });
         }
         
@@ -307,7 +307,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
                 Percentage = shareholders.Shareholder5.Shareholder5Percentage,
                 Fullname = shareholders.Shareholder5.Shareholder5FullName,
                 NumberOfSharesHeld = int.Parse(
-                    shareholders.Shareholder5.Shareholder5NoOfSharesHeld, NumberStyles.Integer, CultureInfo.CurrentCulture)
+                    shareholders.Shareholder5.Shareholder5NoOfSharesHeld, NumberStyles.Integer, CultureInfo.InvariantCulture)
             });
         }
         
@@ -319,7 +319,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
                 Percentage = shareholders.Shareholder6.Shareholder6Percentage,
                 Fullname = shareholders.Shareholder6.Shareholder6FullName,
                 NumberOfSharesHeld = int.Parse(
-                    shareholders.Shareholder6.Shareholder6NoOfSharesHeld, NumberStyles.Integer, CultureInfo.CurrentCulture)
+                    shareholders.Shareholder6.Shareholder6NoOfSharesHeld, NumberStyles.Integer, CultureInfo.InvariantCulture)
             });
         }
         

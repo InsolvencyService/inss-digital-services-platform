@@ -189,8 +189,8 @@ public class EmployeeSpreadsheetValidatorTests
     public async Task InvalidEmploymentDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
-        employee.StartDate = DateTime.Parse("2025-01-30", CultureInfo.CurrentCulture);
-        employee.EndDate = DateTime.Parse("2024-01-30", CultureInfo.CurrentCulture);
+        employee.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
+        employee.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
         ValidatorContext context = await _validator.ValidateAsync();
 
@@ -237,8 +237,8 @@ public class EmployeeSpreadsheetValidatorTests
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1 aop = employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod1;
-        aop.AOP1StartDate = DateTime.Parse("2025-01-30", CultureInfo.CurrentCulture);
-        aop.AOP1EndDate = DateTime.Parse("2024-01-30", CultureInfo.CurrentCulture);
+        aop.AOP1StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
+        aop.AOP1EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
         ValidatorContext context = await _validator.ValidateAsync();
 
@@ -382,8 +382,8 @@ public class EmployeeSpreadsheetValidatorTests
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeeHolidayHolidayNotPaidHoliday1 holidayNotPaid = employee.Holiday.HolidayNotPaid.Holiday1;
-        holidayNotPaid.Holiday1StartDate = DateTime.Parse("2025-01-30", CultureInfo.CurrentCulture);
-        holidayNotPaid.Holiday1EndDate = DateTime.Parse("2024-01-30", CultureInfo.CurrentCulture);
+        holidayNotPaid.Holiday1StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
+        holidayNotPaid.Holiday1EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
         ValidatorContext context = await _validator.ValidateAsync();
 
