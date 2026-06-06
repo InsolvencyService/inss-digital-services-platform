@@ -24,7 +24,7 @@ public class FormController : Controller
     public async Task<IActionResult> Edit(string? state = null)
     {
         ContentPath requestPath = new(Request.Path);
-        ContentPath refererPath = GetRefererPath();//new(Request.Headers.Referer.ToString().Replace(Request.PathBase, "") + "/");
+        ContentPath refererPath = GetRefererPath();
         (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, refererPath, state);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
@@ -59,12 +59,8 @@ public class FormController : Controller
 
     private ContentPath GetRefererPath()
     {
-        //const string trailingSlash = "/";
-     
         string referer = Request.Headers.Referer.ToString();
-
         Uri refererUri = new(referer);
-
         return new ContentPath(refererUri.PathAndQuery);
     }
 }
