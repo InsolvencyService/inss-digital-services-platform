@@ -60,6 +60,12 @@ public class FormController : Controller
     private ContentPath GetRefererPath()
     {
         string referer = Request.Headers.Referer.ToString();
+
+        if (string.IsNullOrEmpty(referer))
+        {
+            referer = "/";
+        }
+        
         Uri refererUri = new(referer);
         return new ContentPath(refererUri.PathAndQuery);
     }
