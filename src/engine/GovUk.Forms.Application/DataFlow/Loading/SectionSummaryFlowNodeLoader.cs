@@ -14,32 +14,13 @@ public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
         foreach (PageModel savedPage in savedPages)
         {
             savedPage.ReturnUrl = summary.Path;
-            
-            if (savedPage is AddAnotherModel addAnother)
+            ContentPath changeUrl = savedPage is AddAnotherModel addAnother ? addAnother.Path : savedPage.Path;
+            overview.Add(new SummaryModel.SummaryInfo
             {
-                AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(addAnother.MetaData.Group);
-                
-                for (int i = 0; i < addAnother.Items.Count; i += groupInfo.WorkingPages.Count)
-                {
-                    string[] itemValues = addAnother.Items.Skip(i).Take(
-                        groupInfo.WorkingPages.Count).SelectMany(p => p.GetSummaryInfo()).ToArray();
-                    overview.Add(new SummaryModel.SummaryInfo
-                    {
-                        Title = addAnother.Title,
-                        Values = itemValues,
-                        ChangeUrl = addAnother.Path
-                    });
-                }
-            }
-            else
-            {
-                overview.Add(new SummaryModel.SummaryInfo
-                {
-                    Title = savedPage.Title,
-                    Values = savedPage.GetSummaryInfo(),
-                    ChangeUrl = context.Section.StartedDate is not null ? savedPage.Path : null
-                });
-            }
+                Title = savedPage.Title,
+                Values = savedPage.GetSummaryInfo(),
+                ChangeUrl = changeUrl
+            });
         }
 
         summary.Overview = overview.ToArray();
