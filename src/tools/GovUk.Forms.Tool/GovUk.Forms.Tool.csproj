@@ -12,6 +12,7 @@
       <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Bankruptcy\Demo.GovUk.Forms.Bankruptcy.csproj" />
       <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
       <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.ContactUs\Demo.GovUk.Forms.ContactUs.csproj" />
+      <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.Fip\Inss.GovUk.Forms.Fip.csproj" />
       <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
     </ItemGroup>
 
