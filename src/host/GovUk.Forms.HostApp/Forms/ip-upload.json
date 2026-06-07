@@ -121,7 +121,7 @@
           "completedDate": null,
           "id": "2fee5927-a57b-48e5-8d23-89b064dec269",
           "path": "/ip-upload/redundancy-payment/summary",
-          "viewName": "_Summary",
+          "viewName": "_CheckAnswers",
           "encodingType": null,
           "fullWidthLayout": false,
           "submitType": "Section",

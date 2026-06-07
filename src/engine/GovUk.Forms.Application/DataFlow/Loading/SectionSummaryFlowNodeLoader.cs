@@ -9,13 +9,13 @@ public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
     {
         SummaryModel summary = context.CurrentPage.As<SummaryModel>();
         PageModelList savedPages = context.Section.Pages.GetCompletedPages();
-        List<SummaryModel.SummaryInfo> overview = [];
+        List<CheckAnswersItem> items = [];
         
         foreach (PageModel savedPage in savedPages)
         {
             savedPage.ReturnUrl = summary.Path;
             ContentPath changeUrl = savedPage is AddAnotherModel addAnother ? addAnother.Path : savedPage.Path;
-            overview.Add(new SummaryModel.SummaryInfo
+            items.Add(new CheckAnswersItem
             {
                 Title = savedPage.Title,
                 Values = savedPage.GetSummaryInfo(),
@@ -23,7 +23,7 @@ public sealed class SectionSummaryFlowNodeLoader : IFlowNodeLoader
             });
         }
 
-        summary.Overview = overview.ToArray();
+        summary.Items = items.ToArray();
 
         return ValueTask.FromResult<NodeId?>(null);
     }

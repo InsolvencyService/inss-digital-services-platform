@@ -1,19 +1,9 @@
-using System.Text.Json.Serialization;
-using GovUk.Forms.Domain.Primitives;
-
 namespace GovUk.Forms.Domain;
 
-public sealed class SummaryModel : PageModel
+public sealed class SummaryModel : CheckAnswersModel
 {
-    [JsonIgnore]
-    public SummaryInfo[] Overview { get; set; } = [];
-    
-    public sealed class SummaryInfo
+    public SummaryModel()
     {
-        public required string Title { get; init; }
-        
-        public ContentPath? ChangeUrl { get; init; }
-        
-        public required string[] Values { get; init; }
+        ViewName = "_CheckAnswers";
     }
 }

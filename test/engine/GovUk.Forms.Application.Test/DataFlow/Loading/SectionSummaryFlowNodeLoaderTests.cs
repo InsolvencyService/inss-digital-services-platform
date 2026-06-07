@@ -31,10 +31,10 @@ public class SectionSummaryFlowNodeLoaderTests
         
         await _loader.LoadAsync(context);
 
-        SummaryModel.SummaryInfo[] infoList = summary.Overview;
+        CheckAnswersItem[] items = summary.Items;
         FullNameModel fullName = addAnother.Items.GetFirstOf<FullNameModel>();
-        Assert.Equal(addAnother.Title, infoList[0].Title);
-        Assert.True(infoList[0].Values.Contains(fullName.Value));
+        Assert.Equal(addAnother.Title, items[0].Title);
+        Assert.True(items[0].Values.Contains(fullName.Value));
     }
     
     [Fact]
@@ -56,10 +56,10 @@ public class SectionSummaryFlowNodeLoaderTests
         
         await _loader.LoadAsync(context);
 
-        SummaryModel.SummaryInfo[] infoList = summary.Overview;
+        CheckAnswersItem[] items = summary.Items;
         AgeModel age = addAnother.Items.GetFirstOf<AgeModel>();
-        Assert.Equal(addAnother.Title, infoList[0].Title);
-        Assert.True(infoList[0].Values.Contains(age.Value.ToString(CultureInfo.InvariantCulture)));
+        Assert.Equal(addAnother.Title, items[0].Title);
+        Assert.True(items[0].Values.Contains(age.Value.ToString(CultureInfo.InvariantCulture)));
     }
     
     [Fact]
@@ -81,11 +81,9 @@ public class SectionSummaryFlowNodeLoaderTests
         
         await _loader.LoadAsync(context);
 
-        SummaryModel.SummaryInfo[] infoList = summary.Overview;
-
-        foreach (SummaryModel.SummaryInfo info in infoList)
+        foreach (CheckAnswersItem item in summary.Items)
         {
-            Assert.Contains(addAnother.Path, info.ChangeUrl!);
+            Assert.Contains(addAnother.Path, item.ChangeUrl);
         }
     }
     
@@ -107,12 +105,10 @@ public class SectionSummaryFlowNodeLoaderTests
         };
         
         await _loader.LoadAsync(context);
-
-        SummaryModel.SummaryInfo[] infoList = summary.Overview;
-
-        foreach (SummaryModel.SummaryInfo info in infoList)
+        
+        foreach (CheckAnswersItem item in summary.Items)
         {
-            Assert.Null(info.ChangeUrl!);
+            Assert.Null(item.ChangeUrl);
         }
     }
     
