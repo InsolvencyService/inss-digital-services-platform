@@ -47,7 +47,7 @@
           "completedDate": null,
           "id": "5df3a9dc-c7a8-4a63-920f-f6144e0b6fd2",
           "path": "/bankruptcy/your-bankruptcy/summary",
-          "viewName": "_Summary",
+          "viewName": "_CheckAnswers",
           "encodingType": null,
           "fullWidthLayout": false,
           "submitType": "Form",

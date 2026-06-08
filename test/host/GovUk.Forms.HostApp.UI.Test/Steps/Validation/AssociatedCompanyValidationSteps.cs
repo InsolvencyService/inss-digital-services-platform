@@ -47,6 +47,16 @@ public class AssociatedCompanyValidationSteps : ValidationStepsBase
         await UploadDocumentCoordinator.UploadRp14WithAssociatedCompanyReasonsAsync(associatedCompanyCount, reasonForAssociation);
     }
 
+    [Given("the RP14 XML contains {int} associated companies with reason for association of length {int} characters")]
+    public async Task GivenTheRPXMLContainsAssociatedCompaniesWithReasonForAssociationOfLengthCharacters(int associatedCompanyCount, int length)
+    {
+        string reasonForAssociation = LengthHelper.AtMax(length);
+
+        await UploadDocumentCoordinator.UploadRp14WithAssociatedCompanyReasonsAsync(associatedCompanyCount, reasonForAssociation);
+
+    }
+
+
     [Given("the RP14 XML contains an associated company number of length {int}")]
     public async Task GivenTheRPXMLContainsAnAssociatedCompanyNumberOfLength(int length)
     {
@@ -70,6 +80,16 @@ public class AssociatedCompanyValidationSteps : ValidationStepsBase
         await UploadDocumentCoordinator.UploadRp14WithAssociatedCompanyNumbersAsync(companyCount, companyNumber);
     }
 
+    [Given("the RP14 XML contains {int} associated companies with all fields exceeding maximum length")]
+    public async Task GivenTheRp14XmlContainsAssociatedCompaniesWithAllFieldsExceedingMaximumLength(int count)
+    {
+        await UploadDocumentCoordinator.UploadRp14WithAllAssociatedCompaniesInvalidAsync(
+            count,
+            companyName: LengthHelper.OverMax(60),
+            reason: LengthHelper.AtMax(256),
+            companyNumber: LengthHelper.OverMax(9));
+    }
+
     [Given("the RP14 XML contains an employment continuity employer name of length {int}")]
     public async Task GivenTheRPXMLContainsAnEmploymentContinuityEmployerNameOfLength(int length)
     {
@@ -87,15 +107,18 @@ public class AssociatedCompanyValidationSteps : ValidationStepsBase
     [Then("I should see the following associated company validation errors")]
     public async Task ThenIShouldSeeTheFollowingAssociatedCompanyValidationErrors(DataTable dataTable)
     {
-        Error error = dataTable.CreateInstance<Error>();
-        UploadErrorSummary expectedError = new(
-            Category: "",
-            ErrorType: error.Type,
-            ErrorMessage: error.Message,
-            HintText: error.Hint,
-            ActionText: null);
+        IEnumerable<Error> errors = dataTable.CreateSet<Error>();
+        foreach (Error error in errors)
+        {
+            UploadErrorSummary expectedError = new(
+                Category: "",
+                ErrorType: error.Type,
+                ErrorMessage: error.Message,
+                HintText: error.Hint,
+                ActionText: null);
 
-        await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+            await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+        }
     }
 
     [Then("the error summary should {string} with {string} With {string}")]

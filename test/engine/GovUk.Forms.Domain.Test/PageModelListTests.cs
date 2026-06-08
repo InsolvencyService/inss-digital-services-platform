@@ -84,9 +84,9 @@ public class PageModelListTests
     {
         SectionModel section = TestSectionModels.CreateYourDetailsSection();
         
-        ModelException exception = Assert.Throws<ModelException>(() => section.Pages.GetFirstOf<CheckAnswersModel>());
+        ModelException exception = Assert.Throws<ModelException>(() => section.Pages.GetFirstOf<MoneyModel>());
         
-        Assert.Equal($"Unable to find page of type {typeof(CheckAnswersModel)}.", exception.Message);
+        Assert.Equal($"Unable to find page of type {typeof(MoneyModel)}.", exception.Message);
     }
     
     [Fact]

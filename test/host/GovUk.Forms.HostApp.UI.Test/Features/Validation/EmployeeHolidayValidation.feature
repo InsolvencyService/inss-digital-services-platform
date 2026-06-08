@@ -5,6 +5,7 @@ A short summary of the feature
               As an Insolvency Practitioner user
               I want RP14A validation to run before submission to Dynamics
    So that I can fix errors immediately and avoid delayed rejection
+
     Background:
             Given I am on the upload page as a "Admin" user
 
@@ -167,3 +168,33 @@ Scenario Outline:RP14A Display error for holiday owed outside allowed range
               | 1  invalid range of holiday owed | 0 to 365 days allowed          | Holiday owed |
                And I should be able to view the list of Holiday owed validation error details
                 And I should be able to view the invalid range of holiday owed validation error details
+
+
+ @regression @validation @rp14a @allure.story:Holiday
+ Scenario Outline: RP14A displays error for invalid holiday days taken formats for multiple employees
+            Given the RP14A contains <count> invalid holiday days taken values "<holidayTaken>"
+             When I attempt to submit the RP14A
+             Then I should see the following validation errors
+                  | Message                                  | Hint                           | Type               |
+                  | <count> holiday days taken are incorrect | Enter a number like 28.5 or 33 | Holiday days taken |
+              And I should be able to view holiday days taken for multiple employees error details
+
+        Examples:
+                  | count | holidayTaken |
+                  | 2     | 12.345       |
+
+
+@regression @validation @rp14a @allure.story:Holiday
+Scenario Outline: RP14A displays error for holiday days carried forward outside allowed range for multiple employees
+            Given the RP14A contains <count> employees with invalid holiday days carried forward "<holidayCarriedForward>"
+             When I attempt to submit the RP14A
+             Then I should see the following validation errors
+                  | Message                                          | Hint                  | Type                    |
+                  | <count> invalid range of holiday carried forward | 0 to 365 days allowed | Holiday carried forward |
+              And I should be able to view holiday days carried forward validation error details for multiple employees
+
+        Examples:
+                  | count | holidayCarriedForward |
+                  | 2     | 366                   |
+                  | 2     | -1                    |
+         

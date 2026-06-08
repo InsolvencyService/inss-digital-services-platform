@@ -10,12 +10,12 @@ public class PageModelTests
     {
         SummaryModel summary = new()
         {
-            Overview = [new SummaryModel.SummaryInfo { Title = "Title", ChangeUrl = "/form/", Values = ["1"] }]
+            Items = [new CheckAnswersItem { Title = "Title", ChangeUrl = "/form/", Values = ["1"] }]
         };
 
         summary.ClearValues();
 
-        Assert.Single(summary.Overview);
+        Assert.Single(summary.Items);
     }
 
     [Fact]

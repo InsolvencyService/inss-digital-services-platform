@@ -29,13 +29,13 @@ public sealed class CheckAnswersFlowNodeLoader : IFlowNodeLoader
             }
         }
         
-        List<CheckAnswersModel.CheckAnswersItem> itemList = [];
+        List<CheckAnswersItem> itemList = [];
         
         foreach (PageModel groupPage in groupInfo.WorkingPages)
         {
             groupPage.ReturnUrl = checkAnswers.Path;
             string[] values = groupPage.GetSummaryInfo();
-            itemList.Add(new CheckAnswersModel.CheckAnswersItem
+            itemList.Add(new CheckAnswersItem
             {
                 Title = groupPage.Title,
                 ChangeUrl = groupPage.Path,

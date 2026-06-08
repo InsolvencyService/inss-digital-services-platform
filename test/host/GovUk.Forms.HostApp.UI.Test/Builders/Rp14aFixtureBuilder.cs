@@ -259,6 +259,36 @@ public sealed class Rp14aFixtureBuilder
         }
     }
 
+    public Rp14aFixtureBuilder WithHolidayDaysTakenForEmployees(int employeeCount, string? holidayDaysTaken)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        {
+            AddEmployeeMutation(
+                employeeIndex,
+                RP14AElementNames.HolidayDaysTaken,
+                holidayDaysTaken ?? string.Empty);
+        }
+
+        return this;
+    }
+
+    public Rp14aFixtureBuilder WithHolidayDaysCarriedForwardForEmployees(int employeeCount, string? holidayDaysCarriedForward)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        {
+            AddEmployeeMutation(
+                employeeIndex,
+                RP14AElementNames.HolidayDaysCarriedForward,
+                holidayDaysCarriedForward ?? string.Empty);
+        }
+
+        return this;
+    }
+
     private Rp14aFixtureBuilder Set(
         string elementName,
         string? value,

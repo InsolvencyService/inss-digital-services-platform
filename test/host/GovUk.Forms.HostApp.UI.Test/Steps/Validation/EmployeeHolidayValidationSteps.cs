@@ -148,6 +148,20 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
                 invalidValues);
     }
 
+    [Given("the RP14A contains {int} invalid holiday days taken values {string}")]
+    public async Task GivenTheRPAContainsInvalidHolidayDaysTakenValues(int employeeCount, string holidayDaysTaken)
+    {
+        await UploadDocumentCoordinator
+            .UploadRp14aWithHolidayDaysTakenForEmployeesAsync(employeeCount, holidayDaysTaken);
+    }
+
+    [Given("the RP14A contains {int} employees with invalid holiday days carried forward {string}")]
+    public async Task GivenTheRPAContainsEmployeesWithInvalidHolidayDaysCarriedForward(int count, string holidayCarriedForward)
+    {
+        await UploadDocumentCoordinator
+       .UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(count, holidayCarriedForward);
+    }
+
 
     [Then("I should see the validation error {string}")]
     public async Task ThenIShouldSeeTheValidationError(string errorMessage)
@@ -255,5 +269,21 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
             ErrorDetailsHeaderType.NoDaysHolidayOwed);
 
     }
+
+    [Then("I should be able to view holiday days taken for multiple employees error details")]
+    public async Task ThenIShouldBeAbleToViewHolidayDaysTakenForMultipleEmployeesErrorDetails()
+    {
+        UploadErrorSummary expectedErrors =
+         ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedErrors,
+            affectedEmployees,
+            ErrorDetailsHeaderType.HolidayDaysTaken);
+    }
+
 
 }

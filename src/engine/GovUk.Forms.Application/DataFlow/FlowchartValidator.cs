@@ -88,6 +88,11 @@ public sealed class FlowchartValidator
                 continue;
             }
 
+            if (associatedPage is SummaryModel)
+            {
+                continue;
+            }
+
             if (serviceProvider.GetKeyedService<IFlowNodeLoader>(node.Id) is not CheckAnswersFlowNodeLoader)
             {
                 flowchartErrors.Add(

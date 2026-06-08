@@ -13,7 +13,7 @@ So that I know what to change and re-upload
              When I attempt to submit the RP14A
              Then I should see the following director validation errors
                   | Message                                             | Hint                | Type     |
-                  | 1 invalid director national insurance number format | Format is AB112233C | Director |
+                  | [1] invalid director national insurance number format | Format is AB112233C | Director |
         Examples:
                   | niNumber  |
                   | 123456789 |
