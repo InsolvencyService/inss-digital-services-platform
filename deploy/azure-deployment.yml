@@ -22,7 +22,7 @@ jobs:
         deploy:
           steps:
             - task: AzureRmWebAppDeployment@4
-              displayName: Deploy RPS Provider App
+              displayName: Deploy RPS Provider Service
               inputs:
                 ConnectionType: 'AzureRM'
                 azureSubscription: ${{ parameters.azureSubscription }}
@@ -34,7 +34,7 @@ jobs:
                 slotName: 'production'
             
             - task: AzureRmWebAppDeployment@4
-              displayName: Deploy Broker Host App
+              displayName: Deploy Broker Service
               inputs:
                 ConnectionType: 'AzureRM'
                 azureSubscription: ${{ parameters.azureSubscription }}
@@ -58,7 +58,7 @@ jobs:
                 slotName: 'production'
 
             - task: AzureRmWebAppDeployment@4
-              displayName: Deploy Submission Service API
+              displayName: Deploy Submission Service
               inputs:
                 ConnectionType: 'AzureRM'
                 azureSubscription: ${{ parameters.azureSubscription }}

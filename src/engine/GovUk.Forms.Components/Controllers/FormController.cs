@@ -63,7 +63,7 @@ public class FormController : Controller
 
         if (string.IsNullOrEmpty(referer))
         {
-            referer = "/";
+            return new ContentPath("/");
         }
         
         Uri refererUri = new(referer);
