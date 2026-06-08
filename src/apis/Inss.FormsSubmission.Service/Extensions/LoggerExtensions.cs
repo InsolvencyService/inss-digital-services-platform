@@ -31,4 +31,10 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 509, Level = LogLevel.Error, Message = "Failed to successfully submit message to Dynamics for {CorrelationId}.")]
     public static partial void FailedSubmissionToDynamics(this ILogger logger, string correlationId);
+    
+    [LoggerMessage(EventId = 510, Level = LogLevel.Information, Message = "Loading all the submitted Dynamics messages for {Reference}.")]
+    public static partial void LoadSubmittedDynamicsMessages(this ILogger logger, string reference);
+    
+    [LoggerMessage(EventId = 511, Level = LogLevel.Error, Message = "Failed to send an email for {Reference}.")]
+    public static partial void EmailFailed(this ILogger logger, string reference);
 }

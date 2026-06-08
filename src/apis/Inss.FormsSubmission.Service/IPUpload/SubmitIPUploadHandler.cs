@@ -6,7 +6,9 @@ using Inss.FormsSubmission.Service.IPUpload.Clients;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
 using Inss.FormsSubmission.Service.IPUpload.Persistence;
 using Inss.FormsSubmission.Service.IPUpload.Processing;
-using Notify.Client;
+using Inss.FormsSubmission.Service.Options;
+using Microsoft.Extensions.Options;
+using Notify.Interfaces;
 using Notify.Models.Responses;
 
 namespace Inss.FormsSubmission.Service.IPUpload;
@@ -17,6 +19,8 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private readonly IDynamicsStoreProvider _dynamicsStoreProvider;
     private readonly IBackgroundDynamicsQueue _backgroundDynamicsQueue;
     private readonly IDynamicsClient _dynamicsClient;
+    private readonly INotificationClient _notificationClient;
+    private readonly IOptions<NotifyOptions> _notifyOptions;
     private readonly ILogger<SubmitIPUploadHandler> _logger;
 
     public SubmitIPUploadHandler(
@@ -24,12 +28,16 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         IDynamicsStoreProvider dynamicsStoreProvider, 
         IBackgroundDynamicsQueue backgroundDynamicsQueue,
         IDynamicsClient dynamicsClient,
+        INotificationClient notificationClient,
+        IOptions<NotifyOptions> notifyOptions,
         ILogger<SubmitIPUploadHandler> logger)
     {
         _mapperFactory = mapperFactory;
         _dynamicsStoreProvider = dynamicsStoreProvider;
         _backgroundDynamicsQueue = backgroundDynamicsQueue;
         _dynamicsClient = dynamicsClient;
+        _notificationClient = notificationClient;
+        _notifyOptions = notifyOptions;
         _logger = logger;
     }
     
@@ -79,9 +87,12 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private async Task SubmitMessagesToDynamics(
         JsonMessage[] jsonMessages, 
         string reference, 
+        string userId,
         bool isEmployeeSubmission, 
         CancellationToken cancellationToken)
     {
+        DateTimeOffset submissionDate = TimeProvider.System.GetUtcNow();
+        
         foreach (JsonMessage jsonMessage in jsonMessages)
         {
             await _backgroundDynamicsQueue.QueueAsync(async _ =>
@@ -96,9 +107,11 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         
         await _backgroundDynamicsQueue.QueueAsync(async _ =>
         {
-            // TODO: Determine overall success status
+            _logger.LoadSubmittedDynamicsMessages(reference);
+            DynamicsSubmission[] submissions = await _dynamicsStoreProvider.GetByReferenceAsync(reference, cancellationToken);
+            
             _logger.SendingGovNotifyEmail(reference);
-            await SendEmailAsync(reference, isEmployeeSubmission);
+            await SendEmailAsync(reference, userId, submissionDate, isEmployeeSubmission, submissions);
         });
     }
 
@@ -135,25 +148,29 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         await _dynamicsStoreProvider.StoreAsync(dynamicsSubmission, cancellationToken);
     }
 
-    private static Task SendEmailAsync(string reference, bool isEmployeeSubmission)
+    private Task SendEmailAsync(
+        string reference, 
+        string userId,
+        DateTimeOffset submissionDate, 
+        bool isEmployeeSubmission, 
+        DynamicsSubmission[] submissions)
     {
         Dictionary<String, dynamic> personalisation = new()
         {
             {"formType", isEmployeeSubmission ? "RP14A" : "RP14"},
             {"referenceNumber", reference},
-            {"succeeded/failed", "succeeded"}, // OR failed
-            {"uploadDateAndTime", ""},
-            {"rejectedState", ""}
+            {"succeeded/failed", submissions.Any(s => s.ErrorInfo is not null) ? "failed" : "succeeded"},
+            {"uploadDateAndTime", $"{submissionDate:F}"},
+            {"rejectedState", ""} // TODO:
         };
-        NotificationClient client = new("api-key");
-        EmailNotificationResponse response = client.SendEmail("email-address", "template-from-config", personalisation);
+        
+        EmailNotificationResponse response = _notificationClient.SendEmail(userId, _notifyOptions.Value.DynamicsSubmissionTemplateId, personalisation);
 
         if (string.IsNullOrWhiteSpace(response.id))
         {
-            // Handle error
+            _logger.EmailFailed(reference);
         }
         
-        // TODO: Send email once outcome of https://inssdigital.atlassian.net/browse/MEDS-1019 determined and requirements defined
         return Task.CompletedTask;
     }
 }

@@ -41,7 +41,7 @@ public class DynamicsStoreProvider : IDynamicsStoreProvider
         }
     }
     
-    public async Task<DynamicsSubmission[]> GetReferenceAsync(string reference, CancellationToken cancellationToken)
+    public async Task<DynamicsSubmission[]> GetByReferenceAsync(string reference, CancellationToken cancellationToken)
     {
         try
         {

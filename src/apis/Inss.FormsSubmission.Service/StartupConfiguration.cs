@@ -7,7 +7,10 @@ using Inss.FormsSubmission.Service.Extensions;
 using Inss.FormsSubmission.Service.IPUpload.Extensions;
 using Inss.FormsSubmission.Service.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Notify.Client;
+using Notify.Interfaces;
 
 [assembly: HostingStartup(typeof(StartupConfiguration))]
 
@@ -35,6 +38,17 @@ public class StartupConfiguration : IHostingStartup
 
             services.AddIPUploadServices(context);
             services.AddOpenTelemetry().UseAzureMonitor();
+            
+            services.AddOptions<NotifyOptions>()
+                .Bind(context.Configuration.GetSection("Notify"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+            
+            services.AddTransient<INotificationClient>(p =>
+            {
+                IOptions<NotifyOptions> notifyOptions = p.GetRequiredService<IOptions<NotifyOptions>>();
+                return new NotificationClient(notifyOptions.Value.ApiKey);
+            });
         });
         
         builder.Configure(app =>
