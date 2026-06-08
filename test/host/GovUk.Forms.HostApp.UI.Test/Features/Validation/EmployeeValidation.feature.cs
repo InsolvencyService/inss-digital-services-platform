@@ -29,9 +29,9 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
         private static string[] featureTags = new string[] {
                 "MEDS-1067"};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employee Validation", "              As an Insolvency Practitioner user\r\n              I want RP14A vali" +
-                "dation to run before submission to Dynamics\r\n  So that I can fix errors immediat" +
-                "ely and avoid delayed rejection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Validation", "Employee Validation", "              As an Insolvency Practitioner user\n              I want RP14A valid" +
+                "ation to run before submission to Dynamics\n  So that I can fix errors immediatel" +
+                "y and avoid delayed rejection", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
 #line 1 "EmployeeValidation.feature"
 #line hidden
@@ -465,16 +465,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 63
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table30 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table31 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table30.AddRow(new string[] {
+                table31.AddRow(new string[] {
                             string.Format("{0} invalid employee national insurance number format", employeeCount),
                             "Format is AB112233C",
                             "Employee national insurance number"});
 #line 64
-             await testRunner.ThenAsync("I should see the following national insurance number validation errors", ((string)(null)), table30, "Then ");
+             await testRunner.ThenAsync("I should see the following national insurance number validation errors", ((string)(null)), table31, "Then ");
 #line hidden
 #line 67
               await testRunner.AndAsync("I should be able to view multiple national insurance numbers error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -531,16 +531,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 77
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table31 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table32 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table31.AddRow(new string[] {
+                table32.AddRow(new string[] {
                             string.Format("{0} missing the employee national insurance number", employeeCount),
                             "Format is AB112233C",
                             "Employee national insurance number"});
 #line 78
-             await testRunner.ThenAsync("I should see the following national insurance number validation errors", ((string)(null)), table31, "Then ");
+             await testRunner.ThenAsync("I should see the following national insurance number validation errors", ((string)(null)), table32, "Then ");
 #line hidden
 #line 81
               await testRunner.AndAsync("I should be able to view multiple national insurance numbers error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -588,16 +588,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 90
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table32 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table33 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table32.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "1 invalid employment dates for the employee",
                             "Start date must be before the end date",
                             "Employee employment dates"});
 #line 91
-             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table32, "Then ");
+             await testRunner.ThenAsync("I should see the following validation errors", ((string)(null)), table33, "Then ");
 #line hidden
 #line 94
               await testRunner.AndAsync("I should be able to view the employee employment dates error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
