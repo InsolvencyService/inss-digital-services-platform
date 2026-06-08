@@ -37,4 +37,7 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 511, Level = LogLevel.Error, Message = "Failed to send an email for {Reference}.")]
     public static partial void EmailFailed(this ILogger logger, string reference);
+    
+    [LoggerMessage(EventId = 512, Level = LogLevel.Error, Message = "Failed to send a BCC email for {Reference}.")]
+    public static partial void BccEmailFailed(this ILogger logger, string reference);
 }

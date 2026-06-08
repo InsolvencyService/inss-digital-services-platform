@@ -49,7 +49,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
         await StoreMessageAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
 
-        await SubmitMessagesToDynamics(jsonMessages, reference, request.IsEmployeeUpload, cancellationToken);
+        await SubmitMessagesToDynamics(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
         
         return new SubmitIPUploadResponse { Reference = reference };
     }
@@ -155,22 +155,42 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         bool isEmployeeSubmission, 
         DynamicsSubmission[] submissions)
     {
-        Dictionary<String, dynamic> personalisation = new()
+        bool submissionFailed = submissions.Any(s => s.ErrorInfo is not null);
+        Dictionary<String, dynamic> personalisation = GetPersonalisation(reference, submissionDate, isEmployeeSubmission, submissionFailed);
+
+        SendEmail(userId, reference, personalisation);
+
+        if (submissionFailed && _notifyOptions.Value.IPUploadBccEmail is not null)
         {
-            {"formType", isEmployeeSubmission ? "RP14A" : "RP14"},
-            {"referenceNumber", reference},
-            {"succeeded/failed", submissions.Any(s => s.ErrorInfo is not null) ? "failed" : "succeeded"},
-            {"uploadDateAndTime", $"{submissionDate:F}"},
-            {"rejectedState", ""} // TODO:
-        };
-        
-        EmailNotificationResponse response = _notificationClient.SendEmail(userId, _notifyOptions.Value.DynamicsSubmissionTemplateId, personalisation);
+            SendEmail(_notifyOptions.Value.IPUploadBccEmail, reference, personalisation);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private void SendEmail(string email, string reference, Dictionary<String, dynamic> personalisation)
+    {
+        EmailNotificationResponse response = _notificationClient.SendEmail(email, _notifyOptions.Value.IPUploadTemplateId, personalisation);
 
         if (string.IsNullOrWhiteSpace(response.id))
         {
             _logger.EmailFailed(reference);
         }
-        
-        return Task.CompletedTask;
+    }
+    
+    private static Dictionary<String, dynamic> GetPersonalisation(
+        string reference,
+        DateTimeOffset submissionDate,
+        bool isEmployeeSubmission,
+        bool submissionFailed)
+    {
+        return new Dictionary<String, dynamic>
+        {
+            {"formType", isEmployeeSubmission ? "RP14A" : "RP14"},
+            {"referenceNumber", reference},
+            {"succeeded/failed", submissionFailed ? "failed" : "succeeded"},
+            {"uploadDateAndTime", $"{submissionDate:F}"},
+            {"rejectedState", ""} // TODO:
+        };
     }
 }

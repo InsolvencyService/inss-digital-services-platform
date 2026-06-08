@@ -11,10 +11,3 @@ public sealed class CosmosDbOptions
     
     public string ContainerName { get; init; }
 }
-
-public sealed class NotifyOptions
-{
-    public string ApiKey { get; init; }
-    
-    public string DynamicsSubmissionTemplateId { get; init; }
-}
