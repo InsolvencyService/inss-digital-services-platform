@@ -1,4 +1,3 @@
-using GovUk.Forms.HostApp.UI.Test.Builders;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
@@ -7,21 +6,20 @@ namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
 public sealed class Rp14ScenarioCoordinator : ScenarioCoordinatorBase, IRp14ScenarioCoordinator
 {
-    private const string DefaultBaselineFilePath = "Resources/Rp14/rp14.xml";
+    private readonly Func<IRp14FixtureBuilder> _builderFactory;
 
     public Rp14ScenarioCoordinator(
         IFileUploadCoordinator fileUploadCoordinator,
         ScenarioContext scenarioContext,
         TestArtifacts testArtifacts,
-        string? baselineFilePath = null)
+        Func<IRp14FixtureBuilder> builderFactory)
         : base(
             fileUploadCoordinator,
             scenarioContext,
             testArtifacts,
-            logTag: "RP14",
-            defaultBaselineFilePath: DefaultBaselineFilePath,
-            baselineFilePath: baselineFilePath)
+            logTag: "RP14")
     {
+        _builderFactory = builderFactory;
     }
 
     public Task UploadValidRp14Async() =>
@@ -224,6 +222,27 @@ public sealed class Rp14ScenarioCoordinator : ScenarioCoordinatorBase, IRp14Scen
             $"RP14 with {associatedCompanyCount} associated company numbers");
     }
 
+    public Task UploadRp14WithAllAssociatedCompaniesInvalidAsync(
+        int count,
+        string companyName,
+        string reason,
+        string companyNumber)
+    {
+        ValidatePositiveNumber(count, nameof(count));
+
+        return BuildAndUploadAsync(
+            builder =>
+            {
+                for (int i = 1; i <= count; i++)
+                {
+                    builder.WithAssociatedCompany(i, companyName);
+                    builder.WithAssociatedCompanyReason(i, reason);
+                    builder.WithAssociatedCompanyNumber(i, companyNumber);
+                }
+            },
+            $"RP14 with {count} associated companies all fields invalid");
+    }
+
     public Task UploadRp14WithEmploymentContinuityEmployerNameAsync(string? employerName) =>
         BuildAndUploadAsync(
             builder => builder.WithEmploymentContinuityEmployerName(employerName),
@@ -316,7 +335,7 @@ public sealed class Rp14ScenarioCoordinator : ScenarioCoordinatorBase, IRp14Scen
     }
 
     private Task BuildAndUploadAsync(
-        Action<Rp14FixtureBuilder>? configure,
+        Action<IRp14FixtureBuilder>? configure,
         string description)
     {
         Rp14TestFile testFile = BuildTestFile(configure);
@@ -324,12 +343,12 @@ public sealed class Rp14ScenarioCoordinator : ScenarioCoordinatorBase, IRp14Scen
         return UploadFileAsync(testFile.FilePath, description);
     }
 
-    private Rp14TestFile BuildTestFile(Action<Rp14FixtureBuilder>? configure = null)
+    private Rp14TestFile BuildTestFile(Action<IRp14FixtureBuilder>? configure = null)
     {
-        Rp14FixtureBuilder builder = new();
+        IRp14FixtureBuilder builder = _builderFactory();
 
         configure?.Invoke(builder);
 
-        return builder.Build(TestArtifacts, BaselineFilePath, ScenarioName);
+        return builder.Build(TestArtifacts, ScenarioName);
     }
 }

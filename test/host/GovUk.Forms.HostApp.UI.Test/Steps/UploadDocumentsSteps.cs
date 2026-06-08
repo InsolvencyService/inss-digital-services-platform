@@ -62,6 +62,21 @@ public class UploadDocumentsSteps
             .UploadXmlFileWithWrongContentAsync();
     }
 
+    [Given(@"an empty RP14A XML file with a size of 0 bytes")]
+    public void GivenAnEmptyRp14aXmlFileWithASizeOf0Bytes()
+    {
+        string filePath = _uploadDocumentCoordinator.PrepareEmptyRp14aFile();
+        _scenarioContext.Set(filePath, ScenarioConstant.UploadedFilePath);
+    }
+
+    [When(@"I upload the file")]
+    public async Task WhenIUploadTheFile()
+    {
+        string filePath = _scenarioContext.Get<string>(ScenarioConstant.UploadedFilePath);
+        await _uploadDocumentCoordinator.UploadFileAsync(filePath);
+        await _uploadDocumentCoordinator.ClickOnContinueButtonAsync();
+    }
+
     [When(@"I upload an XML file larger than the maximum allowed size")]
     public async Task WhenIUploadAnXmlFileLargerThanTheMaximumAllowedSize()
     {
@@ -102,6 +117,7 @@ public class UploadDocumentsSteps
 
     [Then("I should see the upload error message {string}")]
     [Then("I should see the file upload error {string}")]
+    [Then("I should see the error message {string}")]
     public async Task ThenIShouldSeeTheFileUploadError(string errorMessage)
     {
         await _uploadDocumentCoordinator.VerifyInvalidFileExtensionErrorAsync(
@@ -111,6 +127,7 @@ public class UploadDocumentsSteps
     }
 
     [Then("the file should not be uploaded")]
+    [Then("the upload should be rejected")]
     public async Task ThenTheFileShouldNotBeUploaded()
     {
         await _uploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();

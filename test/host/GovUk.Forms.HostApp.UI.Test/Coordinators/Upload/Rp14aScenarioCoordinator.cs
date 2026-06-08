@@ -408,6 +408,50 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             AffectedEmployeesContextKey);
     }
 
+    public async Task UploadRp14aWithHolidayDaysTakenForEmployeesAsync(int employeeCount, string? holidayDaysTaken)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithHolidayDaysTakenForEmployees(employeeCount, holidayDaysTaken));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: holidayDaysTaken ?? string.Empty);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having invalid holiday days taken '{ToLogValue(holidayDaysTaken)}'");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(int employeeCount, string? holidayDaysCarriedForward)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithHolidayDaysCarriedForwardForEmployees(
+                employeeCount,
+                holidayDaysCarriedForward));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: holidayDaysCarriedForward ?? string.Empty);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having holiday days carried forward '{ToLogValue(holidayDaysCarriedForward)}'");
+
+        ScenarioContext.Set(
+            affectedEmployees,
+            AffectedEmployeesContextKey);
+    }
+
     private Task BuildAndUploadAsync(
         Action<Rp14aFixtureBuilder>? configure,
         string description)
@@ -423,7 +467,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
 
         configure?.Invoke(builder);
 
-        return builder.Build(TestArtifacts, BaselineFilePath, ScenarioName);
+        return builder.Build(TestArtifacts, BaselineFilePath!, ScenarioName);
     }
 
     private void SetComplexAffectedEmployees(

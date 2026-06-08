@@ -77,6 +77,9 @@ public sealed class UploadDocumentCoordinator :
         return UploadFileAsync(filePath);
     }
 
+    public string PrepareEmptyRp14aFile()
+        => TestFileFactory.CreateEmptyFile(TestArtifacts);
+
     public Task VerifyThatFileIsUploadedAsync()
         => _verificationCoordinator.VerifyThatFileIsUploadedAsync();
 
@@ -304,6 +307,9 @@ public sealed class UploadDocumentCoordinator :
     public Task UploadRp14WithAssociatedCompanyNumbersAsync(int associatedCompanyCount, string companyNumber)
         => _rp14ScenarioCoordinator.UploadRp14WithAssociatedCompanyNumbersAsync(associatedCompanyCount, companyNumber);
 
+    public Task UploadRp14WithAllAssociatedCompaniesInvalidAsync(int count, string companyName, string reason, string companyNumber)
+        => _rp14ScenarioCoordinator.UploadRp14WithAllAssociatedCompaniesInvalidAsync(count, companyName, reason, companyNumber);
+
     public Task UploadRp14WithEmploymentContinuityEmployerNameAsync(string? employerName)
         => _rp14ScenarioCoordinator.UploadRp14WithEmploymentContinuityEmployerNameAsync(employerName);
 
@@ -330,4 +336,10 @@ public sealed class UploadDocumentCoordinator :
 
     public Task UploadRp14WithCompanyAddressLinesCountAsync(int lineCount)
         => _rp14ScenarioCoordinator.UploadRp14WithCompanyAddressLinesCountAsync(lineCount);
+
+    public Task UploadRp14aWithHolidayDaysTakenForEmployeesAsync(int employeeCount, string? holidayDaysTaken)
+        => _scenarioCoordinator.UploadRp14aWithHolidayDaysTakenForEmployeesAsync(employeeCount, holidayDaysTaken);
+
+    public Task UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(int employeeCount, string? holidayDaysCarriedForward)
+        => _scenarioCoordinator.UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(employeeCount, holidayDaysCarriedForward);
 }

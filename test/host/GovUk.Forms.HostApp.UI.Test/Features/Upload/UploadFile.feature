@@ -54,6 +54,13 @@ Examples:
   | .zip      |
 
 
+@regression @validation @fileSize
+Scenario: Upload an empty RP14A XML file
+  Given an empty RP14A XML file with a size of 0 bytes
+  When I upload the file
+  Then the upload should be rejected
+  And I should see the error message "The file provided is invalid XML or has invalid field data"
+
 @regression @happyPath @rp14
  Scenario: Successfully submit a valid RP14 XML file
     When I upload a valid RP14 XML file

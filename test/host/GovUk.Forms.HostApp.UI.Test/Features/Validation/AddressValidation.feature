@@ -1,4 +1,4 @@
-﻿Feature: AddressValidation
+Feature: AddressValidation
 
 As an Insolvency Practitioner
 I want to see the errors from my RP14 upload
@@ -14,9 +14,15 @@ Scenario Outline: RP14 address line length boundary validation
              Then the error summary should "<errorMessage>" with "<hint>" With "<type>"
 
         Examples:
-                  | length | errorMessage            | hint                            | type          |
-                  |     35 | none                    | none                            | Address lines |
-                  |     36 | 1 address line too long | Up to 35 characters are allowed | Address lines |
+                  | length | errorMessage                       | hint                      | type          |
+                  |     35 | none                               | none                      | Address lines |
+                  |     36 | 1 address line is the wrong length | Enter up to 35 characters | Address lines |
+
+        @api-upload
+        Examples:
+                  | length | errorMessage                       | hint                      | type          |
+                  |     35 | none                               | none                      | Address lines |
+                  |     36 | 1 address line is the wrong length | Enter up to 35 characters | Address lines |
 
 @regression @validation @rp14 @addVideo
 Scenario Outline: RP14 address town length boundary validation
@@ -25,10 +31,15 @@ Scenario Outline: RP14 address town length boundary validation
              Then the error summary should "<errorMessage>" with "<hintText>" With "<type>"
 
         Examples:
-                  | length | errorMessage            | hintText                        | type         |
-                  |     35 | none                    | none                            | Address town |
-                  |     36 | 1 address town too long | Up to 35 characters are allowed | Address town |
+                  | length | errorMessage                       | hintText                  | type         |
+                  |     35 | none                               | none                      | Address town |
+                  |     36 | 1 address town is the wrong length | Enter up to 35 characters | Address town |
 
+        @api-upload
+        Examples:
+                  | length | errorMessage                       | hintText                  | type         |
+                  |     35 | none                               | none                      | Address town |
+                  |     36 | 1 address town is the wrong length | Enter up to 35 characters | Address town |
 
 @regression @validation @rp14 @addVideo
 Scenario Outline: RP14 address county length boundary validation
@@ -37,10 +48,15 @@ Scenario Outline: RP14 address county length boundary validation
              Then the error summary should "<errorMessage>" with "<hintText>" With "<type>"
 
         Examples:
-                  | length | errorMessage              | hintText                        | type           |
-                  |     35 | none                      | none                            | Address county |
-                  |     36 | 1 address county too long | Up to 35 characters are allowed | Address county |
+                  | length | errorMessage                         | hintText                  | type           |
+                  |     35 | none                                 | none                      | Address county |
+                  |     36 | 1 address county is the wrong length | Enter up to 35 characters | Address county |
 
+        @api-upload
+        Examples:
+                  | length | errorMessage                         | hintText                  | type           |
+                  |     35 | none                                 | none                      | Address county |
+                  |     36 | 1 address county is the wrong length | Enter up to 35 characters | Address county |
 
 @regression @validation @rp14 @addVideo
 Scenario Outline: RP14 address postcode length boundary validation
@@ -49,11 +65,15 @@ Scenario Outline: RP14 address postcode length boundary validation
              Then the error summary should "<errorMessage>" with "<hintText>" With "<type>"
 
         Examples:
-                  | length | errorMessage                | hintText                        | type             |
-                  |     10 | none                        | none                            | Address postcode |
-                  |     11 | 1 address postcode too long | Up to 10 characters are allowed | Address postcode |
+                  | length | errorMessage                         | hintText                  | type             |
+                  |     10 | none                                 | none                      | Address postcode |
+                  |     11 | 1 address postcode is the wrong length | Enter up to 10 characters | Address postcode |
 
-
+        @api-upload
+        Examples:
+                  | length | errorMessage                             | hintText                  | type             |
+                  |     10 | none                                     | none                      | Address postcode |
+                  |     11 | 1 address postcode is the wrong length | Enter up to 10 characters | Address postcode |
 
 @regression @validation @rp14 @addVideo
 Scenario Outline: RP14 address line count boundary validation
@@ -62,6 +82,11 @@ Scenario Outline: RP14 address line count boundary validation
              Then the error summary should "<errorMessage>" with "<hintText>" With "<type>"
 
         Examples:
-                  | lineCount | errorMessage                      | hintText                  | type          |
-                  |         4 | none                              | none                      | Address lines |
-                  |         5 | 1 too many address lines provided | Up to 4 lines are allowed | Address lines |
+                  | lineCount | errorMessage | hintText | type          |
+                  |         4 | none         | none     | Address lines |
+
+        @api-upload
+        Examples:
+                  | lineCount | errorMessage                         | hintText                    | type          |
+                  |         4 | none                                 | none                        | Address lines |
+                  |         5 | 1 address lines are the wrong length | Enter up to 4 address lines | Address lines |
