@@ -37,6 +37,11 @@ public sealed class AddAnotherModel : PageModel
         AddAnotherItem = false;
     }
 
+    public override string[] GetSummaryInfo()
+    {
+        return Items.SelectMany(p => p.GetSummaryInfo()).ToArray();
+    }
+    
     public sealed class AddAnotherSummaryModel
     {
         public required string Value { get; init; }

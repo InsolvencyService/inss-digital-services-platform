@@ -1,5 +1,6 @@
 using Demo.GovUk.Forms.Bankruptcy.Builders;
 using GovUk.Forms.Components;
+using GovUk.Forms.Components.Resolvers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,8 @@ public class StartupConfiguration : IHostingStartup
             
             YourBankruptcyFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
+
+            services.AddSingleton<IStartPageResolver, StartPageResolver>();
         });
     }
 }

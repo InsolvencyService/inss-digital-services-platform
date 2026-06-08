@@ -1,10 +1,17 @@
 ﻿@model CheckAnswersModel
 
-<h1 class="govuk-heading-l">@Model.Information</h1>
+<h1 class="govuk-heading-l">@(Model.MetaData.Question ?? "Check your answers before continuing")</h1>
+
+@if (Model.MetaData.Description is not null)
+{
+    <p class="govuk-body">
+        @Model.MetaData.Description
+    </p>
+}
 
 <govuk-summary-list>
 
-    @foreach (CheckAnswersModel.CheckAnswersItem page in Model.Items)
+    @foreach (CheckAnswersItem page in Model.Items)
     {
         if (page.Values.Length == 0)
         {

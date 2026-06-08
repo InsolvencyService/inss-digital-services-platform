@@ -268,7 +268,7 @@
           "completedDate": null,
           "id": "f49979ad-dedf-4759-baa9-d7662fddeff1",
           "path": "/contact-us/send-us-files/summary",
-          "viewName": "_Summary",
+          "viewName": "_CheckAnswers",
           "encodingType": null,
           "fullWidthLayout": false,
           "submitType": "Form",

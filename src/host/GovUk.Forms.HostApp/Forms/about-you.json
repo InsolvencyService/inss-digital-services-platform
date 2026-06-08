@@ -232,7 +232,7 @@
           "completedDate": null,
           "id": "3a6a9efa-f0fd-47d5-90df-f9c0f7f3343f",
           "path": "/about-you/your-details/summary",
-          "viewName": "_Summary",
+          "viewName": "_CheckAnswers",
           "encodingType": null,
           "fullWidthLayout": false,
           "submitType": "Form",
