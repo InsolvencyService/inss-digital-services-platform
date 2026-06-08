@@ -16,7 +16,7 @@ public static class InsolvencyPractitionerValidationInfo
     {
         Key = nameof(InvalidIPFirmNameLength),
         Category = "Insolvency practitioner",
-        Property = "Firm number",
+        Property = "Firm name",
         SingularErrorPattern = "1 firm name is the wrong length",
         PluralErrorPattern = "[COUNT] firm names are the wrong length",
         Hint = "Enter up to 255 characters"
