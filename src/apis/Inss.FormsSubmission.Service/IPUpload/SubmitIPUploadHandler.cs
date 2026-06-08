@@ -91,11 +91,13 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
                 _logger.UpdatingDynamicsResponseInStore(jsonMessage.CorrelationId, reference);
                 await UpdateStoredMessageAsync(jsonMessage, reference, submitResponse, cancellationToken);
-
-                _logger.SendingGovNotifyEmail(reference);
-                await SendEmailAsync(reference, isEmployeeSubmission);
             });
         }
+        
+        // TODO: Determine overall success status
+        
+        _logger.SendingGovNotifyEmail(reference);
+        await SendEmailAsync(reference, isEmployeeSubmission);
     }
 
     private async Task<SubmitResponse> SubmitMessageToDynamicsAsync(JsonMessage jsonMessage, CancellationToken cancellationToken)
@@ -133,18 +135,22 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
     private static Task SendEmailAsync(string reference, bool isEmployeeSubmission)
     {
-        Dictionary<String, dynamic> personalisation = new Dictionary<String, dynamic>
+        Dictionary<String, dynamic> personalisation = new()
         {
             {"formType", isEmployeeSubmission ? "RP14A" : "RP14"},
             {"referenceNumber", reference},
-            {"succeeded/failed", ""},
+            {"succeeded/failed", "succeeded"}, // OR failed
             {"uploadDateAndTime", ""},
             {"rejectedState", ""}
         };
         NotificationClient client = new("api-key");
         EmailNotificationResponse response = client.SendEmail("email-address", "template-from-config", personalisation);
+
+        if (string.IsNullOrWhiteSpace(response.id))
+        {
+            // Handle error
+        }
         
-        response.
         // TODO: Send email once outcome of https://inssdigital.atlassian.net/browse/MEDS-1019 determined and requirements defined
         return Task.CompletedTask;
     }
