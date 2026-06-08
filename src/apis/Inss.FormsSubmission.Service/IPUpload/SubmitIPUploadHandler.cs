@@ -94,10 +94,12 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
             });
         }
         
-        // TODO: Determine overall success status
-        
-        _logger.SendingGovNotifyEmail(reference);
-        await SendEmailAsync(reference, isEmployeeSubmission);
+        await _backgroundDynamicsQueue.QueueAsync(async _ =>
+        {
+            // TODO: Determine overall success status
+            _logger.SendingGovNotifyEmail(reference);
+            await SendEmailAsync(reference, isEmployeeSubmission);
+        });
     }
 
     private async Task<SubmitResponse> SubmitMessageToDynamicsAsync(JsonMessage jsonMessage, CancellationToken cancellationToken)

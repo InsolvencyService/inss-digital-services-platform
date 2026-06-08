@@ -40,4 +40,30 @@ public class DynamicsStoreProvider : IDynamicsStoreProvider
             return null;
         }
     }
+    
+    public async Task<DynamicsSubmission[]> GetReferenceAsync(string reference, CancellationToken cancellationToken)
+    {
+        try
+        {
+            Database? database = _cosmosClient.GetDatabase(_databaseName);
+            Container? container = database.GetContainer(_containerName);
+            QueryRequestOptions options = new() { PartitionKey = new PartitionKey(reference) };
+            List<DynamicsSubmission> results = [];
+            
+            using (FeedIterator<DynamicsSubmission> iterator = container.GetItemQueryIterator<DynamicsSubmission>("SELECT * from c", requestOptions: options))
+            {
+                while (iterator.HasMoreResults)
+                {
+                    FeedResponse<DynamicsSubmission> response = await iterator.ReadNextAsync(cancellationToken);
+                    results.AddRange(response);
+                }
+            }
+
+            return results.ToArray();
+        }
+        catch (CosmosException error) when (error.StatusCode == HttpStatusCode.NotFound)
+        {
+            return [];
+        }
+    }
 }
