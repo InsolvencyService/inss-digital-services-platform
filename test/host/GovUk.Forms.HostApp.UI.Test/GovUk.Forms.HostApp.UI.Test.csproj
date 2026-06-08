@@ -4,15 +4,12 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="Resources\Rp14a\rp14A.xml" />
-	  <None Remove="Resources\Rp14\rp14.xml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Content Include="Resources\Rp14a\rp14A.xml">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="Resources\Rp14\rp14.xml">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
+
 	</ItemGroup>
 	
   <ItemGroup>
@@ -45,6 +42,10 @@
   <ItemGroup>
     <Folder Include="Features\Validation\" />
     <Folder Include="Hook\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\common\Inss.Common\Inss.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

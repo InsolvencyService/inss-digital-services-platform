@@ -48,6 +48,7 @@ public interface IRp14ScenarioCoordinator
     Task UploadRp14WithAssociatedCompanyNamesAsync(int associatedCompanyCount, string companyName);
     Task UploadRp14WithAssociatedCompanyReasonsAsync(int associatedCompanyCount, string reason);
     Task UploadRp14WithAssociatedCompanyNumbersAsync(int associatedCompanyCount, string companyNumber);
+    Task UploadRp14WithAllAssociatedCompaniesInvalidAsync(int count, string companyName, string reason, string companyNumber);
     Task UploadRp14WithEmploymentContinuityEmployerNameAsync(string? employerName);
     Task UploadRp14WithTransferToNameAsync(string? transferToName);
     Task UploadRp14WithPayRecordsContactEmailAddressAsync(string? emailAddress);
