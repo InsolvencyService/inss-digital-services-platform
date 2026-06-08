@@ -45,6 +45,11 @@ public static class TestFileFactory
         return filePath;
     }
 
+    public static string CreateEmptyFile(TestArtifacts artifacts)
+    {
+        return CreateFile(artifacts, "empty-rp14a.xml", string.Empty);
+    }
+
     public static string CreateUnsupportedFile(
         TestArtifacts artifacts,
         string extension)

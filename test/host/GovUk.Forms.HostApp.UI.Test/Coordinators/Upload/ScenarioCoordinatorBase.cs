@@ -11,15 +11,15 @@ public abstract class ScenarioCoordinatorBase
     protected IFileUploadCoordinator FileUploadCoordinator { get; }
     protected ScenarioContext ScenarioContext { get; }
     protected TestArtifacts TestArtifacts { get; }
-    protected string BaselineFilePath { get; }
+    protected string? BaselineFilePath { get; }
 
     protected ScenarioCoordinatorBase(
         IFileUploadCoordinator fileUploadCoordinator,
         ScenarioContext scenarioContext,
         TestArtifacts testArtifacts,
         string logTag,
-        string defaultBaselineFilePath,
-        string? baselineFilePath)
+        string? defaultBaselineFilePath = null,
+        string? baselineFilePath = null)
     {
         FileUploadCoordinator = fileUploadCoordinator
             ?? throw new ArgumentNullException(nameof(fileUploadCoordinator));
@@ -127,14 +127,17 @@ public abstract class ScenarioCoordinatorBase
         }
     }
 
-    private static string ResolveBaselineFilePath(
+    private static string? ResolveBaselineFilePath(
         string? baselineFilePath,
-        string defaultPath,
+        string? defaultPath,
         string logTag)
     {
-        string effectivePath = baselineFilePath ?? defaultPath;
+        string? effectivePath = baselineFilePath ?? defaultPath;
 
-        ArgumentException.ThrowIfNullOrWhiteSpace(effectivePath);
+        if (effectivePath is null)
+        {
+            return null;
+        }
 
         string absolutePath = Path.IsPathRooted(effectivePath)
             ? effectivePath

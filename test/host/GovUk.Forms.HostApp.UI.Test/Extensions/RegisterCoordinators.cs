@@ -1,11 +1,15 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Coordinators;
+﻿using GovUk.Forms.HostApp.UI.Test.Builders;
+using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
+using GovUk.Forms.HostApp.UI.Test.Support;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GovUk.Forms.HostApp.UI.Test.Extensions;
 
 public static class RegisterCoordinators
 {
+    private const string ApiUploadTag = "api-upload";
+
     public static void AddCoordinators(this IServiceCollection services)
     {
         services.AddScoped<DeclarationCoordinator>();
@@ -21,6 +25,15 @@ public static class RegisterCoordinators
         services.AddScoped<IRp14aScenarioCoordinator, Rp14aScenarioCoordinator>();
         services.AddScoped<IUploadVerificationCoordinator, UploadVerificationCoordinator>();
         services.AddScoped<IUploadNavigationCoordinator, UploadNavigationCoordinator>();
+        services.AddScoped<Func<IRp14FixtureBuilder>>(sp =>
+        {
+            ScenarioContext scenarioContext = sp.GetRequiredService<ScenarioContext>();
+            bool isApiUpload = scenarioContext.ScenarioInfo.Tags
+                .Contains(ApiUploadTag, StringComparer.OrdinalIgnoreCase);
+            return isApiUpload
+                ? () => new Rp14ApiFixtureBuilder()
+                : () => new Rp14SpreadsheetFixtureBuilder();
+        });
         services.AddScoped<IRp14ScenarioCoordinator, Rp14ScenarioCoordinator>();
     }
 }
