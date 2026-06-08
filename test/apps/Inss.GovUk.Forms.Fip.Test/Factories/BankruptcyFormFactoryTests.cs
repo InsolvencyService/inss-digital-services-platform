@@ -37,10 +37,10 @@ public class BankruptcyFormFactoryTests
 
         FormModel form = factory.Create();
 
-        SectionModel bankruptcyDetails = form.Sections["Find an Insolvency Practitioner"];
-        Assert.Equal(2, bankruptcyDetails.Pages.Count);
-        AssertSectionPage<DateModel>(bankruptcyDetails, "Todo", "/fip/search/todo");
-        AssertSectionPage<SummaryModel>(bankruptcyDetails, "TODO summary", "/fip/search/summary");
+        SectionModel section = form.Sections["Find an Insolvency Practitioner"];
+        Assert.Equal(2, section.Pages.Count);
+        AssertSectionPage<DateModel>(section, "Todo", "/fip/search/todo");
+        AssertSectionPage<SummaryModel>(section, "TODO summary", "/fip/search/summary");
     }
     
     private static void AssertSectionPage<TPage>(SectionModel section, string title, string path) where TPage : PageModel
