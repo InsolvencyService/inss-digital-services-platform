@@ -6,7 +6,7 @@ namespace Inss.GovUk.Forms.Fip.Test.Factories;
 
 // TODO: Fix this to match your form
 
-public class BankruptcyFormFactoryTests
+public class FipFormFactoryTests
 {
     [Fact]
     public void ForForm_Create_SetsFormPath()
