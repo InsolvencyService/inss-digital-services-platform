@@ -69,17 +69,17 @@ jobs:
                 deployToSlotOrASE: false
                 slotName: 'production'
 
-            - task: AzureRmWebAppDeployment@4
-              displayName: Deploy FIP Host App
-              inputs:
-                ConnectionType: 'AzureRM'
-                azureSubscription: ${{ parameters.azureSubscription }}
-                appType: 'webApp'
-                WebAppName: ${{ variables.fipAppName }}
-                resourceGroupName: ${{ variables.resourceGroupName }}
-                package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
-                deployToSlotOrASE: false
-                slotName: 'production'
+            #- task: AzureRmWebAppDeployment@4
+            #  displayName: Deploy FIP Host App
+            #  inputs:
+            #    ConnectionType: 'AzureRM'
+            #    azureSubscription: ${{ parameters.azureSubscription }}
+            #    appType: 'webApp'
+            #    WebAppName: ${{ variables.fipAppName }}
+            #    resourceGroupName: ${{ variables.resourceGroupName }}
+            #    package: '$(Pipeline.Workspace)/**/GovUk.Forms.HostApp.zip'
+            #    deployToSlotOrASE: false
+            #    slotName: 'production'
                 
             #- task: AzureAppServiceManage@0
             #  displayName: Start Staging Slot
