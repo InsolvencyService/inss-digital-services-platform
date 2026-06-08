@@ -6,6 +6,8 @@ using Inss.FormsSubmission.Service.IPUpload.Clients;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
 using Inss.FormsSubmission.Service.IPUpload.Persistence;
 using Inss.FormsSubmission.Service.IPUpload.Processing;
+using Notify.Client;
+using Notify.Models.Responses;
 
 namespace Inss.FormsSubmission.Service.IPUpload;
 
@@ -39,7 +41,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
         await StoreMessageAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
 
-        await SubmitMessagesToDynamics(jsonMessages, reference, cancellationToken);
+        await SubmitMessagesToDynamics(jsonMessages, reference, request.IsEmployeeUpload, cancellationToken);
         
         return new SubmitIPUploadResponse { Reference = reference };
     }
@@ -74,7 +76,11 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         }
     }
 
-    private async Task SubmitMessagesToDynamics(JsonMessage[] jsonMessages, string reference, CancellationToken cancellationToken)
+    private async Task SubmitMessagesToDynamics(
+        JsonMessage[] jsonMessages, 
+        string reference, 
+        bool isEmployeeSubmission, 
+        CancellationToken cancellationToken)
     {
         foreach (JsonMessage jsonMessage in jsonMessages)
         {
@@ -87,7 +93,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
                 await UpdateStoredMessageAsync(jsonMessage, reference, submitResponse, cancellationToken);
 
                 _logger.SendingGovNotifyEmail(reference);
-                await SendEmailAsync();
+                await SendEmailAsync(reference, isEmployeeSubmission);
             });
         }
     }
@@ -125,8 +131,20 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         await _dynamicsStoreProvider.StoreAsync(dynamicsSubmission, cancellationToken);
     }
 
-    private static Task SendEmailAsync()
+    private static Task SendEmailAsync(string reference, bool isEmployeeSubmission)
     {
+        Dictionary<String, dynamic> personalisation = new Dictionary<String, dynamic>
+        {
+            {"formType", isEmployeeSubmission ? "RP14A" : "RP14"},
+            {"referenceNumber", reference},
+            {"succeeded/failed", ""},
+            {"uploadDateAndTime", ""},
+            {"rejectedState", ""}
+        };
+        NotificationClient client = new("api-key");
+        EmailNotificationResponse response = client.SendEmail("email-address", "template-from-config", personalisation);
+        
+        response.
         // TODO: Send email once outcome of https://inssdigital.atlassian.net/browse/MEDS-1019 determined and requirements defined
         return Task.CompletedTask;
     }
