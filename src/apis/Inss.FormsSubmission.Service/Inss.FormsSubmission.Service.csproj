@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.Identity.Web.TokenCache" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="OpenTelemetry.Api" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" VersionOverride="8.19.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\Inss.Common.Infrastructure\Inss.Common.Infrastructure.csproj" />
