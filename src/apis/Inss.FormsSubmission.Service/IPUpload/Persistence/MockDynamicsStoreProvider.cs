@@ -18,4 +18,9 @@ public sealed class MockDynamicsStoreProvider : IDynamicsStoreProvider
     {
         return Task.FromResult<DynamicsSubmission?>(_cache[id]);
     }
+
+    public Task<DynamicsSubmission[]> GetByReferenceAsync(string reference, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(_cache.Where(e => e.Value.Reference == reference).Select(e => e.Value).ToArray());
+    }
 }

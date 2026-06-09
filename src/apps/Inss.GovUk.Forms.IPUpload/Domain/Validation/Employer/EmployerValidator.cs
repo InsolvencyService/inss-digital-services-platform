@@ -241,7 +241,7 @@ public abstract partial class EmployerValidator : BaseValidator
     
     protected static void ValidateIPPhone(ValidatorContext context, string phone)
     {
-        if (!string.IsNullOrEmpty(phone) && phone.Length > 40)
+        if (!string.IsNullOrEmpty(phone) && phone.Length > 12)
         {
             context.AddError(InsolvencyPractitionerValidationInfo.InvalidIPPhoneLength(), phone);
         }

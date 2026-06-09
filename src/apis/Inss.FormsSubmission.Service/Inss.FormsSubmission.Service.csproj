@@ -3,6 +3,7 @@
     <UserSecretsId>33a2a910-96b0-432c-b19b-0cd08f89e407</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="GovukNotify" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />  

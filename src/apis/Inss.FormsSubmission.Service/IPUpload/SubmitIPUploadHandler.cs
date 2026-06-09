@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 using Inss.Common.IPUpload;
 using Inss.FormsSubmission.Service.Extensions;
 using Inss.FormsSubmission.Service.Handlers;
@@ -6,6 +7,7 @@ using Inss.FormsSubmission.Service.IPUpload.Clients;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
 using Inss.FormsSubmission.Service.IPUpload.Persistence;
 using Inss.FormsSubmission.Service.IPUpload.Processing;
+using Inss.FormsSubmission.Service.IPUpload.Services;
 
 namespace Inss.FormsSubmission.Service.IPUpload;
 
@@ -15,6 +17,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private readonly IDynamicsStoreProvider _dynamicsStoreProvider;
     private readonly IBackgroundDynamicsQueue _backgroundDynamicsQueue;
     private readonly IDynamicsClient _dynamicsClient;
+    private readonly INotifyEmailService _notifyEmailService;
     private readonly ILogger<SubmitIPUploadHandler> _logger;
 
     public SubmitIPUploadHandler(
@@ -22,12 +25,14 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         IDynamicsStoreProvider dynamicsStoreProvider, 
         IBackgroundDynamicsQueue backgroundDynamicsQueue,
         IDynamicsClient dynamicsClient,
+        INotifyEmailService notifyEmailService,
         ILogger<SubmitIPUploadHandler> logger)
     {
         _mapperFactory = mapperFactory;
         _dynamicsStoreProvider = dynamicsStoreProvider;
         _backgroundDynamicsQueue = backgroundDynamicsQueue;
         _dynamicsClient = dynamicsClient;
+        _notifyEmailService = notifyEmailService;
         _logger = logger;
     }
     
@@ -39,7 +44,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
         await StoreMessageAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
 
-        await SubmitMessagesToDynamics(jsonMessages, reference, cancellationToken);
+        await SubmitMessagesToDynamicsAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
         
         return new SubmitIPUploadResponse { Reference = reference };
     }
@@ -74,8 +79,15 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         }
     }
 
-    private async Task SubmitMessagesToDynamics(JsonMessage[] jsonMessages, string reference, CancellationToken cancellationToken)
+    private async Task SubmitMessagesToDynamicsAsync(
+        JsonMessage[] jsonMessages, 
+        string reference, 
+        string userId,
+        bool isEmployeeSubmission, 
+        CancellationToken cancellationToken)
     {
+        DateTimeOffset submissionDate = TimeProvider.System.GetUtcNow();
+        
         foreach (JsonMessage jsonMessage in jsonMessages)
         {
             await _backgroundDynamicsQueue.QueueAsync(async _ =>
@@ -85,11 +97,18 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
                 _logger.UpdatingDynamicsResponseInStore(jsonMessage.CorrelationId, reference);
                 await UpdateStoredMessageAsync(jsonMessage, reference, submitResponse, cancellationToken);
-
-                _logger.SendingGovNotifyEmail(reference);
-                await SendEmailAsync();
             });
         }
+        
+        await _backgroundDynamicsQueue.QueueAsync(async _ =>
+        {
+            _logger.LoadSubmittedDynamicsMessages(reference);
+            DynamicsSubmission[] submissions = await _dynamicsStoreProvider.GetByReferenceAsync(reference, cancellationToken);
+            
+            _logger.SendingGovNotifyEmail(reference);
+            await SendEmailAsync(reference, userId, submissionDate, isEmployeeSubmission, submissions);
+        });
+    
     }
 
     private async Task<SubmitResponse> SubmitMessageToDynamicsAsync(JsonMessage jsonMessage, CancellationToken cancellationToken)
@@ -120,14 +139,27 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         }
 
         dynamicsSubmission.StatusCode = submitResponse.StatusCode.ToString();
-        dynamicsSubmission.ErrorInfo = submitResponse.Error;
+        dynamicsSubmission.ErrorInfo = submitResponse.Error is not null ? JsonSerializer.Deserialize<ErrorInfo>(submitResponse.Error) : null;
 
         await _dynamicsStoreProvider.StoreAsync(dynamicsSubmission, cancellationToken);
     }
 
-    private static Task SendEmailAsync()
+    private Task SendEmailAsync(
+        string reference, 
+        string userId,
+        DateTimeOffset submissionDate, 
+        bool isEmployeeSubmission, 
+        DynamicsSubmission[] submissions)
     {
-        // TODO: Send email once outcome of https://inssdigital.atlassian.net/browse/MEDS-1019 determined and requirements defined
+        bool submissionFailed = submissions.Any(s => s.ErrorInfo is not null);
+
+        _notifyEmailService.SendExternalEmail(userId, reference, submissionDate, isEmployeeSubmission, submissions);
+
+        if (submissionFailed)
+        {
+            _notifyEmailService.SendInternalEmail(reference, submissionDate, isEmployeeSubmission, submissions);
+        }
+
         return Task.CompletedTask;
     }
 }
