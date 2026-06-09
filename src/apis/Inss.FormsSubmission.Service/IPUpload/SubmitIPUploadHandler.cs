@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 using Inss.Common.IPUpload;
 using Inss.FormsSubmission.Service.Extensions;
 using Inss.FormsSubmission.Service.Handlers;
@@ -6,10 +7,7 @@ using Inss.FormsSubmission.Service.IPUpload.Clients;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
 using Inss.FormsSubmission.Service.IPUpload.Persistence;
 using Inss.FormsSubmission.Service.IPUpload.Processing;
-using Inss.FormsSubmission.Service.Options;
-using Microsoft.Extensions.Options;
-using Notify.Interfaces;
-using Notify.Models.Responses;
+using Inss.FormsSubmission.Service.IPUpload.Services;
 
 namespace Inss.FormsSubmission.Service.IPUpload;
 
@@ -19,8 +17,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private readonly IDynamicsStoreProvider _dynamicsStoreProvider;
     private readonly IBackgroundDynamicsQueue _backgroundDynamicsQueue;
     private readonly IDynamicsClient _dynamicsClient;
-    private readonly INotificationClient _notificationClient;
-    private readonly IOptions<NotifyOptions> _notifyOptions;
+    private readonly INotifyEmailService _notifyEmailService;
     private readonly ILogger<SubmitIPUploadHandler> _logger;
 
     public SubmitIPUploadHandler(
@@ -28,16 +25,14 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         IDynamicsStoreProvider dynamicsStoreProvider, 
         IBackgroundDynamicsQueue backgroundDynamicsQueue,
         IDynamicsClient dynamicsClient,
-        INotificationClient notificationClient,
-        IOptions<NotifyOptions> notifyOptions,
+        INotifyEmailService notifyEmailService,
         ILogger<SubmitIPUploadHandler> logger)
     {
         _mapperFactory = mapperFactory;
         _dynamicsStoreProvider = dynamicsStoreProvider;
         _backgroundDynamicsQueue = backgroundDynamicsQueue;
         _dynamicsClient = dynamicsClient;
-        _notificationClient = notificationClient;
-        _notifyOptions = notifyOptions;
+        _notifyEmailService = notifyEmailService;
         _logger = logger;
     }
     
@@ -49,7 +44,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
         await StoreMessageAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
 
-        await SubmitMessagesToDynamics(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
+        await SubmitMessagesToDynamicsAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
         
         return new SubmitIPUploadResponse { Reference = reference };
     }
@@ -84,7 +79,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         }
     }
 
-    private async Task SubmitMessagesToDynamics(
+    private async Task SubmitMessagesToDynamicsAsync(
         JsonMessage[] jsonMessages, 
         string reference, 
         string userId,
@@ -113,6 +108,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
             _logger.SendingGovNotifyEmail(reference);
             await SendEmailAsync(reference, userId, submissionDate, isEmployeeSubmission, submissions);
         });
+    
     }
 
     private async Task<SubmitResponse> SubmitMessageToDynamicsAsync(JsonMessage jsonMessage, CancellationToken cancellationToken)
@@ -143,7 +139,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         }
 
         dynamicsSubmission.StatusCode = submitResponse.StatusCode.ToString();
-        dynamicsSubmission.ErrorInfo = submitResponse.Error;
+        dynamicsSubmission.ErrorInfo = submitResponse.Error is not null ? JsonSerializer.Deserialize<ErrorInfo>(submitResponse.Error) : null;
 
         await _dynamicsStoreProvider.StoreAsync(dynamicsSubmission, cancellationToken);
     }
@@ -156,41 +152,14 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         DynamicsSubmission[] submissions)
     {
         bool submissionFailed = submissions.Any(s => s.ErrorInfo is not null);
-        Dictionary<String, dynamic> personalisation = GetPersonalisation(reference, submissionDate, isEmployeeSubmission, submissionFailed);
 
-        SendEmail(userId, reference, personalisation);
+        _notifyEmailService.SendExternalEmail(userId, reference, submissionDate, isEmployeeSubmission, submissions);
 
-        if (submissionFailed && _notifyOptions.Value.IPUploadBccEmail is not null)
+        if (submissionFailed)
         {
-            SendEmail(_notifyOptions.Value.IPUploadBccEmail, reference, personalisation);
+            _notifyEmailService.SendInternalEmail(reference, submissionDate, isEmployeeSubmission, submissions);
         }
 
         return Task.CompletedTask;
-    }
-
-    private void SendEmail(string email, string reference, Dictionary<String, dynamic> personalisation)
-    {
-        EmailNotificationResponse response = _notificationClient.SendEmail(email, _notifyOptions.Value.IPUploadTemplateId, personalisation);
-
-        if (string.IsNullOrWhiteSpace(response.id))
-        {
-            _logger.EmailFailed(reference);
-        }
-    }
-    
-    private static Dictionary<String, dynamic> GetPersonalisation(
-        string reference,
-        DateTimeOffset submissionDate,
-        bool isEmployeeSubmission,
-        bool submissionFailed)
-    {
-        return new Dictionary<String, dynamic>
-        {
-            {"formType", isEmployeeSubmission ? "RP14A" : "RP14"},
-            {"referenceNumber", reference},
-            {"succeeded/failed", submissionFailed ? "failed" : "succeeded"},
-            {"uploadDateAndTime", $"{submissionDate:F}"},
-            {"rejectedState", ""} // TODO:
-        };
     }
 }

@@ -10,7 +10,11 @@ public sealed class NotifyOptions
     public string ApiKey { get; init; }
     
     [Required]
-    public string IPUploadTemplateId { get; init; }
+    public string IPUploadExternalTemplateId { get; init; }
     
-    public string? IPUploadBccEmail { get; init; }
+    [Required]
+    public string IPUploadInternalTemplateId { get; init; }
+    
+    [Required]
+    public string IPUploadInternalEmail { get; init; }
 }
