@@ -20,6 +20,11 @@ public sealed class ContactUsFormFactory : IFormFactory
             .AddFinalGroupPage<AddAnotherModel>("Uploaded files", "add-another-file", submitButtonText: "Continue")
             .EndSection<SummaryModel>("Contact us summary", "summary", submitButtonText: "Continue")
 
+            // TODO: Add a specific builder to help construct the search page with columns and display info
+            .AddSection("Find People", "find-people")
+            .AddPage<SearchModel>("Search", "search", submitButtonText: "Search")
+            .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
+            
             .ValidateAndComplete();
     }
 }

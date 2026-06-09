@@ -1,0 +1,18 @@
+﻿@model SearchModel
+
+@* 
+If the search text is empty then show the field to allow the user to enter a search else display any results 
+We will want to (potentially) show details which will be based upon the state passed in e.g. an Id of a specific
+result
+*@
+@if (string.IsNullOrWhiteSpace(Model.SearchText))
+{
+    <govuk-input for="@Model.SearchText" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+        <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.MetaData.Question ?? "Enter a search?")</govuk-input-label>
+        <govuk-input-hint>@(Model.MetaData.Hint ?? "Enter the first name and/or last name")</govuk-input-hint>
+    </govuk-input>
+}
+else
+{
+    
+}

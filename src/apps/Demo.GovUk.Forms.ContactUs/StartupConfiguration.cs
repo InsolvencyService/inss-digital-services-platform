@@ -16,8 +16,12 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
-            ContactUsFlowchart flowchartBuilder = new();
-            flowchartBuilder.Construct(services);
+            
+            ContactUsFlowchart contactUsBuilder = new();
+            contactUsBuilder.Construct(services);
+            
+            FindPeopleFlowchart findPeopleFlowchart = new();
+            findPeopleFlowchart.Construct(services);
         });
     }
 }
