@@ -8,6 +8,14 @@ public class SearchModel : PageModel
     public string SearchText { get; set; }
 
     public bool DisplayAsTable { get; init; }
+
+    public SearchResultColumn[] ResultColumns { get; set; } = [];
+
+    public void AddResultColumn(string name, string? css)
+    {
+        List<SearchResultColumn> columns = [..ResultColumns, new() { Name = name, Css = css }];
+        ResultColumns = columns.ToArray();
+    }
     
     public override string[] GetSummaryInfo()
     {
@@ -26,4 +34,11 @@ public class SearchModel : PageModel
         base.ClearValues();
         SearchText = string.Empty;
     }
+}
+
+public sealed class SearchResultColumn
+{
+    public required string Name { get; init; }
+    
+    public string? Css { get; init; } // TODO: Enum?
 }

@@ -42,6 +42,32 @@ public sealed class SectionModelBuilder
         return this;
     }
 
+    public SearchModelBuilder AddSearchPage<TPage>(
+        string title, 
+        string path, 
+        string? question = null, 
+        string? hint = null,
+        string? description = null,
+        string? submitButtonText = null) 
+        where TPage : SearchModel, new()
+    {
+        TPage page = new()
+        {
+            Title = title, 
+            Path = $"{_section.Path}/{path}", 
+            SubmitType = _section.SubmitType,
+            MetaData =
+            {
+                Question = question,
+                Hint = hint,
+                Description = description,
+                SubmitButtonText = submitButtonText 
+            }
+        };
+        _section.Pages.Add(page);
+        return new SearchModelBuilder(this, page);
+    }
+    
     public GroupModelBuilder AddGroup<TGroup>(GroupId group) where TGroup : GroupPageModel, new()
     {
         return new GroupModelBuilder(new TGroup { MetaData = { Group = group } }, _section, this);

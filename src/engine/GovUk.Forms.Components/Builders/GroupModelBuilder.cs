@@ -72,3 +72,27 @@ public sealed class GroupModelBuilder
         return _sectionModelBuilder;
     }
 }
+
+public sealed class SearchModelBuilder
+{
+    private readonly SectionModelBuilder _sectionModelBuilder;
+    private readonly SearchModel _search;
+
+    internal SearchModelBuilder(SectionModelBuilder sectionModelBuilder, SearchModel search)
+    {
+        _sectionModelBuilder = sectionModelBuilder;
+        _search = search;
+    }
+
+    public SearchModelBuilder AddSearchResultColumn(string name, string? css = null) // TODO: css poss enum?
+    {
+        // TODO: Validate name not exists
+        _search.AddResultColumn(name, css);
+        return this;
+    }
+    
+    public SectionModelBuilder AddFinalColumn(string name, string? css = null) // TODO: css poss enum?
+    {
+        return _sectionModelBuilder;
+    }
+}
