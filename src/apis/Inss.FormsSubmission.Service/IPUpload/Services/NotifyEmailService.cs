@@ -13,7 +13,16 @@ public sealed class NotifyEmailService : INotifyEmailService
     private readonly INotificationClient _notificationClient;
     private readonly IOptions<NotifyOptions> _notifyOptions;
     private readonly ILogger<NotifyEmailService> _logger;
-
+    private const string RP14A = "RP14A";
+    private const string RP14 = "RP14";
+    private const string Succeeded = "succeeded";
+    private const string Failed = "failed";
+    private const string FormTypeKey = "formType";
+    private const string ReferenceNumberKey = "referenceNumber";
+    private const string SucceededFailedKey = "succeeded/failed";
+    private const string UploadDateAndTimeKey = "uploadDateAndTime";
+    private const string ErrorCollectionKey = "errorCollection";
+    
     public NotifyEmailService(
         INotificationClient notificationClient, 
         IOptions<NotifyOptions> notifyOptions, 
@@ -23,7 +32,7 @@ public sealed class NotifyEmailService : INotifyEmailService
         _notifyOptions = notifyOptions;
         _logger = logger;
     }
-
+    
     public void SendExternalEmail(
         string email,
         string reference, 
@@ -34,10 +43,10 @@ public sealed class NotifyEmailService : INotifyEmailService
         bool submissionFailed = submissions.Any(s => s.ErrorInfo is not null);
         Dictionary<String, dynamic> personalisation = new()
         {
-            { "formType", isEmployeeSubmission ? "RP14A" : "RP14" },
-            { "referenceNumber", reference },
-            { "succeeded/failed", submissionFailed ? "failed" : "succeeded" },
-            { "uploadDateAndTime", $"{submissionDate:F}" }
+            { FormTypeKey, isEmployeeSubmission ? RP14A : RP14 },
+            { ReferenceNumberKey, reference },
+            { SucceededFailedKey, submissionFailed ? Failed : Succeeded },
+            { UploadDateAndTimeKey, $"{submissionDate:F}" }
         };
         
         EmailNotificationResponse response = _notificationClient.SendEmail(
@@ -61,10 +70,10 @@ public sealed class NotifyEmailService : INotifyEmailService
         _logger.SubmissionFailedErrors(reference, errors);
         Dictionary<String, dynamic> personalisation = new()
         {
-            {"formType", isEmployeeSubmission ? "RP14A" : "RP14"},
-            {"referenceNumber", reference},
-            {"uploadDateAndTime", $"{submissionDate:F}"},
-            {"errorCollection", errors}
+            { FormTypeKey, isEmployeeSubmission ? RP14A : RP14 },
+            { ReferenceNumberKey, reference },
+            { UploadDateAndTimeKey, $"{submissionDate:F}" },
+            { ErrorCollectionKey, errors }
         };
         
         EmailNotificationResponse response = _notificationClient.SendEmail(
