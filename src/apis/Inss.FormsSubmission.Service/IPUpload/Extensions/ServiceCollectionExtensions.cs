@@ -25,7 +25,7 @@ internal static class ServiceCollectionExtensions
             services.AddSingleton<IMapperFactory, MapperFactory>();
             services.AddTransient<IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse>, SubmitIPUploadHandler>();
 
-            if (!context.HostingEnvironment.IsDevelopment())
+            if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddSingleton<IDynamicsStoreProvider, MockDynamicsStoreProvider>();
                 services.AddHttpClient<IDynamicsClient, MockDynamicsClient>();
