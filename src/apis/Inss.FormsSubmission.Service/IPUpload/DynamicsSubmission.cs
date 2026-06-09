@@ -1,4 +1,5 @@
 ﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Inss.FormsSubmission.Service.IPUpload;
 
 public sealed class DynamicsSubmission
@@ -15,7 +16,7 @@ public sealed class DynamicsSubmission
     
     public string? StatusCode { get; set; }
     
-    public string? ErrorInfo { get; set; }
+    public ErrorInfo? ErrorInfo { get; set; }
     
     public DateTimeOffset SubmissionTimestamp { get; init; }
 }

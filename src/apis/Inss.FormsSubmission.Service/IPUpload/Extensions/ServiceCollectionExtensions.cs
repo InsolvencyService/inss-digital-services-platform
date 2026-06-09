@@ -9,6 +9,7 @@ using Inss.FormsSubmission.Service.IPUpload.Clients;
 using Inss.FormsSubmission.Service.IPUpload.Mapping;
 using Inss.FormsSubmission.Service.IPUpload.Persistence;
 using Inss.FormsSubmission.Service.IPUpload.Processing;
+using Inss.FormsSubmission.Service.IPUpload.Services;
 using Inss.FormsSubmission.Service.Options;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
@@ -56,7 +57,8 @@ internal static class ServiceCollectionExtensions
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
                         sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
             }
-            
+
+            services.AddTransient<INotifyEmailService, NotifyEmailService>();
             services.AddSingleton<IBackgroundDynamicsQueue, BackgroundDynamicsQueue>();
             services.AddHostedService<QueuedDynamicsHostedService>();
 
