@@ -19,16 +19,16 @@ public static class AssociatedCompanyValidationInfo
         Property = "Associated company number",
         SingularErrorPattern = "1 associated company number is the wrong length",
         PluralErrorPattern = "[COUNT] associated company numbers are the wrong length",
-        Hint = "Enter up to 255 characters"
+        Hint = "Enter up to 9 characters"
     };
     
     public static ValidationInfo InvalidAssociationReasonLength() => new()
     {
         Key = nameof(InvalidAssociationReasonLength),
         Category = "Associated company",
-        Property = "Associated company number",
-        SingularErrorPattern = "1 association reason is the wrong length",
-        PluralErrorPattern = "[COUNT] association reasons are the wrong length",
-        Hint = "Enter up to 9 characters"
+        Property = "Reason for association",
+        SingularErrorPattern = "1 reason for association is the wrong length",
+        PluralErrorPattern = "[COUNT] reason for associations are the wrong length",
+        Hint = "Enter up to 255 characters"
     };
 }
