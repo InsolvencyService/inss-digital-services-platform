@@ -14,9 +14,8 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
     {
         NodeId searchId = "Search";
         NodeId summaryId = "Summary";
-        WebRoot webRoot = new();
         
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["Find People"];
 
         SearchModel search = section.Pages.GetFirstOf<SearchModel>();
