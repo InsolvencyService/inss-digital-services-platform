@@ -1,8 +1,8 @@
 ﻿@MEDS-1067
-Feature: Case Validation
+Feature: Case References Validation
 
-              As an Insolvency Practitioner user
-              I want RP14A validation to run before submission to Dynamics
+ As an Insolvency Practitioner user
+ I want RP14A validation to run before submission to Dynamics
   So that I can fix errors immediately and avoid delayed rejection
 
         Background:

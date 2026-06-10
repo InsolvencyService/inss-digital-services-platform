@@ -7,7 +7,7 @@ using GovUk.Forms.HostApp.UI.Test.Tags;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
-[Scope(Feature = "Case Validation")]
+[Scope(Feature = "Case References Validation")]
 [Binding]
 public sealed class CaseValidationSteps : ValidationStepsBase
 {
