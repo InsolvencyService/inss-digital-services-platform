@@ -1,5 +1,8 @@
+using Demo.GovUk.Forms.ContactUs.Application.Factories;
 using Demo.GovUk.Forms.ContactUs.Builders;
+using Demo.GovUk.Forms.ContactUs.Factories;
 using GovUk.Forms.Components;
+using GovUk.Forms.Components.Factories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StartupConfiguration = Demo.GovUk.Forms.ContactUs.StartupConfiguration;
@@ -16,6 +19,7 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
+            services.AddSingleton<IFormFactory, ContactUsFormFactory>();
             
             ContactUsFlowchart contactUsBuilder = new();
             contactUsBuilder.Construct(services);

@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Net.Mime;
+using GovUk.Forms.Application.Factories;
+using Inss.GovUk.Forms.IPUpload.Application.Factories;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Infrastructure.Handlers;
 
@@ -29,7 +31,8 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
-
+            services.AddSingleton<IFormFactory, IPUploadFormFactory>();
+            
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
 
             DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;

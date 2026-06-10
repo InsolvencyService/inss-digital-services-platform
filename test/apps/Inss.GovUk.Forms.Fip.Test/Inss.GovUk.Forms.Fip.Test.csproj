@@ -14,4 +14,8 @@
         <ProjectReference Include="..\..\..\src\apps\Inss.GovUk.Forms.Fip\Inss.GovUk.Forms.Fip.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Application\" />
+    </ItemGroup>
+
 </Project>

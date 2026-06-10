@@ -36,7 +36,6 @@ public static class ServiceCollectionExtensions
                 return new TestFormStorageProvider();
             });
             
-            services.AddSingleton<IFormProvider, TestFormProvider>();
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             return services;
         }

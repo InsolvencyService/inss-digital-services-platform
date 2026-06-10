@@ -23,9 +23,8 @@ public sealed class YourDetailsFlowchart : DefineFlowchartBuilder
         NodeId ownHomeId = "OwnsHome";
         NodeId homeValueId = "HomeValue";
         NodeId summaryId = "Summary";
-        WebRoot webRoot = new();
         
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["Your Details"];
         
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();

@@ -25,6 +25,12 @@
     <_ContentIncludedByDefault Remove="wwwroot\frontend\govuk-frontend-5.11.1.min.js" />
     <_ContentIncludedByDefault Remove="wwwroot\frontend\govuk-frontend-5.11.1.min.js.map" />
     <_ContentIncludedByDefault Remove="wwwroot\frontend\VERSION.txt" />
+    <_ContentIncludedByDefault Remove="Forms\about-you.json" />
+    <_ContentIncludedByDefault Remove="Forms\bankruptcy.json" />
+    <_ContentIncludedByDefault Remove="Forms\business.json" />
+    <_ContentIncludedByDefault Remove="Forms\contact-us.json" />
+    <_ContentIncludedByDefault Remove="Forms\fip.json" />
+    <_ContentIncludedByDefault Remove="Forms\ip-upload.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controllers\FormController.Pages.cs">

@@ -1,4 +1,6 @@
+using Demo.GovUk.Forms.Business.Application.Factories;
 using Demo.GovUk.Forms.Business.Builders;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,7 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
+            services.AddSingleton<IFormFactory, BusinessFormFactory>();
             
             YourCreditorsAndDebtorsFlowchart yourCreditorsAndDebtorsFlowchart = new();
             yourCreditorsAndDebtorsFlowchart.Construct(services);

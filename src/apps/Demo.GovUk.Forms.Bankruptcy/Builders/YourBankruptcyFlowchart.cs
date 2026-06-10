@@ -15,9 +15,8 @@ public sealed class YourBankruptcyFlowchart : DefineFlowchartBuilder
     {
         NodeId bankruptcyDateId = "BankruptcyDate";
         NodeId summaryId = "Summary";
-        WebRoot webRoot = new();
         
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["Bankruptcy"];
             
         DateModel bankruptcyDate = section.Pages.GetFirstOf<DateModel>();
