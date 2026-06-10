@@ -11,7 +11,7 @@ using static GovUk.Forms.HostApp.UI.Test.Models.TestData.TestFactory;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
-[Scope(Feature = "Employee Validation")]
+[Scope(Feature = "Employees Validation")]
 [Binding]
 public sealed class EmployeeValidationSteps : ValidationStepsBase
 {

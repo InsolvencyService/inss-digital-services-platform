@@ -1,12 +1,12 @@
 ﻿@MEDS-1067
-Feature: Employer Validation
+Feature: Employer Details Validation
 
-              As an Insolvency Practitioner user
-              I want RP14A validation to run before submission to Dynamics
-  So that I can fix errors immediately and avoid delayed rejection
+As an Insolvency Practitioner user
+I want RP14A validation to run before submission to Dynamics
+So that I can fix errors immediately and avoid delayed rejection
 
-        Background:
-            Given I am on the upload page as a "Admin" user
+ Background:
+      Given I am on the upload page as a "Admin" user
 
  @regression @validation @rp14a @addVideo
  Scenario Outline: Employer name length boundary validation
@@ -98,3 +98,4 @@ Scenario: RP14A API display multiple errors for the same employee
                   | Employee     | Money owed to employer             | 1 amount owed to the employer is incorrect         | Enter a number like 12.34 or 100                     |
                   | Employee pay | Employee basic pay per week        | 1 weekly pay amount is incorrect                   | Enter a number like 12.34 or 100                     |
              And I should be able to view error details for all validation categories
+
