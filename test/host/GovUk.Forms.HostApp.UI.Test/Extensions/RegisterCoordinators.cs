@@ -30,7 +30,7 @@ public static class RegisterCoordinators
                 .Contains(ApiUploadTag, StringComparer.OrdinalIgnoreCase);
             return isApiUpload
                 ? () => new Rp14aApiFixtureBuilder()
-                : () => new Rp14aFixtureBuilder();
+                : () => new Rp14aSpreadsheetFixtureBuilder();
         });
         services.AddScoped<IRp14aScenarioCoordinator, Rp14aScenarioCoordinator>();
         services.AddScoped<IUploadVerificationCoordinator, UploadVerificationCoordinator>();

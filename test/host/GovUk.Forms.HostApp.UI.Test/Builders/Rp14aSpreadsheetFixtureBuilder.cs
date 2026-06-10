@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace GovUk.Forms.HostApp.UI.Test.Builders;
 
-public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
+public sealed class Rp14aSpreadsheetFixtureBuilder : IRp14aFixtureBuilder
 {
     private const string Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application";
     private const string NsPrefix = "ns1";
@@ -396,7 +396,7 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
         return new Rp14aTestFile(filePath, appliedMutations, _targetEmployeeIndex, DateTime.UtcNow);
     }
 
-    private Rp14aFixtureBuilder Set(
+    private Rp14aSpreadsheetFixtureBuilder Set(
         string elementName,
         string? value,
         bool nullMeansEmpty = true)
