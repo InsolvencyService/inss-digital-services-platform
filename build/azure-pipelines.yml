@@ -116,7 +116,7 @@ stages:
 
 - stage: DeployPreProd
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  dependsOn: DeployDev
+  dependsOn: DeploySit
   displayName: 'Deploy to PreProd'
   variables:
     - group: Platform-PreProd
