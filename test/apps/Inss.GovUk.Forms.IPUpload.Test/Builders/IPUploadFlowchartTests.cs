@@ -1,8 +1,8 @@
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Domain;
+using Inss.GovUk.Forms.IPUpload.Application.Factories;
 using Inss.GovUk.Forms.IPUpload.Builders;
-using Inss.GovUk.Forms.IPUpload.Factories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -20,9 +20,7 @@ public class IPUploadFlowchartTests
         IPUploadFormFactory formFactory = new();
         FormModel form = formFactory.Create();
         SectionModel section = form.Sections["IP Upload"];
-        IFormProvider formProvider = Substitute.For<IFormProvider>();
-        formProvider.Create(form.Path).Returns(form);
-        builder.Services.AddSingleton(formProvider);
+        builder.Services.AddSingleton<IFormFactory>(formFactory);
         IPUploadFlowchart flowchart = new();
         
         flowchart.Construct(builder.Services);

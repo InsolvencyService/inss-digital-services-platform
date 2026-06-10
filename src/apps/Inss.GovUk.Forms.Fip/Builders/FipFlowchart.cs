@@ -16,9 +16,8 @@ public sealed class FipFlowchart : DefineFlowchartBuilder
     {
         NodeId dateId = "Date";
         NodeId summaryId = "Summary";
-        WebRoot webRoot = new();
         
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["Find an Insolvency Practitioner"];
             
         DateModel bankruptcyDate = section.Pages.GetFirstOf<DateModel>();

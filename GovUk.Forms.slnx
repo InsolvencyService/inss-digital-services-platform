@@ -33,9 +33,6 @@
   <Folder Name="/src/host/">
     <Project Path="src\host\GovUk.Forms.HostApp\GovUk.Forms.HostApp.csproj" />
   </Folder>
-  <Folder Name="/src/tools/">
-    <Project Path="src/tools/GovUk.Forms.Tool/GovUk.Forms.Tool.csproj" />
-  </Folder>
   <Folder Name="/test/" />
   <Folder Name="/test/apps/">
     <Project Path="test/apps/Demo.GovUk.Forms.ContactUs.Test/Demo.GovUk.Forms.ContactUs.Test.csproj" />
