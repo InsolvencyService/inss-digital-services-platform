@@ -12,7 +12,22 @@ result
         <govuk-input-hint>@(Model.MetaData.Hint ?? "Enter the first name and/or last name")</govuk-input-hint>
     </govuk-input>
 }
-else
+else if (Model.CurrentResult is not null)
 {
     
+}
+else if (Model.Results.Length > 0)
+{
+    @* Display list of result *@
+    if (Model.DisplayAsTable)
+    {
+        
+    }
+    else
+    {
+    }
+}
+else
+{
+    @* Oops *@
 }

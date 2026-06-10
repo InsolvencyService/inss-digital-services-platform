@@ -23,7 +23,8 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
         
         FlowchartBuilder
             .ForSection(section, services)
-            .AddTransitionNode(searchId, search.Path, summaryId)
+            .AddDecisionNode(searchId, search.Path, searchId, summaryId)
+            .WithLoader<SearchFlowNodeLoader>()
             .WithExecutor<SearchFlowNodeExecutor>()
             .Next()
             .AddEndNode(summaryId, summary.Path)

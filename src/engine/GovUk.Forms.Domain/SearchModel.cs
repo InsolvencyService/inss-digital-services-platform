@@ -11,6 +11,10 @@ public class SearchModel : PageModel
 
     public SearchResultColumn[] ResultColumns { get; set; } = [];
 
+    public SearchResult[] Results { get; set; }
+    
+    public SearchResult? CurrentResult { get; set; }
+    
     public void AddResultColumn(string name, string? css)
     {
         List<SearchResultColumn> columns = [..ResultColumns, new() { Name = name, Css = css }];
@@ -41,4 +45,9 @@ public sealed class SearchResultColumn
     public required string Name { get; init; }
     
     public string? Css { get; init; } // TODO: Enum?
+}
+
+public sealed class SearchResult
+{
+    public string Id { get; init; }
 }
