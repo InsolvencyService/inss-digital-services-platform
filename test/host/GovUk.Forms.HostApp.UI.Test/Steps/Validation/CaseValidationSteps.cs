@@ -157,7 +157,7 @@ public sealed class CaseValidationSteps : ValidationStepsBase
 
         await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
             errorSummary,
-            affectedEmployees,
+            affectedEmployees.First(),
             ErrorDetailsHeaderType.CaseReference);
     }
 

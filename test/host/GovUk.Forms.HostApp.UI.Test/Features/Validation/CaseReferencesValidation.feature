@@ -71,8 +71,8 @@ Feature: Case References Validation
             Given the RP14A contains <count> employees with no case reference
              When I attempt to submit the RP14A
              Then I should see the following case reference validation errors
-                  | Message                             | Hint                                     | Type           |
-                  | <count> case references are missing | Enter a reference number like CN12345678 | Case reference |
+                  | Message                     | Hint                                     | Type           |
+                  | 1 case reference is missing | Enter a reference number like CN12345678 | Case reference |
               And I should be able to view case reference error details for multiple employees
 
         Examples:
@@ -84,8 +84,8 @@ Feature: Case References Validation
             Given the RP14A contains <count> invalid case references
              When I attempt to submit the RP14A
              Then I should see the following case reference validation errors
-                  | Message                                         | Hint | Type           |
-                  | <count> case references are in the wrong format |      | Case reference |
+                  | Message                                 | Hint | Type           |
+                  | 1 case reference is in the wrong format |      | Case reference |
               And I should be able to view case reference error details for multiple employees
 
         Examples:
@@ -97,8 +97,8 @@ Feature: Case References Validation
             Given the RP14A contains 3 employees with a case reference that is too long
              When I attempt to submit the RP14A
              Then I should see the following case reference validation errors
-                  | Message                        | Hint                      | Type           |
-                  | 3 case references are too long | Enter up to 10 characters | Case reference |
+                  | Message                      | Hint                      | Type           |
+                  | 1 case reference is too long | Enter up to 10 characters | Case reference |
               And I should be able to view case reference error details for multiple employees
 
      
