@@ -8,6 +8,7 @@ using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using GovUk.Forms.HostApp.UI.Test.Tags;
 using static GovUk.Forms.HostApp.UI.Test.Models.TestData.TestFactory;
+using static GovUk.Forms.HostApp.UI.Test.Support.TestConstants;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
@@ -34,7 +35,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
         AffectedEmployee employee = CreateAffectedEmployee(
             surname: string.Empty,
             forename: _faker.Name.FirstName(),
-            cellValue: "Not entered");
+            cellValue: NotEntered);
 
         await UploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
             employee.Surname,
@@ -61,7 +62,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     [Given("the RP14A contains an employee with no national insurance number")]
     public async Task GivenTheRp14aContainsAnEmployeeWithNoNationalInsuranceNumber()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(niNumber: string.Empty, cellValue: "Not entered");
+        AffectedEmployee employee = CreateAffectedEmployee(niNumber: string.Empty, cellValue: NotEntered);
 
         await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(string.Empty, occurrenceIndex: 0);
 

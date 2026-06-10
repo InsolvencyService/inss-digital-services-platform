@@ -5,6 +5,7 @@ using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Tags;
 using static GovUk.Forms.HostApp.UI.Test.Models.TestData.TestFactory;
+using static GovUk.Forms.HostApp.UI.Test.Support.TestConstants;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
@@ -26,7 +27,7 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     [Given("the RP14A contains no contracted holiday entitlement")]
     public async Task GivenTheRp14aContainsNoContractedHolidayEntitlement()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(cellValue: "Not entered");
+        AffectedEmployee employee = CreateAffectedEmployee(cellValue: NotEntered);
 
         await UploadDocumentCoordinator
             .UploadRp14aWithHolidayContractedEntitlementDaysAsync(null);
@@ -73,7 +74,7 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     [Given("the RP14A contains no holiday days taken")]
     public async Task GivenTheRPAContainsNoHolidayDaysTaken()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(cellValue: "Not entered");
+        AffectedEmployee employee = CreateAffectedEmployee(cellValue: NotEntered);
 
         await UploadDocumentCoordinator
             .UploadRp14aWithHolidayDaysTakenAsync(null);
@@ -97,7 +98,7 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     [Given("the RP14A contains no holiday owed")]
     public async Task GivenTheRPAContainsNoHolidayOwed()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(cellValue: "Not entered");
+        AffectedEmployee employee = CreateAffectedEmployee(cellValue: NotEntered);
 
         await UploadDocumentCoordinator.UploadRp14aWithHolidayOwedAsync(null);
 

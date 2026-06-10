@@ -1,4 +1,5 @@
 using GovUk.Forms.HostApp.UI.Test.Helpers;
+using static GovUk.Forms.HostApp.UI.Test.Support.TestConstants;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Globalization;
@@ -241,7 +242,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
                 testFile.FilePath,
                 employeeCount,
-                cellValue: "Not entered");
+                cellValue: NotEntered);
 
         await UploadFileAsync(
             testFile.FilePath,
@@ -293,7 +294,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
                 testFile.FilePath,
                 employeeCount,
                 cellValues: caseReferences
-                    .Select(x => string.IsNullOrEmpty(x) ? "Not entered" : x)
+                    .Select(x => string.IsNullOrWhiteSpace(x) ? NotEntered : x)
                     .ToArray());
 
         await UploadFileAsync(
@@ -380,7 +381,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
                 testFile.FilePath,
                 employeeCount,
-                cellValue: string.IsNullOrEmpty(nationalInsuranceNumber) ? "Not entered" : nationalInsuranceNumber);
+                cellValue: string.IsNullOrEmpty(nationalInsuranceNumber) ? NotEntered : nationalInsuranceNumber);
 
         await UploadFileAsync(
             testFile.FilePath,

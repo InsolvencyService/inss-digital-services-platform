@@ -165,7 +165,10 @@ public static class TestFileFactory
                                 AOPOwed1Specified = true,
                                 AOPPayType1 = RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1AOPPayType1.wages,
                                 AOPPayType1Specified = true
-                            }
+                            },
+                            ArrearsOfPayPeriod2 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2(),
+                            ArrearsOfPayPeriod3 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3(),
+                            ArrearsOfPayPeriod4 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4()
                         }
                     },
                     Holiday = new RP14AEmployeeHoliday
