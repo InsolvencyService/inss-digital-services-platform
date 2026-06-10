@@ -86,11 +86,11 @@ Scenario Outline: RP14 insolvency practitioner phone length boundary validation
 
         Examples:
                   | length | summaryBehaviour                                           | detailsBehaviour          | type                                 |
-                  |     40 | none                                                       | none                      | Insolvency practitioner phone number |
-                  |     41 | 1 insolvency practitioner phone number is the wrong length | Enter up to 12 characters | Insolvency practitioner phone number |
+                  |     12 | none                                                       | none                      | Insolvency practitioner phone number |
+                  |     13 | 1 insolvency practitioner phone number is the wrong length | Enter up to 12 characters | Insolvency practitioner phone number |
 
         @api-upload
         Examples:
                   | length | summaryBehaviour                                           | detailsBehaviour          | type                                 |
-                  |     40 | none                                                       | none                      | Insolvency practitioner phone number |
-                  |     41 | 1 insolvency practitioner phone number is the wrong length | Enter up to 12 characters | Insolvency practitioner phone number |
+                  |     12 | none                                                       | none                      | Insolvency practitioner phone number |
+                  |     13 | 1 insolvency practitioner phone number is the wrong length | Enter up to 12 characters | Insolvency practitioner phone number |

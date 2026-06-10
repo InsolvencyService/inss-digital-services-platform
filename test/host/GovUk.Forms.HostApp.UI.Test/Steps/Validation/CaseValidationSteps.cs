@@ -64,6 +64,19 @@ public sealed class CaseValidationSteps : ValidationStepsBase
         ScenarioContext.Set(invalidCaseReferences, CaseReferenceKey);
     }
 
+    [Given("the RP14A contains {int} employees with no case reference")]
+    public async Task GivenTheRp14aContainsEmployeesWithNoCaseReference(int count)
+    {
+        string[] emptyCaseReferences = Enumerable.Repeat(string.Empty, count).ToArray();
+        await UploadDocumentCoordinator.UploadRp14aWithCaseReferenceAsync(emptyCaseReferences);
+    }
+
+    [Given("the RP14A contains {int} employees with a case reference that is too long")]
+    public async Task GivenTheRp14aContainsEmployeesWithCaseReferenceTooLong(int count)
+    {
+        await UploadDocumentCoordinator.UploadRp14aWithTooLongCaseReferencesAsync(count);
+    }
+
     [Then("I should see the validation error {string}")]
     public async Task ThenIShouldSeeTheValidationError(string errorMessage)
     {
@@ -98,7 +111,7 @@ public sealed class CaseValidationSteps : ValidationStepsBase
         UploadErrorSummary errorSummary = GetErrorSummaryFromContext();
 
         AffectedEmployee affectedEmployee = BuildAffectedEmployee(
-            cellValue: string.Empty);
+            cellValue: "Not entered");
 
         await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
             errorSummary,

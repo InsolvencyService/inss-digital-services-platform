@@ -1,7 +1,7 @@
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
-using Inss.Common.IPUpload.Employee.Spreadsheet;
+using Inss.Common.IPUpload.Employee.Api;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -9,9 +9,9 @@ using System.Xml.Serialization;
 
 namespace GovUk.Forms.HostApp.UI.Test.Builders;
 
-public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
+public sealed class Rp14aApiFixtureBuilder : IRp14aFixtureBuilder
 {
-    private const string Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application";
+    private const string Namespace = "www.inss.gsi.gov.uk/RP14A_Application";
     private const string NsPrefix = "ns1";
 
     private static readonly XmlSerializer _serializer = new(typeof(RP14A));
@@ -19,13 +19,19 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
 
     private readonly Dictionary<string, string?> _mutations = [];
     private readonly Dictionary<int, Dictionary<string, string?>> _employeeMutations = [];
+    private readonly Dictionary<int, string?> _aopAmountMutations = [];
+    private readonly Dictionary<int, (string? StartDate, string? EndDate)> _holidayNotPaidDatesPerEmployee = [];
+    private readonly Dictionary<int, (string? StartDate, string? EndDate)> _aopDatesPerEmployee = [];
+    private string? _aopStartDate;
+    private string? _aopEndDate;
+    private string? _holidayNotPaidStartDate;
+    private string? _holidayNotPaidEndDate;
 
     private int _targetEmployeeIndex;
 
     public IRp14aFixtureBuilder WithEmployeeIndex(int index)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
-
         _targetEmployeeIndex = index;
         return this;
     }
@@ -72,23 +78,39 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
 
     public IRp14aFixtureBuilder WithArrearsDates(DateOnly? startDate, DateOnly? endDate)
     {
-        return Set(RP14AElementNames.AOP1StartDate, FormatDate(startDate), nullMeansEmpty: false)
-            .Set(RP14AElementNames.AOP1EndDate, FormatDate(endDate), nullMeansEmpty: false);
+        if (startDate.HasValue)
+        {
+            _aopStartDate = FormatDate(startDate);
+        }
+
+        if (endDate.HasValue)
+        {
+            _aopEndDate = FormatDate(endDate);
+        }
+
+        return this;
     }
 
     public IRp14aFixtureBuilder WithHolidayNotPaidDates(DateOnly? startDate, DateOnly? endDate)
     {
-        return Set(RP14AElementNames.Holiday1StartDate, FormatDate(startDate), nullMeansEmpty: false)
-            .Set(RP14AElementNames.Holiday1EndDate, FormatDate(endDate), nullMeansEmpty: false);
+        if (startDate.HasValue)
+        {
+            _holidayNotPaidStartDate = FormatDate(startDate);
+        }
+
+        if (endDate.HasValue)
+        {
+            _holidayNotPaidEndDate = FormatDate(endDate);
+        }
+
+        return this;
     }
 
     public IRp14aFixtureBuilder WithArrearsAmount(int periodNumber, string? amountOwed)
     {
         ValidatePositiveNumber(periodNumber, nameof(periodNumber));
-
-        return Set(
-            RP14AElementNames.AOPOwedPeriod(periodNumber),
-            amountOwed);
+        _aopAmountMutations[periodNumber] = amountOwed ?? string.Empty;
+        return this;
     }
 
     public IRp14aFixtureBuilder WithInvalidHolidayOwedForEmployees(
@@ -102,12 +124,9 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
             throw new ArgumentException("At least one invalid value must be provided.", nameof(invalidValues));
         }
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.NoDaysHolidayOwed,
-                invalidValues[employeeIndex % invalidValues.Length]);
+            AddEmployeeMutation(i, RP14AElementNames.NoDaysHolidayOwed, invalidValues[i % invalidValues.Length]);
         }
 
         return this;
@@ -117,12 +136,9 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int index = 0; index < employeeCount; index++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                index,
-                RP14AElementNames.Surname,
-                string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.Surname, string.Empty);
         }
 
         return this;
@@ -132,9 +148,9 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(employeeIndex, RP14AElementNames.Surname, surname ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.Surname, surname ?? string.Empty);
         }
 
         return this;
@@ -143,7 +159,6 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     public IRp14aFixtureBuilder WithCustomMutation(string elementName, string? value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(elementName);
-
         _mutations[elementName] = value;
         return this;
     }
@@ -152,18 +167,11 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         if (caseReferences is null || caseReferences.Length == 0)
         {
-            throw new ArgumentException(
-                "At least one case reference must be provided.",
-                nameof(caseReferences));
+            throw new ArgumentException("At least one case reference must be provided.", nameof(caseReferences));
         }
 
-        for (int employeeIndex = 0; employeeIndex < caseReferences.Length; employeeIndex++)
-        {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.CaseReference,
-                caseReferences[employeeIndex] ?? string.Empty);
-        }
+        // API model has a single global CaseReference at the root; set it to the first value.
+        _mutations[RP14AElementNames.CaseReference] = caseReferences[0] ?? string.Empty;
 
         return this;
     }
@@ -172,17 +180,12 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         if (ninos is null || ninos.Length == 0)
         {
-            throw new ArgumentException(
-                "At least one NINO must be provided.",
-                nameof(ninos));
+            throw new ArgumentException("At least one NINO must be provided.", nameof(ninos));
         }
 
-        for (int employeeIndex = 0; employeeIndex < ninos.Length; employeeIndex++)
+        for (int i = 0; i < ninos.Length; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.NINO,
-                ninos[employeeIndex] ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.NINO, ninos[i] ?? string.Empty);
         }
 
         return this;
@@ -192,32 +195,24 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         if (employerNames is null || employerNames.Length == 0)
         {
-            throw new ArgumentException(
-                "At least one employer name must be provided.",
-                nameof(employerNames));
+            throw new ArgumentException("At least one employer name must be provided.", nameof(employerNames));
         }
 
-        for (int employeeIndex = 0; employeeIndex < employerNames.Length; employeeIndex++)
-        {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.EmployerName,
-                employerNames[employeeIndex] ?? string.Empty);
-        }
+        // API model has a single global EmployerName at the root; set it to the first value.
+        _mutations[RP14AElementNames.EmployerName] = employerNames[0] ?? string.Empty;
 
         return this;
     }
 
-    public IRp14aFixtureBuilder WithNationalInsuranceNumberForEmployees(int employeeCount, string? nationalInsuranceNumber)
+    public IRp14aFixtureBuilder WithNationalInsuranceNumberForEmployees(
+        int employeeCount,
+        string? nationalInsuranceNumber)
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.NINO,
-                nationalInsuranceNumber ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.NINO, nationalInsuranceNumber ?? string.Empty);
         }
 
         return this;
@@ -227,12 +222,9 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.MoneyOwedToEmployer,
-                moneyOwed ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.MoneyOwedToEmployer, moneyOwed ?? string.Empty);
         }
 
         return this;
@@ -242,12 +234,9 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.BasicPayPerWeek,
-                basicPayPerWeek ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.BasicPayPerWeek, basicPayPerWeek ?? string.Empty);
         }
 
         return this;
@@ -257,27 +246,23 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.HolidayDaysTaken,
-                holidayDaysTaken ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.HolidayDaysTaken, holidayDaysTaken ?? string.Empty);
         }
 
         return this;
     }
 
-    public IRp14aFixtureBuilder WithHolidayDaysCarriedForwardForEmployees(int employeeCount, string? holidayDaysCarriedForward)
+    public IRp14aFixtureBuilder WithHolidayDaysCarriedForwardForEmployees(
+        int employeeCount,
+        string? holidayDaysCarriedForward)
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.HolidayDaysCarriedForward,
-                holidayDaysCarriedForward ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.HolidayDaysCarriedForward, holidayDaysCarriedForward ?? string.Empty);
         }
 
         return this;
@@ -287,12 +272,9 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(
-                employeeIndex,
-                RP14AElementNames.HolidayContractedEntitlementDays,
-                value ?? string.Empty);
+            AddEmployeeMutation(i, RP14AElementNames.HolidayContractedEntitlementDays, value ?? string.Empty);
         }
 
         return this;
@@ -302,13 +284,12 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        string? formattedStart = FormatDate(startDate);
-        string? formattedEnd = FormatDate(endDate);
+        string? formattedStart = startDate.HasValue ? FormatDate(startDate) : null;
+        string? formattedEnd = endDate.HasValue ? FormatDate(endDate) : null;
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(employeeIndex, RP14AElementNames.Holiday1StartDate, formattedStart);
-            AddEmployeeMutation(employeeIndex, RP14AElementNames.Holiday1EndDate, formattedEnd);
+            _holidayNotPaidDatesPerEmployee[i] = (formattedStart, formattedEnd);
         }
 
         return this;
@@ -318,13 +299,13 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        string? formattedStart = FormatDate(startDate);
-        string? formattedEnd = FormatDate(endDate);
+        string? formattedStart = startDate.HasValue ? FormatDate(startDate) : null;
+        string? formattedEnd = endDate.HasValue ? FormatDate(endDate) : null;
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(employeeIndex, RP14AElementNames.StartDate, formattedStart);
-            AddEmployeeMutation(employeeIndex, RP14AElementNames.EndDate, formattedEnd);
+            AddEmployeeMutation(i, RP14AElementNames.StartDate, formattedStart);
+            AddEmployeeMutation(i, RP14AElementNames.EndDate, formattedEnd);
         }
 
         return this;
@@ -334,13 +315,12 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ValidatePositiveNumber(employeeCount, nameof(employeeCount));
 
-        string? formattedStart = FormatDate(startDate);
-        string? formattedEnd = FormatDate(endDate);
+        string? formattedStart = startDate.HasValue ? FormatDate(startDate) : null;
+        string? formattedEnd = endDate.HasValue ? FormatDate(endDate) : null;
 
-        for (int employeeIndex = 0; employeeIndex < employeeCount; employeeIndex++)
+        for (int i = 0; i < employeeCount; i++)
         {
-            AddEmployeeMutation(employeeIndex, RP14AElementNames.AOP1StartDate, formattedStart);
-            AddEmployeeMutation(employeeIndex, RP14AElementNames.AOP1EndDate, formattedEnd);
+            _aopDatesPerEmployee[i] = (formattedStart, formattedEnd);
         }
 
         return this;
@@ -350,10 +330,7 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         ArgumentNullException.ThrowIfNull(testArtifacts);
 
-        LogInfo($"Scenario '{scenarioName}': Building fixture with {_mutations.Count} global mutations " +
-                $"and {_employeeMutations.Count} employee mutation sets.");
-
-        string filePath = testArtifacts.FilePath($"rp14a-{Guid.NewGuid():N}.xml");
+        string filePath = testArtifacts.FilePath($"rp14a-api-{Guid.NewGuid():N}.xml");
 
         XDocument document = SerializeToDocument();
         XNamespace ns = Namespace;
@@ -368,20 +345,33 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
         foreach ((int employeeIndex, Dictionary<string, string?> mutations) in _employeeMutations)
         {
             XElement employee = GetEmployeeByIndex(document, ns, employeeIndex);
-
             foreach ((string elementName, string? value) in mutations)
             {
                 ApplyMutation(document, ns, employee, elementName, value);
             }
         }
 
-        SaveXmlDocument(document, filePath);
+        ApplyAopAmountMutations(targetEmployee, ns);
+        ApplyAopDateMutations(targetEmployee, ns);
+        ApplyHolidayNotPaidDateMutations(targetEmployee, ns);
+
+        foreach ((int empIndex, (string? StartDate, string? EndDate) dates) in _holidayNotPaidDatesPerEmployee)
+        {
+            XElement employee = GetEmployeeByIndex(document, ns, empIndex);
+            ApplyHolidayNotPaidDatesToEmployee(employee, ns, dates.StartDate, dates.EndDate);
+        }
+
+        foreach ((int empIndex, (string? StartDate, string? EndDate) dates) in _aopDatesPerEmployee)
+        {
+            XElement employee = GetEmployeeByIndex(document, ns, empIndex);
+            ApplyAopDatesToEmployee(employee, ns, dates.StartDate, dates.EndDate);
+        }
+
+        XmlFixtureHelper.SaveXmlDocument(document, filePath);
 
         Dictionary<string, string> appliedMutations = _mutations
-            .Where(mutation => mutation.Value is not null)
-            .ToDictionary(
-                mutation => mutation.Key,
-                mutation => mutation.Value!);
+            .Where(m => m.Value is not null)
+            .ToDictionary(m => m.Key, m => m.Value!);
 
         foreach ((int employeeIndex, Dictionary<string, string?> mutations) in _employeeMutations)
         {
@@ -391,59 +381,43 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
             }
         }
 
-        LogInfo($"Scenario '{scenarioName}': Fixture created successfully at {filePath}");
+        foreach ((int period, string? amount) in _aopAmountMutations.Where(m => m.Value is not null))
+        {
+            appliedMutations[$"AOPOwed[period:{period}]"] = amount!;
+        }
+
+        if (_aopStartDate is not null)
+        {
+            appliedMutations["AopPeriodStartDate"] = _aopStartDate;
+        }
+
+        if (_aopEndDate is not null)
+        {
+            appliedMutations["AopPeriodEndDate"] = _aopEndDate;
+        }
+
+        if (_holidayNotPaidStartDate is not null)
+        {
+            appliedMutations["HolidayNotPaidStartDate"] = _holidayNotPaidStartDate;
+        }
+
+        if (_holidayNotPaidEndDate is not null)
+        {
+            appliedMutations["HolidayNotPaidEndDate"] = _holidayNotPaidEndDate;
+        }
+
+        LogInfo($"Scenario '{scenarioName}': Fixture created at {filePath}");
 
         return new Rp14aTestFile(filePath, appliedMutations, _targetEmployeeIndex, DateTime.UtcNow);
     }
 
-    private Rp14aFixtureBuilder Set(
-        string elementName,
-        string? value,
-        bool nullMeansEmpty = true)
+    private Rp14aApiFixtureBuilder Set(string elementName, string? value, bool nullMeansEmpty = true)
     {
-        _mutations[elementName] = nullMeansEmpty
-            ? value ?? string.Empty
-            : value;
-
+        _mutations[elementName] = nullMeansEmpty ? value ?? string.Empty : value;
         return this;
     }
 
-    private void ApplyMutation(
-        XDocument document,
-        XNamespace ns,
-        XElement targetEmployee,
-        string elementName,
-        string? value)
-    {
-        XElement? element = targetEmployee
-            .Descendants(ns + elementName)
-            .FirstOrDefault();
-
-        element ??= document
-            .Descendants(ns + elementName)
-            .FirstOrDefault();
-
-        if (element is null)
-        {
-            throw new InvalidOperationException(
-                $"Element '{elementName}' not found in RP14A XML for employee index {_targetEmployeeIndex}.");
-        }
-
-        if (value is null)
-        {
-            LogInfo($"Removing element: {elementName}");
-            element.Remove();
-            return;
-        }
-
-        element.Value = value;
-        LogInfo($"Applied mutation: {elementName} = '{value}'");
-    }
-
-    private void AddEmployeeMutation(
-        int employeeIndex,
-        string elementName,
-        string? value)
+    private void AddEmployeeMutation(int employeeIndex, string elementName, string? value)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(employeeIndex);
 
@@ -456,10 +430,121 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
         mutations[elementName] = value;
     }
 
-    private static XElement GetEmployeeByIndex(
+    private void ApplyAopAmountMutations(XElement employee, XNamespace ns)
+    {
+        List<XElement> periods = employee
+            .Descendants(ns + "ArrearsOfPayPeriod")
+            .ToList();
+
+        foreach ((int periodNumber, string? amount) in _aopAmountMutations)
+        {
+            int periodIndex = periodNumber - 1;
+            if (periodIndex < 0 || periodIndex >= periods.Count) { continue; }
+
+            XElement? aopOwed = periods[periodIndex].Element(ns + "AOPOwed");
+            if (aopOwed is null) { continue; }
+
+            if (amount is null)
+            {
+                aopOwed.Remove();
+            }
+            else
+            {
+                aopOwed.Value = amount;
+            }
+        }
+    }
+
+    private void ApplyAopDateMutations(XElement employee, XNamespace ns)
+    {
+        ApplyAopDatesToEmployee(employee, ns, _aopStartDate, _aopEndDate);
+    }
+
+    private static void ApplyAopDatesToEmployee(XElement employee, XNamespace ns, string? startDate, string? endDate)
+    {
+        if (startDate is null && endDate is null)
+        {
+            return;
+        }
+
+        XElement? period = employee
+            .Descendants(ns + "ArrearsOfPayPeriod")
+            .FirstOrDefault()
+            ?.Element(ns + "Period");
+
+        if (period is null)
+        {
+            return;
+        }
+
+        if (startDate is not null)
+        {
+            period.Element(ns + "StartDate")?.SetValue(startDate);
+        }
+
+        if (endDate is not null)
+        {
+            period.Element(ns + "EndDate")?.SetValue(endDate);
+        }
+    }
+
+    private void ApplyHolidayNotPaidDateMutations(XElement employee, XNamespace ns)
+    {
+        ApplyHolidayNotPaidDatesToEmployee(employee, ns, _holidayNotPaidStartDate, _holidayNotPaidEndDate);
+    }
+
+    private static void ApplyHolidayNotPaidDatesToEmployee(XElement employee, XNamespace ns, string? startDate, string? endDate)
+    {
+        if (startDate is null && endDate is null)
+        {
+            return;
+        }
+
+        XElement? holiday = employee
+            .Descendants(ns + "HolidayNotPaid")
+            .FirstOrDefault()
+            ?.Element(ns + "Holiday");
+
+        if (holiday is null)
+        {
+            return;
+        }
+
+        if (startDate is not null)
+        {
+            holiday.Element(ns + "StartDate")?.SetValue(startDate);
+        }
+
+        if (endDate is not null)
+        {
+            holiday.Element(ns + "EndDate")?.SetValue(endDate);
+        }
+    }
+
+    private void ApplyMutation(
         XDocument document,
         XNamespace ns,
-        int index)
+        XElement targetEmployee,
+        string elementName,
+        string? value)
+    {
+        XElement element = targetEmployee.Descendants(ns + elementName).FirstOrDefault()
+            ?? document.Descendants(ns + elementName).FirstOrDefault()
+            ?? throw new InvalidOperationException(
+                $"Element '{elementName}' not found in RP14A XML for employee index {_targetEmployeeIndex}.");
+
+        if (value is null)
+        {
+            LogInfo($"Removing element: {elementName}");
+            element.Remove();
+            return;
+        }
+
+        element.Value = value;
+        LogInfo($"Applied mutation: {elementName} = '{value}'");
+    }
+
+    private static XElement GetEmployeeByIndex(XDocument document, XNamespace ns, int index)
     {
         List<XElement> employees = document
             .Descendants(ns + RP14AElementNames.Employee)
@@ -506,11 +591,11 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
 
     private static RP14A CreateDefault() => new()
     {
+        Header = new RP14AHeader { CaseReference = "CN00345678" },
+        EmployerName = "Employer Test",
         Employee =
         [
             CreateEmployee(
-                caseReference: "CN00345678",
-                employerName: "Employer Test",
                 surname: "Surname Test",
                 forenames: "Forname Test",
                 title: "Mr",
@@ -530,8 +615,6 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 1),
                 aopStartDay: 10),
             CreateEmployee(
-                caseReference: "CN00345678",
-                employerName: "Employer Test 2",
                 surname: "Surname Test 2",
                 forenames: "Forname Test 2",
                 title: "Doctor",
@@ -551,8 +634,6 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 2),
                 aopStartDay: 11),
             CreateEmployee(
-                caseReference: "CN00345678",
-                employerName: "Employer Test 3",
                 surname: "Surname Test 3",
                 forenames: "Forname Test 3",
                 title: "Miss",
@@ -572,8 +653,6 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 3),
                 aopStartDay: 12),
             CreateEmployee(
-                caseReference: "CN00345678",
-                employerName: "Employer Test 4",
                 surname: "Surname Test 4",
                 forenames: "Forname Test 4",
                 title: "Mrs",
@@ -593,8 +672,6 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 4),
                 aopStartDay: 13),
             CreateEmployee(
-                caseReference: "CN00345678",
-                employerName: "Employer Test 5",
                 surname: "Surname Test 5",
                 forenames: "Forname Test 5",
                 title: "Other",
@@ -617,8 +694,6 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     };
 
     private static RP14AEmployee CreateEmployee(
-        string caseReference,
-        string employerName,
         string surname,
         string forenames,
         string title,
@@ -640,8 +715,6 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     {
         return new RP14AEmployee
         {
-            Header = new RP14AEmployeeHeader { CaseReference = caseReference },
-            EmployerName = employerName,
             EmployeeName = new NameType { Surname = surname, Forenames = forenames, Title = title },
             NIClass = niClass,
             NINO = nino,
@@ -667,67 +740,74 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
             {
                 BasicPayPerWeek = basicPayPerWeek,
                 BasicPayPerWeekSpecified = true,
-                ComponentPayPerWeek1 = new RP14AEmployeePayDetailsComponentPayPerWeek1
-                {
-                    ComponentType = ComponentType.HolidayPayAccrued,
-                    ComponentRate = "1000",
-                    ComponentRateSpecified = true,
-                    ComponentRateStatus = ComponentRateStatusType.Default
-                },
-                ComponentPayPerWeek2 = new RP14AEmployeePayDetailsComponentPayPerWeek2
-                {
-                    ComponentType = ComponentType.HolidayPayTakenNotPaid,
-                    ComponentRateStatus = ComponentRateStatusType.Fixedrateofpay
-                },
+                ComponentPayPerWeek =
+                [
+                    new RP14AEmployeePayDetailsComponentPayPerWeek
+                    {
+                        ComponentType = RP14AEmployeePayDetailsComponentPayPerWeekComponentType.HolidayPayAccrued,
+                        ComponentRate = "1000",
+                        ComponentRateSpecified = true,
+                        ComponentRateStatus = RP14AEmployeePayDetailsComponentPayPerWeekComponentRateStatus.Default
+                    },
+                    new RP14AEmployeePayDetailsComponentPayPerWeek
+                    {
+                        ComponentType = RP14AEmployeePayDetailsComponentPayPerWeekComponentType.HolidayPayTakenNotPaid,
+                        ComponentRateStatus = RP14AEmployeePayDetailsComponentPayPerWeekComponentRateStatus.Fixedrateofpay
+                    }
+                ],
                 WeeklyPayDay = weeklyPayDay,
                 WeeklyPayDaySpecified = true,
-                ArrearsOfPay = new RP14AEmployeePayDetailsArrearsOfPay
-                {
-                    ArrearsOfPayPeriod1 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1
+                ArrearsOfPay =
+                [
+                    new RP14AEmployeePayDetailsArrearsOfPayPeriod
                     {
-                        AOP1StartDate = new DateTime(2020, 1, aopStartDay),
-                        AOP1StartDateSpecified = true,
-                        AOP1EndDate = new DateTime(2020, 1, aopStartDay + 1),
-                        AOP1EndDateSpecified = true,
-                        AOPOwed1 = 100m,
-                        AOPOwed1Specified = true,
-                        AOPPayType1 = RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1AOPPayType1.wages,
-                        AOPPayType1Specified = true
+                        Period = new PeriodType
+                        {
+                            StartDate = new DateTime(2020, 1, aopStartDay),
+                            EndDate = new DateTime(2020, 1, aopStartDay + 1)
+                        },
+                        AOPOwed = 100m,
+                        AOPOwedSpecified = true,
+                        PayType = RP14AEmployeePayDetailsArrearsOfPayPeriodPayType.wages,
+                        PayTypeSpecified = true
                     },
-                    ArrearsOfPayPeriod2 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2
+                    new RP14AEmployeePayDetailsArrearsOfPayPeriod
                     {
-                        AOP2StartDate = new DateTime(2020, 1, aopStartDay + 2),
-                        AOP2StartDateSpecified = true,
-                        AOP2EndDate = new DateTime(2020, 1, aopStartDay + 3),
-                        AOP2EndDateSpecified = true,
-                        AOPOwed2 = 100m,
-                        AOPOwed2Specified = true,
-                        AOPPayType2 = RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod2AOPPayType2.bouncedcheque,
-                        AOPPayType2Specified = true
+                        Period = new PeriodType
+                        {
+                            StartDate = new DateTime(2020, 1, aopStartDay + 2),
+                            EndDate = new DateTime(2020, 1, aopStartDay + 3)
+                        },
+                        AOPOwed = 100m,
+                        AOPOwedSpecified = true,
+                        PayType = RP14AEmployeePayDetailsArrearsOfPayPeriodPayType.bouncedcheque,
+                        PayTypeSpecified = true
                     },
-                    ArrearsOfPayPeriod3 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3
+                    new RP14AEmployeePayDetailsArrearsOfPayPeriod
                     {
-                        AOP3StartDate = new DateTime(2020, 1, aopStartDay + 4),
-                        AOP3StartDateSpecified = true,
-                        AOP3EndDate = new DateTime(2020, 1, aopStartDay + 5),
-                        AOP3EndDateSpecified = true,
-                        AOPOwed3 = 100m,
-                        AOPOwed3Specified = true,
-                        AOPPayType3 = RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod3AOPPayType3.commission,
-                        AOPPayType3Specified = true
+                        Period = new PeriodType
+                        {
+                            StartDate = new DateTime(2020, 1, aopStartDay + 4),
+                            EndDate = new DateTime(2020, 1, aopStartDay + 5)
+                        },
+                        AOPOwed = 100m,
+                        AOPOwedSpecified = true,
+                        PayType = RP14AEmployeePayDetailsArrearsOfPayPeriodPayType.commission,
+                        PayTypeSpecified = true
                     },
-                    ArrearsOfPayPeriod4 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4
+                    new RP14AEmployeePayDetailsArrearsOfPayPeriod
                     {
-                        AOP4StartDate = new DateTime(2020, 1, aopStartDay + 6),
-                        AOP4StartDateSpecified = true,
-                        AOP4EndDate = new DateTime(2020, 1, aopStartDay + 7),
-                        AOP4EndDateSpecified = true,
-                        AOPOwed4 = 100m,
-                        AOPOwed4Specified = true,
-                        AOPPayType4 = RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod4AOPPayType4.overtime,
-                        AOPPayType4Specified = true
+                        Period = new PeriodType
+                        {
+                            StartDate = new DateTime(2020, 1, aopStartDay + 6),
+                            EndDate = new DateTime(2020, 1, aopStartDay + 7)
+                        },
+                        AOPOwed = 100m,
+                        AOPOwedSpecified = true,
+                        PayType = RP14AEmployeePayDetailsArrearsOfPayPeriodPayType.overtime,
+                        PayTypeSpecified = true
                     }
-                }
+                ]
             },
             Holiday = new RP14AEmployeeHoliday
             {
@@ -739,38 +819,29 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
                 HolidayDaysCarriedForwardSpecified = true,
                 HolidayDaysTaken = 2m,
                 HolidayDaysTakenSpecified = true,
-                HolidayNotPaid = new RP14AEmployeeHolidayHolidayNotPaid
-                {
-                    Holiday1 = new RP14AEmployeeHolidayHolidayNotPaidHoliday1
+                HolidayNotPaid =
+                [
+                    new PeriodType
                     {
-                        Holiday1StartDate = new DateTime(2020, 1, aopStartDay + 10),
-                        Holiday1StartDateSpecified = true,
-                        Holiday1EndDate = new DateTime(2020, 1, aopStartDay + 11),
-                        Holiday1EndDateSpecified = true
+                        StartDate = new DateTime(2020, 1, aopStartDay + 10),
+                        EndDate = new DateTime(2020, 1, aopStartDay + 11)
                     },
-                    Holiday2 = new RP14AEmployeeHolidayHolidayNotPaidHoliday2
+                    new PeriodType
                     {
-                        Holiday2StartDate = new DateTime(2020, 1, aopStartDay + 12),
-                        Holiday2StartDateSpecified = true,
-                        Holiday2EndDate = new DateTime(2020, 1, aopStartDay + 13),
-                        Holiday2EndDateSpecified = true
+                        StartDate = new DateTime(2020, 1, aopStartDay + 12),
+                        EndDate = new DateTime(2020, 1, aopStartDay + 13)
                     },
-                    Holiday3 = new RP14AEmployeeHolidayHolidayNotPaidHoliday3
+                    new PeriodType
                     {
-                        Holiday3StartDate = new DateTime(2020, 1, aopStartDay + 14),
-                        Holiday3StartDateSpecified = true,
-                        Holiday3EndDate = new DateTime(2020, 1, aopStartDay + 15),
-                        Holiday3EndDateSpecified = true
+                        StartDate = new DateTime(2020, 1, aopStartDay + 14),
+                        EndDate = new DateTime(2020, 1, aopStartDay + 15)
                     }
-                },
+                ],
                 NoDaysHolidayOwed = 10m,
                 NoDaysHolidayOwedSpecified = true
             }
         };
     }
-
-    private static void SaveXmlDocument(XDocument document, string filePath) =>
-        XmlFixtureHelper.SaveXmlDocument(document, filePath);
 
     private static string FormatDate(DateOnly? date) =>
         XmlFixtureHelper.FormatDate(date);
@@ -786,5 +857,5 @@ public sealed class Rp14aFixtureBuilder : IRp14aFixtureBuilder
     }
 
     private static void LogInfo(string message) =>
-        XmlFixtureHelper.Log("RP14A", "INFO", message);
+        XmlFixtureHelper.Log("RP14A-API", "INFO", message);
 }

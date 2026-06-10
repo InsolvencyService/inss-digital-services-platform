@@ -37,6 +37,7 @@ public interface IRp14aScenarioCoordinator
     Task UploadRp14aWithMissingEmployeeSurnamesAsync(int employeeCount);
     Task UploadRp14aWithInvalidHolidayOwedForEmployeesAsync(int employeeCount, params string[] invalidValues);
     Task UploadRp14aWithCaseReferenceAsync(params string?[] caseReferences);
+    Task UploadRp14aWithTooLongCaseReferencesAsync(int count);
     Task UploadRp14aWithNationalInsuranceNumberForEmployeesAsync(int employeeCount, string? nationalInsuranceNumber);
     Task UploadRp14aWithMoneyOwedToEmployerForEmployeesAsync(int employeeCount, string? moneyOwed);
     Task UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(int employeeCount, string? basicPayPerWeek);

@@ -15,21 +15,15 @@ public sealed class EmployeeSpreadsheetValidator : EmployeeValidator
     public override async Task<ValidatorContext> ValidateAsync()
     {
         EmployeeValidatorContext context = new();
-        bool validateCaseReference = true;
-        
+
         foreach (RP14AEmployee employee in _model.Employee)
         {
             context.Forenames = employee.EmployeeName.Forenames;
             context.Surname = employee.EmployeeName.Surname;
             context.Dob = DateOnly.FromDateTime(employee.DateOfBirth);
             context.Nino = employee.NINO;
-            
-            // The instructions on the spreadsheet state to define the case ref in the first row - this reflects it in validation
-            if (validateCaseReference)
-            {
-                await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
-                validateCaseReference = false;
-            }
+
+            await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
             
             ValidateAverageHoursWorked(context, employee.AverageHoursWorked);
             ValidateEmployerName(context, employee.EmployerName);

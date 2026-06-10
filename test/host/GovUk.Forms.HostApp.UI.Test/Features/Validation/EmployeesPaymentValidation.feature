@@ -84,7 +84,7 @@ A short summary of the feature
                   | employeeCount | moneyOwed |
                   | 3             | 12.3      |
 
-  @regression @validation @rp14a @allure.story:Payment @bug
+  @regression @validation @rp14a @allure.story:Payment
   Scenario: RP14A Display error when arrears of pay start date is after end date
             Given the RP14A contains arrears of pay start date "2026-04-30" and end date "2026-04-01"
              When I attempt to submit the RP14A
@@ -93,7 +93,7 @@ A short summary of the feature
                   | 1 arrears date is incorrect | Start date must be before the end date | Employee arrears of payment dates |
               And I should be able to view error details
 
-  @regression @validation @rp14a @allure.story:Payment @bug @api-upload
+  @regression @validation @rp14a @allure.story:Payment @api-upload
   Scenario: RP14A API display error when arrears of pay start date is after end date
             Given the RP14A contains arrears of pay start date "2026-04-30" and end date "2026-04-01"
              When I attempt to submit the RP14A
@@ -102,7 +102,7 @@ A short summary of the feature
                   | 1 arrears date is incorrect | Start date must be before the end date | Employee arrears of payment dates |
               And I should be able to view error details
 
-@regression @validation @rp14a @allure.story:Payment @bug
+@regression @validation @rp14a @allure.story:Payment
   Scenario: RP14A Display aggregated error for multiple arrears of pay start dates after end date
             Given the RP14A contains 2 employees with arrears of pay start date after end date
              When I attempt to submit the RP14A
@@ -111,7 +111,7 @@ A short summary of the feature
                   | 2 arrears dates are incorrect | Start date must be before the end date | Employee arrears of payment dates |
               And I should be able to view arrears dates error details for multiple employees
 
-@regression @validation @rp14a @allure.story:Payment @bug @api-upload
+@regression @validation @rp14a @allure.story:Payment @api-upload
   Scenario: RP14A API display aggregated error for multiple arrears of pay start dates after end date
             Given the RP14A contains 2 employees with arrears of pay start date after end date
              When I attempt to submit the RP14A

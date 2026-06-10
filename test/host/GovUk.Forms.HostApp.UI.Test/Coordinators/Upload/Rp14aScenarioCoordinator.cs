@@ -241,7 +241,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
                 testFile.FilePath,
                 employeeCount,
-                cellValue: string.Empty);
+                cellValue: "Not entered");
 
         await UploadFileAsync(
             testFile.FilePath,
@@ -293,7 +293,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
                 testFile.FilePath,
                 employeeCount,
                 cellValues: caseReferences
-                    .Select(x => x ?? string.Empty)
+                    .Select(x => string.IsNullOrEmpty(x) ? "Not entered" : x)
                     .ToArray());
 
         await UploadFileAsync(
@@ -303,6 +303,37 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         ScenarioContext.Set(
             affectedEmployees,
             AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithTooLongCaseReferencesAsync(int count)
+    {
+        ValidatePositiveNumber(count, nameof(count));
+
+        string[] caseReferences = Enumerable.Range(1, count)
+            .Select(i => $"CN12345678{i:D3}")
+            .ToArray();
+
+        string[] ninos = Enumerable.Range(1, count)
+            .Select(i => $"AB{i:D6}C")
+            .ToArray();
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+        {
+            builder.WithCaseReferences(caseReferences);
+            builder.WithNinosForEmployees(ninos);
+        });
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                count,
+                cellValues: caseReferences);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {count} too-long case reference(s)");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
     }
 
     public async Task UploadRp14aWithEmployerNameAsync(params string?[] employerNames)
@@ -349,7 +380,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
                 testFile.FilePath,
                 employeeCount,
-                cellValue: nationalInsuranceNumber ?? string.Empty);
+                cellValue: string.IsNullOrEmpty(nationalInsuranceNumber) ? "Not entered" : nationalInsuranceNumber);
 
         await UploadFileAsync(
             testFile.FilePath,
@@ -477,7 +508,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         Rp14aTestFile testFile = BuildTestFile(builder =>
             builder.WithHolidayNotPaidDatesForEmployees(employeeCount, startDate, endDate));
 
-        string cellValue = $"{FormatDate(startDate)}, {FormatDate(endDate)}";
+        string cellValue = FormatUiDateRange(startDate, endDate);
 
         List<AffectedEmployee> affectedEmployees =
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
@@ -519,7 +550,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         Rp14aTestFile testFile = BuildTestFile(builder =>
             builder.WithEmploymentDatesForEmployees(employeeCount, startDate, endDate));
 
-        string cellValue = $"{FormatDate(startDate)}, {FormatDate(endDate)}";
+        string cellValue = FormatUiDateRange(startDate, endDate);
 
         List<AffectedEmployee> affectedEmployees =
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
@@ -541,7 +572,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         Rp14aTestFile testFile = BuildTestFile(builder =>
             builder.WithArrearsDatesForEmployees(employeeCount, startDate, endDate));
 
-        string cellValue = $"{FormatDate(startDate)}, {FormatDate(endDate)}";
+        string cellValue = FormatUiDateRange(startDate, endDate);
 
         List<AffectedEmployee> affectedEmployees =
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(

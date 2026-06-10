@@ -74,14 +74,14 @@ Feature: Employee Validation
               And I should be able to view the validation error details for employees where the surname is the wrong length
 
 
-        @regression @validation @rp14a @allure.subSuite:NationalInsurance @bug
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance
         Scenario: RP14A Display error for missing employee national insurance number
             Given the RP14A contains an employee with no national insurance number
              When I attempt to submit the RP14A
              Then I should see the national insurance number validation error "1 National Insurance numbers is missing"
               And I should be able to view national insurance number error details
 
-        @regression @validation @rp14a @allure.subSuite:NationalInsurance @bug @api-upload
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance @api-upload
         Scenario: RP14A API display error for missing employee national insurance number
             Given the RP14A contains an employee with no national insurance number
              When I attempt to submit the RP14A
@@ -128,12 +128,12 @@ Feature: Employee Validation
                   | 3             | 123456789               |
 
 
-        @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo @bug
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo
         Scenario Outline: RP14A Display error for multiple missing employee national insurance numbers
             Given the RP14A contains <employeeCount> employees with no national insurance number
              When I attempt to submit the RP14A
              Then I should see the following national insurance number validation errors
-                  | Message                                          | Hint | Type                               |
+                  | Message                                                | Hint | Type                               |
                   | <employeeCount> National Insurance numbers are missing |      | Employee national insurance number |
               And I should be able to view multiple national insurance numbers error details
 
@@ -146,7 +146,7 @@ Feature: Employee Validation
                   | employeeCount |
                   | 3             |
 
-        @regression @validation @rp14a @allure.story:Employee @bug
+        @regression @validation @rp14a @allure.story:Employee
         Scenario: RP14A Display error when employment start date is after employment end date
             Given the RP14A contains employment start date "2026-04-30" with end date "2026-04-01"
              When I attempt to submit the RP14A
@@ -156,7 +156,7 @@ Feature: Employee Validation
               And I should be able to view the employee employment dates error details
               And I should be able to go to the previous page from the error details page
 
-        @regression @validation @rp14a @allure.story:Employee @bug @api-upload
+        @regression @validation @rp14a @allure.story:Employee @api-upload
         Scenario: RP14A API display error when employment start date is after employment end date
             Given the RP14A contains employment start date "2026-04-30" with end date "2026-04-01"
              When I attempt to submit the RP14A
@@ -165,7 +165,7 @@ Feature: Employee Validation
                   | 1 employment date is incorrect | Start date must be before the end date | Employee employment dates |
               And I should be able to view the employee employment dates error details
 
-        @regression @validation @rp14a @allure.story:Employee @bug
+        @regression @validation @rp14a @allure.story:Employee 
         Scenario: RP14A Display aggregated error for multiple employment start dates after end date
             Given the RP14A contains 2 employees with employment start date after end date
              When I attempt to submit the RP14A
@@ -174,7 +174,7 @@ Feature: Employee Validation
                   | 2 employment dates are incorrect | Start date must be before the end date | Employee employment dates |
               And I should be able to view the employee employment dates error details for multiple employees
 
-        @regression @validation @rp14a @allure.story:Employee @bug @api-upload
+        @regression @validation @rp14a @allure.story:Employee @api-upload
         Scenario: RP14A API display aggregated error for multiple employment start dates after end date
             Given the RP14A contains 2 employees with employment start date after end date
              When I attempt to submit the RP14A

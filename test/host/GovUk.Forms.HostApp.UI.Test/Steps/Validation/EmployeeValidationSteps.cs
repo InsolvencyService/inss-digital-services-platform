@@ -34,7 +34,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
         AffectedEmployee employee = CreateAffectedEmployee(
             surname: string.Empty,
             forename: _faker.Name.FirstName(),
-            cellValue: string.Empty);
+            cellValue: "Not entered");
 
         await UploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
             employee.Surname,
@@ -61,7 +61,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     [Given("the RP14A contains an employee with no national insurance number")]
     public async Task GivenTheRp14aContainsAnEmployeeWithNoNationalInsuranceNumber()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(niNumber: string.Empty, cellValue: string.Empty);
+        AffectedEmployee employee = CreateAffectedEmployee(niNumber: string.Empty, cellValue: "Not entered");
 
         await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(string.Empty, occurrenceIndex: 0);
 

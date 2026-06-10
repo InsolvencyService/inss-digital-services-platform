@@ -115,6 +115,9 @@ public sealed class UploadDocumentCoordinator :
     public Task UploadRp14aWithCaseReferenceAsync(params string?[] caseReferences)
         => _scenarioCoordinator.UploadRp14aWithCaseReferenceAsync(caseReferences);
 
+    public Task UploadRp14aWithTooLongCaseReferencesAsync(int count)
+        => _scenarioCoordinator.UploadRp14aWithTooLongCaseReferencesAsync(count);
+
     public Task UploadRp14aWithEmployerNameAsync(params string?[] employerNames)
         => _scenarioCoordinator.UploadRp14aWithEmployerNameAsync(employerNames);
 
