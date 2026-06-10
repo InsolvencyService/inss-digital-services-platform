@@ -219,58 +219,58 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 27
     await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table55 = new global::Reqnroll.Table(new string[] {
                             "Category"});
-                table1.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "Case"});
-                table1.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "Employer"});
-                table1.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "Employee"});
-                table1.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "Employee pay"});
-                table1.AddRow(new string[] {
+                table55.AddRow(new string[] {
                             "Employee holiday"});
 #line 28
-    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table1, "Then ");
+    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table55, "Then ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table56 = new global::Reqnroll.Table(new string[] {
                             "Category",
                             "Type",
                             "Message",
                             "Hint"});
-                table2.AddRow(new string[] {
+                table56.AddRow(new string[] {
                             "Case",
                             "Case reference",
                             "1 case reference is missing",
                             "Enter a reference number like CN12345678"});
-                table2.AddRow(new string[] {
+                table56.AddRow(new string[] {
                             "Employer",
                             "Employer name",
                             "1 employer name is the wrong length",
                             "Enter up to 99 characters"});
-                table2.AddRow(new string[] {
+                table56.AddRow(new string[] {
                             "Employee",
                             "Employee surname",
                             "1 employee surname is missing",
                             ""});
-                table2.AddRow(new string[] {
+                table56.AddRow(new string[] {
                             "Employee pay",
                             "Employee basic pay per week",
                             "1 weekly pay amount is incorrect",
                             "Enter a number like 12.34 or 100"});
-                table2.AddRow(new string[] {
+                table56.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 holiday owed is incorrect",
                             "Enter a number like 28.25 or 33"});
-                table2.AddRow(new string[] {
+                table56.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 holiday owed is outside the allowed range",
                             "Enter a value between 0 and 365"});
 #line 35
-    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table2, "And ");
+    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table56, "And ");
 #line hidden
 #line 43
     await testRunner.AndAsync("I should be able to view error details for all validation categories", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -318,53 +318,53 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 48
     await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table57 = new global::Reqnroll.Table(new string[] {
                             "Category"});
-                table3.AddRow(new string[] {
+                table57.AddRow(new string[] {
                             "Case"});
-                table3.AddRow(new string[] {
+                table57.AddRow(new string[] {
                             "Employer"});
-                table3.AddRow(new string[] {
+                table57.AddRow(new string[] {
                             "Employee"});
-                table3.AddRow(new string[] {
+                table57.AddRow(new string[] {
                             "Employee pay"});
-                table3.AddRow(new string[] {
+                table57.AddRow(new string[] {
                             "Employee holiday"});
 #line 49
-    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table3, "Then ");
+    await testRunner.ThenAsync("I should see the following validation categories", ((string)(null)), table57, "Then ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table58 = new global::Reqnroll.Table(new string[] {
                             "Category",
                             "Type",
                             "Message",
                             "Hint"});
-                table4.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Case",
                             "Case reference",
                             "1 case reference is missing",
                             "Enter a reference number like CN12345678"});
-                table4.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Employee",
                             "Employee surname",
                             "1 employee surname is missing",
                             ""});
-                table4.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Employee pay",
                             "Employee basic pay per week",
                             "1 weekly pay amount is incorrect",
                             "Enter a number like 12.34 or 100"});
-                table4.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 holiday owed is incorrect",
                             "Enter a number like 28.25 or 33"});
-                table4.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Employee holiday",
                             "Holiday owed",
                             "1 holiday owed is outside the allowed range",
                             "Enter a value between 0 and 365"});
 #line 56
-    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table4, "And ");
+    await testRunner.AndAsync("I should see the following multiple validation errors", ((string)(null)), table58, "And ");
 #line hidden
 #line 63
     await testRunner.AndAsync("I should be able to view error details for all validation categories", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -455,49 +455,49 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table59 = new global::Reqnroll.Table(new string[] {
                             "Surname",
                             "NationalInsuranceNumber",
                             "MoneyOwedToEmployer",
                             "BasicPayPerWeek"});
-                table5.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "",
                             "QQ123456A",
                             "12.345",
                             "12.3"});
 #line 76
-            await testRunner.GivenAsync("the RP14A contains an employee with:", ((string)(null)), table5, "Given ");
+            await testRunner.GivenAsync("the RP14A contains an employee with:", ((string)(null)), table59, "Given ");
 #line hidden
 #line 79
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table60 = new global::Reqnroll.Table(new string[] {
                             "Category",
                             "Type",
                             "Message",
                             "Hint"});
-                table6.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "Employee",
                             "Employee surname",
                             "1 employee surname is missing",
                             ""});
-                table6.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "Employee",
                             "Employee national insurance number",
                             "1 National Insurance number is in the wrong format",
                             "Enter a National Insurance number like QQ 12 34 56 C"});
-                table6.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "Employee",
                             "Money owed to employer",
                             "1 amount owed to the employer is incorrect",
                             "Enter a number like 12.34 or 100"});
-                table6.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "Employee pay",
                             "Employee basic pay per week",
                             "1 weekly pay amount is incorrect",
                             "Enter a number like 12.34 or 100"});
 #line 80
-             await testRunner.ThenAsync("I should see the following multiple validation errors", ((string)(null)), table6, "Then ");
+             await testRunner.ThenAsync("I should see the following multiple validation errors", ((string)(null)), table60, "Then ");
 #line hidden
 #line 86
              await testRunner.AndAsync("I should be able to view error details for all validation categories", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -539,49 +539,49 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line 8
         await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table61 = new global::Reqnroll.Table(new string[] {
                             "Surname",
                             "NationalInsuranceNumber",
                             "MoneyOwedToEmployer",
                             "BasicPayPerWeek"});
-                table7.AddRow(new string[] {
+                table61.AddRow(new string[] {
                             "",
                             "QQ123456A",
                             "12.345",
                             "12.3"});
 #line 90
-            await testRunner.GivenAsync("the RP14A contains an employee with:", ((string)(null)), table7, "Given ");
+            await testRunner.GivenAsync("the RP14A contains an employee with:", ((string)(null)), table61, "Given ");
 #line hidden
 #line 93
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table62 = new global::Reqnroll.Table(new string[] {
                             "Category",
                             "Type",
                             "Message",
                             "Hint"});
-                table8.AddRow(new string[] {
+                table62.AddRow(new string[] {
                             "Employee",
                             "Employee surname",
                             "1 employee surname is missing",
                             ""});
-                table8.AddRow(new string[] {
+                table62.AddRow(new string[] {
                             "Employee",
                             "Employee national insurance number",
                             "1 National Insurance number is in the wrong format",
                             "Enter a National Insurance number like QQ 12 34 56 C"});
-                table8.AddRow(new string[] {
+                table62.AddRow(new string[] {
                             "Employee",
                             "Money owed to employer",
                             "1 amount owed to the employer is incorrect",
                             "Enter a number like 12.34 or 100"});
-                table8.AddRow(new string[] {
+                table62.AddRow(new string[] {
                             "Employee pay",
                             "Employee basic pay per week",
                             "1 weekly pay amount is incorrect",
                             "Enter a number like 12.34 or 100"});
 #line 94
-             await testRunner.ThenAsync("I should see the following multiple validation errors", ((string)(null)), table8, "Then ");
+             await testRunner.ThenAsync("I should see the following multiple validation errors", ((string)(null)), table62, "Then ");
 #line hidden
 #line 100
              await testRunner.AndAsync("I should be able to view error details for all validation categories", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");

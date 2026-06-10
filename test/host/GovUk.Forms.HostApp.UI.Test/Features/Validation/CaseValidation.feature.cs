@@ -250,16 +250,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 28
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table1.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "1 case reference is in the wrong format",
                             "",
                             "Case reference"});
 #line 29
-             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table1, "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table5, "Then ");
 #line hidden
 #line 32
               await testRunner.AndAsync("I should be able to view case reference error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -305,16 +305,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 37
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table2.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "1 case reference is in the wrong format",
                             "",
                             "Case reference"});
 #line 38
-             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table2, "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table6, "Then ");
 #line hidden
 #line 41
               await testRunner.AndAsync("I should be able to view case reference error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -358,16 +358,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 46
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table3.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "1 case reference is too long",
                             "Enter up to 10 characters",
                             "Case reference"});
 #line 47
-             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table3, "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table7, "Then ");
 #line hidden
 #line 50
               await testRunner.AndAsync("I should be able to view case reference error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -413,16 +413,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 55
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table4.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "1 case reference is too long",
                             "Enter up to 10 characters",
                             "Case reference"});
 #line 56
-             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table4, "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table8, "Then ");
 #line hidden
 #line 59
               await testRunner.AndAsync("I should be able to view case reference error details", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -522,16 +522,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 72
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table5.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             string.Format("{0} case references are missing", count),
                             "Enter a reference number like CN12345678",
                             "Case reference"});
 #line 73
-             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table5, "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table9, "Then ");
 #line hidden
 #line 76
               await testRunner.AndAsync("I should be able to view case reference error details for multiple employees", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -582,16 +582,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 85
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table6.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             string.Format("{0} case references are in the wrong format", count),
                             "",
                             "Case reference"});
 #line 86
-             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table6, "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table10, "Then ");
 #line hidden
 #line 89
               await testRunner.AndAsync("I should be able to view case reference error details for multiple employees", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -635,16 +635,16 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 98
              await testRunner.WhenAsync("I attempt to submit the RP14A", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint",
                             "Type"});
-                table7.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "3 case references are too long",
                             "Enter up to 10 characters",
                             "Case reference"});
 #line 99
-             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table7, "Then ");
+             await testRunner.ThenAsync("I should see the following case reference validation errors", ((string)(null)), table11, "Then ");
 #line hidden
 #line 102
               await testRunner.AndAsync("I should be able to view case reference error details for multiple employees", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -699,12 +699,12 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 108
              await testRunner.WhenAsync("I attempt to submit the RP14", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
                             "Message"});
-                table8.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "1 case reference is in the wrong format"});
 #line 109
-             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table8, "Then ");
+             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table12, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -745,14 +745,14 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 125
              await testRunner.WhenAsync("I attempt to submit the RP14", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint"});
-                table9.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "1 case reference is too long",
                             "Enter up to 10 characters"});
 #line 126
-             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table9, "Then ");
+             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table13, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -793,14 +793,14 @@ namespace GovUk.Forms.HostApp.UI.Test.Features.Validation
 #line 133
              await testRunner.WhenAsync("I attempt to submit the RP14", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
                             "Message",
                             "Hint"});
-                table10.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "1 case reference is in the wrong format",
                             ""});
 #line 134
-             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table10, "Then ");
+             await testRunner.ThenAsync("I should see the following RP14 validation errors", ((string)(null)), table14, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
