@@ -18,9 +18,8 @@ public sealed class YourEmployeesFlowchart : DefineFlowchartBuilder
         NodeId addAnotherId = "AddAnotherEmployee";
         NodeId removeId = "RemoveEmployee";
         NodeId summaryId = "Summary";
-        WebRoot webRoot = new();
             
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["Employee Details"];
             
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();

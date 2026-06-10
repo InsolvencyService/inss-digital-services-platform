@@ -1,4 +1,5 @@
 ﻿using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain;
@@ -14,7 +15,7 @@ public class UserFormServiceTests
     private readonly IUserSessionProvider _userSessionProvider;
     private readonly IFormStorageProvider _formStorageProvider;
     private readonly ISubmitFormService _submitFormService;
-    private readonly IFormProvider _formProvider;
+    private readonly IFormFactory _formFactory;
     private readonly IFlowchart _sectionFlowchart;
     private readonly ServiceCollection _services = [];
     private readonly FormModel _form;
@@ -35,8 +36,8 @@ public class UserFormServiceTests
         _sectionFlowchart = Substitute.For<IFlowchart>();
         _services.AddKeyedSingleton(section.Path, _sectionFlowchart);
 
-        _formProvider = Substitute.For<IFormProvider>();
-        _formProvider.Create(_form.Path).Returns(_form);
+        _formFactory = Substitute.For<IFormFactory>();
+        _formFactory.Create().Returns(_form);
         
         _submitFormService = Substitute.For<ISubmitFormService>();
     }
@@ -123,6 +124,6 @@ public class UserFormServiceTests
     {
         IServiceProvider serviceProvider = _services.BuildServiceProvider();
         _userFormService = new UserFormService(
-            _userSessionProvider, _formStorageProvider, _formProvider, _submitFormService, serviceProvider);
+            _userSessionProvider, _formStorageProvider, _formFactory, _submitFormService, serviceProvider);
     }
 }

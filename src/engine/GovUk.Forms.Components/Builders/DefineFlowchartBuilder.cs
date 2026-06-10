@@ -1,6 +1,5 @@
-using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GovUk.Forms.Components.Builders;
@@ -9,10 +8,10 @@ public abstract class DefineFlowchartBuilder
 {
     public abstract void Construct(IServiceCollection services);
     
-    protected static FormModel GetForm(IServiceCollection services, ContentPath rootPath)
+    protected static FormModel GetForm(IServiceCollection services)
     {
         IServiceProvider serviceProvider = services.BuildServiceProvider();
-        IFormProvider formProvider = serviceProvider.GetRequiredService<IFormProvider>();
-        return formProvider.Create(rootPath);
+        IFormFactory formFactory = serviceProvider.GetRequiredService<IFormFactory>();
+        return formFactory.Create();
     }
 }

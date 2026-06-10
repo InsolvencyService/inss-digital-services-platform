@@ -1,5 +1,7 @@
+using Demo.GovUk.Forms.AboutYou.Application.Factories;
 using Demo.GovUk.Forms.AboutYou.Application.Services;
 using Demo.GovUk.Forms.AboutYou.Builders;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +19,7 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
+            services.AddSingleton<IFormFactory, AboutYouFormFactory>();
             services.AddKeyedTransient<IFormPrePopulationService, TestFormPrePopulationService>(webRoot.Root);
             YourDetailsFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);

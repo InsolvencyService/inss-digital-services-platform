@@ -1,5 +1,5 @@
 using GovUk.Forms.Application.Extensions;
-using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Binding;
 using GovUk.Forms.Components.Controllers;
 using GovUk.Forms.Components.Options;
@@ -100,27 +100,22 @@ public class StartupConfiguration : IHostingStartup
 
                 IServiceProvider serviceProvider = endpoints.ServiceProvider;
                 
-                IEnumerable<IWebRoot> webRoots = serviceProvider.GetServices<IWebRoot>();
-            
-                foreach (IWebRoot webRoot in webRoots)
-                {
-                    IFormProvider formProvider = serviceProvider.GetRequiredService<IFormProvider>();
-                    FormModel form = formProvider.Create(webRoot.Root);
+                IFormFactory formProvider = serviceProvider.GetRequiredService<IFormFactory>();
+                FormModel form = formProvider.Create();
 
+                endpoints.MapControllerRoute(
+                        name: $"{form.Path.Value}/edit",
+                        pattern: form.Path.Value,
+                        defaults: new { controller = "Form", action = "Edit" })
+                    .WithStaticAssets();
+
+                foreach (PageModel page in form.GetAllPages())
+                {
                     endpoints.MapControllerRoute(
-                            name: $"{form.Path.Value}/edit",
-                            pattern: form.Path.Value,
+                            name: $"{page.Path.Value}/edit",
+                            pattern: page.Path.Value,
                             defaults: new { controller = "Form", action = "Edit" })
                         .WithStaticAssets();
-
-                    foreach (PageModel page in form.GetAllPages())
-                    {
-                        endpoints.MapControllerRoute(
-                                name: $"{page.Path.Value}/edit",
-                                pattern: page.Path.Value,
-                                defaults: new { controller = "Form", action = "Edit" })
-                            .WithStaticAssets();
-                    }
                 }
             
                 endpoints.MapControllerRoute(

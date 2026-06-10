@@ -19,9 +19,8 @@ public sealed class ContactUsFlowchart : DefineFlowchartBuilder
         NodeId addAnotherId = "AddAnother";
         NodeId removeId = "Remove";
         NodeId summaryId = "Summary";
-        WebRoot webRoot = new();
         
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["Send Us Files"];
 
         FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();

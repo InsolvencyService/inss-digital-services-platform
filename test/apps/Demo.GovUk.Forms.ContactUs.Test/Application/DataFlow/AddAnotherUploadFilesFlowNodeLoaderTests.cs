@@ -1,6 +1,6 @@
 ﻿using Demo.GovUk.Forms.ContactUs.Application.DataFlow;
+using Demo.GovUk.Forms.ContactUs.Application.Factories;
 using Demo.GovUk.Forms.ContactUs.Domain;
-using Demo.GovUk.Forms.ContactUs.Factories;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Domain;
 using Xunit;

@@ -1,7 +1,7 @@
+using Demo.GovUk.Forms.ContactUs.Application.Factories;
 using Demo.GovUk.Forms.ContactUs.Builders;
-using Demo.GovUk.Forms.ContactUs.Factories;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,9 +20,7 @@ public class ContactUsFormFactoryTests
         ContactUsFormFactory formFactory = new();
         FormModel form = formFactory.Create();
         SectionModel section = form.Sections["Send Us Files"];
-        IFormProvider formProvider = Substitute.For<IFormProvider>();
-        formProvider.Create(form.Path).Returns(form);
-        builder.Services.AddSingleton(formProvider);
+        builder.Services.AddSingleton<IFormFactory>(formFactory);
         ContactUsFlowchart flowchart = new();
         
         flowchart.Construct(builder.Services);

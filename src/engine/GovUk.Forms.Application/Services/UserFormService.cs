@@ -1,4 +1,5 @@
 ﻿using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -10,20 +11,20 @@ public sealed class UserFormService : IUserFormService
 {
     private readonly IUserSessionProvider _userSessionProvider;
     private readonly IFormStorageProvider _formStorageProvider;
-    private readonly IFormProvider _formProvider;
+    private readonly IFormFactory _formFactory;
     private readonly ISubmitFormService _submitFormService;
     private readonly IServiceProvider _serviceProvider;
 
     public UserFormService(
         IUserSessionProvider userSessionProvider, 
         IFormStorageProvider formStorageProvider, 
-        IFormProvider formProvider,
+        IFormFactory formFactory,
         ISubmitFormService submitFormService,
         IServiceProvider serviceProvider)
     {
         _userSessionProvider = userSessionProvider;
         _formStorageProvider = formStorageProvider;
-        _formProvider = formProvider;
+        _formFactory = formFactory;
         _submitFormService = submitFormService;
         _serviceProvider = serviceProvider;
     }
@@ -65,7 +66,7 @@ public sealed class UserFormService : IUserFormService
     {
         if (!await _formStorageProvider.ExistsAsync(formPath, userSessionId))
         {
-            FormModel form = _formProvider.Create(formPath);
+            FormModel form = _formFactory.Create();
             form.Id = userSessionId;
             
             foreach (SectionModel section in form.Sections)

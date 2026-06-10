@@ -1,5 +1,7 @@
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components;
 using GovUk.Forms.Components.Resolvers;
+using Inss.GovUk.Forms.Fip.Application.Factories;
 using Inss.GovUk.Forms.Fip.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,7 @@ public class StartupConfiguration : IHostingStartup
         {
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
+            services.AddSingleton<IFormFactory, FipFormFactory>();
             
             FipFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);

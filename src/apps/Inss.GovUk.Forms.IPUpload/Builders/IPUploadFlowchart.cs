@@ -20,9 +20,8 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         NodeId fileUploadErrorDetailsId = "FileUploadErrorDetails";
         NodeId summaryId = "Summary";
         NodeId postSubmitSuccessId = "PostSubmit";
-        WebRoot webRoot = new();
         
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["IP Upload"];
             
         IPUploadDeclarationModel declaration = section.Pages.GetFirstOf<IPUploadDeclarationModel>();

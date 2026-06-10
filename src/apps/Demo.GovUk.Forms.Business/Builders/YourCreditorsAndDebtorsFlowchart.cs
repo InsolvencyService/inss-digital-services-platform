@@ -24,9 +24,8 @@ public sealed class YourCreditorsAndDebtorsFlowchart : DefineFlowchartBuilder
         NodeId removeDebtorDetailsId = "RemoveDebtorDetails";
         NodeId addAnotherDebtorId = "AddAnotherDebtor";
         NodeId summaryId = "Summary";
-        WebRoot webRoot = new();
         
-        FormModel form = GetForm(services, webRoot.Root);
+        FormModel form = GetForm(services);
         SectionModel section = form.Sections["Creditors and Debtors"];
         
         FullNameModel creditorFullName = section.Pages.GetAtIndex<FullNameModel>(0);
