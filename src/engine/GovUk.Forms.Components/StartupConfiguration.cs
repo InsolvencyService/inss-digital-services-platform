@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 [assembly: HostingStartup(typeof(GovUk.Forms.Components.StartupConfiguration))]
 
@@ -40,6 +41,11 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddOptions<AnalyticsOptions>()
                 .Bind(context.Configuration.GetSection("Analytics"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+            
+            services.AddOptions<ComponentOptions>()
+                .Bind(context.Configuration.GetSection("Components"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
             
@@ -99,36 +105,41 @@ public class StartupConfiguration : IHostingStartup
                 endpoints.MapControllers();
 
                 IServiceProvider serviceProvider = endpoints.ServiceProvider;
-                
-                IFormFactory formProvider = serviceProvider.GetRequiredService<IFormFactory>();
-                FormModel form = formProvider.Create();
 
-                endpoints.MapControllerRoute(
-                        name: $"{form.Path.Value}/edit",
-                        pattern: form.Path.Value,
-                        defaults: new { controller = "Form", action = "Edit" })
-                    .WithStaticAssets();
+                IOptions<ComponentOptions> componentOptions = serviceProvider.GetRequiredService<IOptions<ComponentOptions>>();
 
-                foreach (PageModel page in form.GetAllPages())
+                if (componentOptions.Value.BootstrapFormFramework)
                 {
+                    IFormFactory formProvider = serviceProvider.GetRequiredService<IFormFactory>();
+                    FormModel form = formProvider.Create();
+
                     endpoints.MapControllerRoute(
-                            name: $"{page.Path.Value}/edit",
-                            pattern: page.Path.Value,
+                            name: $"{form.Path.Value}/edit",
+                            pattern: form.Path.Value,
                             defaults: new { controller = "Form", action = "Edit" })
                         .WithStaticAssets();
+
+                    foreach (PageModel page in form.GetAllPages())
+                    {
+                        endpoints.MapControllerRoute(
+                                name: $"{page.Path.Value}/edit",
+                                pattern: page.Path.Value,
+                                defaults: new { controller = "Form", action = "Edit" })
+                            .WithStaticAssets();
+                    }
+
+                    endpoints.MapControllerRoute(
+                            name: "FormSignOut",
+                            pattern: "sign-out",
+                            defaults: new { controller = "Form", action = "LogOut" })
+                        .WithStaticAssets();
                 }
-            
-                endpoints.MapControllerRoute(
-                        name: "FormSignOut",
-                        pattern: "sign-out",
-                        defaults: new { controller = "Form", action = "LogOut" })
-                    .WithStaticAssets();
                 
                 endpoints.MapControllerRoute(
                         name: "default",
                         pattern: "{controller=Start}/{action=Index}/{id?}")
                     .WithStaticAssets();
-                
+
                 endpoints.MapStaticAssets();
             });
         });
