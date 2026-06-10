@@ -113,3 +113,16 @@ stages:
         environment: 'Sit'
         location: ${{ parameters.location }}
         azureSubscription: $(AzureSubscription)
+
+- stage: DeployPreProd
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: DeployDev
+  displayName: 'Deploy to PreProd'
+  variables:
+    - group: Platform-PreProd
+  jobs:
+    - template: ../deploy/azure-deployment.yml
+      parameters:
+        environment: 'PreProd'
+        location: ${{ parameters.location }}
+        azureSubscription: $(AzureSubscription)
