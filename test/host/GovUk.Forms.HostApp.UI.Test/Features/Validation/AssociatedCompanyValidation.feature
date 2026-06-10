@@ -47,13 +47,13 @@ Scenario Outline: RP14 associated company name length boundary validation
             Given the RP14 XML contains <associatedCompanyCount> associated companies with 256 characters
              When I attempt to submit the RP14
              Then I should see the following associated company validation errors
-                  | Message                                                              | Hint                      | Type                      |
-                  | <associatedCompanyCount> association reasons are the wrong length | Enter up to 9 characters  | Associated company number |
+                  | Message        | Hint                     | Type                      |
+                  | <errorMessage> | Enter up to 9 characters | Associated company number |
 
         Examples:
-                  | associatedCompanyCount |
-                  | 1                      |
-                  | 2                      |
+                  | associatedCompanyCount | errorMessage                               |
+                  |                      1 | 1 association reason is the wrong length   |
+                  |                      2 | 2 association reasons are the wrong length |
 
 
    @regression @validation @rp14  @allure.story:AssociatedCompany

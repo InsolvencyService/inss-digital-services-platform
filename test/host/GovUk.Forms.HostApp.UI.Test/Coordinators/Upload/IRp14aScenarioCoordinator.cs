@@ -42,4 +42,9 @@ public interface IRp14aScenarioCoordinator
     Task UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(int employeeCount, string? basicPayPerWeek);
     Task UploadRp14aWithHolidayDaysTakenForEmployeesAsync(int employeeCount, string? holidayDaysTaken);
     Task UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(int employeeCount, string? holidayDaysCarriedForward);
+    Task UploadRp14aWithHolidayContractedEntitlementDaysForEmployeesAsync(int employeeCount, string? value);
+    Task UploadRp14aWithHolidayNotPaidDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate);
+    Task UploadRp14aWithSurnameForEmployeesAsync(int employeeCount, string? surname);
+    Task UploadRp14aWithEmploymentDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate);
+    Task UploadRp14aWithArrearsDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate);
 }

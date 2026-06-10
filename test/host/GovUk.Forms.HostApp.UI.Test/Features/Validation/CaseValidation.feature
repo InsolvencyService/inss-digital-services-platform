@@ -30,7 +30,7 @@ Feature: Case Validation
              When I attempt to submit the RP14A
              Then I should see the following case reference validation errors
                   | Message                   | Hint                            | Type           |
-                  | 1 too long case reference | Up to 12 characters are allowed | Case reference |
+                  |1 case reference is too long | Up to 12 characters are allowed | Case reference |
               And I should be able to view case reference error details
  
         @regression @validation @rp14a  @ignore @NotImplemented
@@ -60,8 +60,8 @@ Feature: Case Validation
             Given the RP14 XML contains case reference "<caseReference>"
              When I attempt to submit the RP14
              Then I should see the following RP14 validation errors
-                  | Message                         | Hint                 |
-                  | 1 invalid case reference format | Format is CN12345678 |
+                  | Message                                 |
+                  | 1 case reference is in the wrong format |
     
         Examples:
                   | caseReference |

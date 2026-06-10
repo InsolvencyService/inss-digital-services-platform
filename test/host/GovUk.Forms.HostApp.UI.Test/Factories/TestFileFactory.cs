@@ -1,23 +1,23 @@
 using GovUk.Forms.HostApp.UI.Test.Helpers;
+using Inss.Common.IPUpload.Employee.Spreadsheet;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace GovUk.Forms.HostApp.UI.Test.Factories;
 
 public static class TestFileFactory
 {
     private const int OneMb = 1024 * 1024;
-
-    private static readonly string _baselineRp14aFilePath = Path.GetFullPath(
-        Path.Join(
-            Path.GetDirectoryName(typeof(TestFileFactory).Assembly.Location)!,
-            "Resources",
-            "Rp14a",
-            "rp14A.xml"));
-
     private const string ClosingTag = "</ns1:RP14A>";
+    private const string NsPrefix = "ns1";
+    private const string Namespace = "http://www.ins.gsi.gov.uk/FileUpload/RP14A_Application";
 
     private const string PaddingComment =
         "\n<!-- Padding Padding Padding Padding Padding -->";
+
+    private static readonly XmlSerializer _serializer = new(typeof(RP14A));
+    private static readonly XmlSerializerNamespaces _serializerNamespaces = CreateSerializerNamespaces();
 
     public static string CreateValidXmlFileAboveSize(
         TestArtifacts artifacts,
@@ -92,7 +92,7 @@ public static class TestFileFactory
     {
         string filePath = artifacts.FilePath(fileName);
 
-        string xml = File.ReadAllText(_baselineRp14aFilePath, Encoding.UTF8);
+        string xml = BuildDefaultXmlContent();
 
         int closingTagStart = xml.LastIndexOf(ClosingTag, StringComparison.Ordinal);
         string xmlBody = xml[..closingTagStart];
@@ -114,5 +114,94 @@ public static class TestFileFactory
         File.WriteAllText(filePath, builder.ToString(), Encoding.UTF8);
 
         return filePath;
+    }
+
+    private static string BuildDefaultXmlContent()
+    {
+        RP14A model = new()
+        {
+            Employee =
+            [
+                new RP14AEmployee
+                {
+                    Header = new RP14AEmployeeHeader { CaseReference = "CN00345678" },
+                    EmployerName = "Employer Test",
+                    EmployeeName = new NameType { Surname = "Surname Test", Forenames = "Forname Test", Title = "Mr" },
+                    NIClass = "A",
+                    NINO = "BP011752C",
+                    DateOfBirth = new DateTime(1990, 1, 1),
+                    DateOfBirthSpecified = true,
+                    StartDate = new DateTime(2000, 1, 1),
+                    StartDateSpecified = true,
+                    DateNoticeGiven = new DateTime(2020, 1, 1),
+                    DateNoticeGivenSpecified = true,
+                    EndDate = new DateTime(2020, 3, 1),
+                    EndDateSpecified = true,
+                    IsDirector = YesNoType.No,
+                    IsDirectorSpecified = true,
+                    AverageHoursWorked = 37m,
+                    AverageHoursWorkedSpecified = true,
+                    MoneyOwedToEmployer = 5000m,
+                    MoneyOwedToEmployerSpecified = true,
+                    EntitledToRedundancyPay = YesNoType.Yes,
+                    EntitledToRedundancyPaySpecified = true,
+                    EntitledToNoticePay = YesNoType.Yes,
+                    EntitledToNoticePaySpecified = true,
+                    PayDetails = new RP14AEmployeePayDetails
+                    {
+                        BasicPayPerWeek = 1000m,
+                        BasicPayPerWeekSpecified = true,
+                        WeeklyPayDay = RP14AEmployeePayDetailsWeeklyPayDay.Monday,
+                        WeeklyPayDaySpecified = true,
+                        ArrearsOfPay = new RP14AEmployeePayDetailsArrearsOfPay
+                        {
+                            ArrearsOfPayPeriod1 = new RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1
+                            {
+                                AOP1StartDate = new DateTime(2020, 1, 10),
+                                AOP1StartDateSpecified = true,
+                                AOP1EndDate = new DateTime(2020, 1, 11),
+                                AOP1EndDateSpecified = true,
+                                AOPOwed1 = 100m,
+                                AOPOwed1Specified = true,
+                                AOPPayType1 = RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1AOPPayType1.wages,
+                                AOPPayType1Specified = true
+                            }
+                        }
+                    },
+                    Holiday = new RP14AEmployeeHoliday
+                    {
+                        HolidayYearStart = new DateTime(2020, 1, 1),
+                        HolidayYearStartSpecified = true,
+                        HolidayContractedEntitlementDays = 30m,
+                        HolidayContractedEntitlementDaysSpecified = true,
+                        HolidayDaysCarriedForward = 10m,
+                        HolidayDaysCarriedForwardSpecified = true,
+                        HolidayDaysTaken = 2m,
+                        HolidayDaysTakenSpecified = true,
+                        NoDaysHolidayOwed = 10m,
+                        NoDaysHolidayOwedSpecified = true
+                    }
+                }
+            ]
+        };
+
+        XmlWriterSettings settings = new()
+        {
+            Indent = true,
+            Encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)
+        };
+
+        using StringWriter sw = new();
+        using XmlWriter writer = XmlWriter.Create(sw, settings);
+        _serializer.Serialize(writer, model, _serializerNamespaces);
+
+        return sw.ToString();
+    }
+
+    private static XmlSerializerNamespaces CreateSerializerNamespaces()
+    {
+        XmlSerializerNamespaces ns = new();
+        ns.Add(NsPrefix, Namespace);
+        return ns;
     }
 }
