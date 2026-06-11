@@ -2,15 +2,6 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
-	<ItemGroup>
-	  <None Remove="Resources\Rp14a\rp14A.xml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Include="Resources\Rp14a\rp14A.xml">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-
-	</ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="Allure.Reqnroll" />
