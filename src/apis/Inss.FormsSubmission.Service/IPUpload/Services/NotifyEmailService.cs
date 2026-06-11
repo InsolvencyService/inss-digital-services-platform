@@ -41,7 +41,7 @@ public sealed class NotifyEmailService : INotifyEmailService
         DynamicsSubmission[] submissions)
     {
         bool submissionFailed = submissions.Any(s => s.ErrorInfo is not null);
-        Dictionary<String, dynamic> personalisation = new()
+        Dictionary<string, dynamic> personalisation = new()
         {
             { FormTypeKey, isEmployeeSubmission ? RP14A : RP14 },
             { ReferenceNumberKey, reference },
@@ -68,7 +68,7 @@ public sealed class NotifyEmailService : INotifyEmailService
     {
         string errors = BuildInternalErrors(submissions);
         _logger.SubmissionFailedErrors(reference, errors);
-        Dictionary<String, dynamic> personalisation = new()
+        Dictionary<string, dynamic> personalisation = new()
         {
             { FormTypeKey, isEmployeeSubmission ? RP14A : RP14 },
             { ReferenceNumberKey, reference },
