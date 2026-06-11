@@ -1,5 +1,5 @@
-using GovUk.Forms.HostApp.UI.Test.Builders;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
+using static GovUk.Forms.HostApp.UI.Test.Support.TestConstants;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Globalization;
@@ -9,7 +9,7 @@ namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
 public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aScenarioCoordinator
 {
-    private const string DefaultBaselineFilePath = "Resources/Rp14a/rp14A.xml";
+    private readonly Func<IRp14aFixtureBuilder> _builderFactory;
     private const string AffectedEmployeesContextKey = "AffectedEmployees";
     private const string AffectedEmployeesByErrorTypeKey = "AffectedEmployeesByErrorType";
     private const string SurnameErrorKey = "Employee surname|1 missing employee surname";
@@ -28,15 +28,14 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         IFileUploadCoordinator fileUploadCoordinator,
         ScenarioContext scenarioContext,
         TestArtifacts testArtifacts,
-        string? baselineFilePath = null)
+        Func<IRp14aFixtureBuilder> builderFactory)
         : base(
             fileUploadCoordinator,
             scenarioContext,
             testArtifacts,
-            logTag: "RP14A",
-            defaultBaselineFilePath: DefaultBaselineFilePath,
-            baselineFilePath: baselineFilePath)
+            logTag: "RP14A")
     {
+        _builderFactory = builderFactory;
     }
 
     public Task UploadValidRp14aAsync() =>
@@ -243,7 +242,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
                 testFile.FilePath,
                 employeeCount,
-                cellValue: string.Empty);
+                cellValue: NotEntered);
 
         await UploadFileAsync(
             testFile.FilePath,
@@ -295,7 +294,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
                 testFile.FilePath,
                 employeeCount,
                 cellValues: caseReferences
-                    .Select(x => x ?? string.Empty)
+                    .Select(x => string.IsNullOrWhiteSpace(x) ? NotEntered : x)
                     .ToArray());
 
         await UploadFileAsync(
@@ -305,6 +304,37 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         ScenarioContext.Set(
             affectedEmployees,
             AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithTooLongCaseReferencesAsync(int count)
+    {
+        ValidatePositiveNumber(count, nameof(count));
+
+        string[] caseReferences = Enumerable.Range(1, count)
+            .Select(i => $"CN12345678{i:D3}")
+            .ToArray();
+
+        string[] ninos = Enumerable.Range(1, count)
+            .Select(i => $"AB{i:D6}C")
+            .ToArray();
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+        {
+            builder.WithCaseReferences(caseReferences);
+            builder.WithNinosForEmployees(ninos);
+        });
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                count,
+                cellValues: caseReferences);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {count} too-long case reference(s)");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
     }
 
     public async Task UploadRp14aWithEmployerNameAsync(params string?[] employerNames)
@@ -351,7 +381,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
                 testFile.FilePath,
                 employeeCount,
-                cellValue: nationalInsuranceNumber ?? string.Empty);
+                cellValue: string.IsNullOrEmpty(nationalInsuranceNumber) ? NotEntered : nationalInsuranceNumber);
 
         await UploadFileAsync(
             testFile.FilePath,
@@ -452,8 +482,114 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
             AffectedEmployeesContextKey);
     }
 
+    public async Task UploadRp14aWithHolidayContractedEntitlementDaysForEmployeesAsync(int employeeCount, string? value)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithHolidayContractedEntitlementDaysForEmployees(employeeCount, value));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: value ?? string.Empty);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having contracted holiday entitlement '{ToLogValue(value)}'");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithHolidayNotPaidDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithHolidayNotPaidDatesForEmployees(employeeCount, startDate, endDate));
+
+        string cellValue = FormatUiDateRange(startDate, endDate);
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: cellValue);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having holiday not paid start date after end date");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithSurnameForEmployeesAsync(int employeeCount, string? surname)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithSurnamesForEmployees(employeeCount, surname));
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: surname ?? string.Empty);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having surname '{ToLogValue(surname)}'");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithEmploymentDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithEmploymentDatesForEmployees(employeeCount, startDate, endDate));
+
+        string cellValue = FormatUiDateRange(startDate, endDate);
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: cellValue);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having employment start date after end date");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+    }
+
+    public async Task UploadRp14aWithArrearsDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate)
+    {
+        ValidatePositiveNumber(employeeCount, nameof(employeeCount));
+
+        Rp14aTestFile testFile = BuildTestFile(builder =>
+            builder.WithArrearsDatesForEmployees(employeeCount, startDate, endDate));
+
+        string cellValue = FormatUiDateRange(startDate, endDate);
+
+        List<AffectedEmployee> affectedEmployees =
+            Rp14aAffectedEmployeeReader.ReadAffectedEmployees(
+                testFile.FilePath,
+                employeeCount,
+                cellValue: cellValue);
+
+        await UploadFileAsync(
+            testFile.FilePath,
+            $"RP14A with {employeeCount} employees having arrears start date after end date");
+
+        ScenarioContext.Set(affectedEmployees, AffectedEmployeesContextKey);
+    }
+
     private Task BuildAndUploadAsync(
-        Action<Rp14aFixtureBuilder>? configure,
+        Action<IRp14aFixtureBuilder>? configure,
         string description)
     {
         Rp14aTestFile testFile = BuildTestFile(configure);
@@ -461,13 +597,13 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
         return UploadFileAsync(testFile.FilePath, description);
     }
 
-    private Rp14aTestFile BuildTestFile(Action<Rp14aFixtureBuilder>? configure = null)
+    private Rp14aTestFile BuildTestFile(Action<IRp14aFixtureBuilder>? configure = null)
     {
-        Rp14aFixtureBuilder builder = new();
+        IRp14aFixtureBuilder builder = _builderFactory();
 
         configure?.Invoke(builder);
 
-        return builder.Build(TestArtifacts, BaselineFilePath!, ScenarioName);
+        return builder.Build(TestArtifacts, scenarioName: ScenarioName);
     }
 
     private void SetComplexAffectedEmployees(

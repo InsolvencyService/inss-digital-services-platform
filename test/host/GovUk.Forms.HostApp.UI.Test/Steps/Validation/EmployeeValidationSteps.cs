@@ -8,10 +8,11 @@ using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using GovUk.Forms.HostApp.UI.Test.Tags;
 using static GovUk.Forms.HostApp.UI.Test.Models.TestData.TestFactory;
+using static GovUk.Forms.HostApp.UI.Test.Support.TestConstants;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
-[Scope(Feature = "Employee Validation")]
+[Scope(Feature = "Employees Validation")]
 [Binding]
 public sealed class EmployeeValidationSteps : ValidationStepsBase
 {
@@ -34,7 +35,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
         AffectedEmployee employee = CreateAffectedEmployee(
             surname: string.Empty,
             forename: _faker.Name.FirstName(),
-            cellValue: string.Empty);
+            cellValue: NotEntered);
 
         await UploadDocumentCoordinator.UploadRp14aWithEmployeeNameAsync(
             employee.Surname,
@@ -61,7 +62,7 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     [Given("the RP14A contains an employee with no national insurance number")]
     public async Task GivenTheRp14aContainsAnEmployeeWithNoNationalInsuranceNumber()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(niNumber: string.Empty, cellValue: string.Empty);
+        AffectedEmployee employee = CreateAffectedEmployee(niNumber: string.Empty, cellValue: NotEntered);
 
         await UploadDocumentCoordinator.UploadRp14aWithNationalInsuranceNumberAsync(string.Empty, occurrenceIndex: 0);
 
@@ -101,6 +102,23 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     {
         await UploadDocumentCoordinator
             .UploadRp14aWithMissingEmployeeSurnamesAsync(employeeCount);
+    }
+
+    [Given("the RP14A contains {int} employees with surname of length {int}")]
+    public async Task GivenTheRp14aContainsEmployeesWithSurnameOfLength(int employeeCount, int length)
+    {
+        string surname = LengthHelper.AtMax(length);
+        await UploadDocumentCoordinator.UploadRp14aWithSurnameForEmployeesAsync(employeeCount, surname);
+    }
+
+    [Given("the RP14A contains {int} employees with employment start date after end date")]
+    public async Task GivenTheRp14aContainsEmployeesWithEmploymentStartDateAfterEndDate(int employeeCount)
+    {
+        DateOnly startDate = new(2026, 4, 30);
+        DateOnly endDate = new(2026, 4, 1);
+
+        await UploadDocumentCoordinator.UploadRp14aWithEmploymentDatesForEmployeesAsync(
+            employeeCount, startDate, endDate);
     }
 
     [Given("the RP14A contains {int} employees with national insurance number {string}")]
@@ -187,6 +205,20 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
         await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.EmploymentDates);
     }
 
+    [Then("I should be able to view the employee employment dates error details for multiple employees")]
+    public async Task ThenIShouldBeAbleToViewTheEmployeeEmploymentDatesErrorDetailsForMultipleEmployees()
+    {
+        UploadErrorSummary expectedError = ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedError,
+            affectedEmployees,
+            ErrorDetailsHeaderType.EmploymentDates);
+    }
+
     [Then("I should be able to go to the previous page from the error details page")]
     public async Task ThenIShouldBeAbleToGoToThePreviousPageFromTheErrorDetailsPage()
     {
@@ -198,6 +230,21 @@ public sealed class EmployeeValidationSteps : ValidationStepsBase
     {
         await UploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
         await UploadDocumentCoordinator.VerifyUploadDocumentContentSnapShotAsync();
+    }
+
+    [Then("I should be able to view the validation error details for employees where the surname is the wrong length")]
+    public async Task ThenIShouldBeAbleToViewTheValidationErrorDetailsForEmployeesWhereTheSurnameIsTheWrongLength()
+    {
+        UploadErrorSummary expectedError =
+            ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedError,
+            affectedEmployees,
+            ErrorDetailsHeaderType.EmployeeSurname);
     }
 
     [Then("I should be able to view the validation error details for employees where the surname is missing")]

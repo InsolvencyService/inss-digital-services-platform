@@ -76,6 +76,12 @@ public abstract class ScenarioCoordinatorBase
     protected static string FormatDate(DateOnly? date) =>
         date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
 
+    protected static string FormatUiDate(DateOnly? date) =>
+        date?.ToString("M/d/yyyy", CultureInfo.InvariantCulture) ?? string.Empty;
+
+    protected static string FormatUiDateRange(DateOnly? startDate, DateOnly? endDate) =>
+        $"{FormatUiDate(startDate)}, {FormatUiDate(endDate)}";
+
     protected static string ToLogValue(string? value) =>
         value switch
         {

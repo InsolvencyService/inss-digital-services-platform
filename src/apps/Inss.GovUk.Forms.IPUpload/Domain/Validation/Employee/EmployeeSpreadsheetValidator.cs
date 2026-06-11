@@ -11,26 +11,26 @@ public sealed class EmployeeSpreadsheetValidator : EmployeeValidator
     {
         _model = model;
     }
-    
+
     public override async Task<ValidatorContext> ValidateAsync()
     {
         EmployeeValidatorContext context = new();
         bool validateCaseReference = true;
-        
+
         foreach (RP14AEmployee employee in _model.Employee)
         {
             context.Forenames = employee.EmployeeName.Forenames;
             context.Surname = employee.EmployeeName.Surname;
             context.Dob = DateOnly.FromDateTime(employee.DateOfBirth);
             context.Nino = employee.NINO;
-            
+
             // The instructions on the spreadsheet state to define the case ref in the first row - this reflects it in validation
             if (validateCaseReference)
             {
                 await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
                 validateCaseReference = false;
             }
-            
+
             ValidateAverageHoursWorked(context, employee.AverageHoursWorked);
             ValidateEmployerName(context, employee.EmployerName);
             ValidateEmployeeSurname(context, employee.EmployeeName.Surname);
@@ -60,7 +60,7 @@ public sealed class EmployeeSpreadsheetValidator : EmployeeValidator
             ValidateHolidayNotPaidDates(context, holidayNotPaid.Holiday2.Holiday2StartDate, holidayNotPaid.Holiday2.Holiday2EndDate);
             ValidateHolidayNotPaidDates(context, holidayNotPaid.Holiday3.Holiday3StartDate, holidayNotPaid.Holiday3.Holiday3EndDate);
         }
-        
+
         return context;
     }
 }

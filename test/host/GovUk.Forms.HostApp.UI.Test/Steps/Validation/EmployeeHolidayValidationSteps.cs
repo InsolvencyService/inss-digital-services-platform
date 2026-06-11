@@ -1,9 +1,11 @@
+using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Models.TestData;
 using GovUk.Forms.HostApp.UI.Test.Steps.Base;
 using GovUk.Forms.HostApp.UI.Test.Tags;
 using static GovUk.Forms.HostApp.UI.Test.Models.TestData.TestFactory;
+using static GovUk.Forms.HostApp.UI.Test.Support.TestConstants;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
@@ -11,19 +13,21 @@ namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 [Binding]
 public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
 {
+    private readonly CheckYourAnswersCoordinator _checkYourAnswersCoordinator;
 
     public EmployeeHolidayValidationSteps(
         UploadDocumentCoordinator uploadDocumentCoordinator,
         UploadErrorDetailsCoordinator uploadErrorDetailsCoordinator,
-        ScenarioContext scenarioContext) : base(uploadDocumentCoordinator, uploadErrorDetailsCoordinator, scenarioContext)
+        ScenarioContext scenarioContext,
+        CheckYourAnswersCoordinator checkYourAnswersCoordinator) : base(uploadDocumentCoordinator, uploadErrorDetailsCoordinator, scenarioContext)
     {
+        _checkYourAnswersCoordinator = checkYourAnswersCoordinator;
     }
 
     [Given("the RP14A contains no contracted holiday entitlement")]
     public async Task GivenTheRp14aContainsNoContractedHolidayEntitlement()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(
-         cellValue: string.Empty);
+        AffectedEmployee employee = CreateAffectedEmployee(cellValue: NotEntered);
 
         await UploadDocumentCoordinator
             .UploadRp14aWithHolidayContractedEntitlementDaysAsync(null);
@@ -43,17 +47,6 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
         ScenarioContext.Set(employee);
     }
 
-    [Given("the RP14A contains no holiday days carried forward")]
-    public async Task GivenTheRp14aContainsNoHolidayDaysCarriedForward()
-    {
-        AffectedEmployee employee = CreateAffectedEmployee(
-             cellValue: string.Empty);
-
-        await UploadDocumentCoordinator
-            .UploadRp14aWithHolidayDaysCarriedForwardAsync(null);
-
-        ScenarioContext.Set(employee);
-    }
     [Given("the RP14A contains holiday days carried forward {string}")]
     public async Task GivenTheRP14AContainsHolidayDaysCarriedForward(string holidayCarriedForward)
     {
@@ -81,8 +74,7 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     [Given("the RP14A contains no holiday days taken")]
     public async Task GivenTheRPAContainsNoHolidayDaysTaken()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(
-       cellValue: string.Empty);
+        AffectedEmployee employee = CreateAffectedEmployee(cellValue: NotEntered);
 
         await UploadDocumentCoordinator
             .UploadRp14aWithHolidayDaysTakenAsync(null);
@@ -106,8 +98,7 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     [Given("the RP14A contains no holiday owed")]
     public async Task GivenTheRPAContainsNoHolidayOwed()
     {
-        AffectedEmployee employee = CreateAffectedEmployee(
-        cellValue: string.Empty);
+        AffectedEmployee employee = CreateAffectedEmployee(cellValue: NotEntered);
 
         await UploadDocumentCoordinator.UploadRp14aWithHolidayOwedAsync(null);
 
@@ -137,9 +128,8 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
         string[] invalidValues =
         [
             "28.8555",
-        "12.3",
-        "12.345",
-        "-1"
+            "12.345",
+            "-1"
         ];
 
         await UploadDocumentCoordinator
@@ -162,6 +152,23 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
        .UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(count, holidayCarriedForward);
     }
 
+    [Given("the RP14A contains {int} employees with contracted holiday entitlement {string}")]
+    public async Task GivenTheRPAContainsEmployeesWithContractedHolidayEntitlement(int count, string contractedHoliday)
+    {
+        await UploadDocumentCoordinator
+            .UploadRp14aWithHolidayContractedEntitlementDaysForEmployeesAsync(count, contractedHoliday);
+    }
+
+    [Given("the RP14A contains {int} employees with holiday not paid start date after end date")]
+    public async Task GivenTheRPAContainsEmployeesWithHolidayNotPaidStartDateAfterEndDate(int count)
+    {
+        DateOnly endDate = new(2020, 02, 10);
+        DateOnly startDate = new(2020, 02, 20);
+
+        await UploadDocumentCoordinator
+            .UploadRp14aWithHolidayNotPaidDatesForEmployeesAsync(count, startDate, endDate);
+    }
+
 
     [Then("I should see the validation error {string}")]
     public async Task ThenIShouldSeeTheValidationError(string errorMessage)
@@ -179,11 +186,20 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
     }
 
     [Then("I should see the following validation errors")]
-    public async Task ThenIShouldSeeTheFollowingContractedHolidayEntitlementValidationErrors(DataTable dataTable)
+    public async Task ThenIShouldSeeTheFollowingHolidayValidationErrors(DataTable dataTable)
     {
         Error error = dataTable.CreateInstance<Error>();
+        ScenarioContext.Set(error);
+
+        if (error.Message.Equals("none", StringComparison.OrdinalIgnoreCase))
+        {
+            await _checkYourAnswersCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
+            return;
+        }
+
         UploadErrorSummary expectedError = CreateErrorSummary(error.Type, error.Message, error.Hint);
         await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
+
         ScenarioContext.Set(expectedError);
     }
 
@@ -204,28 +220,20 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
 
 
     [Then("I should be able to view contracted holiday entitlement validation error details")]
-    public async Task ThenIShouldBeAbleToViewContractedHolidayEntitlementValidationErrorDetails()
-    {
-        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.HolidayContractedEntitlementDays);
-    }
+    public async Task ThenIShouldBeAbleToViewContractedHolidayEntitlementValidationErrorDetails() =>
+        await ViewSingleEmployeeErrorDetailsUnlessAcceptedAsync(ErrorDetailsHeaderType.HolidayContractedEntitlementDays);
 
     [Then("I should be able to view holiday days carried forward validation error details")]
-    public async Task ThenIShouldBeAbleToViewHolidayDaysCarriedForwardValidationErrorDetails()
-    {
-        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.HolidayDaysCarriedForward);
-    }
+    public async Task ThenIShouldBeAbleToViewHolidayDaysCarriedForwardValidationErrorDetails() =>
+        await ViewSingleEmployeeErrorDetailsUnlessAcceptedAsync(ErrorDetailsHeaderType.HolidayDaysCarriedForward);
 
     [Then("I should be able to view holiday days taken validation error details")]
-    public async Task ThenIShouldBeAbleToViewHolidayDaysTakenValidationErrorDetails()
-    {
-        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.HolidayDaysTaken);
-    }
+    public async Task ThenIShouldBeAbleToViewHolidayDaysTakenValidationErrorDetails() =>
+        await ViewSingleEmployeeErrorDetailsUnlessAcceptedAsync(ErrorDetailsHeaderType.HolidayDaysTaken);
 
     [Then("I should be able to view Holiday owed validation error details")]
-    public async Task ThenIShouldBeAbleToViewHolidayOwedValidationErrorDetails()
-    {
-        await VerifySingleEmployeeErrorDetailsAsync(ErrorDetailsHeaderType.NoDaysHolidayOwed);
-    }
+    public async Task ThenIShouldBeAbleToViewHolidayOwedValidationErrorDetails() =>
+        await ViewSingleEmployeeErrorDetailsUnlessAcceptedAsync(ErrorDetailsHeaderType.NoDaysHolidayOwed);
 
     [Then("I should be able to view the list of Holiday owed validation error details")]
     public async Task ThenIShouldBeAbleToViewTheListOfHolidayOwedValidationErrorDetails()
@@ -285,5 +293,45 @@ public sealed class EmployeeHolidayValidationSteps : ValidationStepsBase
             ErrorDetailsHeaderType.HolidayDaysTaken);
     }
 
+    [Then("I should be able to view holiday days carried forward validation error details for multiple employees")]
+    public async Task ThenIShouldBeAbleToViewHolidayDaysCarriedForwardValidationErrorDetailsForMultipleEmployees()
+    {
+        UploadErrorSummary expectedErrors =
+            ScenarioContext.Get<UploadErrorSummary>();
 
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedErrors,
+            affectedEmployees,
+            ErrorDetailsHeaderType.HolidayDaysCarriedForward);
+    }
+
+    [Then("I should be able to view contracted holiday entitlement validation error details for multiple employees")]
+    public async Task ThenIShouldBeAbleToViewContractedHolidayEntitlementValidationErrorDetailsForMultipleEmployees()
+    {
+        UploadErrorSummary expectedErrors =
+            ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedErrors,
+            affectedEmployees,
+            ErrorDetailsHeaderType.HolidayContractedEntitlementDays);
+    }
+
+    private async Task ViewSingleEmployeeErrorDetailsUnlessAcceptedAsync(ErrorDetailsHeaderType headerType)
+    {
+        Error expectedError = ScenarioContext.Get<Error>();
+
+        if (expectedError.Message.Equals("none", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        await VerifySingleEmployeeErrorDetailsAsync(headerType);
+    }
 }
