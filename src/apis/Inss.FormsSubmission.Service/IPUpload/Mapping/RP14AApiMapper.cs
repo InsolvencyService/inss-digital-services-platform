@@ -65,7 +65,7 @@ public sealed class RP14AApiMapper : IMapper
             PayPerWeek = payDetails.BasicPayPerWeekSpecified ? payDetails.BasicPayPerWeek : null,
             WeeklyPayDay = payDetails.WeeklyPayDaySpecified ? payDetails.WeeklyPayDay.ToString() : null!,
             ComponentPayPerWeek = MapComponentPayPerWeekList(payDetails),
-            ArrearsOfPay = MapArrearsOfPayList(payDetails.ArrearsOfPay),
+            ArrearsOfPay = MapArrearsOfPayList(payDetails),
             Holiday = MapHoliday(holiday)
         };
     }
@@ -84,7 +84,12 @@ public sealed class RP14AApiMapper : IMapper
     }
     private static List<ComponentPayPerWeek> MapComponentPayPerWeekList(RP14AEmployeePayDetails payDetails)
     {
-        return payDetails.ComponentPayPerWeek
+        if (payDetails.ComponentPayPerWeek is null || payDetails.ComponentPayPerWeek.Length == 0)
+        {
+            return [];
+        }
+        
+        return payDetails.ComponentPayPerWeek!
             .Select(cop => new ComponentPayPerWeek
             {
                 ComponentType = MapTransferType(cop.ComponentType)!,
@@ -94,9 +99,14 @@ public sealed class RP14AApiMapper : IMapper
             .ToList();
     }
     
-    private static List<ArrearsOfPay> MapArrearsOfPayList(RP14AEmployeePayDetailsArrearsOfPayPeriod[] arrearsOfPayList)
+    private static List<ArrearsOfPay> MapArrearsOfPayList(RP14AEmployeePayDetails payDetails)
     {
-        return arrearsOfPayList
+        if (payDetails.ArrearsOfPay is null || payDetails.ArrearsOfPay.Length == 0)
+        {
+            return [];
+        }
+        
+        return payDetails.ArrearsOfPay
             .Select(aop => new ArrearsOfPay
             {
                 StartDate = aop.Period.StartDate,
@@ -109,6 +119,11 @@ public sealed class RP14AApiMapper : IMapper
 
     private static List<TakenAndNotPaid> MapTakenAndNotPaidList(RP14AEmployeeHoliday holiday)
     {
+        if (holiday.HolidayNotPaid is null || holiday.HolidayNotPaid.Length == 0)
+        {
+            return [];
+        }
+        
         return holiday.HolidayNotPaid
             .Select(hnp => new TakenAndNotPaid
             {
