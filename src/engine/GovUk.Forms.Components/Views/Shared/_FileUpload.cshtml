@@ -4,6 +4,7 @@
   @(Model.MetaData.Question ?? "Upload files")
 </h1>
 
+@* Need to workout a better way to supply extensions and generally meta data. Perhaps a key/value list *@
 <govuk-file-upload for="@Model.Contents" javascript-enhancements="true" label-class="govuk-label--m" input-accept=".pdf">
   <govuk-file-upload-label>Upload a file</govuk-file-upload-label>
   @if (Model.MetaData.Hint is not null)
