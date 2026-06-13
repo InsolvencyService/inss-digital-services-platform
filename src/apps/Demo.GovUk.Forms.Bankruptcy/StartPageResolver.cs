@@ -7,7 +7,6 @@ public sealed class StartPageResolver : IStartPageResolver
 {
     public IActionResult Resolve()
     {
-        WebRoot root = new();
-        return new RedirectResult(root.Root);
+        return new RedirectResult(WebInfo.Root);
     }
 }

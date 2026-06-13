@@ -1,4 +1,3 @@
-using GovUk.Forms.Components;
 using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
@@ -31,8 +30,6 @@ public class StartupConfiguration : IHostingStartup
     {
         builder.ConfigureServices((context, services) =>
         {
-            WebRoot webRoot = new();
-            services.AddSingleton<IWebRoot>(webRoot);
             services.AddSingleton<IFormFactory, IPUploadFormFactory>();
             services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(XmlFileUploadModel).FullName);
             

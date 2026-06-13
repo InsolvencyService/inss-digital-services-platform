@@ -1,7 +1,6 @@
 using Demo.GovUk.Forms.Bankruptcy.Application.Factories;
 using Demo.GovUk.Forms.Bankruptcy.Builders;
 using GovUk.Forms.Application.Factories;
-using GovUk.Forms.Components;
 using GovUk.Forms.Components.Resolvers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +15,6 @@ public class StartupConfiguration : IHostingStartup
     {
         builder.ConfigureServices(services =>
         {
-            WebRoot webRoot = new();
-            services.AddSingleton<IWebRoot>(webRoot);
             services.AddSingleton<IFormFactory, BankruptcyFormFactory>();
             
             YourBankruptcyFlowchart flowchartBuilder = new();
