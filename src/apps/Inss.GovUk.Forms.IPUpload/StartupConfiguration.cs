@@ -14,7 +14,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Binding;
 using Inss.GovUk.Forms.IPUpload.Application.Factories;
+using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Infrastructure.Handlers;
 
@@ -32,6 +34,7 @@ public class StartupConfiguration : IHostingStartup
             WebRoot webRoot = new();
             services.AddSingleton<IWebRoot>(webRoot);
             services.AddSingleton<IFormFactory, IPUploadFormFactory>();
+            services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(XmlFileUploadModel).FullName);
             
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
 

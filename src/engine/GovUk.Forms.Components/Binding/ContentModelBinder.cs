@@ -1,5 +1,3 @@
-using GovUk.Forms.Components.Extensions;
-using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Domain;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -7,16 +5,18 @@ namespace GovUk.Forms.Components.Binding;
 
 public sealed class ContentModelBinder : IModelBinder
 {
-    private readonly ITypeNameResolver _typeNameResolver;
+    private readonly IContentBinderFactory _contentBinderFactory;
 
-    public ContentModelBinder(ITypeNameResolver typeNameResolver)
+    public ContentModelBinder(IContentBinderFactory contentBinderFactory)
     {
-        _typeNameResolver = typeNameResolver;
+        _contentBinderFactory = contentBinderFactory;
     }
     
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        ContentModel instance = bindingContext.HttpContext.Request.Form.HydrateContentModel(_typeNameResolver);
+        string typeName = bindingContext.HttpContext.Request.Form["TypeName"].ToString();
+        IContentBinder contentBinder = _contentBinderFactory.Create(typeName);
+        ContentModel instance = contentBinder.BindAndReturnModel(typeName, bindingContext.HttpContext.Request.Form);
         bindingContext.Result = ModelBindingResult.Success(instance);
         return Task.CompletedTask;
     }

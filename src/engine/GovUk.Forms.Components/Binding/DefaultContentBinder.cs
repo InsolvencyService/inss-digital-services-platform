@@ -5,26 +5,24 @@ using GovUk.Forms.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
-namespace GovUk.Forms.Components.Extensions;
+namespace GovUk.Forms.Components.Binding;
 
-public static class FormCollectionExtensions
+public class DefaultContentBinder : IContentBinder
 {
-    extension(IFormCollection formCollection)
+    private readonly ITypeNameResolver _typeNameResolver;
+
+    public DefaultContentBinder(ITypeNameResolver typeNameResolver)
     {
-        public ContentModel HydrateContentModel(ITypeNameResolver typeNameResolver)
-        {
-            string typeName = formCollection["TypeName"].ToString();
-            Type targetType = typeNameResolver.Resolve(typeName);
-            ContentModel contentModel = (ContentModel)Activator.CreateInstance(targetType)!;
-            BindModel(contentModel, formCollection);
-            return contentModel;
-        }
+        _typeNameResolver = typeNameResolver;
     }
     
-    private static void BindModel<T>(T target, IFormCollection formCollection, char separator = '.') where T : notnull
+    public ContentModel BindAndReturnModel(string typeName, IFormCollection formCollection, char separator = '.')
     {
+        Type targetType = _typeNameResolver.Resolve(typeName);
+        ContentModel target = (ContentModel)Activator.CreateInstance(targetType)!;
+        
         const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
-        Dictionary<string, StringValues> formDictionary = MergeFormAndFileData(formCollection);
+        Dictionary<string, StringValues> formDictionary = GetFormData(formCollection);
             
         foreach (KeyValuePair<string, StringValues> entry in formDictionary)
         {
@@ -64,28 +62,13 @@ public static class FormCollectionExtensions
                 }
             }
         }
+
+        return target;
     }
 
-    private static Dictionary<string, StringValues> MergeFormAndFileData(IFormCollection formCollection)
+    protected virtual Dictionary<string, StringValues> GetFormData(IFormCollection formCollection)
     {
-        Dictionary<string, StringValues> formDictionary = formCollection.ToDictionary();
-        IFormFileCollection files = formCollection.Files;
-
-        if (files.Count > 1)
-        {
-            throw new NotSupportedException("The form engine does not support multiple files being uploaded.");
-        }
-
-        if (files.Count == 1)
-        {
-            using var memoryStream = new MemoryStream();
-            files[0].CopyTo(memoryStream);
-            formDictionary.Add("Filename", new StringValues(files[0].FileName));
-            formDictionary.Add("Length", new StringValues(files[0].Length.ToString(CultureInfo.InvariantCulture)));
-            formDictionary.Add("Contents", new StringValues(Convert.ToBase64String(memoryStream.ToArray())));
-        }
-
-        return formDictionary;
+        return formCollection.ToDictionary();
     }
     
     private static object? ConvertValue(string value, Type targetType)

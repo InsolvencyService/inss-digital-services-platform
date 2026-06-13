@@ -62,7 +62,9 @@ public class StartupConfiguration : IHostingStartup
                 .AddControllersWithViews(o => o.ModelBinderProviders.Insert(0, new ContentModelBinderProvider()))
                 .AddApplicationPart(typeof(FormController).Assembly);
             RemoveNonHostedDiscoveredParts(mvcBuilder);
-            
+
+            services.AddSingleton<IContentBinderFactory, ContentBinderFactory>();
+            services.AddSingleton<IContentBinder, DefaultContentBinder>();
             services.AddSingleton<ITypeNameResolver, TypeNameResolver>();
             services.AddHttpClient();
             services.AddGovUkFrontend();
