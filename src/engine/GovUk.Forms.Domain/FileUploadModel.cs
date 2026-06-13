@@ -1,6 +1,4 @@
-using GovUk.Forms.Domain;
-
-namespace Demo.GovUk.Forms.ContactUs.Domain;
+namespace GovUk.Forms.Domain;
 
 public sealed class FileUploadModel : PageModel
 {

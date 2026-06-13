@@ -1,12 +1,15 @@
 ﻿@model FileUploadModel
 
 <h1 class="govuk-heading-l">
-  Upload files
+  @(Model.MetaData.Question ?? "Upload files")
 </h1>
 
 <govuk-file-upload for="@Model.Contents" javascript-enhancements="true" label-class="govuk-label--m" input-accept=".pdf">
   <govuk-file-upload-label>Upload a file</govuk-file-upload-label>
-  <govuk-file-upload-hint>
-    The uploaded file must be PDF ending with '.pdf'. (Other formats e.g. XML, XLS are NOT supported).
-  </govuk-file-upload-hint>
+  @if (Model.MetaData.Hint is not null)
+  {
+    <govuk-file-upload-hint>
+      @(Model.MetaData.Hint)
+    </govuk-file-upload-hint>
+  }
 </govuk-file-upload>

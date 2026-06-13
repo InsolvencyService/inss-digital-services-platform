@@ -65,6 +65,7 @@ public class StartupConfiguration : IHostingStartup
 
             services.AddSingleton<IContentBinderFactory, ContentBinderFactory>();
             services.AddSingleton<IContentBinder, DefaultContentBinder>();
+            services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(FileUploadModel).FullName);
             services.AddSingleton<ITypeNameResolver, TypeNameResolver>();
             services.AddHttpClient();
             services.AddGovUkFrontend();
