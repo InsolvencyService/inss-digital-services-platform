@@ -1,4 +1,4 @@
-using GovUk.Forms.Components.Extensions;
+using GovUk.Forms.Components.Binding;
 using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Domain;
 using Microsoft.AspNetCore.Http;
@@ -6,17 +6,16 @@ using Microsoft.Extensions.Primitives;
 using NSubstitute;
 using Xunit;
 
-namespace GovUk.Forms.Components.Test.Extensions;
+namespace GovUk.Forms.Components.Test.Binding;
 
-public class FormCollectionExtensionsTests
+public class DefaultContentBinderTests
 {
-    private readonly ITypeNameResolver _typeNameResolver = Substitute.For<ITypeNameResolver>();
-    
     [Fact]
-    public void PopulatedAddressFormCollection_HydrateContentModel_ReturnsAddressModel()
+    public void PopulatedAddressFormCollection_BindAndReturnModel_ReturnsAddressModel()
     {
         string addressTypeName = typeof(AddressModel).FullName!;
-        _typeNameResolver.Resolve(addressTypeName).Returns(typeof(AddressModel));
+        ITypeNameResolver typeNameResolver = Substitute.For<ITypeNameResolver>();
+        typeNameResolver.Resolve(addressTypeName).Returns(typeof(AddressModel));
         Dictionary<string, StringValues> values = new()
         {
             { "Id.Value", "18FAA111-1C48-4681-A206-88AEC8CC1CCF" },
@@ -30,9 +29,10 @@ public class FormCollectionExtensionsTests
             { "Postcode", "TN33 0DN" }
         };
         IFormCollection formCollection = new FormCollection(values);
+        DefaultContentBinder binder = new(typeNameResolver);
 
-        ContentModel content = formCollection.HydrateContentModel(_typeNameResolver);
-
+        ContentModel content = binder.BindAndReturnModel(addressTypeName, formCollection);
+        
         Assert.NotNull(content);
         Assert.Equal(values["Id.Value"], content.Id.Value);
         Assert.Equal(values["Path.Value"], content.Path.Value);
