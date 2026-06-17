@@ -35,6 +35,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .ForSection(section, services)
             .AddTransitionNode(declarationId, declaration.Path, fileUploadId)
             .WithExecutor<DeclarationFlowNodeExecutor>()
+            .WithPreviousPathProvider<DeclarationFlowNodePreviousPathProvider>()
             .Next()
             .AddDecisionNode(fileUploadId, fileUpload.Path, fileUploadErrorId, summaryId)
             .WithLoader<FileUploadFlowNodeLoader>()
