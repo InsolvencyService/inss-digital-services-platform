@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
+using GovUk.Forms.Components.Options;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -42,6 +43,12 @@ public static class AuthenticationBuilderExtensions
                     OnRedirectToIdentityProviderForSignOut = ctx =>
                     {
                         ctx.ProtocolMessage.PostLogoutRedirectUri = ctx.Request.Query["post_logout_redirect_uri"];
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToIdentityProvider = ctx =>
+                    {
+                        IOptions<HeaderOptions> headerOptions = ctx.HttpContext.RequestServices.GetRequiredService<IOptions<HeaderOptions>>();
+                        ctx.ProtocolMessage.RedirectUri = headerOptions.Value.HomeLink.Replace("/home", string.Empty); 
                         return Task.CompletedTask;
                     }
                 };
