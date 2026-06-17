@@ -58,7 +58,11 @@ public class StartupConfiguration : IHostingStartup
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddCookie()
+                .AddCookie(x =>
+                {
+                    //IOptions<HeaderOptions> headerOptions = ctx.HttpContext.RequestServices.GetRequiredService<IOptions<HeaderOptions>>();
+                    x.Cookie.Domain = "https://dev.identity.redundancy-payments.service.gov.uk";
+                })
                 .AddOneLogin()
                 .AddRps()
                 .AddEntra();

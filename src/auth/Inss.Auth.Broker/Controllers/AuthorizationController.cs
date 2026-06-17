@@ -27,8 +27,6 @@ public class AuthorizationController : Controller
     [HttpGet("/connect/authorize")]
     public IActionResult Authorize()
     {
-        // TODO: Some validation for the caller!!
-        
         string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
         string clientId = Request.Query["client_id"].ToString();
         string redirectUri = Request.Query["redirect_uri"].ToString();
@@ -40,7 +38,7 @@ public class AuthorizationController : Controller
         
         if (clientId != _brokerOptions.Value.ClientId || string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(codeChallenge))
         {
-            return BadRequest("Missing required parameters");
+            return BadRequest("Missing one or more of the required parameters: clientId, redirectUri, codeChallenge");
         }
         
         AuthenticationProperties props = new()
