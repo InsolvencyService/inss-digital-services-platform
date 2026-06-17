@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Components.Options;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
@@ -12,6 +13,7 @@ using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Azure.Cosmos;
+using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
 [assembly: HostingStartup(typeof(StartupConfiguration))]
 
@@ -60,8 +62,9 @@ public class StartupConfiguration : IHostingStartup
                 })
                 .AddCookie(x =>
                 {
-                    //IOptions<HeaderOptions> headerOptions = ctx.HttpContext.RequestServices.GetRequiredService<IOptions<HeaderOptions>>();
-                    x.Cookie.Domain = "https://dev.identity.redundancy-payments.service.gov.uk";
+                    HeaderOptions headerOptions = new();
+                    context.Configuration.GetSection("Header").Bind(headerOptions);
+                    x.Cookie.Domain = headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
                 })
                 .AddOneLogin()
                 .AddRps()
