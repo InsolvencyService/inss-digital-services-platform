@@ -67,6 +67,7 @@ public class StartupConfiguration : IHostingStartup
                     //options.Cookie.SameSite = SameSiteMode.None;
                     //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     //options.Cookie.Domain = ".identity.redundancy-payments.service.gov.uk";//headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
+                    options.Cookie.Domain = ".redundancy-payments.service.gov.uk";
                 })
                 .AddOneLogin()
                 .AddRps()

@@ -35,7 +35,11 @@ public class StartupConfiguration : IHostingStartup
         {
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => options.LoginPath = "/login");
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login";
+                    options.Cookie.Domain = ".redundancy-payments.service.gov.uk";
+                });
             
             services.AddOptions<ProviderOptions>()
                 .Bind(context.Configuration.GetSection("Provider"))
