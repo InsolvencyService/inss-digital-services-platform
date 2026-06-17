@@ -64,7 +64,7 @@ public class StartupConfiguration : IHostingStartup
                 {
                     HeaderOptions headerOptions = new();
                     context.Configuration.GetSection("Header").Bind(headerOptions);
-                    x.Cookie.Domain = headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
+                    x.Cookie.Domain = ".identity.redundancy-payments.service.gov.uk";//headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
                 })
                 .AddOneLogin()
                 .AddRps()
