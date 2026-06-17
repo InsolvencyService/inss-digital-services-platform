@@ -60,11 +60,13 @@ public class StartupConfiguration : IHostingStartup
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddCookie(x =>
+                .AddCookie(options =>
                 {
-                    HeaderOptions headerOptions = new();
-                    context.Configuration.GetSection("Header").Bind(headerOptions);
-                    x.Cookie.Domain = ".identity.redundancy-payments.service.gov.uk";//headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
+                    //HeaderOptions headerOptions = new();
+                    //context.Configuration.GetSection("Header").Bind(headerOptions);
+                    //options.Cookie.SameSite = SameSiteMode.None;
+                    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    //options.Cookie.Domain = ".identity.redundancy-payments.service.gov.uk";//headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
                 })
                 .AddOneLogin()
                 .AddRps()

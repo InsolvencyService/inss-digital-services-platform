@@ -61,7 +61,7 @@ public class AuthorizationController : Controller
     [HttpGet("/connect/callback")]
     public async Task<IActionResult> Callback()
     {
-        AuthenticateResult result = await HttpContext.AuthenticateAsync("Cookies");
+        AuthenticateResult result = await HttpContext.AuthenticateAsync("Rps");
         
         if (!result.Succeeded)
         {
