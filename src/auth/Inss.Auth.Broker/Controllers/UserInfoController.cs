@@ -1,22 +1,28 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using GovUk.Forms.Components.Options;
 using Inss.Auth.Broker.Extensions;
-using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
 namespace Inss.Auth.Broker.Controllers;
 
 public class UserInfoController : Controller
 {
-    private readonly IOptions<BrokerOptions> _options;
+    private readonly IOptions<BrokerOptions> _brokerOptions;
+    private readonly IOptions<HeaderOptions> _headerOptions;
     private readonly ILogger<UserInfoController> _logger;
 
-    public UserInfoController(IOptions<BrokerOptions>  options, ILogger<UserInfoController> logger)
+    public UserInfoController(
+        IOptions<BrokerOptions>  brokerOptions, 
+        IOptions<HeaderOptions> headerOptions, 
+        ILogger<UserInfoController> logger)
     {
-        _options = options;
+        _brokerOptions = brokerOptions;
+        _headerOptions = headerOptions;
         _logger = logger;
     }
     
@@ -28,17 +34,17 @@ public class UserInfoController : Controller
         if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
             RSA rsa = RSA.Create();
-            rsa.ImportFromPem(_options.Value.JwtPublicKey);
+            rsa.ImportFromPem(_brokerOptions.Value.JwtPublicKey);
             
-            var issuer = $"{Request.Scheme}://{Request.Host}";
-            var token = authHeader["Bearer ".Length..].Trim();
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var validationParams = new TokenValidationParameters
+            string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
+            string token = authHeader["Bearer ".Length..].Trim();
+            JwtSecurityTokenHandler tokenHandler = new();
+            TokenValidationParameters validationParams = new()
             {
                 ValidateIssuer = true,
                 ValidIssuer = issuer,
                 ValidateAudience = true,
-                ValidAudience = _options.Value.ClientId,
+                ValidAudience = _brokerOptions.Value.ClientId,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new RsaSecurityKey(rsa),
                 ValidateLifetime = true
@@ -51,7 +57,7 @@ public class UserInfoController : Controller
                 // returned as part of the sign in process with the 3rd party identity provider (Entra, OneLogin etc) and lookup the
                 // user in our system, pulling extra information to enrich the claims.
                 
-                var principal = tokenHandler.ValidateToken(token, validationParams, out _);
+                ClaimsPrincipal? principal = tokenHandler.ValidateToken(token, validationParams, out _);
                 Claim subject = new(JwtRegisteredClaimNames.Sub, principal.FindFirst("name")!.Value);
                 List<Claim> claims = [subject];
                 return Json(claims.ToDictionary(c => c.Type, c => c.Value));

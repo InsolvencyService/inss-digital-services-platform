@@ -1,21 +1,27 @@
-﻿using Inss.Auth.Broker.Application.Providers;
+﻿using GovUk.Forms.Components.Options;
+using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Domain;
-using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
 namespace Inss.Auth.Broker.Controllers;
 
 public class AuthorizationController : Controller
 {
     private readonly IAuthCodeStoreProvider _authCodeStoreProvider;
-    private readonly IOptions<BrokerOptions> _options;
+    private readonly IOptions<BrokerOptions> _brokerOptions;
+    private readonly IOptions<HeaderOptions> _headerOptions;
 
-    public AuthorizationController(IAuthCodeStoreProvider  authCodeStoreProvider, IOptions<BrokerOptions>  options)
+    public AuthorizationController(
+        IAuthCodeStoreProvider  authCodeStoreProvider, 
+        IOptions<BrokerOptions>  brokerOptions,
+        IOptions<HeaderOptions> headerOptions)
     {
         _authCodeStoreProvider = authCodeStoreProvider;
-        _options = options;
+        _brokerOptions = brokerOptions;
+        _headerOptions = headerOptions;
     }
     
     [HttpGet("/connect/authorize")]
@@ -23,7 +29,7 @@ public class AuthorizationController : Controller
     {
         // TODO: Some validation for the caller!!
         
-        string issuer = $"{Request.Scheme}://{Request.Host}";
+        string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
         string clientId = Request.Query["client_id"].ToString();
         string redirectUri = Request.Query["redirect_uri"].ToString();
         string state = Request.Query["state"].ToString();
@@ -32,12 +38,12 @@ public class AuthorizationController : Controller
         string codeChallengeMethod = Request.Query["code_challenge_method"].ToString();
         string nonce = Request.Query["nonce"].ToString();
         
-        if (clientId != _options.Value.ClientId || string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(codeChallenge))
+        if (clientId != _brokerOptions.Value.ClientId || string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(codeChallenge))
         {
             return BadRequest("Missing required parameters");
         }
         
-        var props = new AuthenticationProperties
+        AuthenticationProperties props = new()
         {
             RedirectUri = $"{issuer}/connect/callback",
             Items =
@@ -57,7 +63,7 @@ public class AuthorizationController : Controller
     [HttpGet("/connect/callback")]
     public async Task<IActionResult> Callback()
     {
-        var result = await HttpContext.AuthenticateAsync("Cookies");
+        AuthenticateResult result = await HttpContext.AuthenticateAsync("Cookies");
         
         if (!result.Succeeded)
         {
@@ -86,7 +92,7 @@ public class AuthorizationController : Controller
         authCode.AddClaimsPrincipal(result.Principal);
         await _authCodeStoreProvider.StoreAsync(authCode);
         
-        var finalRedirect = $"{clientRedirectUri}?code={authCode.Id}&state={clientState}";
+        string finalRedirect = $"{clientRedirectUri}?code={authCode.Id}&state={clientState}";
         return Redirect(finalRedirect);
     }
 }
