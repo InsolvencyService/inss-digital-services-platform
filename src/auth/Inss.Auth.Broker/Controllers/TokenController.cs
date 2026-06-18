@@ -2,14 +2,14 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using GovUk.Forms.Components.Options;
 using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Domain;
+using Inss.Auth.Broker.Extensions;
+using Inss.Auth.Broker.Options;
 using Inss.Common.Tokens;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
 namespace Inss.Auth.Broker.Controllers;
 
@@ -18,18 +18,15 @@ public class TokenController : Controller
     private readonly IAuthCodeStoreProvider _authCodeStoreProvider;
     private readonly ITokenSecurityProvider _tokenSecurityProvider;
     private readonly IOptions<BrokerOptions> _brokerOptions;
-    private readonly IOptions<HeaderOptions> _headerOptions;
 
     public TokenController(
         IAuthCodeStoreProvider authCodeStoreProvider, 
         ITokenSecurityProvider tokenSecurityProvider, 
-        IOptions<BrokerOptions> brokerOptions,
-        IOptions<HeaderOptions> headerOptions)
+        IOptions<BrokerOptions> brokerOptions)
     {
         _authCodeStoreProvider = authCodeStoreProvider;
         _tokenSecurityProvider = tokenSecurityProvider;
         _brokerOptions = brokerOptions;
-        _headerOptions = headerOptions;
     }
     
     [HttpPost("/connect/token")]
@@ -71,7 +68,7 @@ public class TokenController : Controller
 
         SigningCredentials signingCredentials = _tokenSecurityProvider.GetSigningCredentials();
         
-        string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
+        string issuer = Request.GetForwardedHost();
         
         JwtSecurityToken idToken = tokenHandler.CreateJwtSecurityToken(
             issuer: issuer,

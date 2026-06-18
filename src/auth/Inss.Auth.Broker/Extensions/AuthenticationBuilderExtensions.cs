@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
-using GovUk.Forms.Components.Options;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -40,15 +39,15 @@ public static class AuthenticationBuilderExtensions
                 
                 options.Events = new OpenIdConnectEvents
                 {
-                    OnRedirectToIdentityProviderForSignOut = ctx =>
+                    OnRedirectToIdentityProviderForSignOut = context =>
                     {
-                        ctx.ProtocolMessage.PostLogoutRedirectUri = ctx.Request.Query["post_logout_redirect_uri"];
+                        context.ProtocolMessage.PostLogoutRedirectUri = context.Request.Query["post_logout_redirect_uri"];
                         return Task.CompletedTask;
                     },
-                    OnRedirectToIdentityProvider = ctx =>
+                    OnRedirectToIdentityProvider = context =>
                     {
-                        IOptions<HeaderOptions> headerOptions = ctx.HttpContext.RequestServices.GetRequiredService<IOptions<HeaderOptions>>();
-                        ctx.ProtocolMessage.RedirectUri = headerOptions.Value.HomeLink.Replace("/home", string.Empty); 
+                        string host = context.Request.GetForwardedHost();
+                        context.ProtocolMessage.RedirectUri = $"{host}/signin-oidc-rps";
                         return Task.CompletedTask;
                     }
                 };

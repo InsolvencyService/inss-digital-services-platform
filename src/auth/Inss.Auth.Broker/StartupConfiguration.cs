@@ -1,7 +1,6 @@
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Application.Providers;
-using GovUk.Forms.Components.Options;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
@@ -63,13 +62,8 @@ public class StartupConfiguration : IHostingStartup
                 })
                 .AddCookie(options =>
                 {
-                    //HeaderOptions headerOptions = new();
-                    //context.Configuration.GetSection("Header").Bind(headerOptions);
                     options.Cookie.SameSite = SameSiteMode.None;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    //options.Cookie.Domain = ".identity.redundancy-payments.service.gov.uk";//headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
-                    //options.Cookie.Domain = ".redundancy-payments.service.gov.uk";
                 })
                 .AddOneLogin()
                 .AddRps()

@@ -3,11 +3,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using GovUk.Forms.Components.Options;
 using Inss.Auth.RpsProvider.Application.Providers;
 using Inss.Auth.RpsProvider.Domain;
+using Inss.Auth.RpsProvider.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Inss.Auth.RpsProvider.Controllers;
@@ -16,16 +15,11 @@ public class TokenController : Controller
 {
     private readonly IUserAuthStoreProvider _userAuthStoreProvider;
     private readonly ITokenSecurityProvider _tokenSecurityProvider;
-    private readonly IOptions<HeaderOptions> _headerOptions;
 
-    public TokenController(
-        IUserAuthStoreProvider userAuthStoreProvider,
-        ITokenSecurityProvider tokenSecurityProvider, 
-        IOptions<HeaderOptions> headerOptions)
+    public TokenController(IUserAuthStoreProvider userAuthStoreProvider, ITokenSecurityProvider tokenSecurityProvider)
     {
         _userAuthStoreProvider = userAuthStoreProvider;
         _tokenSecurityProvider = tokenSecurityProvider;
-        _headerOptions = headerOptions;
     }
     
     [HttpPost("/connect/token")]
@@ -69,7 +63,7 @@ public class TokenController : Controller
             new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture), ClaimValueTypes.Integer64)
         ];
 
-        string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
+        string issuer = Request.GetForwardedHost();
         JwtSecurityToken token = new(
             issuer: issuer,
             audience: clientId,

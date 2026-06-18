@@ -39,7 +39,6 @@ public class StartupConfiguration : IHostingStartup
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/login";
-                    //options.Cookie.Domain = ".redundancy-payments.service.gov.uk";
                     options.Cookie.SameSite = SameSiteMode.None;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });

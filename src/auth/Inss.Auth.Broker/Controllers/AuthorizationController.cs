@@ -1,10 +1,10 @@
-﻿using GovUk.Forms.Components.Options;
-using Inss.Auth.Broker.Application.Providers;
+﻿using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Domain;
+using Inss.Auth.Broker.Extensions;
+using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
 namespace Inss.Auth.Broker.Controllers;
 
@@ -12,25 +12,22 @@ public class AuthorizationController : Controller
 {
     private readonly IAuthCodeStoreProvider _authCodeStoreProvider;
     private readonly IOptions<BrokerOptions> _brokerOptions;
-    private readonly IOptions<HeaderOptions> _headerOptions;
     private readonly ILogger<AuthorizationController> _logger;
 
     public AuthorizationController(
         IAuthCodeStoreProvider  authCodeStoreProvider, 
         IOptions<BrokerOptions>  brokerOptions,
-        IOptions<HeaderOptions> headerOptions,
         ILogger<AuthorizationController> logger)
     {
         _authCodeStoreProvider = authCodeStoreProvider;
         _brokerOptions = brokerOptions;
-        _headerOptions = headerOptions;
         _logger = logger;
     }
     
     [HttpGet("/connect/authorize")]
     public IActionResult Authorize()
     {
-        string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
+        string issuer = Request.GetForwardedHost();
         string clientId = Request.Query["client_id"].ToString();
         string redirectUri = Request.Query["redirect_uri"].ToString();
         string state = Request.Query["state"].ToString();

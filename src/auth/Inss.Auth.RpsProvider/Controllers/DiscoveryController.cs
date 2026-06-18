@@ -1,26 +1,19 @@
-﻿using GovUk.Forms.Components.Options;
+﻿using Inss.Auth.RpsProvider.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Inss.Auth.RpsProvider.Controllers;
 
 public class DiscoveryController : Controller
 {
-    private readonly IOptions<HeaderOptions> _headerOptions;
     private static readonly string[] _codeChallengeMethodsSupported = ["S256", "plain"];
     private static readonly string[] _idTokenSigningAlgValuesSupported = ["RS256"];
     private static readonly string[] _responseTypesSupported = ["code"];
     private static readonly string[] _subjectTypesSupported = ["public"];
-
-    public DiscoveryController(IOptions<HeaderOptions> headerOptions)
-    {
-        _headerOptions = headerOptions;
-    }
     
     [HttpGet("/.well-known/openid-configuration")]
     public IActionResult Discovery()
     {
-        string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
+        string issuer = Request.GetForwardedHost();
         return Json(new
         {
             issuer,

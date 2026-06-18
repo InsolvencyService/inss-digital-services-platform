@@ -1,28 +1,22 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using GovUk.Forms.Components.Options;
 using Inss.Auth.Broker.Extensions;
+using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
 namespace Inss.Auth.Broker.Controllers;
 
 public class UserInfoController : Controller
 {
     private readonly IOptions<BrokerOptions> _brokerOptions;
-    private readonly IOptions<HeaderOptions> _headerOptions;
     private readonly ILogger<UserInfoController> _logger;
 
-    public UserInfoController(
-        IOptions<BrokerOptions>  brokerOptions, 
-        IOptions<HeaderOptions> headerOptions, 
-        ILogger<UserInfoController> logger)
+    public UserInfoController(IOptions<BrokerOptions>  brokerOptions, ILogger<UserInfoController> logger)
     {
         _brokerOptions = brokerOptions;
-        _headerOptions = headerOptions;
         _logger = logger;
     }
     
@@ -36,7 +30,7 @@ public class UserInfoController : Controller
             RSA rsa = RSA.Create();
             rsa.ImportFromPem(_brokerOptions.Value.JwtPublicKey);
             
-            string issuer = _headerOptions.Value.HomeLink.Replace("/home", string.Empty);
+            string issuer = Request.GetForwardedHost();
             string token = authHeader["Bearer ".Length..].Trim();
             JwtSecurityTokenHandler tokenHandler = new();
             TokenValidationParameters validationParams = new()
