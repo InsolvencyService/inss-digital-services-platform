@@ -12,6 +12,7 @@ using Inss.Auth.Broker.Infrastructure.Providers;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Azure.Cosmos;
 using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
@@ -65,7 +66,7 @@ public class StartupConfiguration : IHostingStartup
                     //HeaderOptions headerOptions = new();
                     //context.Configuration.GetSection("Header").Bind(headerOptions);
                     options.Cookie.SameSite = SameSiteMode.None;
-                    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     //options.Cookie.Domain = ".identity.redundancy-payments.service.gov.uk";//headerOptions.HomeLink.Replace("https://", string.Empty).Replace("/home", string.Empty);
                     //options.Cookie.Domain = ".redundancy-payments.service.gov.uk";
@@ -99,6 +100,13 @@ public class StartupConfiguration : IHostingStartup
         
         builder.Configure(app =>
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedHost |
+                    ForwardedHeaders.XForwardedProto
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");

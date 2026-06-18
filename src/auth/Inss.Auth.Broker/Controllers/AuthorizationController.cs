@@ -43,7 +43,7 @@ public class AuthorizationController : Controller
         
         AuthenticationProperties props = new()
         {
-            RedirectUri = $"{issuer}/connect/callback/?scheme={loginHint}",
+            RedirectUri = $"{issuer}/connect/callback",//?scheme={loginHint}",
             Items =
             {
                 ["client_redirect_uri"] = redirectUri,
@@ -59,9 +59,9 @@ public class AuthorizationController : Controller
     }
 
     [HttpGet("/connect/callback")]
-    public async Task<IActionResult> Callback(string scheme)
+    public async Task<IActionResult> Callback()//string scheme)
     {
-        AuthenticateResult result = await HttpContext.AuthenticateAsync(scheme);
+        AuthenticateResult result = await HttpContext.AuthenticateAsync();//scheme);
         
         if (!result.Succeeded)
         {
