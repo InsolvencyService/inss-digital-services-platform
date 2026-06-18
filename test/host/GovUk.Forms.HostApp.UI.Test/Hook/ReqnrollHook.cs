@@ -138,7 +138,7 @@ public sealed class ReqnrollHook : BaseTestConfig
                 await _commonPage.SignOutAsync(_driver.Page);
             }
         }
-        catch (Exception ex)
+        catch (PlaywrightException ex)
         {
             _output.WriteLine($"[SignOut Hook] Sign-out skipped: {ex.Message}");
         }

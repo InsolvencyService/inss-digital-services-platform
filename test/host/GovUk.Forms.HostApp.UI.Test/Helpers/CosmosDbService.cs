@@ -83,12 +83,9 @@ public sealed class CosmosDbService : ICosmosDbService, IAsyncDisposable
         {
             FeedResponse<string> response = await iterator.ReadNextAsync();
 
-            foreach (string? reference in response)
+            foreach (string reference in response.Where(r => !string.IsNullOrWhiteSpace(r)))
             {
-                if (!string.IsNullOrWhiteSpace(reference))
-                {
-                    references.Add(reference);
-                }
+                references.Add(reference);
             }
         }
 
