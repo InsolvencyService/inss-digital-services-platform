@@ -6,17 +6,17 @@ Feature: SubmissionConfirmation
   So that I know I have reached the end of the process
 
 Background: 
-  Given I am on the upload page as a "Admin" user
+  Given I am on the upload page as a "InssTestThree" user
 
-       @regression @rp14a
-        Scenario: Insolvency Practitioner chooses to submit another RP14A form
+@regression @rp14a @cleanCosmosDb @addVideo
+Scenario: Insolvency Practitioner chooses to submit another RP14A form
             Given I am on the submission confirmation page
              When I select to Upload another form
              Then I will be taken to the declaration page
              And I should be able to log out successfully
 
-        @regression @rp14a
-        Scenario: Insolvency Practitioner starts a new RP14A submission
+@regression @rp14a @cleanCosmosDb 
+Scenario: Insolvency Practitioner starts a new RP14A submission
             Given I have selected Upload another form
               And I have agreed to the declaration
              When I upload another RP14A form

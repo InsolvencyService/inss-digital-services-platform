@@ -591,7 +591,7 @@ public sealed class Rp14aApiFixtureBuilder : IRp14aFixtureBuilder
 
     private static RP14A CreateDefault() => new()
     {
-        Header = new RP14AHeader { CaseReference = "CN00345678" },
+        Header = new RP14AHeader { CaseReference = "CN70000537" },
         EmployerName = "Employer Test",
         Employee =
         [

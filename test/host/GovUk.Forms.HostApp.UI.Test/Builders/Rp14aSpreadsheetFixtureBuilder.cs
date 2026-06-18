@@ -509,7 +509,7 @@ public sealed class Rp14aSpreadsheetFixtureBuilder : IRp14aFixtureBuilder
         Employee =
         [
             CreateEmployee(
-                caseReference: "CN00345678",
+                caseReference: "CN70000537",
                 employerName: "Employer Test",
                 surname: "Surname Test",
                 forenames: "Forname Test",
@@ -530,7 +530,7 @@ public sealed class Rp14aSpreadsheetFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 1),
                 aopStartDay: 10),
             CreateEmployee(
-                caseReference: "CN00345678",
+                caseReference: "CN70000537",
                 employerName: "Employer Test 2",
                 surname: "Surname Test 2",
                 forenames: "Forname Test 2",
@@ -551,7 +551,7 @@ public sealed class Rp14aSpreadsheetFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 2),
                 aopStartDay: 11),
             CreateEmployee(
-                caseReference: "CN00345678",
+                caseReference: "CN70000537",
                 employerName: "Employer Test 3",
                 surname: "Surname Test 3",
                 forenames: "Forname Test 3",
@@ -572,7 +572,7 @@ public sealed class Rp14aSpreadsheetFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 3),
                 aopStartDay: 12),
             CreateEmployee(
-                caseReference: "CN00345678",
+                caseReference: "CN70000537",
                 employerName: "Employer Test 4",
                 surname: "Surname Test 4",
                 forenames: "Forname Test 4",
@@ -593,7 +593,7 @@ public sealed class Rp14aSpreadsheetFixtureBuilder : IRp14aFixtureBuilder
                 holidayYearStart: new DateTime(2020, 1, 4),
                 aopStartDay: 13),
             CreateEmployee(
-                caseReference: "CN00345678",
+                caseReference: "CN70000537",
                 employerName: "Employer Test 5",
                 surname: "Surname Test 5",
                 forenames: "Forname Test 5",

@@ -549,7 +549,7 @@ public sealed class Rp14ApiFixtureBuilder : IRp14FixtureBuilder
     {
         Header = new RP14Header
         {
-            CaseReference = "CN01344678"
+            CaseReference = "CN70000537"
         },
         NameOfBusiness = "Livewire Ltd",
         CompanyNumber = "7821478",

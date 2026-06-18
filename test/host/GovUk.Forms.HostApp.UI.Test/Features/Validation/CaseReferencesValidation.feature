@@ -1,4 +1,4 @@
-﻿@MEDS-1067
+﻿@MEDS-1067 @cleanCosmosDb
 Feature: Case References Validation
 
  As an Insolvency Practitioner user
@@ -6,7 +6,7 @@ Feature: Case References Validation
   So that I can fix errors immediately and avoid delayed rejection
 
         Background:
-            Given I am on the upload page as a "Admin" user
+            Given I am on the upload page as a "InssTestEight" user
 
         @regression @validation @rp14a
         Scenario:RP14A Show validation error when case reference is missing
@@ -58,12 +58,14 @@ Feature: Case References Validation
                   | 1 case reference is too long | Enter up to 10 characters | Case reference |
               And I should be able to view case reference error details
 
-        @regression @validation @rp14a  @ignore @NotImplemented
+        @regression @validation @rp14a 
         Scenario: Display error when case reference is not found in RPS
-            Given the RP14A contains a valid format case reference
-              And the case reference does not exist in RPS
+            Given the RP14A contains a case reference does not exist in RPS
              When I attempt to submit the RP14A
-             Then I should see the validation error "1 case reference was not found"
+             Then I should see the following case reference validation errors
+                  | Message                        | Hint | Type           |
+                  | 1 case reference was not found |      | Case reference |
+             And I should be able to view case reference error details
 
 
       @regression @validation @rp14a
@@ -136,10 +138,10 @@ Feature: Case References Validation
                   | 1 case reference is in the wrong format |      |
 
 
-       ### the following scenario is currently ignored as we are not yet calling the RPS API to validate case references.
-       ### Once we implement the RPS API call, we can enable this test to ensure we are properly handling cases where the reference is not found in RPS. 
-       @ignore @regression @validation @rp14 @NotImplemented
+        @regression @validation @rp14 
         Scenario: Display error for unknown case reference
             Given the RP14 XML contains a valid format case reference that does not exist in RPS
-             When I upload and submit the RP14 XML file
-             Then I should see the validation error "1 case reference have not been matched in our system"
+             When I attempt to submit the RP14
+             Then I should see the following RP14 validation errors
+                  | Message                        | Hint |
+                  | 1 case reference was not found |      |

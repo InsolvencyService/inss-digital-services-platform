@@ -18,7 +18,7 @@ public class CommonCoordinator(
 {
     public async Task VerifyThatUploadDocumentPageIsDisplayedAsync(TestUser? user = null)
     {
-        user ??= UserFactory.DefaultUser();
+        user ??= UserFactory.GetUser("InssTestManTwo");
 
         await VerifyThatDeclarationPageIsDisplayedAsync(user);
         await declarationCoordinator.NavigateToUploadAFilePageAsync();

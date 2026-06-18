@@ -64,4 +64,15 @@ public interface IRp14ScenarioCoordinator
     Task UploadRp14WithCompanyAddressFieldAsync(Rp14AddressField field, string? value);
     Task UploadRp14WithCompanyAddressLinesCountAsync(int lineCount);
     Task UploadRp14WithDirectorSurnamesAsync(int directorCount, string surname);
+    Task UploadRp14WithCrossCategoryErrorsAsync(
+        string caseReference,
+        string? businessName,
+        string directorNino,
+        string shareholderPercentage,
+        string? payRecordsContactName);
+    Task UploadRp14WithRepeatedValidationErrorsAsync(
+        int directorNinoCount,
+        int shareholderPercentageCount,
+        int addressLineCount,
+        int businessNameCount);
 }

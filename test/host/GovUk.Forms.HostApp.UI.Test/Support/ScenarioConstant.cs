@@ -10,8 +10,8 @@ public sealed class ScenarioConstant
     public const string UploadPageWithCommonIssuesSection = nameof(UploadPageWithCommonIssuesSection);
 
     // TODO: move test credentials to appsettings.json / environment variables
-    public const string EmailAddress = "test1@gmail.com";
-    public const string Password = "password";
+    public const string EmailAddress = "insstestone@gmail.com";
+    public const string Password = "Agresso!17";
 
     public const string UploadedFilePath = "UploadedFilePath";
     public const string UploadedFileName = "UploadedFileName";
@@ -28,4 +28,7 @@ public sealed class ScenarioConstant
     public const string EmployerName = "Employer Test";
     public const string DOB = "1990-01-01";
     public const string NationalInsuranceNumber = "BP011752C";
+
+
+    public const string InvalidCaseReference = "CN99335678";
 }

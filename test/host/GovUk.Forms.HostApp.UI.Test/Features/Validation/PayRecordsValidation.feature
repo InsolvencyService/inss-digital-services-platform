@@ -1,11 +1,12 @@
-﻿Feature: Pay Records Validation
+﻿@cleanCosmosDb
+Feature: Pay Records Validation
 
 As an Insolvency Practitioner
 I want to see the errors from my RP14 upload
 So that I know what to change and re-upload
 
   Background:
-   Given I am on the upload page as a "Admin" user
+   Given I am on the upload page as a "InssTestSixteen" user
 
 @regression @validation @rp14 @addVideo
   Scenario: RP14 displays error for missing pay records contact name
@@ -24,7 +25,7 @@ So that I know what to change and re-upload
             | 1 pay records contact name is missing |      | Pay records contact name |
 
 
-@regression @validation @rp14 @addVideo
+@regression @validation @rp14 @addVideo @cleanCosmosDb
 Scenario Outline: RP14 pay records contact name length boundary validation
             Given the RP14 XML contains a Pay records contact name of length <length>
              When I attempt to submit the RP14
@@ -42,7 +43,7 @@ Scenario Outline: RP14 pay records contact name length boundary validation
                   |     61 | 1 pay records contact name is the wrong length | Enter up to 60 characters | Pay records contact name |
 
 
-@regression @validation @rp14 @addVideo
+@regression @validation @rp14 @addVideo @cleanCosmosDb
 Scenario Outline: RP14 pay records contact phone number length boundary validation
             Given the RP14 XML contains a Pay records contact phone number of length <length>
              When I attempt to submit the RP14
@@ -60,7 +61,7 @@ Scenario Outline: RP14 pay records contact phone number length boundary validati
                   |     13 | 1 pay records contact phone number is the wrong length | Enter up to 12 characters | Pay records contact phone number |
 
 
-@regression @validation @rp14 @addVideo
+@regression @validation @rp14 @addVideo @cleanCosmosDb
 Scenario Outline: RP14 pay records contact email address length boundary validation
             Given the RP14 XML contains a Pay records contact email address of length <length>
              When I attempt to submit the RP14

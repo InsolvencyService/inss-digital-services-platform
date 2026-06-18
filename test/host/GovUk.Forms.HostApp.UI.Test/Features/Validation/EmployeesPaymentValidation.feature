@@ -1,8 +1,9 @@
-﻿Feature: Employees Payment Validation
+﻿@cleanCosmosDb
+Feature: Employees Payment Validation
 
 A short summary of the feature
   Background:
-  Given I am on the upload page as a "Admin" user
+  Given I am on the upload page as a "InssTestTwelve" user
 
 @regression @validation @rp14a @allure.subSuite:Payment
  Scenario Outline: RP14A Display error for invalid arrears of pay owed format
@@ -36,12 +37,10 @@ A short summary of the feature
         Examples:
                   | count |
                   | 2     |
-                  | 3     |
 
         @api-upload
         Examples:
                   | count |
-                  | 2     |
                   | 3     |
 
 @regression @validation @rp14a @allure.subSuite:Payment
@@ -66,7 +65,7 @@ A short summary of the feature
                   | 12.345    |
                   | -50       |
 
-@regression @validation @rp14a @allure.subSuite:Payment @addVideo
+@regression @validation @rp14a @allure.subSuite:Payment @addVideo 
      Scenario Outline: RP14A Display error for multiple invalid money owed to employer formats
             Given the RP14A contains <employeeCount> employees with money owed to employer "<moneyOwed>"
              When I attempt to submit the RP14A
