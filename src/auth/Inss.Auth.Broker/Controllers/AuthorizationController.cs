@@ -13,15 +13,18 @@ public class AuthorizationController : Controller
     private readonly IAuthCodeStoreProvider _authCodeStoreProvider;
     private readonly IOptions<BrokerOptions> _brokerOptions;
     private readonly IOptions<HeaderOptions> _headerOptions;
+    private readonly ILogger<AuthorizationController> _logger;
 
     public AuthorizationController(
         IAuthCodeStoreProvider  authCodeStoreProvider, 
         IOptions<BrokerOptions>  brokerOptions,
-        IOptions<HeaderOptions> headerOptions)
+        IOptions<HeaderOptions> headerOptions,
+        ILogger<AuthorizationController> logger)
     {
         _authCodeStoreProvider = authCodeStoreProvider;
         _brokerOptions = brokerOptions;
         _headerOptions = headerOptions;
+        _logger = logger;
     }
     
     [HttpGet("/connect/authorize")]
@@ -43,7 +46,7 @@ public class AuthorizationController : Controller
         
         AuthenticationProperties props = new()
         {
-            RedirectUri = $"{issuer}/connect/callback",//?scheme={loginHint}",
+            RedirectUri = $"{issuer}/connect/callback?scheme={loginHint}",
             Items =
             {
                 ["client_redirect_uri"] = redirectUri,
@@ -59,12 +62,14 @@ public class AuthorizationController : Controller
     }
 
     [HttpGet("/connect/callback")]
-    public async Task<IActionResult> Callback()//string scheme)
+    public async Task<IActionResult> Callback(string scheme)
     {
-        AuthenticateResult result = await HttpContext.AuthenticateAsync();//scheme);
+        AuthenticateResult result = await HttpContext.AuthenticateAsync(scheme);
         
         if (!result.Succeeded)
         {
+            string[] cookieNames = HttpContext.Request.Cookies.Keys.Select(k => k).ToArray();
+            _logger.LogError("Unable to handle the callback. Cookies are {Cookies}", string.Join(',', cookieNames));
             return Unauthorized();
         }
         
