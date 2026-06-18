@@ -73,6 +73,7 @@ public class AuthorizationController : Controller
             return Unauthorized();
         }
         
+        _logger.LogInformation("Callback success");
         AuthenticationProperties? authProps = result.Properties;
         string? clientRedirectUri = authProps?.Items["client_redirect_uri"];
         string? clientState = authProps?.Items["client_state"];
@@ -85,6 +86,8 @@ public class AuthorizationController : Controller
             return BadRequest("Missing stored client redirect URI");
         }
 
+        _logger.LogInformation("Callback client redirect exists");
+        
         AuthCode authCode = new()
         {
             Id = Guid.NewGuid().ToString("N"),
@@ -93,7 +96,10 @@ public class AuthorizationController : Controller
             Nonce = clientNonce
         };
         authCode.AddClaimsPrincipal(result.Principal);
+        
+        _logger.LogInformation("Callback attempting to store auth code");
         await _authCodeStoreProvider.StoreAsync(authCode);
+        _logger.LogInformation("Callback stored auth code");
         
         string finalRedirect = $"{clientRedirectUri}?code={authCode.Id}&state={clientState}";
         return Redirect(finalRedirect);
