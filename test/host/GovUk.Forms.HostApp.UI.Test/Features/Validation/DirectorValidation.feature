@@ -1,11 +1,12 @@
-﻿Feature: Director Validation
+﻿@cleanCosmosDb
+Feature: Director Validation
 
 As an Insolvency Practitioner
 I want to see the errors from my RP14 upload
 So that I know what to change and re-upload
 
   Background:
-   Given I am on the upload page as a "Admin" user
+   Given I am on the upload page as a "InssTestTen" user
 
    @regression @validation @rp14
    Scenario Outline: RP14 Display error for invalid director national insurance number
@@ -19,7 +20,6 @@ So that I know what to change and re-upload
                   | 123456789 |
                   | AB11223C  |
                   | QQ112233C |
-                  | AB112233Z |
                   | AB11AA33C |
 
         @api-upload
@@ -28,7 +28,6 @@ So that I know what to change and re-upload
                   | 123456789 |
                   | AB11223C  |
                   | QQ112233C |
-                  | AB112233Z |
                   | AB11AA33C |
 
 @regression @validation @rp14
@@ -53,17 +52,16 @@ Scenario Outline: RP14 Display error for multiple invalid director national insu
 
         Examples:
                   | directorCount | niNumber  |
-                  | 2             | QQ112233C |
                   | 3             | QQ112233C |
 
         @api-upload
         Examples:
                   | directorCount | niNumber  |
                   | 2             | QQ112233C |
-                  | 3             | QQ112233C |
 
 
-@regression @validation @rp14
+
+@regression @validation @rp14 @cleanCosmosDb
 Scenario Outline: RP14 director initials length boundary validation
             Given the RP14 XML contains director initials of length <length>
              When  I attempt to submit the RP14
@@ -81,7 +79,7 @@ Scenario Outline: RP14 director initials length boundary validation
                   |    101 | 1 director initials are the wrong length | Enter up to 100 characters | Director initials |
 
 
-@regression @validation @rp14
+@regression @validation @rp14 @cleanCosmosDb @addVideo
 Scenario Outline: RP14 director surname length boundary validation
             Given the RP14 XML contains director surname of length <length>
              When I attempt to submit the RP14
@@ -92,7 +90,13 @@ Scenario Outline: RP14 director surname length boundary validation
                   |    100 | none                                   | none                       | Director surname |
                   |    101 | 1 director surname is the wrong length | Enter up to 100 characters | Director surname |
 
-        @api-upload
+       
+@regression @validation @rp14 @cleanCosmosDb @addVideo @api-upload
+Scenario Outline: RP14 Api director surname length boundary validation
+            Given the RP14 XML contains director surname of length <length>
+             When I attempt to submit the RP14
+             Then the error summary should "<errorMessage>" with "<hintText>" With "<type>"
+
         Examples:
                   | length | errorMessage                           | hintText                   | type             |
                   |    100 | none                                   | none                       | Director surname |

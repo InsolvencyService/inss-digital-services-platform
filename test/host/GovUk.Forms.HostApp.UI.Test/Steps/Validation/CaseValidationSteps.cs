@@ -72,6 +72,20 @@ public sealed class CaseValidationSteps : ValidationStepsBase
         await UploadDocumentCoordinator.UploadRp14aWithTooLongCaseReferencesAsync(count);
     }
 
+    [Given("the RP14 XML contains a valid format case reference that does not exist in RPS")]
+    public async Task GivenTheRP14XMLContainsAValidFormatCaseReferenceThatDoesNotExistInRPS()
+    {
+        await UploadDocumentCoordinator.UploadRp14WithCaseReferenceAsync(ScenarioConstant.InvalidCaseReference);
+    }
+
+    [Given("the RP14A contains a case reference does not exist in RPS")]
+    public async Task GivenTheRP14AContainsACaseReferenceDoesNotExistInRPS()
+    {
+        await UploadDocumentCoordinator.UploadRp14aWithCaseReferenceAsync(ScenarioConstant.InvalidCaseReference);
+        ScenarioContext.Set(ScenarioConstant.InvalidCaseReference, CaseReferenceKey);
+    }
+
+
     [Then("I should see the validation error {string}")]
     public async Task ThenIShouldSeeTheValidationError(string errorMessage)
     {

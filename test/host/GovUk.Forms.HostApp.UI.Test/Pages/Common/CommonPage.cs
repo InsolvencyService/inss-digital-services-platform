@@ -85,7 +85,7 @@ public class CommonPage : ICommonPage
     public async Task SignOutAsync(IPage page)
     {
         ILocator signOutButton = page.Locator("a[href=\"/sign-out\"]");
-        if (signOutButton != null)
+        if (await signOutButton.IsVisibleAsync())
         {
             await signOutButton.ClickAsync();
             await page.WaitForLoadStateAsync(LoadState.Load);

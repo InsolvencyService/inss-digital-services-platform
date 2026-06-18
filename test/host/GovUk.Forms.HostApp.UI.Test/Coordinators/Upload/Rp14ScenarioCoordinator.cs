@@ -334,6 +334,56 @@ public sealed class Rp14ScenarioCoordinator : ScenarioCoordinatorBase, IRp14Scen
             $"RP14 with {directorCount} invalid director surnames");
     }
 
+    public Task UploadRp14WithCrossCategoryErrorsAsync(
+        string caseReference,
+        string? businessName,
+        string directorNino,
+        string shareholderPercentage,
+        string? payRecordsContactName) =>
+        BuildAndUploadAsync(
+            builder =>
+            {
+                builder.WithCaseReference(caseReference);
+                builder.WithBusinessName(businessName);
+                builder.WithDirector(1, surname: "Smith", initials: "J", nino: directorNino);
+                builder.WithShareholder(1, fullName: "John Doe", numberOfShares: "40000", percentage: shareholderPercentage);
+                builder.WithPayRecordsContactName(payRecordsContactName);
+            },
+            "RP14 with cross-category validation errors");
+
+    public Task UploadRp14WithRepeatedValidationErrorsAsync(
+        int directorNinoCount,
+        int shareholderPercentageCount,
+        int addressLineCount,
+        int businessNameCount)
+    {
+        ValidateRange(directorNinoCount, 0, 6, nameof(directorNinoCount));
+        ValidateRange(shareholderPercentageCount, 0, 6, nameof(shareholderPercentageCount));
+        ValidateRange(addressLineCount, 0, 4, nameof(addressLineCount));
+
+        return BuildAndUploadAsync(
+            builder =>
+            {
+                for (int i = 1; i <= directorNinoCount; i++)
+                    builder.WithDirectorNino(i, "00123456C");
+
+                for (int i = 1; i <= shareholderPercentageCount; i++)
+                    builder.WithShareholderPercentage(i, "50.588");
+
+                Rp14AddressField[] addressFields =
+                    [Rp14AddressField.Line1, Rp14AddressField.Line2, Rp14AddressField.Line3, Rp14AddressField.Line4];
+                string longAddressLine = new string('A', 36);
+                for (int i = 0; i < addressLineCount; i++)
+                    builder.WithCompanyAddressField(addressFields[i], longAddressLine);
+
+                string longName = new string('B', 61);
+                builder.WithBusinessName(longName);
+                for (int i = 1; i < businessNameCount; i++)
+                    builder.WithAssociatedCompany(i, longName);
+            },
+            "RP14 with repeated validation errors");
+    }
+
     private Task BuildAndUploadAsync(
         Action<IRp14FixtureBuilder>? configure,
         string description)

@@ -4,6 +4,7 @@ using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Config.Environments;
 using GovUk.Forms.HostApp.UI.Test.Extensions;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
+using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using System.Reflection;
 
 namespace GovUk.Forms.HostApp.UI.Test.Hook;
@@ -20,6 +21,7 @@ public sealed class ReqnrollHook : BaseTestConfig
     private readonly IReqnrollOutputHelper _output;
     private readonly IPlaywrightDriver _driver;
     private readonly IAllureReportingHelper _allureReportingHelper;
+    private readonly ICommonPage _commonPage;
 
     private bool _shouldRecordVideo;
     private bool _shouldRecordScreencast;
@@ -30,13 +32,15 @@ public sealed class ReqnrollHook : BaseTestConfig
         IReqnrollOutputHelper output,
         IPlaywrightDriver driver,
         FeatureContext featureContext,
-        IAllureReportingHelper allureReportingHelper)
+        IAllureReportingHelper allureReportingHelper,
+        ICommonPage commonPage)
     {
         _scenarioContext = scenarioContext ?? throw new ArgumentNullException(nameof(scenarioContext));
         _output = output ?? throw new ArgumentNullException(nameof(output));
         _driver = driver ?? throw new ArgumentNullException(nameof(driver));
         _featureContext = featureContext ?? throw new ArgumentNullException(nameof(featureContext));
         _allureReportingHelper = allureReportingHelper ?? throw new ArgumentNullException(nameof(allureReportingHelper));
+        _commonPage = commonPage ?? throw new ArgumentNullException(nameof(commonPage));
     }
 
     [BeforeScenario(Order = 0)]
@@ -58,7 +62,7 @@ public sealed class ReqnrollHook : BaseTestConfig
         }
     }
 
-    [BeforeScenario(Order = 1)]
+    [BeforeScenario(Order = 2)]
     public async Task BeforeScenarioAsync()
     {
         BrowserNewContextOptions contextOptions = BuildContextOptions();
@@ -125,6 +129,22 @@ public sealed class ReqnrollHook : BaseTestConfig
     }
 
     [AfterScenario(Order = 0)]
+    public async Task SignOutAfterScenarioAsync()
+    {
+        try
+        {
+            if (!_driver.Page.IsClosed)
+            {
+                await _commonPage.SignOutAsync(_driver.Page);
+            }
+        }
+        catch (Exception ex)
+        {
+            _output.WriteLine($"[SignOut Hook] Sign-out skipped: {ex.Message}");
+        }
+    }
+
+    [AfterScenario(Order = 1)]
     public async Task AfterScenarioAsync()
     {
         IVideo? video = null;

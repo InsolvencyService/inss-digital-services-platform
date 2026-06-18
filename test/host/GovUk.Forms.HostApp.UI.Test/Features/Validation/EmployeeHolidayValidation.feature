@@ -1,3 +1,4 @@
+@cleanCosmosDb
 Feature: Employee Holiday Validation
 
 A short summary of the feature
@@ -7,10 +8,10 @@ A short summary of the feature
    So that I can fix errors immediately and avoid delayed rejection
 
     Background:
-            Given I am on the upload page as a "Admin" user
+            Given I am on the upload page as a "InssTestEleven" user
 
 
-@regression @validation @rp14a @allure.subSuite:EmployeeHoliday
+@regression @validation @rp14a @allure.subSuite:EmployeeHoliday @cleanCosmosDb
  Scenario Outline: RP14A Display error for invalid contracted holiday entitlement format
             Given the RP14A contains contracted holiday entitlement "<contractedHoliday>"
              When I attempt to submit the RP14A
@@ -32,7 +33,7 @@ A short summary of the feature
                  |            28.255 | 1 contracted holiday entitlement is incorrect | Enter a number like 22.5 or 33 |
                  |                -1 | 1 contracted holiday entitlement is incorrect | Enter a number like 22.5 or 33 |
 
-  @regression @validation @rp14a @allure.subSuite:EmployeeHoliday
+  @regression @validation @rp14a @allure.subSuite:EmployeeHoliday @cleanCosmosDb
    Scenario Outline:RP14A Display error for contracted holiday entitlement outside allowed range
             Given the RP14A contains contracted holiday entitlement "<contractedHoliday>"
              When I attempt to submit the RP14A
@@ -77,7 +78,7 @@ A short summary of the feature
                   | 28.345                |
                   | -1                    |
 
-@regression @validation @rp14a @allure.subSuite:EmployeeHoliday
+@regression @validation @rp14a @allure.subSuite:EmployeeHoliday @cleanCosmosDb
  Scenario Outline:RP14A Display error for holiday days carried forward outside allowed range
             Given the RP14A contains holiday days carried forward "<holidayCarriedForward>"
              When I attempt to submit the RP14A
@@ -101,7 +102,7 @@ A short summary of the feature
                 |                     0 | none                                                        | none                            |
 
 
-  @regression @validation @rp14a @allure.subSuite:EmployeeHoliday
+  @regression @validation @rp14a @allure.subSuite:EmployeeHoliday @cleanCosmosDb
   Scenario Outline: RP14A Display error for invalid holiday days taken format
             Given the RP14A contains holiday days taken "<holidayTaken>"
              When I attempt to submit the RP14A
@@ -122,7 +123,7 @@ A short summary of the feature
                  |       12.345 | 1 holiday days taken is incorrect | Enter a number like 22.5 or 33 |
                  |           -1 | 1 holiday days taken is incorrect | Enter a number like 22.5 or 33 |
 
-@regression @validation @rp14a @allure.subSuite:EmployeeHoliday
+@regression @validation @rp14a @allure.subSuite:EmployeeHoliday @cleanCosmosDb
    Scenario Outline:RP14A Display error for holiday days taken outside allowed range
             Given the RP14A contains holiday days taken "<holidayTaken>"
              When I attempt to submit the RP14A
@@ -147,7 +148,7 @@ A short summary of the feature
 
 
 
-@regression @validation @rp14a @allure.subSuite:EmployeeHoliday
+@regression @validation @rp14a @allure.subSuite:EmployeeHoliday @cleanCosmosDb
        Scenario Outline:RP14A Display error for invalid holiday owed format
             Given the RP14A contains holiday owed "<holidayOwed>"
              When I attempt to submit the RP14A
@@ -329,7 +330,7 @@ Scenario Outline: RP14A displays error for contracted holiday entitlement outsid
                   | count | contractedHoliday |
                   | 2     | 366               |
 
-@regression @validation @rp14a @allure.subSuite:EmployeeHoliday
+@regression @validation @rp14a @allure.subSuite:EmployeeHoliday 
 Scenario: RP14A Display aggregated count for repeated invalid holiday not paid date errors
             Given the RP14A contains 2 employees with holiday not paid start date after end date
              When I attempt to submit the RP14A
@@ -337,7 +338,7 @@ Scenario: RP14A Display aggregated count for repeated invalid holiday not paid d
               | Message                              | Hint                                   | Type |
               | 2 unpaid holiday dates are incorrect | Start date must be before the end date |      |
 
-@regression @validation @rp14a @allure.subSuite:EmployeeHoliday @api-upload
+@regression @validation @rp14a @allure.subSuite:EmployeeHoliday @api-upload 
 Scenario: RP14A API display aggregated count for repeated invalid holiday not paid date errors
             Given the RP14A contains 2 employees with holiday not paid start date after end date
              When I attempt to submit the RP14A

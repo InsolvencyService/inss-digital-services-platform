@@ -4,6 +4,7 @@ public class TestSettings
 {
     public string TestEnvironment { get; set; } = string.Empty;
     public BrowserSettings BrowserSettings { get; set; } = new();
+    public CosmosDbSettings CosmosDb { get; set; } = new();
 }
 
 

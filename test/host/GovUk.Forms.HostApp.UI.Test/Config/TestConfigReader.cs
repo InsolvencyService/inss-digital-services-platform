@@ -12,15 +12,20 @@ public static class TestConfigReader
         IConfigurationRoot config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddUserSecrets(typeof(TestConfigReader).Assembly, optional: true)
             .AddEnvironmentVariables()
             .Build();
-        
-        Settings = config.GetSection("TestSettings").Get<TestSettings>()
-                    ?? throw new InvalidOperationException("TestSettings configuration section is missing or invalid.");
+
+        Settings = config
+            .GetSection(nameof(TestSettings))
+            .Get<TestSettings>()
+            ?? throw new InvalidOperationException(
+                "TestSettings configuration section is missing.");
 
         if (string.IsNullOrWhiteSpace(Settings.TestEnvironment))
         {
-            throw new InvalidOperationException("TestEnvironment is not configured.");
+            throw new InvalidOperationException(
+                "TestEnvironment is not configured.");
         }
     }
 }

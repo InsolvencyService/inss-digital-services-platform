@@ -4,33 +4,33 @@ Feature: Upload Documents
 A short summary of the feature
 
 Background: 
-  Given I am on the upload page as a "Admin" user
+  Given I am on the upload page as a "InssTestFive" user
 
-@functional @upload @Addvideo @rp14a
+@functional @upload @Addvideo @rp14a @cleanCosmosDb
 Scenario: Upload a valid RP14A file successfully
   When I upload a valid RP14A file
   Then the uploaded file should appear in the file list
 
- @functional @upload @addVideo @rp14a
+@functional @upload @addVideo @rp14a @cleanCosmosDb
 Scenario: Prevent uploading the same file twice
   When I upload a valid RP14A file
   And I upload the same file again
   Then the file list should contain only one instance of that file
 
- @visual @smoke
+@visual @smoke
 Scenario: Verify Upload Document Page visual snapshot
   Then the upload document page should match the visual snapshot
 
 
-@functional @visual 
-  Scenario: Verify Common issues when uploading RP14/A forms Contents
+ @functional @visual 
+Scenario: Verify Common issues when uploading RP14/A forms Contents
 	When I expand the common issues section
 	Then the common issues section should display the correct content
 
-@ignore @regression
+@regression @smoke
 Scenario: Display error when submitting without uploading a file
   When I click the continue button without selecting a file
-  Then I should see the file upload error "The file must end with an XML extension"
+  Then I should see the file upload error "An RP14/A file must be provided"
 
 @regression @validation @rp14a
 Scenario: Display validation error when XML content is invalid
@@ -61,7 +61,7 @@ Scenario: Upload an empty RP14A XML file
   Then the upload should be rejected
   And I should see the error message "The file provided is invalid XML or has invalid field data"
 
-@regression @happyPath @rp14
+@regression @happyPath @rp14 @cleanCosmosDb
  Scenario: Successfully submit a valid RP14 XML file
     When I upload a valid RP14 XML file
     Then the uploaded file should appear in the file list
