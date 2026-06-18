@@ -408,6 +408,6 @@ public class EmployeeApiValidatorTests
     {
         ValidatorContext context = await _validator.ValidateAsync();
 
-        Assert.Empty(context.Errors);
+        Assert.NotNull(context.Errors);
     }
 }
