@@ -58,6 +58,13 @@ public sealed class NotifyEmailService : INotifyEmailService
         {
             _logger.ExternalEmailFailed(email, reference);
         }
+        else
+        {
+            foreach (DynamicsSubmission submission in submissions)
+            {
+                submission.IPEmailReceipt = response.id;
+            }   
+        }
     }
     
     public void SendInternalEmail(
@@ -84,6 +91,13 @@ public sealed class NotifyEmailService : INotifyEmailService
         if (string.IsNullOrWhiteSpace(response.id))
         {
             _logger.InternalEmailFailed(_notifyOptions.Value.IPUploadInternalEmail, reference);
+        }
+        else
+        {
+            foreach (DynamicsSubmission submission in submissions)
+            {
+                submission.InternalEmailReceipt = response.id;
+            }
         }
     }
 
