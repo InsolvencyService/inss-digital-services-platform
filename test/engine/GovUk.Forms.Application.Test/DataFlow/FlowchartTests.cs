@@ -211,7 +211,7 @@ public class FlowchartTests
         bankAccount.AccountNumber = "12345678";
         bankAccount.SortCode = "11-22-33";
         
-        ValidationResult[] results = await _flowchart.ValidateAsync(bankAccount);
+        ValidationResult[] results = await _flowchart.ValidateAsync(_form, _yourDetails, bankAccount);
         
         AssertValidationError(results, nameof(bankAccount.AccountNumber), "The bank account details are invalid");
         AssertValidationError(results, nameof(bankAccount.SortCode), "The bank account details are invalid");
@@ -230,7 +230,7 @@ public class FlowchartTests
         bankAccount.AccountNumber = "11223344";
         bankAccount.SortCode = "11-22-33";
 
-        ValidationResult[] results = await _flowchart.ValidateAsync(bankAccount);
+        ValidationResult[] results = await _flowchart.ValidateAsync(_form, _yourDetails, bankAccount);
         
         Assert.Empty(results);
     }

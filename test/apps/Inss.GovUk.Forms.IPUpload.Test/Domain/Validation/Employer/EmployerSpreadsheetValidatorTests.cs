@@ -1,9 +1,10 @@
-﻿using Inss.GovUk.Forms.IPUpload.Application.Services;
+﻿using Inss.Common.IPUpload.Employer.Spreadsheet;
+using Inss.GovUk.Forms.IPUpload.Application.Services;
+using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 using NSubstitute;
 using Xunit;
-using Inss.Common.IPUpload.Employer.Spreadsheet;
 
 namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Validation.Employer;
 
@@ -17,7 +18,13 @@ public class EmployerSpreadsheetValidatorTests
     {
         _caseReferenceService = Substitute.For<ICaseReferenceService>();
         _model = EmployerSpreadsheetHelper.CreateModel();
-        _caseReferenceService.CheckExistsAsync(_model.Header.CaseReference).Returns(true);
+        _caseReferenceService
+        .GetEmployerDetailsAsync(_model.Header.CaseReference)
+        .Returns(new CaseDetailModel
+        {
+            CaseReference = _model.Header.CaseReference,
+            CompanyName = "Test Company"
+        });
         _validator = new EmployerSpreadsheetValidator(_model, _caseReferenceService);
     }
     
@@ -47,8 +54,10 @@ public class EmployerSpreadsheetValidatorTests
     [Fact]
     public async Task UnknownCaseRef_ValidateAsync_ReturnsError()
     {
-        _caseReferenceService.CheckExistsAsync(_model.Header.CaseReference).Returns(false);
-        
+        _caseReferenceService
+         .GetEmployerDetailsAsync(_model.Header.CaseReference)
+         .Returns((CaseDetailModel?)null);
+
         ValidatorContext context = await _validator.ValidateAsync();
 
         EmployerSpreadsheetHelper.AssertError(context.Errors, CaseValidationInfo.UnknownCaseReference());

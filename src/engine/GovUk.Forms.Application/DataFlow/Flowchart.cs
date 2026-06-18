@@ -64,13 +64,20 @@ public sealed class Flowchart : IFlowchart
         return pageAssociatedToNode.Path;
     }
     
-    public async ValueTask<ValidationResult[]> ValidateAsync(PageModel page)
+    public async ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page)
     {
         _logger.ValidatingPage(page.Path);
         
         FlowNode node = GetNode(page.LinkedToNode);
         IFlowNodeValidator validator = _serviceProvider.GetKeyedService<IFlowNodeValidator>(node.Id) ?? DefaultFlowNodeValidator.Default;
-        FlowNodeContext context = new() { Nodes = Nodes, CurrentNode = node, CurrentPage = page };
+        FlowNodeContext context = new()
+        {
+            Nodes = Nodes,
+            CurrentNode = node,
+            Form = form,
+            Section = section,
+            CurrentPage = page
+        };
         return await validator.ValidateAsync(context);
     }
     
