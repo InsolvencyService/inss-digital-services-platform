@@ -340,6 +340,30 @@ public sealed class UploadDocumentCoordinator :
     public Task UploadRp14WithCompanyAddressLinesCountAsync(int lineCount)
         => _rp14ScenarioCoordinator.UploadRp14WithCompanyAddressLinesCountAsync(lineCount);
 
+    public Task UploadRp14WithCrossCategoryErrorsAsync(
+        string caseReference,
+        string? businessName,
+        string directorNino,
+        string shareholderPercentage,
+        string? payRecordsContactName)
+        => _rp14ScenarioCoordinator.UploadRp14WithCrossCategoryErrorsAsync(
+            caseReference,
+            businessName,
+            directorNino,
+            shareholderPercentage,
+            payRecordsContactName);
+
+    public Task UploadRp14WithRepeatedValidationErrorsAsync(
+        int directorNinoCount,
+        int shareholderPercentageCount,
+        int addressLineCount,
+        int businessNameCount)
+        => _rp14ScenarioCoordinator.UploadRp14WithRepeatedValidationErrorsAsync(
+            directorNinoCount,
+            shareholderPercentageCount,
+            addressLineCount,
+            businessNameCount);
+
     public Task UploadRp14aWithHolidayDaysTakenForEmployeesAsync(int employeeCount, string? holidayDaysTaken)
         => _scenarioCoordinator.UploadRp14aWithHolidayDaysTakenForEmployeesAsync(employeeCount, holidayDaysTaken);
 

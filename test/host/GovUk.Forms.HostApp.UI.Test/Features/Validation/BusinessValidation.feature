@@ -1,11 +1,12 @@
-﻿Feature: Business Validation
+﻿@cleanCosmosDb
+Feature: Business Validation
 
 As an Insolvency Practitioner
 I want to see the errors from my RP14 upload
 So that I know what to change and re-upload
 
   Background:
-   Given I am on the upload page as a "Admin" user
+   Given I am on the upload page as a "InssTestSeven" user
 
    @regression @validation @rp14
     Scenario:RP14 Spreatsheet Display error for missing business name
@@ -19,7 +20,7 @@ So that I know what to change and re-upload
          When I attempt to submit the RP14
          Then I should see the validation error "1 business name is missing"
 
-   @regression @validation @rp14
+   @regression @validation @rp14 @cleanCosmosDb
   Scenario Outline:RP14 business name length boundary validation
             Given the RP14 XML contains a business name of length <length>
              When  I attempt to submit the RP14
@@ -36,7 +37,7 @@ So that I know what to change and re-upload
                   |     60 | none                                | none                      | Name of business |
                   |     61 | 1 business name is the wrong length | Enter up to 60 characters | Name of business |
 
-@regression @validation @rp14
+@regression @validation @rp14 @cleanCosmosDb
 Scenario Outline: RP14 company number length boundary validation
             Given the RP14 XML contains a company number of length <length>
              When I attempt to submit the RP14
@@ -54,7 +55,7 @@ Scenario Outline: RP14 company number length boundary validation
                   |     13 | 1 company number is the wrong length | Enter up to 12 characters | Company number |
 
 
-@regression @validation @rp14
+@regression @validation @rp14 @cleanCosmosDb
 Scenario Outline: RP14 standard industrial classification length boundary validation
             Given the RP14 XML contains a standard industrial classification of length <length>
             When I attempt to submit the RP14

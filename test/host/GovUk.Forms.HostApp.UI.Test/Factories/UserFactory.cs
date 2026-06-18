@@ -1,35 +1,59 @@
-﻿using Bogus;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 
 
 namespace GovUk.Forms.HostApp.UI.Test.Factories;
 
-/// <summary>
-/// Temporary solution for providing test users while authentication and
-/// authorisation are not fully implemented.
-///
-/// This will be removed or replaced once the database-backed user
-/// management is available.
-/// </summary>
 public static class UserFactory
 {
+    private const string SharedPassword = "Agresso!17";
+
+    private static readonly Dictionary<string, string> _users =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["InssTestOne"] = "insstestone@gmail.com",
+            ["InssTestTwo"] = "insstesttwo@gmail.com",
+            ["InssTestThree"] = "insstestthree@gmail.com",
+            ["InssTestFour"] = "insstestfour@gmail.com",
+            ["InssTestFive"] = "insstestfive@gmail.com",
+            ["InssTestSix"] = "insstestsix@gmail.com",
+            ["InssTestSeven"] = "insstestseven@gmail.com",
+            ["InssTestEight"] = "insstesteight@gmail.com",
+            ["InssTestNine"] = "insstestnine@gmail.com",
+            ["InssTestTen"] = "insstestten@gmail.com",
+            ["InssTestEleven"] = "insstesteleven@gmail.com",
+            ["InssTestTwelve"] = "insstesttwelve@gmail.com",
+            ["InssTestThirteen"] = "insstestthirteen@gmail.com",
+            ["InssTestFourteen"] = "insstestfourteen@gmail.com",
+            ["InssTestFifteen"] = "insstestfifteen@gmail.com",
+            ["InssTestSixteen"] = "insstestsixteen@gmail.com",
+            ["InssTestSeventeen"] = "insstestseventeen@gmail.com",
+            ["InssTestManOne"] = "insstestmanone@gmail.com",
+            ["InssTestManTwo"] = "insstestmantwo@gmail.com"
+        };
+
     public static TestUser DefaultUser() => new()
     {
         Email = ScenarioConstant.EmailAddress,
         Password = ScenarioConstant.Password
     };
 
-    public static TestUser CreateRandomUser() => new()
+    public static TestUser GetUser(string userType)
     {
-        Email = new Faker().Internet.Email(),
-        Password = "Password123"
-    };
+        if (string.Equals(userType, "Default", StringComparison.OrdinalIgnoreCase))
+        {
+            return DefaultUser();
+        }
 
-    public static TestUser GetUser(string type) => type switch
-    {
-        "Admin" => CreateRandomUser(),
-        "Default" => DefaultUser(),
-        _ => throw new ArgumentException($"Unknown user type: {type}")
-    };
+        if (!_users.TryGetValue(userType, out string? email))
+        {
+            throw new ArgumentException($"Unknown user type: {userType}", nameof(userType));
+        }
+
+        return new TestUser
+        {
+            Email = email,
+            Password = SharedPassword
+        };
+    }
 }

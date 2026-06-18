@@ -1,4 +1,4 @@
-﻿@MEDS-1067
+﻿@MEDS-1067 @cleanCosmosDb
 Feature: Employees Validation
 
               As an Insolvency Practitioner user
@@ -6,7 +6,7 @@ Feature: Employees Validation
   So that I can fix errors immediately and avoid delayed rejection
 
         Background:
-            Given I am on the upload page as a "Admin" user
+            Given I am on the upload page as a "InssTestThirteen" user
 
         @regression @validation @rp14a @allure.subSuite:Employee
         Scenario: RP14A Display error for missing employee surname
@@ -23,7 +23,7 @@ Feature: Employees Validation
               And I should be able to view employee error details
 
 
-        @regression @validation @rp14a @visual @allure.subSuite:Employee
+       @regression @validation @rp14a @visual @allure.subSuite:Employee @cleanCosmosDb
         Scenario: Return to the upload page after attempting to submit an invalid RP14A
              Given the RP14A contains an employee with no surname
              When I attempt to submit the RP14A
@@ -31,13 +31,13 @@ Feature: Employees Validation
              Then I should be returned to the upload page
 
                   
-        @regression @validation @rp14a @allure.subSuite:Employee
+        @regression @validation @rp14a @allure.subSuite:Employee @cleanCosmosDb
         Scenario: RP14A employee surname of exactly 99 characters passes validation
             Given the RP14A XML contains an employee surname of length 99
              When I attempt to submit the RP14A
              Then the submission should succeed
 
-        @regression @validation @rp14a @allure.subSuite:Employee @api-upload
+        @regression @validation @rp14a @allure.subSuite:Employee @api-upload @cleanCosmosDb
         Scenario: RP14A API employee surname of exactly 99 characters passes validation
             Given the RP14A XML contains an employee surname of length 99
              When I attempt to submit the RP14A

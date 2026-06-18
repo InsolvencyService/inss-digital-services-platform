@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.HostApp.UI.Test.Config.Driver;
+﻿using GovUk.Forms.HostApp.UI.Test.Config;
+using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Config.Environments;
 using GovUk.Forms.HostApp.UI.Test.Extensions;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
@@ -9,11 +10,11 @@ namespace GovUk.Forms.HostApp.UI.Test;
 
 public static class Startup
 {
-
     [ScenarioDependencies]
     public static IServiceCollection CreateServices()
     {
         IServiceCollection services = new ServiceCollection();
+
         services.AddScoped(_ =>
         {
             string testName = TestContext.CurrentContext.Test.Name;
@@ -22,11 +23,16 @@ public static class Startup
 
             return new TestArtifacts(testName, environment, workDirectory);
         });
+
         services.AddScoped<IPlaywrightDriver, PlaywrightDriver>();
         services.AddScoped<IAllureReportingHelper, AllureReportingHelper>();
+
         services.AddPageObjects();
         services.AddCoordinators();
-        return services;
 
+        services.AddSingleton<ICosmosDbService>(_ =>
+            new CosmosDbService(TestConfigReader.Settings.CosmosDb));
+
+        return services;
     }
 }

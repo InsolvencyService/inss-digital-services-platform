@@ -130,6 +130,7 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
         .UseDirectory("Snapshots/UploadDocument")
         .UseFileName("UploadingRP14AForms")
         .ScrubLinesContaining("__RequestVerificationToken")
+        .ScrubLinesWithReplace(ScrubSessionGuid)
         .DisableRequireUniquePrefix();
     }
 
@@ -147,7 +148,21 @@ public class UploadDocumentPage : BasePage, IUploadDocumentPage
             .UseDirectory("Snapshots/UploadDocument")
             .UseFileName("CommonIssuesWhenUploadingRP14AForms")
             .ScrubLinesContaining("__RequestVerificationToken")
+            .ScrubLinesWithReplace(ScrubSessionGuid)
             .DisableRequireUniquePrefix();
+    }
+
+    private static string ScrubSessionGuid(string line)
+    {
+        const string marker = "id=\"Id_Value\" name=\"Id.Value\" type=\"hidden\" value=\"";
+        int start = line.IndexOf(marker, StringComparison.Ordinal);
+        if (start == -1)
+        {
+            return line;
+        }
+        start += marker.Length;
+        int end = line.IndexOf('"', start);
+        return end == -1 ? line : line[..start] + "SCRUBBED_GUID" + line[end..];
     }
 
     private async Task VerifyUploadPageHeaderAriaSnapshotAsync()
