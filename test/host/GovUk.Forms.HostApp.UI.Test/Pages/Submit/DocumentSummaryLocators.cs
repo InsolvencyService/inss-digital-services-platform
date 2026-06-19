@@ -12,6 +12,7 @@ public class DocumentSummaryLocators
         public const string Submit = "Submit";
         public const string UploadDocument = "Upload document";
         public const string UploadAnotherForm = "Upload another form";
+        public const string WhatHappensNext = "What happens next";
     }
 
 
@@ -20,6 +21,7 @@ public class DocumentSummaryLocators
         public const string SummaryList = ".govuk-summary-list__row";
         public const string SummaryListOfValue = ".govuk-summary-list__value";
         public const string ConfirmBodyCompleted = ".govuk-panel__body";
+        public const string MainContent = "#main-content .govuk-body";
     }
 
 }

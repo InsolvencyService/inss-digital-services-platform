@@ -9,4 +9,5 @@ public interface ICosmosDbService
     Task DeleteDynamicsByUserIdAsync(string userId);
     Task DeleteByReferenceAsync(string reference);
     Task<JsonElement[]> GetByReferenceAsync(string reference);
+    Task<string?> GetIpEmailReceiptAsync(string reference);
 }

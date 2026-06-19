@@ -15,23 +15,7 @@ public sealed class CosmosDbService : ICosmosDbService, IAsyncDisposable
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        _client = new CosmosClient(
-            settings.Endpoint,
-            settings.PrimaryKey,
-            new CosmosClientOptions
-            {
-                ConnectionMode = ConnectionMode.Gateway,
-                HttpClientFactory = () =>
-                {
-                    HttpClientHandler handler = new()
-                    {
-                        ServerCertificateCustomValidationCallback =
-                            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                    };
-
-                    return new HttpClient(handler);
-                }
-            });
+        _client = new CosmosClient(settings.Endpoint, settings.PrimaryKey);
 
         _container = _client
             .GetDatabase(settings.DatabaseName)
@@ -156,6 +140,35 @@ public sealed class CosmosDbService : ICosmosDbService, IAsyncDisposable
                 // Item already deleted.
             }
         }
+    }
+
+    public async Task<string?> GetIpEmailReceiptAsync(string reference)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(reference);
+
+        QueryRequestOptions options = new()
+        {
+            PartitionKey = new PartitionKey(reference)
+        };
+
+        using FeedIterator<string> iterator =
+            _dynamicsContainer.GetItemQueryIterator<string>(
+                new QueryDefinition("SELECT VALUE c.ipEmailReceipt FROM c WHERE IS_DEFINED(c.ipEmailReceipt)"),
+                requestOptions: options);
+
+        while (iterator.HasMoreResults)
+        {
+            FeedResponse<string> response = await iterator.ReadNextAsync();
+
+            string? value = response.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
+
+            if (value is not null)
+            {
+                return value;
+            }
+        }
+
+        return null;
     }
 
     public ValueTask DisposeAsync()
