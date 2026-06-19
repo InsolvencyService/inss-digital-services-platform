@@ -153,7 +153,7 @@ public sealed class CosmosDbService : ICosmosDbService, IAsyncDisposable
 
         using FeedIterator<string> iterator =
             _dynamicsContainer.GetItemQueryIterator<string>(
-                new QueryDefinition("SELECT VALUE c.ipEmailReceipt FROM c WHERE IS_DEFINED(c.ipEmailReceipt)"),
+                new QueryDefinition("SELECT TOP 1 VALUE c.ipEmailReceipt FROM c WHERE IS_DEFINED(c.ipEmailReceipt)"),
                 requestOptions: options);
 
         while (iterator.HasMoreResults)

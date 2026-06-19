@@ -17,6 +17,6 @@ public sealed class NotifyService : INotifyService
     public async Task<Notification?> GetNotificationByIdAsync(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        return await Task.Run(() => _client.GetNotificationById(id));
+        return await _client.GetNotificationByIdAsync(id);
     }
 }
