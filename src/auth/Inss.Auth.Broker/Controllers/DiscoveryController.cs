@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Inss.Auth.Broker.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Inss.Auth.Broker.Controllers;
 
@@ -12,7 +13,7 @@ public class DiscoveryController : Controller
     [HttpGet("/.well-known/openid-configuration")]
     public IActionResult Discovery()
     {
-        var issuer = $"{Request.Scheme}://{Request.Host}";
+        string issuer = Request.GetForwardedHost();
         return Json(new
         {
             issuer,

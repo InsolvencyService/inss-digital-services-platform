@@ -1,5 +1,6 @@
 ﻿using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Domain;
+using Inss.Auth.Broker.Extensions;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -10,20 +11,23 @@ namespace Inss.Auth.Broker.Controllers;
 public class AuthorizationController : Controller
 {
     private readonly IAuthCodeStoreProvider _authCodeStoreProvider;
-    private readonly IOptions<BrokerOptions> _options;
+    private readonly IOptions<BrokerOptions> _brokerOptions;
+    private readonly ILogger<AuthorizationController> _logger;
 
-    public AuthorizationController(IAuthCodeStoreProvider  authCodeStoreProvider, IOptions<BrokerOptions>  options)
+    public AuthorizationController(
+        IAuthCodeStoreProvider  authCodeStoreProvider, 
+        IOptions<BrokerOptions>  brokerOptions,
+        ILogger<AuthorizationController> logger)
     {
         _authCodeStoreProvider = authCodeStoreProvider;
-        _options = options;
+        _brokerOptions = brokerOptions;
+        _logger = logger;
     }
     
     [HttpGet("/connect/authorize")]
     public IActionResult Authorize()
     {
-        // TODO: Some validation for the caller!!
-        
-        string issuer = $"{Request.Scheme}://{Request.Host}";
+        string issuer = Request.GetForwardedHost();
         string clientId = Request.Query["client_id"].ToString();
         string redirectUri = Request.Query["redirect_uri"].ToString();
         string state = Request.Query["state"].ToString();
@@ -32,14 +36,14 @@ public class AuthorizationController : Controller
         string codeChallengeMethod = Request.Query["code_challenge_method"].ToString();
         string nonce = Request.Query["nonce"].ToString();
         
-        if (clientId != _options.Value.ClientId || string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(codeChallenge))
+        if (clientId != _brokerOptions.Value.ClientId || string.IsNullOrEmpty(redirectUri) || string.IsNullOrEmpty(codeChallenge))
         {
-            return BadRequest("Missing required parameters");
+            return BadRequest("Missing one or more of the required parameters: clientId, redirectUri, codeChallenge");
         }
         
-        var props = new AuthenticationProperties
+        AuthenticationProperties props = new()
         {
-            RedirectUri = $"{issuer}/connect/callback",
+            RedirectUri = $"{issuer}/connect/callback?scheme={loginHint}",
             Items =
             {
                 ["client_redirect_uri"] = redirectUri,
@@ -55,15 +59,18 @@ public class AuthorizationController : Controller
     }
 
     [HttpGet("/connect/callback")]
-    public async Task<IActionResult> Callback()
+    public async Task<IActionResult> Callback(string scheme)
     {
-        var result = await HttpContext.AuthenticateAsync("Cookies");
+        AuthenticateResult result = await HttpContext.AuthenticateAsync(scheme);
         
         if (!result.Succeeded)
         {
+            string[] cookieNames = HttpContext.Request.Cookies.Keys.ToArray();
+            _logger.LogError("Unable to handle the callback. Cookies are {Cookies}", string.Join(',', cookieNames));
             return Unauthorized();
         }
         
+        _logger.LogInformation("Callback success");
         AuthenticationProperties? authProps = result.Properties;
         string? clientRedirectUri = authProps?.Items["client_redirect_uri"];
         string? clientState = authProps?.Items["client_state"];
@@ -76,6 +83,8 @@ public class AuthorizationController : Controller
             return BadRequest("Missing stored client redirect URI");
         }
 
+        _logger.LogInformation("Callback client redirect exists");
+        
         AuthCode authCode = new()
         {
             Id = Guid.NewGuid().ToString("N"),
@@ -84,9 +93,12 @@ public class AuthorizationController : Controller
             Nonce = clientNonce
         };
         authCode.AddClaimsPrincipal(result.Principal);
-        await _authCodeStoreProvider.StoreAsync(authCode);
         
-        var finalRedirect = $"{clientRedirectUri}?code={authCode.Id}&state={clientState}";
+        _logger.LogInformation("Callback attempting to store auth code");
+        await _authCodeStoreProvider.StoreAsync(authCode);
+        _logger.LogInformation("Callback stored auth code");
+        
+        string finalRedirect = $"{clientRedirectUri}?code={authCode.Id}&state={clientState}";
         return Redirect(finalRedirect);
     }
 }

@@ -12,6 +12,7 @@ using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
+using Microsoft.AspNetCore.HttpOverrides;
 
 [assembly: HostingStartup(typeof(Inss.Auth.RpsProvider.StartupConfiguration))]
 
@@ -35,7 +36,12 @@ public class StartupConfiguration : IHostingStartup
         {
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => options.LoginPath = "/login");
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login";
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                });
             
             services.AddOptions<ProviderOptions>()
                 .Bind(context.Configuration.GetSection("Provider"))
@@ -98,6 +104,13 @@ public class StartupConfiguration : IHostingStartup
         
         builder.Configure(app =>
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedHost |
+                    ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication();
             app.UseGovUkFrontend();
             app.UseHttpsRedirection();

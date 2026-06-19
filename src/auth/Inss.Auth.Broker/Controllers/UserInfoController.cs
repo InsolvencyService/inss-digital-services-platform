@@ -11,12 +11,12 @@ namespace Inss.Auth.Broker.Controllers;
 
 public class UserInfoController : Controller
 {
-    private readonly IOptions<BrokerOptions> _options;
+    private readonly IOptions<BrokerOptions> _brokerOptions;
     private readonly ILogger<UserInfoController> _logger;
 
-    public UserInfoController(IOptions<BrokerOptions>  options, ILogger<UserInfoController> logger)
+    public UserInfoController(IOptions<BrokerOptions>  brokerOptions, ILogger<UserInfoController> logger)
     {
-        _options = options;
+        _brokerOptions = brokerOptions;
         _logger = logger;
     }
     
@@ -28,17 +28,17 @@ public class UserInfoController : Controller
         if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
             RSA rsa = RSA.Create();
-            rsa.ImportFromPem(_options.Value.JwtPublicKey);
+            rsa.ImportFromPem(_brokerOptions.Value.JwtPublicKey);
             
-            var issuer = $"{Request.Scheme}://{Request.Host}";
-            var token = authHeader["Bearer ".Length..].Trim();
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var validationParams = new TokenValidationParameters
+            string issuer = Request.GetForwardedHost();
+            string token = authHeader["Bearer ".Length..].Trim();
+            JwtSecurityTokenHandler tokenHandler = new();
+            TokenValidationParameters validationParams = new()
             {
                 ValidateIssuer = true,
                 ValidIssuer = issuer,
                 ValidateAudience = true,
-                ValidAudience = _options.Value.ClientId,
+                ValidAudience = _brokerOptions.Value.ClientId,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new RsaSecurityKey(rsa),
                 ValidateLifetime = true
@@ -51,7 +51,7 @@ public class UserInfoController : Controller
                 // returned as part of the sign in process with the 3rd party identity provider (Entra, OneLogin etc) and lookup the
                 // user in our system, pulling extra information to enrich the claims.
                 
-                var principal = tokenHandler.ValidateToken(token, validationParams, out _);
+                ClaimsPrincipal? principal = tokenHandler.ValidateToken(token, validationParams, out _);
                 Claim subject = new(JwtRegisteredClaimNames.Sub, principal.FindFirst("name")!.Value);
                 List<Claim> claims = [subject];
                 return Json(claims.ToDictionary(c => c.Type, c => c.Value));
