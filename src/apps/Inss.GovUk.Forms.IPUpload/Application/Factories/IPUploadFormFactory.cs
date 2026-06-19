@@ -15,7 +15,7 @@ public sealed class IPUploadFormFactory : IFormFactory
             
             .AddSection("IP Upload", "redundancy-payment")
             .AddPage<IPUploadDeclarationModel>("Declaration", "declaration", submitButtonText: "Agree and continue")
-            .AddPage<RequiredTextModel>("CaseReferenceNumber", "casereferencenumber", submitButtonText: "Continue", question: "Whats the case reference number?", hint: "For example, ‘CN123456K’. This must match the case reference number in your form.")
+            .AddPage<RequiredTextModel>("CaseReferenceNumber", "casereferencenumber", submitButtonText: "Continue", question: "Whats the case reference number?", hint: "For example, ‘CN12345678’. This must match the case reference number in your form.")
             .AddPage<EmployerDetailsModel>("EmployerDetails", "employerdetails", submitButtonText: "Continue")
             .AddPage<XmlFileUploadModel>("Upload document", "upload-document", submitButtonText: "Continue")
             .AddPage<IPUploadXmlErrorsModel>("IP upload errors", "upload-errors", submitButtonText: "Continue")

@@ -19,13 +19,12 @@ public class EmployeeSpreadsheetValidatorTests
     {
         _caseReferenceService = Substitute.For<ICaseReferenceService>();
         _model = EmployeeSpreadsheetHelper.CreateModel();
-        _caseReferenceService
-        .GetEmployerDetailsAsync(_model.Employee[0].Header.CaseReference)
+        _caseReferenceService.GetCaseDetailsAsync(_model.Employee[0].Header.CaseReference)
         .Returns(new CaseDetailModel
-        {
-            CaseReference = _model.Employee[0].Header.CaseReference,
-            CompanyName = "Test Company"
-        });
+                {
+                    CaseReference = _model.Employee[0].Header.CaseReference,
+                    CompanyName = "Test Company"
+                });
         _validator = new EmployeeSpreadsheetValidator(_model, _caseReferenceService);
     }
 
@@ -68,9 +67,7 @@ public class EmployeeSpreadsheetValidatorTests
         // Arrange
         RP14AEmployee employee = _model.Employee[0];
 
-        _caseReferenceService
-            .GetEmployerDetailsAsync(employee.Header.CaseReference)
-            .Returns(Task.FromResult<CaseDetailModel?>(null));
+        _caseReferenceService.GetCaseDetailsAsync(employee.Header.CaseReference).Returns(Task.FromResult<CaseDetailModel?>(null));
 
         // Act
         ValidatorContext context = await _validator.ValidateAsync();

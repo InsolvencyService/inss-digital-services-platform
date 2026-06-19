@@ -5,7 +5,6 @@ using GovUk.Forms.Domain;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
@@ -18,53 +17,53 @@ public partial class CaseRefFlowNodeValidator : IFlowNodeValidator
     {
         _caseReferenceService = caseReferenceService;
     }
+
     public async ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context)
     {
         ValidationResult[] baseValidationResults = await DefaultFlowNodeValidator.Default.ValidateAsync(context);
         List<ValidationResult> validationResults = baseValidationResults.ToList();
-        RequiredTextModel caserefnum = context.CurrentPage.As<RequiredTextModel>();
+        RequiredTextModel caseReferenceNumber = context.CurrentPage.As<RequiredTextModel>();
 
-        if (string.IsNullOrWhiteSpace(caserefnum.Value))
+        if (string.IsNullOrWhiteSpace(caseReferenceNumber.Value))
         {
-            validationResults.AddResult("Enter a reference number like CN12345678", [nameof(caserefnum.Value)]);
+            validationResults.AddResult("Enter a reference number like CN12345678", [nameof(caseReferenceNumber.Value)]);
         }
         else
         {
             bool isValid = true;
 
-            if (caserefnum.Value.Length < 10)
+            if (caseReferenceNumber.Value.Length < 10)
             {
                 isValid = false;
-                validationResults.AddResult("The case reference number is too short", [nameof(caserefnum.Value)]);
+                validationResults.AddResult("The case reference number is too short", [nameof(caseReferenceNumber.Value)]);
             }
-            if (caserefnum.Value.Length > 10)
+            if (caseReferenceNumber.Value.Length > 10)
             {
                 isValid = false;
-                validationResults.AddResult("The case reference number is too long", [nameof(caserefnum.Value)]);
+                validationResults.AddResult("The case reference number is too long", [nameof(caseReferenceNumber.Value)]);
             }
 
-            if (isValid && !CaseReferenceNumberRegex().IsMatch(caserefnum.Value))
+            if (isValid && !CaseReferenceNumberRegex().IsMatch(caseReferenceNumber.Value))
             {
                 isValid = false;
-                validationResults.AddResult("The case reference number is not in the correct format", [nameof(caserefnum.Value)]);
+                validationResults.AddResult("The case reference number is not in the correct format", [nameof(caseReferenceNumber.Value)]);
             }
 
             if (isValid)
             {
-                CaseDetailModel? casedetailModel = await _caseReferenceService.GetEmployerDetailsAsync(caserefnum.Value.ToString());
+                CaseDetailModel? caseDetail = await _caseReferenceService.GetCaseDetailsAsync(caseReferenceNumber.Value.ToString());
 
-                if (casedetailModel is null)
+                if (caseDetail is null)
                 {
                     validationResults.AddResult(
                         "The case reference number you entered has not been linked to a valid employer",
-                        [nameof(caserefnum.Value)]);
+                        [nameof(caseReferenceNumber.Value)]);
                 }
                 else 
                 {
-                    EmployerDetailsModel employerdetails = context.Section.Pages.GetFirstOf<EmployerDetailsModel>();
-                    employerdetails.CaseRefNum = casedetailModel.CaseReference ?? string.Empty;
-                    employerdetails.EmployerName = casedetailModel.CompanyName ?? string.Empty;
-                    
+                    EmployerDetailsModel employerDetails = context.Section.Pages.GetFirstOf<EmployerDetailsModel>();
+                    employerDetails.CaseRefNum = caseDetail.CaseReference ?? string.Empty;
+                    employerDetails.EmployerName = caseDetail.CompanyName ?? string.Empty;                    
                 }
 
             }

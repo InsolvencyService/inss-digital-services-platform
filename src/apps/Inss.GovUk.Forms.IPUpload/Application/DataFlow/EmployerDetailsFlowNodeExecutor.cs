@@ -7,16 +7,16 @@ namespace Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 
 public sealed class EmployerDetailsFlowNodeExecutor : IFlowNodeExecutor
 {
-    private const int FirstWorkingPageNodeIdIndex = 0;
+    private const int CaseRefNumNodeIdIndex = 0;
     private const int NextPageNodeIdIndex = 1;
 
     public ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
-        EmployerDetailsModel yesornoitem = context.CurrentPage.As<EmployerDetailsModel>();
+        EmployerDetailsModel employerDetails = context.CurrentPage.As<EmployerDetailsModel>();
         
-        if (!yesornoitem.YesorNoItem)
+        if (!employerDetails.YesorNoItem)
         {
-            return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[FirstWorkingPageNodeIdIndex]);
+            return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[CaseRefNumNodeIdIndex]);
         }
 
         return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[NextPageNodeIdIndex]);

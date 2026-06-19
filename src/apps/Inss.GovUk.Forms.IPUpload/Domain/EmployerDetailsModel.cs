@@ -6,19 +6,9 @@ namespace Inss.GovUk.Forms.IPUpload.Domain;
 
 public sealed class EmployerDetailsModel : PageModel
 {
-    public EmployerDetailsModel()
-    {
-        
-    }
-
     public PageModelList Items { get; init; } = [];
     public bool YesorNoItem { get; set; }
-
-    public string? Question { get; set; }
-
-    public string? Hint { get; set; }
     public string CaseRefNum { get; set; }
-    
     public string EmployerName { get; set; }
 
     [JsonIgnore]
@@ -34,8 +24,6 @@ public sealed class EmployerDetailsModel : PageModel
         EmployerDetailsModel employerDetails = target.As<EmployerDetailsModel>();
         employerDetails.CaseRefNum = CaseRefNum;
         employerDetails.EmployerName = EmployerName;
-        employerDetails.Question = Question;
-        employerDetails.Hint = Hint;
         employerDetails.YesorNoItem = YesorNoItem;
     }
     
@@ -44,8 +32,6 @@ public sealed class EmployerDetailsModel : PageModel
         base.ClearValues();
         CaseRefNum = string.Empty;
         EmployerName = string.Empty;
-        Question = null;
-        Hint = null;
         YesorNoItem = false;
     }
 }

@@ -16,7 +16,7 @@ public sealed class CaseReferenceService : ICaseReferenceService
         _logger = logger;
     }
 
-    public async Task<CaseDetailModel?> GetEmployerDetailsAsync(string caseReference)
+    public async Task<CaseDetailModel?> GetCaseDetailsAsync(string caseReference)
     {
         _logger.LookupCaseDetailsExists(caseReference);
          

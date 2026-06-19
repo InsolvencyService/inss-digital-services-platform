@@ -38,7 +38,7 @@ public class StartupConfiguration : IHostingStartup
             DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
             ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
 
-            if (!context.HostingEnvironment.IsDevelopment())
+            if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
                     {

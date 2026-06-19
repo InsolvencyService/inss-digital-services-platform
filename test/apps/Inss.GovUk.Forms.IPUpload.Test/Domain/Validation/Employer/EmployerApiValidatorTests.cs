@@ -19,7 +19,7 @@ public class EmployerApiValidatorTests
         _caseReferenceService = Substitute.For<ICaseReferenceService>();
         _model = EmployerApiHelper.CreateModel();
         _caseReferenceService
-        .GetEmployerDetailsAsync(_model.Header.CaseReference)
+        .GetCaseDetailsAsync(_model.Header.CaseReference)
         .Returns(new CaseDetailModel
         {
             CaseReference = _model.Header.CaseReference,
@@ -55,7 +55,7 @@ public class EmployerApiValidatorTests
     public async Task UnknownCaseRef_ValidateAsync_ReturnsError()
     {
         _caseReferenceService
-         .GetEmployerDetailsAsync(_model.Header.CaseReference)
+         .GetCaseDetailsAsync(_model.Header.CaseReference)
          .Returns((CaseDetailModel?)null);
 
         ValidatorContext context = await _validator.ValidateAsync();

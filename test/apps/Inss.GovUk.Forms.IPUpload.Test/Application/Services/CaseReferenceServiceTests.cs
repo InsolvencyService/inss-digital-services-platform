@@ -24,8 +24,7 @@ public class CaseReferenceServiceTests
         const string caseReference = "CN12345678";
         _caseReferenceClient.LookupCaseDetails(caseReference).Returns((CaseDetailModel?)null);
 
-        CaseDetailModel? result =
-        await _caseReferenceService.GetEmployerDetailsAsync(caseReference);
+        CaseDetailModel? result = await _caseReferenceService.GetCaseDetailsAsync(caseReference);
 
         Assert.Null(result);
     }
@@ -36,8 +35,7 @@ public class CaseReferenceServiceTests
         const string caseReference = "CN12345678";
         _caseReferenceClient.LookupCaseDetails(caseReference).Returns(new CaseDetailModel());
 
-        CaseDetailModel? result =
-        await _caseReferenceService.GetEmployerDetailsAsync(caseReference);
+        CaseDetailModel? result = await _caseReferenceService.GetCaseDetailsAsync(caseReference);
 
         Assert.NotNull(result);
         Assert.Equal(caseReference, result!.CaseReference);

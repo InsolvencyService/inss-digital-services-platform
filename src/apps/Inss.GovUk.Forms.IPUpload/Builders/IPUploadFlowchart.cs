@@ -15,7 +15,7 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
     public override void Construct(IServiceCollection services)
     {
         NodeId declarationId = "Declaration";
-        NodeId caserefnumId = "CaseReferenceNumber";
+        NodeId caseRefNumId = "CaseReferenceNumber";
         NodeId employerId = "EmployerDetails";
         NodeId fileUploadId = "FileUpload";
         NodeId fileUploadErrorId = "FileUploadErrors";
@@ -37,13 +37,13 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         
         FlowchartBuilder
             .ForSection(section, services)
-            .AddTransitionNode(declarationId, declaration.Path, caserefnumId)
+            .AddTransitionNode(declarationId, declaration.Path, caseRefNumId)
             .WithExecutor<DeclarationFlowNodeExecutor>()
             .Next()
-            .AddTransitionNode(caserefnumId, caserefnumber.Path, employerId)
+            .AddTransitionNode(caseRefNumId, caserefnumber.Path, employerId)
             .WithValidator<CaseRefFlowNodeValidator>()
             .Next()
-            .AddDecisionNode(employerId, employerdetails.Path, caserefnumId, fileUploadId)
+            .AddDecisionNode(employerId, employerdetails.Path, caseRefNumId, fileUploadId)
             .WithExecutor<EmployerDetailsFlowNodeExecutor>()
             .Next()
             .AddDecisionNode(fileUploadId, fileUpload.Path, fileUploadErrorId, summaryId)
