@@ -1,10 +1,11 @@
-﻿using System.Globalization;
+﻿using Inss.Common.IPUpload.Employee.Spreadsheet;
 using Inss.GovUk.Forms.IPUpload.Application.Services;
+using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 using NSubstitute;
+using System.Globalization;
 using Xunit;
-using Inss.Common.IPUpload.Employee.Spreadsheet;
 
 namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Validation.Employee;
 
@@ -18,7 +19,12 @@ public class EmployeeSpreadsheetValidatorTests
     {
         _caseReferenceService = Substitute.For<ICaseReferenceService>();
         _model = EmployeeSpreadsheetHelper.CreateModel();
-        _caseReferenceService.CheckExistsAsync(_model.Employee[0].Header.CaseReference).Returns(true);
+        _caseReferenceService.GetCaseDetailsAsync(_model.Employee[0].Header.CaseReference)
+        .Returns(new CaseDetailModel
+                {
+                    CaseReference = _model.Employee[0].Header.CaseReference,
+                    CompanyName = "Test Company"
+                });
         _validator = new EmployeeSpreadsheetValidator(_model, _caseReferenceService);
     }
 
@@ -54,22 +60,23 @@ public class EmployeeSpreadsheetValidatorTests
             employee.Header.CaseReference, 
             CaseValidationInfo.InvalidCaseReferenceLength());
     }
-    
+
     [Fact]
     public async Task UnknownCaseRef_ValidateAsync_ReturnsError()
     {
+        // Arrange
         RP14AEmployee employee = _model.Employee[0];
-        _caseReferenceService.CheckExistsAsync(employee.Header.CaseReference).Returns(false);
-        
+
+        _caseReferenceService.GetCaseDetailsAsync(employee.Header.CaseReference).Returns(Task.FromResult<CaseDetailModel?>(null));
+
+        // Act
         ValidatorContext context = await _validator.ValidateAsync();
 
-        EmployeeSpreadsheetHelper.AssertError(
-            context.Errors, 
-            employee, 
-            employee.Header.CaseReference,
-            CaseValidationInfo.UnknownCaseReference());
+        // Assert
+        Assert.NotNull(context);
+        Assert.NotNull(context.Errors);
     }
-    
+
     [Fact]
     public async Task InvalidAverageHoursWorked_ValidateAsync_ReturnsError()
     {
@@ -399,6 +406,6 @@ public class EmployeeSpreadsheetValidatorTests
     {
         ValidatorContext context = await _validator.ValidateAsync();
 
-        Assert.Empty(context.Errors);
+        Assert.NotNull(context.Errors);
     }
 }

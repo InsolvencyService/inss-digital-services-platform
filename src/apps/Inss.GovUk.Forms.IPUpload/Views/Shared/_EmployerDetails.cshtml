@@ -1,0 +1,40 @@
+﻿@model EmployerDetailsModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Employer details</h1>
+
+        <p class="govuk-body">We have matched to the following employer:</p>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Case reference number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.CaseRefNum
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Employer name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.EmployerName
+                </dd>
+            </div>
+        </dl>
+</div>
+</div>
+
+<govuk-radios for="@Model.YesorNoItem" orientation="Horizontal">
+    <govuk-radios-fieldset>
+        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+            @(Model.MetaData.Question ?? "Is this the correct employer name?")
+        </govuk-radios-fieldset-legend>
+        <govuk-radios-hint>
+            @(Model.MetaData.Hint ?? "This case reference number you have provided matches with this employer in our system.")
+        </govuk-radios-hint>
+        <govuk-radios-item value="true">Yes</govuk-radios-item>
+        <govuk-radios-item value="false">No</govuk-radios-item>
+    </govuk-radios-fieldset>
+</govuk-radios>

@@ -15,6 +15,8 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
     public override void Construct(IServiceCollection services)
     {
         NodeId declarationId = "Declaration";
+        NodeId caseRefNumId = "CaseReferenceNumber";
+        NodeId employerId = "EmployerDetails";
         NodeId fileUploadId = "FileUpload";
         NodeId fileUploadErrorId = "FileUploadErrors";
         NodeId fileUploadErrorDetailsId = "FileUploadErrorDetails";
@@ -25,6 +27,8 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         SectionModel section = form.Sections["IP Upload"];
             
         IPUploadDeclarationModel declaration = section.Pages.GetFirstOf<IPUploadDeclarationModel>();
+        RequiredTextModel caserefnumber = section.Pages.GetFirstOf<RequiredTextModel>();
+        EmployerDetailsModel employerdetails = section.Pages.GetFirstOf<EmployerDetailsModel>();
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
         IPUploadXmlErrorsModel uploadErrors = section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         IPUploadXmlErrorDetailsModel errorDetails = section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
@@ -33,9 +37,15 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         
         FlowchartBuilder
             .ForSection(section, services)
-            .AddTransitionNode(declarationId, declaration.Path, fileUploadId)
+            .AddTransitionNode(declarationId, declaration.Path, caseRefNumId)
             .WithExecutor<DeclarationFlowNodeExecutor>()
             .WithPreviousPathProvider<DeclarationFlowNodePreviousPathProvider>()
+            .Next()
+            .AddTransitionNode(caseRefNumId, caserefnumber.Path, employerId)
+            .WithValidator<CaseRefFlowNodeValidator>()
+            .Next()
+            .AddDecisionNode(employerId, employerdetails.Path, caseRefNumId, fileUploadId)
+            .WithExecutor<EmployerDetailsFlowNodeExecutor>()
             .Next()
             .AddDecisionNode(fileUploadId, fileUpload.Path, fileUploadErrorId, summaryId)
             .WithLoader<FileUploadFlowNodeLoader>()

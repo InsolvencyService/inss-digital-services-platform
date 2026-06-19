@@ -38,9 +38,9 @@ public abstract partial class BaseValidator : IBaseValidator
 
             if (isValid)
             {
-                bool caseReferenceExists = await _caseReferenceService.CheckExistsAsync(caseReference);
+                CaseDetailModel? caseDetail = await _caseReferenceService.GetCaseDetailsAsync(caseReference);
 
-                if (!caseReferenceExists)
+                if (!string.IsNullOrEmpty(caseDetail?.CaseReference))
                 {
                     context.AddError(CaseValidationInfo.UnknownCaseReference(), caseReference);
                 }

@@ -1,0 +1,6 @@
+﻿@model RequiredTextModel
+
+<govuk-input for="@Model.Value" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.MetaData.Question)</govuk-input-label>
+    <govuk-input-hint>@(Model.MetaData.Hint)</govuk-input-hint>
+</govuk-input>
