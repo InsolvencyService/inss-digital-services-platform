@@ -65,7 +65,7 @@ public class AuthorizationController : Controller
         
         if (!result.Succeeded)
         {
-            string[] cookieNames = HttpContext.Request.Cookies.Keys.Select(k => k).ToArray();
+            string[] cookieNames = HttpContext.Request.Cookies.Keys.ToArray();
             _logger.LogError("Unable to handle the callback. Cookies are {Cookies}", string.Join(',', cookieNames));
             return Unauthorized();
         }
