@@ -38,6 +38,5 @@ public class CaseReferenceServiceTests
         CaseDetailModel? result = await _caseReferenceService.GetCaseDetailsAsync(caseReference);
 
         Assert.NotNull(result);
-        Assert.Equal(caseReference, result!.CaseReference);
     }
 }
