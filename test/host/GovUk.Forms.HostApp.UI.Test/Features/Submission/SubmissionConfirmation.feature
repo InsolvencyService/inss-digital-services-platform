@@ -43,7 +43,7 @@ Scenario: Insolvency Practitioner starts a new RP14A API submission
              Then I will be able to upload a new RP14A form
 
 @regression @rp14 @cleanCosmosDb @addVideo
-Scenario: Insolvency Practitioner chooses to submit another RP14 form
+ Scenario:  Insolvency Practitioner chooses to submit another RP14 form
             Given I am on the RP14 submission confirmation page
              And I retrieve the first submission confirmation email
              And the first submission confirmation email contains the submitted RP14 details

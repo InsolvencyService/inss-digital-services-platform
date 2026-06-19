@@ -3,5 +3,5 @@
 public class EnvSitConfig : BaseEnvironmentConfig
 {
     public override TestEnvironment EnvironmentType => TestEnvironment.SIT;
-    public override string BaseUrl => "";
+    public override string BaseUrl => "https://sit.ipus.redundancy-payments.service.gov.uk";
 }
