@@ -1,5 +1,4 @@
 ﻿using Inss.Common.IPUpload.Employee.Spreadsheet;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
@@ -7,12 +6,12 @@ public sealed class EmployeeSpreadsheetValidator : EmployeeValidator
 {
     private readonly RP14A _model;
 
-    public EmployeeSpreadsheetValidator(RP14A model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
+    public EmployeeSpreadsheetValidator(RP14A model)
     {
         _model = model;
     }
 
-    public override async Task<ValidatorContext> ValidateAsync()
+    public override ValidatorContext Validate(EmployerDetailsModel employerDetails)
     {
         EmployeeValidatorContext context = new();
         bool validateCaseReference = true;
@@ -27,7 +26,7 @@ public sealed class EmployeeSpreadsheetValidator : EmployeeValidator
             // The instructions on the spreadsheet state to define the case ref in the first row - this reflects it in validation
             if (validateCaseReference)
             {
-                await ValidateCaseReferenceAsync(context, employee.Header.CaseReference);
+                ValidateCaseReference(context, employee.Header.CaseReference, employerDetails.CaseReference);
                 validateCaseReference = false;
             }
 

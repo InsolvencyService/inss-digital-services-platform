@@ -7,10 +7,6 @@ namespace Inss.GovUk.Forms.IPUpload.Infrastructure.Clients;
 
 public sealed class MockSubmitIPUploadSectionClient : ISubmitIPUploadSectionClient
 {
-    public MockSubmitIPUploadSectionClient(HttpClient client)
-    {
-    }
-    
     public Task<Result<SubmitIPUploadResponse>> SubmitAsync(SubmitIPUploadRequest submitRequest)
     {
         Console.WriteLine("Calling submission service...");

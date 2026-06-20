@@ -61,4 +61,22 @@ public class SectionModel : ContentModel
         
         VisitedNodes = nodeIdList.ToArray();
     }
+    
+    public void ResetVisitedNodesFrom(NodeId? fromNodeId)
+    {
+        int currentPageNodeIndex = VisitedNodes.IndexOf(fromNodeId);
+
+        if (currentPageNodeIndex > -1)
+        {
+            NodeId[] nodeIdsToReset = VisitedNodes.Skip(currentPageNodeIndex + 1).ToArray();
+                    
+            foreach (NodeId nodeId in nodeIdsToReset)
+            {
+                PageModel resetPage = Pages.First(p => p.LinkedToNode == nodeId);
+                resetPage.ClearValues();
+            }
+                    
+            Untrack(nodeIdsToReset);
+        }
+    }
 }

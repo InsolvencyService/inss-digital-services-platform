@@ -3,7 +3,6 @@ using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Application.DataFlow.Validating;
-using GovUk.Forms.Application.DataFlow.Visiting;
 using GovUk.Forms.Application.Exceptions;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
@@ -59,7 +58,7 @@ public sealed class Flowchart : IFlowchart
         }
 
         section.SetInProgress();
-
+        
         await UpdateBackButtonAsync(form, section, page, refererPath);
         return pageAssociatedToNode.Path;
     }
@@ -85,19 +84,10 @@ public sealed class Flowchart : IFlowchart
     {
         _logger.ProcessingPage(page.Path, section.Title);
         
-        
         FlowNode node = GetNode(page.LinkedToNode);
-
-        IFlowNodeVisitor flowNodeVisitor = _serviceProvider.GetKeyedService<IFlowNodeVisitor>(node.Id) ??
-                                           _serviceProvider.GetRequiredService<IFlowNodeVisitor>();
-        FlowNodeContext context = new()
-        {
-            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page
-        };
-        await flowNodeVisitor.VisitAsync(context);
+        section.Track(node.Id);
         
         PageModel targetPage = section.Pages.GetPage(page.Path);
-        
         CopyPageData(page, targetPage);
         
         NodeId? nextNodeId = await GetNextNodeForUpdatedPageAsync(node, page, form, section);
@@ -115,7 +105,7 @@ public sealed class Flowchart : IFlowchart
             
             if (targetPage.LinkedToNextNode != nextNodeId)
             {
-                ResetVisitedNodesFrom(targetPage.LinkedToNode, section);
+                section.ResetVisitedNodesFrom(targetPage.LinkedToNode);
                 resetPages = true;
             }
             
@@ -154,7 +144,7 @@ public sealed class Flowchart : IFlowchart
     private async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page, ContentPath refererPath)
     {
         FlowNode node = GetNode(page.LinkedToNode);
-        IFlowNodePreviousPathProvider flowNodePreviousPathProvider = _serviceProvider.GetKeyedService<IFlowNodePreviousPathProvider>(node.Id) 
+        IFlowNodePreviousPathProvider flowNodePreviousPathProvider = _serviceProvider.GetKeyedService<IFlowNodePreviousPathProvider>(section.Path) 
                                                ?? _serviceProvider.GetRequiredService<IFlowNodePreviousPathProvider>();
         FlowNodeContext context = new()
         {
@@ -207,25 +197,6 @@ public sealed class Flowchart : IFlowchart
             Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = updatedPage
         };
         return await executor.ExecuteAsync(context);
-    }
-    
-    private void ResetVisitedNodesFrom(NodeId? fromNodeId, SectionModel section)
-    {
-        int currentPageNodeIndex = section.VisitedNodes.IndexOf(fromNodeId);
-
-        if (currentPageNodeIndex > -1)
-        {
-            NodeId[] nodeIdsToReset = section.VisitedNodes.Skip(currentPageNodeIndex + 1).ToArray();
-                    
-            foreach (NodeId nodeId in nodeIdsToReset)
-            {
-                FlowNode resetNode = GetNode(nodeId);
-                PageModel resetPage = section.Pages.GetPage(resetNode.PagePath);
-                resetPage.ClearValues();
-            }
-                    
-            section.Untrack(nodeIdsToReset);
-        }
     }
     
     private static void CopyPageData(PageModel sourcePage, PageModel targetPage)

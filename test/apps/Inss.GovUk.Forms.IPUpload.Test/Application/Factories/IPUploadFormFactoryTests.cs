@@ -39,7 +39,7 @@ public class IPUploadFormFactoryTests
         SectionModel redundancyPayment = form.Sections[0];
         Assert.Equal(8, redundancyPayment.Pages.Count);
         AssertSectionPage<IPUploadDeclarationModel>(redundancyPayment, "Declaration", "/ip-upload/redundancy-payment/declaration");
-        AssertSectionPage<RequiredTextModel>(redundancyPayment, "Check case reference", "/ip-upload/redundancy-payment/check-case-reference");
+        AssertSectionPage<CheckCaseReferenceModel>(redundancyPayment, "Check case reference", "/ip-upload/redundancy-payment/check-case-reference");
         AssertSectionPage<EmployerDetailsModel>(redundancyPayment, "Case reference match", "/ip-upload/redundancy-payment/case-reference-match");
         AssertSectionPage<XmlFileUploadModel>(redundancyPayment, "Upload document", "/ip-upload/redundancy-payment/upload-document");
         AssertSectionPage<IPUploadXmlErrorsModel>(redundancyPayment, "IP upload errors", "/ip-upload/redundancy-payment/upload-errors");

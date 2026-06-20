@@ -1,5 +1,9 @@
 ﻿@model EmployerDetailsModel
 
+@* Required as we only display the values but need to be persisted *@
+@Html.HiddenFor(m => m.CaseReference)
+@Html.HiddenFor(m => m.EmployerName)
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">Employer details</h1>
@@ -11,7 +15,7 @@
                     Case reference number
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.CaseRefNum
+                    @Model.CaseReference
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -26,7 +30,7 @@
 </div>
 </div>
 
-<govuk-radios for="@Model.YesorNoItem" orientation="Horizontal">
+<govuk-radios for="@Model.DetailsMatch" orientation="Horizontal">
     <govuk-radios-fieldset>
         <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
             @(Model.MetaData.Question ?? "Is this the correct employer name?")

@@ -16,6 +16,7 @@ public sealed class PostSubmitFlowNodeLoader : IFlowNodeLoader
     
     public async ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
+        context.Section.VisitedNodes = [];
         await _userFormService.RemoveAsync(context.Form);
         return null;
     }

@@ -1,8 +1,6 @@
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
-using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Application.DataFlow.Validating;
-using GovUk.Forms.Application.DataFlow.Visiting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GovUk.Forms.Application.DataFlow;
@@ -35,18 +33,6 @@ public sealed class FlowNodeBuilder
     public FlowNodeBuilder WithExecutor<TExecutor>() where TExecutor : class, IFlowNodeExecutor
     {
         _services.AddKeyedTransient<IFlowNodeExecutor, TExecutor>(_node.Id);
-        return this;
-    }
-    
-    public FlowNodeBuilder WithPreviousPathProvider<TNavigator>() where TNavigator : class, IFlowNodePreviousPathProvider
-    {
-        _services.AddKeyedTransient<IFlowNodePreviousPathProvider, TNavigator>(_node.Id);
-        return this;
-    }
-    
-    public FlowNodeBuilder WithVisitor<TVisitor>() where TVisitor : class, IFlowNodeVisitor
-    {
-        _services.AddKeyedTransient<IFlowNodeVisitor, TVisitor>(_node.Id);
         return this;
     }
     

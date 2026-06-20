@@ -3,7 +3,6 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Application.DataFlow.Validating;
-using GovUk.Forms.Application.DataFlow.Visiting;
 using GovUk.Forms.Application.Exceptions;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Domain;
@@ -68,7 +67,7 @@ public class FlowchartTests
     public async Task NoNextNodeToLoad_PreProcessAsync_PutsSectionInStartedMode()
     {
         ServiceCollection services = [];
-        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodePreviousPathProvider>());
+        services.AddKeyedSingleton(_yourDetails.Path, Substitute.For<IFlowNodePreviousPathProvider>());
         BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
@@ -82,7 +81,7 @@ public class FlowchartTests
     public async Task NoNextNodeToLoad_PreProcessAsync_ReturnsPagePath()
     {
         ServiceCollection services = [];
-        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodePreviousPathProvider>());
+        services.AddKeyedSingleton(_yourDetails.Path, Substitute.For<IFlowNodePreviousPathProvider>());
         BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
@@ -101,7 +100,7 @@ public class FlowchartTests
         testLoader.LoadAsync(Arg.Is<FlowNodeContext>(c => c.CurrentPage.Path == fullName.Path)).Returns(_ageNode.Id);
         ServiceCollection services = [];
         services.AddKeyedSingleton(_fullNameNode.Id, testLoader);
-        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodePreviousPathProvider>());
+        services.AddKeyedSingleton(_yourDetails.Path, Substitute.For<IFlowNodePreviousPathProvider>());
         BuildTestFlowchart(services);
         fullName.LinkedToNode = _fullNameNode.Id;
         
@@ -114,7 +113,6 @@ public class FlowchartTests
     public async Task PostedPageWithChange_ProcessAsync_UpdatesSourcePage()
     {
         ServiceCollection services = [];
-        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodeVisitor>());
         BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
@@ -131,7 +129,6 @@ public class FlowchartTests
     public async Task PostedPageWithChange_ProcessAsync_UpdatesSourcePageCompleted()
     {
         ServiceCollection services = [];
-        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodeVisitor>());
         BuildTestFlowchart(services);
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
@@ -148,7 +145,6 @@ public class FlowchartTests
     public async Task PostedPageWithChangeAndReturnUrl_ProcessAsync_ReturnsPageReturnUrl()
     {
         ServiceCollection services = [];
-        services.AddKeyedSingleton(_fullNameNode.Id, Substitute.For<IFlowNodeVisitor>());
         BuildTestFlowchart(services);
         AgeModel age = _yourDetails.Pages.GetFirstOf<AgeModel>();
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();

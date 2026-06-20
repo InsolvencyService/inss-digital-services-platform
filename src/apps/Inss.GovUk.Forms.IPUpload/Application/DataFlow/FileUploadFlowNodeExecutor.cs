@@ -18,25 +18,26 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         _validationFactory = validationFactory;
     }
     
-    public async ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
+    public ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
     {
         XmlFileUploadModel fileUpload = context.CurrentPage.As<XmlFileUploadModel>();
         IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
+        EmployerDetailsModel employerDetails = context.Section.Pages.GetFirstOf<EmployerDetailsModel>();
         fileUploadErrors.ClearErrors();
         fileUploadErrors.Filename = fileUpload.Filename;
         
         object redundancyPayment = FileHelper.GetRedundancyPaymentObject(fileUpload.Contents);
-        await ValidateAsync(fileUploadErrors, redundancyPayment);
+        Validate(fileUploadErrors, employerDetails, redundancyPayment);
 
         return fileUploadErrors.HasErrors 
-            ? context.CurrentNode.NextNodes[FileUploadErrorIndex] 
-            : context.CurrentNode.NextNodes[SummaryIndex];
+            ? ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[FileUploadErrorIndex]) 
+            : ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[SummaryIndex]);
     }
     
-    private async Task ValidateAsync(IPUploadXmlErrorsModel fileUploadErrors, object model)
+    private void Validate(IPUploadXmlErrorsModel fileUploadErrors, EmployerDetailsModel employerDetails, object model)
     {
         IBaseValidator validator = _validationFactory.Create(model);
-        ValidatorContext context = await validator.ValidateAsync();
+        ValidatorContext context = validator.Validate(employerDetails);
         fileUploadErrors.BuildErrorList(context.Errors);
     }
 }
