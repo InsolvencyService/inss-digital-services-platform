@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Pages.Declaration;
 using GovUk.Forms.HostApp.UI.Test.Pages.Login;
+using GovUk.Forms.HostApp.UI.Test.Pages.Navigation;
 using GovUk.Forms.HostApp.UI.Test.Pages.Submit;
 using GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ public static class RegisterPageObjects
         services.AddScoped<IUploadErrorsPage, UploadErrorsPage>();
         services.AddScoped<IUploadDocumentSummaryPage, UploadDocumentSummaryPage>();
         services.AddScoped<ISubmissionConfirmationPage, SubmissionConfirmationPage>();
+        services.AddScoped<IPageNotFoundPage, PageNotFoundPage>();
         services.AddScoped<DirectorConductReportingServicePage>();
     }
 }
