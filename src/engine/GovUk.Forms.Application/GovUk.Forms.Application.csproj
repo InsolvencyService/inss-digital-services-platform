@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <Compile Remove="Services\Search\SearchColumn.cs" />
+    <Compile Remove="Services\Search\SearchRequest.cs" />
+    <Compile Remove="Services\Search\SearchResults.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\GovUk.Forms.Domain\GovUk.Forms.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,16 @@ public sealed class ContactUsFormFactory : IFormFactory
             .AddSearchResultColumn("Column2")
             .AddFinalColumn("Column3")
             .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
-            
+
+
+            // TODO: Testing how to use the component so it is re-useable!!
+            .AddSection("Finding Peoples Part Two", "find-people")
+            .AddSearchPage<SearchModel>("Search", "search", submitButtonText: "Search")
+            .AddSearchResultColumn("Column1")
+            .AddSearchResultColumn("Column2")
+            .AddFinalColumn("Column3")
+            .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
+
             .ValidateAndComplete();
     }
 }

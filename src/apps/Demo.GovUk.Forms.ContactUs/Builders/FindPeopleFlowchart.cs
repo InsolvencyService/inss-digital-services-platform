@@ -21,6 +21,7 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
         SearchModel search = section.Pages.GetFirstOf<SearchModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         
+        
         FlowchartBuilder
             .ForSection(section, services)
             .AddDecisionNode(searchId, search.Path, searchId, summaryId)

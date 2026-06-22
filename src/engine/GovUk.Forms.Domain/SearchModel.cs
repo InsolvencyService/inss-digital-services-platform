@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
 
 namespace GovUk.Forms.Domain;
 
@@ -7,11 +8,13 @@ public class SearchModel : PageModel
     [Required(ErrorMessage = "You must enter a search text")]
     public string SearchText { get; set; }
 
-    public bool DisplayAsTable { get; init; }
+    public bool DisplayAsTable { get; set; }
+
+    public int PageSize { get; set; }
 
     public SearchResultColumn[] ResultColumns { get; set; } = [];
 
-    public SearchResult[] Results { get; set; }
+    public SearchResult[] Results { get; set; } = [];
     
     public SearchResult? CurrentResult { get; set; }
     
@@ -20,7 +23,11 @@ public class SearchModel : PageModel
         List<SearchResultColumn> columns = [..ResultColumns, new() { Name = name, Css = css }];
         ResultColumns = columns.ToArray();
     }
-    
+
+   // public int Page { get; set; } = 1;
+
+    // public List<SearchColumnOptions> Columns { get; set; } = new List<SearchColumnOptions>();
+
     public override string[] GetSummaryInfo()
     {
         // TODO: Determine what this should be
@@ -31,6 +38,9 @@ public class SearchModel : PageModel
     {
         SearchModel search = target.As<SearchModel>();
         search.SearchText = SearchText;
+        search.ResultColumns = ResultColumns;
+        search.Results = Results;
+        search.CurrentResult = CurrentResult;
     }
     
     public override void ClearValues()
@@ -45,9 +55,14 @@ public sealed class SearchResultColumn
     public required string Name { get; init; }
     
     public string? Css { get; init; } // TODO: Enum?
+
+    public  int Order { get; init; }
+
+    public string? Header { get; init; }
 }
 
 public sealed class SearchResult
 {
-    public string Id { get; init; }
+    //public string Id { get; init; }
+    public Dictionary<string, string> Fields { get; init; } = [];
 }

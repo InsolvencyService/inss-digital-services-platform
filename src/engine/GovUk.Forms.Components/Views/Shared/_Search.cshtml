@@ -18,16 +18,125 @@ else if (Model.CurrentResult is not null)
 }
 else if (Model.Results.Length > 0)
 {
+
     @* Display list of result *@
     if (Model.DisplayAsTable)
-    {
-        
-    }
+    { 
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+       
+                <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">
+                Search Result eIIR
+            </caption>
+ 
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+
+                @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+                {
+                  
+                        <th scope="col" class="govuk-table__header">
+                            @column.Header
+                        </th>
+                }
+                <th scope="col" class="govuk-table__header"> </th>
+                </tr>
+            </thead> 
+             
+            <tbody class="govuk-table__body">
+                @foreach (var row in Model.Results.Take(Model.PageSize))
+                {
+                    <tr class="govuk-table__row">
+                       
+                        @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+                        {
+                            string value = string.Empty;
+                            if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
+                            {
+                                value = fieldValue ?? string.Empty;
+                            }
+
+                            <td class="govuk-table__cell @column.Css">
+                                @value
+                            </td>
+                        }
+
+                        <td class="govuk-table__cell">
+                            <a href="#" class="govuk-link"> Select </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            </table>
+            
+            </div>
+       </div>
+        }
+    
     else
     {
+        <h1 class="govuk-summary-card__title">
+            List of eIIR Results
+        </h1>
+        <br/>
+            <ul class="govuk-list">
+                @foreach (var row in Model.Results.Take(Model.PageSize))
+                {
+                    <li class="govuk-!-margin-bottom-6">
+                        <div class="govuk-summary-card">
+
+                            <div class="govuk-summary-card__title-wrapper">
+                                <h2 class="govuk-summary-card__title">
+                                    Search Result
+                                </h2>
+
+                                <ul class="govuk-summary-card__actions">
+                                    <li class="govuk-summary-card__action">
+                                        <a class="govuk-link" href="#">
+                                            Select
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="govuk-summary-card__content">
+
+                                <dl class="govuk-summary-list">
+
+                                    @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+                                    {
+                                        string value = string.Empty;
+
+                                        row.Fields.TryGetValue(
+                                            column.Name,
+                                            out string? fieldValue);
+
+                                        value = fieldValue ?? string.Empty;
+
+                                        <div class="govuk-summary-list__row">
+                                            <dt class="govuk-summary-list__key">
+                                                @column.Header
+                                            </dt>
+
+                                            <dd class="govuk-summary-list__value @column.Css">
+                                                @value
+                                            </dd>
+                                        </div>
+                                    }
+                                </dl>
+
+                            </div>
+
+                        </div>
+                    </li>
+                }
+            </ul>        
     }
 }
 else
 {
-    @* Oops *@
+    @* Oops - no results found!*@
+    <p class="govuk-body">No results found.</p>
+    
 }
