@@ -6,6 +6,7 @@ using GovUk.Forms.Domain.Primitives;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace GovUk.Forms.Components.Controllers;
 
@@ -23,9 +24,10 @@ public class FormController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(string? state = null)
     {
+        Dictionary<string, string?> queryParams = GetQueryParams();
         ContentPath requestPath = new(Request.Path);
         ContentPath refererPath = GetRefererPath();
-        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, refererPath, state);
+        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, refererPath, queryParams);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
 
@@ -57,6 +59,19 @@ public class FormController : Controller
         return SignOut(OpenIdConnectDefaults.AuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
+    private Dictionary<string, string?> GetQueryParams()
+    {
+        Dictionary<string, string?> queryParams = [];
+
+        foreach (KeyValuePair<string, StringValues> queryParam in Request.Query)
+        {
+            string? value = queryParam.Value.Count > 0 ? queryParam.Value[0] : null;
+            queryParams[queryParam.Key] = value;
+        }
+
+        return queryParams;
+    }
+    
     private ContentPath GetRefererPath()
     {
         string referer = Request.Headers.Referer.ToString();

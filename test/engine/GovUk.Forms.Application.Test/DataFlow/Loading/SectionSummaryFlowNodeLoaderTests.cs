@@ -10,7 +10,6 @@ public class SectionSummaryFlowNodeLoaderTests
 {
     private readonly FormModel _form = TestFormModels.CreateWithAddAnotherSection();
     private readonly SectionSummaryFlowNodeLoader _loader = new();
-    private const string? NoState = null;
     
     [Fact]
     public async Task AddAnotherItems_LoadAsync_PopulatesFullNameInSummary()
@@ -25,8 +24,7 @@ public class SectionSummaryFlowNodeLoaderTests
             CurrentNode = node,
             Form = _form,
             Section = section,
-            CurrentPage = summary,
-            State = NoState
+            CurrentPage = summary
         };
         
         await _loader.LoadAsync(context);
@@ -50,8 +48,7 @@ public class SectionSummaryFlowNodeLoaderTests
             CurrentNode = node,
             Form = _form,
             Section = section,
-            CurrentPage = summary,
-            State = NoState
+            CurrentPage = summary
         };
         
         await _loader.LoadAsync(context);
@@ -75,8 +72,7 @@ public class SectionSummaryFlowNodeLoaderTests
             CurrentNode = node,
             Form = _form,
             Section = section,
-            CurrentPage = summary,
-            State = NoState
+            CurrentPage = summary
         };
         
         await _loader.LoadAsync(context);
@@ -100,8 +96,7 @@ public class SectionSummaryFlowNodeLoaderTests
             CurrentNode = node,
             Form = _form,
             Section = section,
-            CurrentPage = summary,
-            State = NoState
+            CurrentPage = summary
         };
         
         await _loader.LoadAsync(context);

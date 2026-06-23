@@ -9,7 +9,6 @@ public class AddAnotherFlowNodeLoaderTests
 {
     private readonly AddAnotherFlowNodeLoader _loader = new();
     private readonly FormModel _form = TestFormModels.CreateWithAddAnotherSection();
-    private const string? NoState = null;
 
     [Fact]
     public async Task ItemsExist_LoadAsync_PopulatesDetailsInSummary()
@@ -25,8 +24,7 @@ public class AddAnotherFlowNodeLoaderTests
             CurrentNode = addAnotherNode,
             Form = _form,
             Section = section,
-            CurrentPage = addAnother,
-            State = NoState
+            CurrentPage = addAnother
         };
         
         await _loader.LoadAsync(context);
@@ -50,13 +48,12 @@ public class AddAnotherFlowNodeLoaderTests
             CurrentNode = addAnotherNode,
             Form = _form,
             Section = section,
-            CurrentPage = addAnother,
-            State = NoState
+            CurrentPage = addAnother
         };
 
         await _loader.LoadAsync(context);
         
-        Assert.Equal($"{checkAnswers.Path}/?state=0", addAnother.SummaryInfo[0].ChangeUrl);
+        Assert.Equal($"{checkAnswers.Path}/?index=0", addAnother.SummaryInfo[0].ChangeUrl);
     }
     
     [Fact]
@@ -73,13 +70,12 @@ public class AddAnotherFlowNodeLoaderTests
             CurrentNode = addAnotherNode,
             Form = _form,
             Section = section,
-            CurrentPage = addAnother,
-            State = NoState
+            CurrentPage = addAnother
         };
 
         await _loader.LoadAsync(context);
         
-        Assert.Equal($"{remove.Path}/?state=0", addAnother.SummaryInfo[0].RemoveUrl);
+        Assert.Equal($"{remove.Path}/?index=0", addAnother.SummaryInfo[0].RemoveUrl);
     }
 
     private AddAnotherModel CreateAddAnother()

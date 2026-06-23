@@ -11,10 +11,9 @@ public class CheckAnswersPreProcessNodeTests
 {
     private readonly CheckAnswersFlowNodeLoader _loader = new();
     private readonly FormModel _form = TestFormModels.CreateWithAddAnotherSection();
-    private const string? NoState = null;
     
     [Fact]
-    public async Task NullState_LoadAsync_ListsFullNameInAnswers()
+    public async Task EmptyQueryParams_LoadAsync_ListsFullNameInAnswers()
     {
         SectionModel section = _form.Sections.First();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
@@ -27,8 +26,7 @@ public class CheckAnswersPreProcessNodeTests
             CurrentNode = node,
             Form = _form,
             Section = section,
-            CurrentPage = checkAnswers,
-            State = NoState
+            CurrentPage = checkAnswers
         };
         
         await _loader.LoadAsync(context);
@@ -38,7 +36,7 @@ public class CheckAnswersPreProcessNodeTests
     }
     
     [Fact]
-    public async Task NullState_LoadAsync_ListsAgeInAnswers()
+    public async Task EmptyQueryParams_LoadAsync_ListsAgeInAnswers()
     {
         SectionModel section = _form.Sections.First();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
@@ -51,8 +49,7 @@ public class CheckAnswersPreProcessNodeTests
             CurrentNode = node,
             Form = _form,
             Section = section,
-            CurrentPage = checkAnswers,
-            State = NoState
+            CurrentPage = checkAnswers
         };
         
         await _loader.LoadAsync(context);
@@ -64,7 +61,6 @@ public class CheckAnswersPreProcessNodeTests
     [Fact]
     public async Task HasMismatchedIdState_LoadAsync_ThrowsException()
     {
-        const string changeState = "0";
         SectionModel section = _form.Sections.First();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = checkAnswers.Path, NextNodes = ["NodeId2"] };
@@ -75,7 +71,7 @@ public class CheckAnswersPreProcessNodeTests
             Form = _form,
             Section = section,
             CurrentPage = checkAnswers,
-            State = changeState
+            QueryParams = new Dictionary<string, string?> { ["index"] = "0" }
         };
         
         FlowchartException exception = await Assert.ThrowsAsync<FlowchartException>(async () => await _loader.LoadAsync(context));
@@ -86,7 +82,6 @@ public class CheckAnswersPreProcessNodeTests
     [Fact]
     public async Task HasIdState_LoadAsync_AddsAddAnotherFullNameToWorkingPages()
     {
-        const string changeState = "0";
         SectionModel section = _form.Sections.First();
         AddAnotherModel addAnother = CreateAddAnother();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
@@ -98,7 +93,7 @@ public class CheckAnswersPreProcessNodeTests
             Form = _form,
             Section = section,
             CurrentPage = checkAnswers,
-            State = changeState
+            QueryParams = new Dictionary<string, string?> { ["errorId"] = "0" }
         };
         
         await _loader.LoadAsync(context);
@@ -115,7 +110,6 @@ public class CheckAnswersPreProcessNodeTests
     [Fact]
     public async Task HasIdState_Load_AddsAddAnotherAgeToWorkingPages()
     {
-        const string changeState = "0";
         SectionModel section = _form.Sections.First();
         AddAnotherModel addAnother = CreateAddAnother();
         CheckAnswersModel checkAnswers = section.Pages.GetFirstOf<CheckAnswersModel>();
@@ -127,7 +121,7 @@ public class CheckAnswersPreProcessNodeTests
             Form = _form,
             Section = section,
             CurrentPage = checkAnswers,
-            State = changeState
+            QueryParams = new Dictionary<string, string?> { ["errorId"] = "0" }
         };
         
         await _loader.LoadAsync(context);

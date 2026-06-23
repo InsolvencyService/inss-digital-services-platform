@@ -30,7 +30,7 @@ public class AddAnotherFlowNodeLoader : IFlowNodeLoader
             {
                 Value = string.Join(Environment.NewLine, summaryInfo),
                 ChangeUrl = GetChangeUrl(groupInfo, setIndex),
-                RemoveUrl = $"{groupInfo.Remove.Path}/?state={setIndex}"
+                RemoveUrl = $"{groupInfo.Remove.Path}/?index={setIndex}"
             });
 
             setIndex++;
@@ -46,7 +46,7 @@ public class AddAnotherFlowNodeLoader : IFlowNodeLoader
     {
         if (groupInfo.CheckAnswers is not null)
         {
-            return $"{groupInfo.CheckAnswers.Path}/?state={setIndex}";
+            return $"{groupInfo.CheckAnswers.Path}/?index={setIndex}";
         }
 
         return groupInfo.WorkingPages[0].Path;

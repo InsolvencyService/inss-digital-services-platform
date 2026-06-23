@@ -42,12 +42,12 @@ public sealed class Flowchart : IFlowchart
         SectionModel section, 
         PageModel page, 
         ContentPath refererPath, 
-        string? state)
+        Dictionary<string, string?> queryParams)
     {
         _logger.LoadingPage(page.Path, section.Title);
         
         FlowNode node = GetNode(page.LinkedToNode);
-        NodeId? nextNodeId = await LoadAndGetOptionalAltNodeAsync(node, form, section, page, state);
+        NodeId? nextNodeId = await LoadAndGetOptionalAltNodeAsync(node, form, section, page, queryParams);
         PageModel pageAssociatedToNode = page;
 
         // TODO: We might want to loop here but assume if not null we do one more level
@@ -178,12 +178,12 @@ public sealed class Flowchart : IFlowchart
         FormModel form, 
         SectionModel section, 
         PageModel page, 
-        string? state)
+        Dictionary<string, string?> queryParams)
     {
         IFlowNodeLoader loader = _serviceProvider.GetKeyedService<IFlowNodeLoader>(node.Id) ?? NoopFlowNodeLoader.Default;
         FlowNodeContext context = new()
         {
-            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page, State = state
+            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page, QueryParams = queryParams
         };
         return await loader.LoadAsync(context);
     }
