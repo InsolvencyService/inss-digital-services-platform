@@ -15,7 +15,7 @@ public sealed class CheckCaseReferenceModel : PageModel
     public override void CopyTo(PageModel target)
     {
         CheckCaseReferenceModel checkCaseReference = target.As<CheckCaseReferenceModel>();
-        checkCaseReference.CaseReference.Value = checkCaseReference.CaseReference.Value;
+        checkCaseReference.CaseReference.Value = CaseReference.Value;
     }
     
     public override string[] GetSummaryInfo()
