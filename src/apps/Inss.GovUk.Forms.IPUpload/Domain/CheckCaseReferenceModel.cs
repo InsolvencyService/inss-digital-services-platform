@@ -7,8 +7,8 @@ public sealed class CheckCaseReferenceModel : PageModel
 {
     public SingleLineText CaseReference { get; set; } = new()
     {
-        Label = "Whats the case reference number?",
-        Hint = "For example, �CN12345678�. This must match the case reference number in your form.",
+        Label = "Enter the 10 character case reference number",
+        Hint = "For example, 'CN12345678'. This must match the case reference number in your file upload.",
         LabelSize = LabelSizes.Large
     };
     
@@ -16,5 +16,10 @@ public sealed class CheckCaseReferenceModel : PageModel
     {
         CheckCaseReferenceModel checkCaseReference = target.As<CheckCaseReferenceModel>();
         checkCaseReference.CaseReference.Value = checkCaseReference.CaseReference.Value;
+    }
+    
+    public override string[] GetSummaryInfo()
+    {
+        return [CaseReference.Value];
     }
 }

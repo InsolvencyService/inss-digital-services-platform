@@ -36,7 +36,7 @@ public class EmployeeApiValidatorTests
             context.Errors, 
             employee, 
             _model.Header.CaseReference, 
-            CaseValidationInfo.CaseReferenceMismatch());
+            CaseValidationInfo.CaseReferenceMismatch(_model.Header.CaseReference));
     }
     
     [Fact]

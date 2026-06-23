@@ -8,7 +8,7 @@ public abstract class BaseValidator : IBaseValidator
     {
         if (actualCaseReference != caseReference)
         {
-            context.AddError(CaseValidationInfo.CaseReferenceMismatch(), caseReference);
+            context.AddError(CaseValidationInfo.CaseReferenceMismatch(actualCaseReference), caseReference);
         }
     }
 }

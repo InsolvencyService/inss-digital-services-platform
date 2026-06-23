@@ -36,7 +36,7 @@ public class EmployeeSpreadsheetValidatorTests
             context.Errors, 
             employee, 
             employee.Header.CaseReference, 
-            CaseValidationInfo.CaseReferenceMismatch());
+            CaseValidationInfo.CaseReferenceMismatch(employee.Header.CaseReference));
     }
 
     [Fact]

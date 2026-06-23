@@ -1,7 +1,6 @@
 using Demo.GovUk.Forms.Bankruptcy.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
-using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -28,7 +27,7 @@ public sealed class YourBankruptcyFlowchart : DefineFlowchartBuilder
             .WithValidator<BankruptcyDateFlowNodeValidator>()
             .Next()
             .AddEndNode(summaryId, summary.Path)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<BankruptcySummaryFlowNodeLoader>()
             .WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }

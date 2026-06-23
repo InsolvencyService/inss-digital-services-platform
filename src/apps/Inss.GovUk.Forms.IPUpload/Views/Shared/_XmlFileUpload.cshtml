@@ -3,7 +3,10 @@
 
 @{
   // Temp fix to handle back button pending a better solution using the flowchart
-  PagePropertiesProvider.PreviousPagePath = "/ip-upload/redundancy-payment/case-reference-match";
+  if (Model.ReturnUrl is null)
+  {
+    PagePropertiesProvider.PreviousPagePath = "/ip-upload/redundancy-payment/case-reference-match";
+  }
 }
 
 <h1 class="govuk-heading-l">

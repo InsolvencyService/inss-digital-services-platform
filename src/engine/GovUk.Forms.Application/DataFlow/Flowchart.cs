@@ -24,7 +24,7 @@ public sealed class Flowchart : IFlowchart
         _logger = logger;
     }
 
-    private FlowNode[] Nodes => _nodes.Select(n => n.Value).ToArray();
+    public FlowNode[] Nodes => _nodes.Select(n => n.Value).ToArray();
     
     public void AddNode(FlowNode node)
     {

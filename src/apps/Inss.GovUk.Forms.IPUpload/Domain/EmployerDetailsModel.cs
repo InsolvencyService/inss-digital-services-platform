@@ -12,7 +12,7 @@ public sealed class EmployerDetailsModel : PageModel
 
     public override string[] GetSummaryInfo()
     {
-        return [CaseReference, EmployerName];
+        return [EmployerName];
     }
 
     public override void CopyTo(PageModel target)

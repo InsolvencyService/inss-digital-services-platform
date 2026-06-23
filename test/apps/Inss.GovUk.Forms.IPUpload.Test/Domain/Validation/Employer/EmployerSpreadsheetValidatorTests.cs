@@ -30,7 +30,8 @@ public class EmployerSpreadsheetValidatorTests
         
         ValidatorContext context = _validator.Validate(_employerDetails);
 
-        EmployerSpreadsheetHelper.AssertError(context.Errors, CaseValidationInfo.CaseReferenceMismatch());
+        EmployerSpreadsheetHelper.AssertError(
+            context.Errors, CaseValidationInfo.CaseReferenceMismatch(_model.Header.CaseReference = "CN87654321"));
     }
     
     [Theory]

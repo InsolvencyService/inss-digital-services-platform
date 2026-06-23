@@ -30,7 +30,7 @@ public class EmployerApiValidatorTests
         
         ValidatorContext context = _validator.Validate(_employerDetails);
 
-        EmployerApiHelper.AssertError(context.Errors, CaseValidationInfo.CaseReferenceMismatch());
+        EmployerApiHelper.AssertError(context.Errors, CaseValidationInfo.CaseReferenceMismatch(_model.Header.CaseReference = "CN87654321"));
     }
     
     [Theory]

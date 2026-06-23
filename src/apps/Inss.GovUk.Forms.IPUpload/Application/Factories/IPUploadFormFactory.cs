@@ -20,7 +20,7 @@ public sealed class IPUploadFormFactory : IFormFactory
             .AddPage<XmlFileUploadModel>("Upload document", "upload-document", submitButtonText: "Continue")
             .AddPage<IPUploadXmlErrorsModel>("IP upload errors", "upload-errors", submitButtonText: "Continue")
             .AddPage<IPUploadXmlErrorDetailsModel>("IP upload error details", "upload-error-details")
-            .AddPage<SummaryModel>("Redundancy payment summary", "summary", question: "Check your answers before submitting the form", submitButtonText: "Submit", description: "Your form has passed initial validation.")
+            .AddPage<SummaryModel>("Redundancy payment summary", "summary", question: "Check your answers before submitting the form", submitButtonText: "Submit")
             .EndSection<PostSubmitModel>("Submitted", "submit-completed", submitButtonText: "Upload another form")
 
             .ValidateAndComplete();
