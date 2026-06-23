@@ -33,6 +33,9 @@ public static class Startup
         services.AddSingleton<ICosmosDbService>(_ =>
             new CosmosDbService(TestConfigReader.Settings.CosmosDb));
 
+        services.AddSingleton<INotifyService>(_ =>
+            new NotifyService(TestConfigReader.Settings.Notify));
+
         return services;
     }
 }

@@ -19,4 +19,8 @@ public sealed class DynamicsSubmission
     public ErrorInfo? ErrorInfo { get; set; }
     
     public DateTimeOffset SubmissionTimestamp { get; init; }
+    
+    public string? IPEmailReceipt { get; set; }
+    
+    public string? InternalEmailReceipt { get; set; }
 }

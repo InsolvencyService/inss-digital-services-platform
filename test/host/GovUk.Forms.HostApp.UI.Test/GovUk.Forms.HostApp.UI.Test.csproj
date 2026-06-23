@@ -8,6 +8,7 @@
     <PackageReference Include="Allure.Reqnroll" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="Expressium.LivingDoc.ReqnrollPlugin" />
+    <PackageReference Include="GovukNotify" />
     <PackageReference Include="Microsoft.Azure.Cosmos" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />

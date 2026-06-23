@@ -16,8 +16,8 @@ public partial class SubmissionConfirmationPage : BasePage, ISubmissionConfirmat
     private ILocator PageHeading => Page.GetByRole(AriaRole.Heading, new() { Name = DocumentSummaryLocators.Labels.ApplicationComplete });
     private ILocator ConfirmationPanel => Page.Locator(DocumentSummaryLocators.Selectors.ConfirmBodyCompleted);
     private ILocator UploadAnotherFormButton => Page.GetByRole(AriaRole.Button, new() { Name = DocumentSummaryLocators.Labels.UploadAnotherForm });
-    private ILocator WhatHappensNextHeading => Page.GetByRole(AriaRole.Heading, new() { Name = "What happens next" });
-    private ILocator WhatHappensNextParagraphs => Page.Locator("#main-content .govuk-body");
+    private ILocator WhatHappensNextHeading => Page.GetByRole(AriaRole.Heading, new() { Name = DocumentSummaryLocators.Labels.WhatHappensNext });
+    private ILocator WhatHappensNextParagraphs => Page.Locator(DocumentSummaryLocators.Selectors.MainContent);
 
     protected override async Task PageContentLoadedAsync()
     {
@@ -47,6 +47,18 @@ public partial class SubmissionConfirmationPage : BasePage, ISubmissionConfirmat
         await Expect(WhatHappensNextParagraphs.Nth(1))
             .ToHaveTextAsync(
                 "If your form has been rejected the email will contain the reason for the rejection.");
+    }
+
+    public async Task<string> GetReferenceNumberAsync()
+    {
+        await Page.WaitForLoadStateAsync(
+          LoadState.Load,
+          new() { Timeout = ScenarioConstant.ElementTimeout });
+
+        string panelText = await ConfirmationPanel.TextContentAsync() ?? string.Empty;
+        return panelText
+            .Replace(DocumentSummaryLocators.Labels.YourReferenceNumber, string.Empty)
+            .Trim();
     }
 
 }

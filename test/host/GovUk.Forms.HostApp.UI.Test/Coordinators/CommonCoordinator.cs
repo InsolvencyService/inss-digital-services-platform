@@ -50,10 +50,22 @@ public class CommonCoordinator(
         await uploadDocument.VerifyThatFileIsUploadedAsync();
     }
 
+    public async Task UploadAValidRP14AndVerifyAsync()
+    {
+        await uploadDocument.UploadValidRp14Async();
+        await uploadDocument.VerifyThatFileIsUploadedAsync();
+    }
+
     public async Task VerifySubmissionComfirmationPageIsDisplayedAsync()
     {
-        await UploadAValidRP14AAndVerifyAsync();
         await VerifyThatCheckYourAnswersPageIsDisplayedAsync();
+        await checkYourAnswers.ClickOnSubmitButtonAsync();
+        await submissionConfirmation.VerifySubmissionConfirmationPageIsDisplayedAsync();
+    }
+
+    public async Task VerifySubmissionConfirmationPageIsDisplayedForRp14Async()
+    {
+        await VerifyThatCheckYourAnswersPageIsDisplayedForRp14Async();
         await checkYourAnswers.ClickOnSubmitButtonAsync();
         await submissionConfirmation.VerifySubmissionConfirmationPageIsDisplayedAsync();
     }
@@ -61,6 +73,13 @@ public class CommonCoordinator(
     public async Task VerifyThatCheckYourAnswersPageIsDisplayedAsync()
     {
         await UploadAValidRP14AAndVerifyAsync();
+        await uploadDocument.NavigateToSubmitPageAsync();
+        await checkYourAnswers.VerifyCheckYourAnswersPageIsDisplayedAsync();
+    }
+
+    public async Task VerifyThatCheckYourAnswersPageIsDisplayedForRp14Async()
+    {
+        await UploadAValidRP14AndVerifyAsync();
         await uploadDocument.NavigateToSubmitPageAsync();
         await checkYourAnswers.VerifyCheckYourAnswersPageIsDisplayedAsync();
     }

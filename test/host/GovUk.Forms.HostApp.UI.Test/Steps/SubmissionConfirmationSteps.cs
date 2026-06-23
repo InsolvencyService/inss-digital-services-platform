@@ -27,6 +27,7 @@ public class SubmissionConfirmationSteps
         await _commonCoordinator.VerifySubmissionComfirmationPageIsDisplayedAsync();
     }
 
+
     [Given("I have selected Upload another form")]
     public async Task GivenIHaveSelectedUploadAnotherForm()
     {
@@ -35,12 +36,37 @@ public class SubmissionConfirmationSteps
         await ThenIWillBeTakenToTheDeclarationPage();
     }
 
+    [When("I agree to the declaration")]
     [Given("I have agreed to the declaration")]
     public async Task GivenIHaveAgreedToTheDeclaration()
     {
         await _declarationCoordinator.NavigateToUploadAFilePageAsync();
     }
 
+    [Then("I retrieve the second submission confirmation email")]
+    [Given("I retrieve the first submission confirmation email")]
+    [Given("I retrieve the submission confirmation email")]
+    public async Task GivenIRetrieveTheRP14ASubmissionConfirmationEmail()
+    {
+        await _submissionConfirmationCoordinator.RetrieveSubmissionConfirmationEmailAsync();
+    }
+
+    [Then("the second submission confirmation email contains the submitted details")]
+    [Given("the first submission confirmation email contains the submitted details")]
+    [Given("the submission confirmation email contains the submitted details")]
+    public async Task GivenTheSubmissionConfirmationEmailContainsTheSubmittedRP14ADetails()
+    {
+        await _submissionConfirmationCoordinator.VerifySubmissionConfirmationEmailContainsRP14ADetailsAsync();
+    }
+
+    [Then("the second submission confirmation email contains the submitted RP14 details")]
+    [Given("the first submission confirmation email contains the submitted RP14 details")]
+    public async Task GivenTheFirstSubmissionConfirmationEmailContainsTheSubmittedRPDetails()
+    {
+        await _submissionConfirmationCoordinator.VerifySubmissionConfirmationEmailContainsRP14DetailsAsync();
+    }
+
+    [When("I select Upload another form")]
     [When("I select to Upload another form")]
     public async Task WhenISelectToUploadAnotherForm()
     {
@@ -59,6 +85,7 @@ public class SubmissionConfirmationSteps
         await _declarationCoordinator.VerifyDeclarationPageIsDisplayedAsync();
     }
 
+    [Then("I should be able to submit the new RP14A form successfully")]
     [Then("I will be able to upload a new RP14A form")]
     public async Task ThenIWillBeAbleToUploadANewRPAForm()
     {
@@ -67,5 +94,31 @@ public class SubmissionConfirmationSteps
         await _submissionConfirmationCoordinator.VerifySubmissionConfirmationPageIsDisplayedAsync();
     }
 
+    [Given("I am on the RP14 submission confirmation page")]
+    public async Task GivenIAmOnTheRP14SubmissionConfirmationPage()
+    {
+        await _commonCoordinator.VerifySubmissionConfirmationPageIsDisplayedForRp14Async();
+    }
 
+    [Given("I have selected Upload another RP14 form")]
+    public async Task GivenIHaveSelectedUploadAnotherRP14Form()
+    {
+        await GivenIAmOnTheRP14SubmissionConfirmationPage();
+        await WhenISelectToUploadAnotherForm();
+        await ThenIWillBeTakenToTheDeclarationPage();
+    }
+
+    [When("I upload another RP14 form")]
+    public async Task WhenIUploadAnotherRP14Form()
+    {
+        await _commonCoordinator.VerifyThatCheckYourAnswersPageIsDisplayedForRp14Async();
+    }
+
+    [Then("I will be able to upload a new RP14 form")]
+    public async Task ThenIWillBeAbleToUploadANewRP14Form()
+    {
+        await _checkYourAnswersCoordinator.VerifyCheckYourAnswersPageIsDisplayedAsync();
+        await _checkYourAnswersCoordinator.ClickOnSubmitButtonAsync();
+        await _submissionConfirmationCoordinator.VerifySubmissionConfirmationPageIsDisplayedAsync();
+    }
 }

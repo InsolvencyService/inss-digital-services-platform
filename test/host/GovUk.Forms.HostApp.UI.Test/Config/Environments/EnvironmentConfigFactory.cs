@@ -45,7 +45,7 @@ public static class EnvironmentConfigFactory
             TestEnvironment.QA => new EnvQaConfig(),
             TestEnvironment.Dev => new EnvDevConfig(),
             TestEnvironment.SIT => new EnvSitConfig(),
-            TestEnvironment.Prod => new EnvProdConfig(),
+            TestEnvironment.PreProd => new EnvPredProdConfig(),
             _ => throw new ArgumentOutOfRangeException(nameof(environmentType),
                 $"Unsupported environment type: {environmentType}")
         };

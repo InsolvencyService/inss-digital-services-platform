@@ -9,4 +9,5 @@ internal sealed class NoOpCosmosDbService : ICosmosDbService
     public Task DeleteDynamicsByUserIdAsync(string userId) => Task.CompletedTask;
     public Task DeleteByReferenceAsync(string reference) => Task.CompletedTask;
     public Task<JsonElement[]> GetByReferenceAsync(string reference) => Task.FromResult(Array.Empty<JsonElement>());
+    public Task<string?> GetIpEmailReceiptAsync(string reference) => Task.FromResult<string?>(null);
 }

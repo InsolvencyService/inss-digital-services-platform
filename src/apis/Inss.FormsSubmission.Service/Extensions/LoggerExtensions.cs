@@ -43,4 +43,7 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 513, Level = LogLevel.Error, Message = "List of submissions errors for {Reference}: {Errors}")]
     public static partial void SubmissionFailedErrors(this ILogger logger, string reference, string errors);
+    
+    [LoggerMessage(EventId = 514, Level = LogLevel.Information, Message = "Updating submissions with the email receipt.")]
+    public static partial void UpdateSubmissionEmailReceipts(this ILogger logger);
 }
