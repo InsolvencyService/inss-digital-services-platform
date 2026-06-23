@@ -69,10 +69,10 @@ public class SectionModel : ContentModel
         if (currentPageNodeIndex > -1)
         {
             NodeId[] nodeIdsToReset = VisitedNodes.Skip(currentPageNodeIndex + 1).ToArray();
-                    
-            foreach (NodeId nodeId in nodeIdsToReset)
+            IEnumerable<PageModel> pagesToReset = nodeIdsToReset.Select(nodeId => Pages.First(p => p.LinkedToNode == nodeId));
+
+            foreach (PageModel resetPage in pagesToReset)
             {
-                PageModel resetPage = Pages.First(p => p.LinkedToNode == nodeId);
                 resetPage.ClearValues();
             }
                     
