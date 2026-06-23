@@ -4,5 +4,5 @@ namespace GovUk.Forms.Application.Services.Search;
 
 public interface ISearchService
 {
-    Task<SearchResult[]> SearchAsync(string searchText);
+    Task<SearchResult[]> SearchAsync(string searchText, int pageSize, int CurrentPageNumber);
 }

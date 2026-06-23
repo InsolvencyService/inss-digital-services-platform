@@ -1,44 +1,44 @@
-﻿using GovUk.Forms.Domain;
+﻿using GovUk.Forms.Application.Services.Search;
+using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using Microsoft.Extensions.Logging;
+using System.Reflection;
 using System.Text.Json;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
 
 public sealed class SearchFlowNodeLoader : IFlowNodeLoader
 {
-    //private readonly IConfiguration _configuration;
+    private readonly ISearchConfigProvider _findPersonConfig;
+    private readonly ILogger<SearchFlowNodeLoader> _logger;
 
-    //public SearchFlowNodeLoader(ISearchConfigProvider configuration)
-    //{
-    //    _configuration = configuration;
-    //}
+
+    public SearchFlowNodeLoader(ILogger<SearchFlowNodeLoader> logger, ISearchConfigProvider findPersonConfig)
+    {
+        _findPersonConfig = findPersonConfig;
+        _logger = logger;
+    }
 
     public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
         SearchModel search = context.CurrentPage.As<SearchModel>();
         search.CurrentResult = null;
 
-        // TODO: Handle result detail by setting it on the search model..
-        SearchModel searchConfig = LoadSearchConfig();
+        // Get configuration settings
+        SearchModel searchConfig = _findPersonConfig.LoadSearchConfig();
+
+        // Handle result detail by setting it on the search model..
         search.ResultColumns = searchConfig.ResultColumns;
-        
         search.PageSize = searchConfig.PageSize;
         search.DisplayAsTable = searchConfig.DisplayAsTable;
-        
+        search.HasNextPage = search.Results.Length == search.PageSize;
 
-        // Unable to set properties due to the init status on the property...
-        //SearchModel = new()
-        //{
-        //    DisplayAsTable = searchConfig.DisplayAsTable,
-        //    ResultColumns = searchConfig.ResultColumns,
-        //    PageSize = searchConfig.PageSize
-        //};
+        CheckAndLogConfiguratonFiles(search);
 
 
         if (context.State is not null)
         {
-            // Find result and set to search.CurrentResult
-           // search.DisplayAsTable = searchCon
+
         }
 
         // The context has a state with will be the Id for the result so you can find it and set the CurrentResult
@@ -46,28 +46,18 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
     }
 
 
-
-    //TODO : Maybe move this helper to a service class that can be injected into the loader.
-    private static SearchModel LoadSearchConfig()
+    private void CheckAndLogConfiguratonFiles(SearchModel search)
     {
-        // Load the search configuration from a JSON file or other source
-        string path = Path.Combine(
-            AppContext.BaseDirectory,
-            "App",
-            "Search",
-            "FindPersonConfig.json"); 
-
-        string json = File.ReadAllText(path);
-
-        SearchModel? searchConfig = JsonSerializer.Deserialize<SearchModel>(
-            json,
-            _jsonOptions);
-
-            return searchConfig ?? new SearchModel();
+        // Check if column are within the azure search - if not log warning.
+        foreach (SearchResult result in search.Results)
+        {
+            foreach (SearchResultColumn column in search.ResultColumns)
+            {
+                if (!result.Fields.ContainsKey(column.Name))
+                {
+                    _logger.LogWarning("Unable to find column  Azure search field '{FieldName}'.", column.Name);
+                }
+            }
+        }
     }
-
-    private static readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
 }

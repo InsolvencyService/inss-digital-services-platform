@@ -3,6 +3,7 @@ using GovUk.Forms.Domain;
 using GovUk.Forms.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Text.Json;
 
 namespace GovUk.Forms.Infrastructure.Services;
@@ -18,7 +19,7 @@ public sealed class SearchPersonService : ISearchService
         _options = options;
     }
 
-    public async Task<SearchResult[]> SearchAsync(string searchText)
+    public async Task<SearchResult[]> SearchAsync(string searchText, int pageSize, int CurrentPageNumber)
     {
         // TODO: Implement search logic
         if (string.IsNullOrEmpty(searchText))
@@ -26,13 +27,18 @@ public sealed class SearchPersonService : ISearchService
             return [];
         }
 
+        int skip = (CurrentPageNumber - 1) * pageSize;
+
         string url = $"{_options.Endpoint}/indexes/{_options.IndexName}/docs/search?api-version={_options.ApiVersion}";
         using HttpRequestMessage request = new(HttpMethod.Post, url);
         request.Headers.Add("api-key", _options.ApiKey);
         request.Content = JsonContent.Create(new
         {
             search = searchText,
-            top = 100
+            top = pageSize,
+            count = true,
+            skip
+
         });
 
         HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -56,6 +62,7 @@ public sealed class SearchPersonService : ISearchService
 
             results.Add(result);
         }
+
 
         return [.. results];
     }

@@ -1,6 +1,6 @@
 {
-  "PageSize": 10,
-  "DisplayAsTable": false,
+  "PageSize": 3,
+  "DisplayAsTable": true,
   "ResultColumns": [
     {
       "Name": "CaseNumber",
@@ -9,7 +9,7 @@
       "Css": "govuk-!-font-weight-bold"
     },
     {
-      "Name": "Title",
+      "Name": "Titlea",
       "Header": "Title",
       "Order": 2,
       "Css": ""

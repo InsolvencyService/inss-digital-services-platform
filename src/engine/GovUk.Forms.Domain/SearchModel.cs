@@ -12,6 +12,10 @@ public class SearchModel : PageModel
 
     public int PageSize { get; set; }
 
+    public int CurrentPageNumber { get; set; }
+
+    public bool HasNextPage { get; set; }
+
     public SearchResultColumn[] ResultColumns { get; set; } = [];
 
     public SearchResult[] Results { get; set; } = [];
@@ -24,7 +28,7 @@ public class SearchModel : PageModel
         ResultColumns = columns.ToArray();
     }
 
-   // public int Page { get; set; } = 1;
+
 
     // public List<SearchColumnOptions> Columns { get; set; } = new List<SearchColumnOptions>();
 

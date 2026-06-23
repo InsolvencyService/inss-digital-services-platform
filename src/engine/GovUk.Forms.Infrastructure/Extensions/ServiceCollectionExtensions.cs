@@ -1,6 +1,7 @@
 using Azure.Identity;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services.Search;
+using GovUk.Forms.Infrastructure.Helpers.SearchHelpers;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
@@ -39,7 +40,9 @@ public static class ServiceCollectionExtensions
                 return new TestFormStorageProvider();
             });
 
-            // services.Configure<SearchPersonOptions>(configuration.GetSection("SearchPerson"));
+
+            services.AddSingleton<ISearchConfigProvider, SearchConfigProvider>();
+
             SearchPersonOptions searchOptions = new();
             configuration
                 .GetSection("EIIRPersonSearch")
@@ -49,6 +52,7 @@ public static class ServiceCollectionExtensions
 
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             services.AddScoped<ISearchService, SearchPersonService>();
+
         
 
             return services;

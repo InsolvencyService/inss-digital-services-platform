@@ -27,41 +27,23 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
             return context.Nodes[0].Id;
         }
 
-        SearchResult[] results = await _searchService.SearchAsync(search.SearchText);
+        // Add the initial current page number, unable to retrieve it from the loader...
+        if (search.CurrentPageNumber < 1)
+        {
+            search.CurrentPageNumber = 1;
+        }
+
+
+        SearchResult[] results = await _searchService.SearchAsync(search.SearchText, search.PageSize, search.CurrentPageNumber);
 
         SearchModel pageSearch = context.Section.Pages.GetFirstOf<SearchModel>();
         pageSearch.SearchText = search.SearchText;
         pageSearch.ResultColumns = search.ResultColumns;
+        pageSearch.CurrentPageNumber = search.CurrentPageNumber;
+        pageSearch.PageSize = search.PageSize;
+
         pageSearch.Results = results;
 
         return context.Nodes[0].Id;
-
-
-
-        //foreach (PageModel page in context.Section.Pages)
-        //{
-        //    //SearchModel pageSearch = page.As<SearchModel>();
-
-        //    if (page is SearchModel pageSearch) { 
-
-        //    pageSearch.SearchText = search.SearchText;
-        //    pageSearch.ResultColumns = search.ResultColumns;
-        //    pageSearch.Results = results;
-        //    }
-        //}
-
-        // var searched = context.Section.As<SearchResult>();
-        //search.Results = results;
-
-        //search.ResultColumns ??= [];
-        //search.CopyTo(context.CurrentPage);
-
-        //if(results.Length >0)
-        //{
-        //    return context.Nodes[1].Id;
-        //}
-        //search.ResultColumns ??= [];
-        //return ValueTask.FromResult<NodeId?>(context.Nodes[0].Id).Result;
-        //return context.CurrentNode.Id;
     }
 }

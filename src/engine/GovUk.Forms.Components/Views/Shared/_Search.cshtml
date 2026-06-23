@@ -16,72 +16,73 @@ else if (Model.CurrentResult is not null)
 {
     
 }
+
 else if (Model.Results.Length > 0)
 {
 
-    @* Display list of result *@
-    if (Model.DisplayAsTable)
-    { 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
+        @* Display list of result *@
+        if (Model.DisplayAsTable)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
        
-                <table class="govuk-table">
-            <caption class="govuk-table__caption govuk-table__caption--m">
-                Search Result eIIR
-            </caption>
+                    <table class="govuk-table">
+                        <caption class="govuk-table__caption govuk-table__caption--m">
+                            Search Result eIIR
+                        </caption>
  
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
 
-                @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
-                {
+                                @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+                                {
                   
-                        <th scope="col" class="govuk-table__header">
-                            @column.Header
-                        </th>
-                }
-                <th scope="col" class="govuk-table__header"> </th>
-                </tr>
-            </thead> 
+                                    <th scope="col" class="govuk-table__header">
+                                        @column.Header
+                                    </th>
+                                }
+                                <th scope="col" class="govuk-table__header"> </th>
+                            </tr>
+                        </thead>
              
-            <tbody class="govuk-table__body">
-                @foreach (var row in Model.Results.Take(Model.PageSize))
-                {
-                    <tr class="govuk-table__row">
-                       
-                        @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
-                        {
-                            string value = string.Empty;
-                            if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
+                        <tbody class="govuk-table__body">
+                            @foreach (var row in Model.Results)
                             {
-                                value = fieldValue ?? string.Empty;
+                                <tr class="govuk-table__row">
+                       
+                                    @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+                                    {
+                                        string value = string.Empty;
+                                        if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
+                                        {
+                                            value = fieldValue ?? string.Empty;
+                                        }
+
+                                        <td class="govuk-table__cell @column.Css">
+                                            @value
+                                        </td>
+                                    }
+
+                                    <td class="govuk-table__cell">
+                                        <a href="#" class="govuk-link"> Select </a>
+                                    </td>
+                                </tr>
                             }
-
-                            <td class="govuk-table__cell @column.Css">
-                                @value
-                            </td>
-                        }
-
-                        <td class="govuk-table__cell">
-                            <a href="#" class="govuk-link"> Select </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-            </table>
+                        </tbody>
+                    </table>
             
+                </div>
             </div>
-       </div>
         }
     
-    else
-    {
-        <h1 class="govuk-summary-card__title">
-            List of eIIR Results
-        </h1>
-        <br/>
+        else
+        {
+            <h1 class="govuk-summary-card__title">
+                List of eIIR Results
+            </h1>
+            <br />
             <ul class="govuk-list">
-                @foreach (var row in Model.Results.Take(Model.PageSize))
+                @foreach (var row in Model.Results)
                 {
                     <li class="govuk-!-margin-bottom-6">
                         <div class="govuk-summary-card">
@@ -131,8 +132,40 @@ else if (Model.Results.Length > 0)
                         </div>
                     </li>
                 }
-            </ul>        
+            </ul>
+        }
+
+    @if (Model.Results.Length > 0)
+    {
+       
+
+        <nav class="govuk-pagination" role="navigation" aria-label="Pagination">
+            @if (Model.CurrentPageNumber > 1)
+            {
+                <div class="govuk-pagination__prev">
+                    <button type="submit" 
+                            name="CurrentPageNumber"
+                        value="@(Model.CurrentPageNumber - 1)" 
+                        class="govuk-button govuk-button__secondary">
+                        Previous
+                    </button>
+                </div>
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <div class="govuk-pagination__next">
+                    <button type="submit" 
+                            name="CurrentPageNumber"
+                        value="@(Model.CurrentPageNumber + 1)" 
+                        class="govuk-button govuk-button__secondary">
+                        Next
+                    </button>
+                </div>
+            }
+        </nav>
     }
+
 }
 else
 {
@@ -140,3 +173,6 @@ else
     <p class="govuk-body">No results found.</p>
     
 }
+
+<input type="hidden" name="SearchText" value="@Model.SearchText" />
+<input type="hidden" name="PageSize" value="@Model.PageSize" />
