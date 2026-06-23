@@ -44,7 +44,7 @@ public sealed class ContactUsFlowchart : DefineFlowchartBuilder
             .WithExecutor<AddAnotherRemoveFlowNodeExecutor>()
             .Next()
             .AddEndNode(summaryId, summary.Path)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<ContactUsSummaryFlowNodeLoader>()
             .WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }

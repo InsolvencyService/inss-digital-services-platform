@@ -1,3 +1,4 @@
+using Demo.GovUk.Forms.Business.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
@@ -17,7 +18,7 @@ public sealed class YourEmployeesFlowchart : DefineFlowchartBuilder
         NodeId checkDetailsId = "CheckEmployeeDetails";
         NodeId addAnotherId = "AddAnotherEmployee";
         NodeId removeId = "RemoveEmployee";
-        NodeId summaryId = "Summary";
+        NodeId summaryId = "CreditorAndDebtorSummary";
             
         FormModel form = GetForm(services);
         SectionModel section = form.Sections["Employee Details"];
@@ -49,7 +50,7 @@ public sealed class YourEmployeesFlowchart : DefineFlowchartBuilder
             .WithExecutor<AddAnotherRemoveFlowNodeExecutor>()
             .Next()
             .AddEndNode(summaryId, summary.Path)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<EmployeeDetailsSummaryFlowNodeLoader>()
             .WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }

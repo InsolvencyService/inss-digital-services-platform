@@ -1,9 +1,7 @@
 ﻿using Inss.Common.IPUpload.Employee.Spreadsheet;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
-using NSubstitute;
 using System.Globalization;
 using Xunit;
 
@@ -12,78 +10,42 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Validation.Employee;
 public class EmployeeSpreadsheetValidatorTests
 {
     private readonly EmployeeSpreadsheetValidator _validator;
-    private readonly ICaseReferenceService _caseReferenceService;
+    private readonly EmployerDetailsModel _employerDetails;
     private readonly RP14A _model;
 
     public EmployeeSpreadsheetValidatorTests()
     {
-        _caseReferenceService = Substitute.For<ICaseReferenceService>();
         _model = EmployeeSpreadsheetHelper.CreateModel();
-        _caseReferenceService.GetCaseDetailsAsync(_model.Employee[0].Header.CaseReference)
-        .Returns(new CaseDetailModel
-                {
-                    CaseReference = _model.Employee[0].Header.CaseReference,
-                    CompanyName = "Test Company"
-                });
-        _validator = new EmployeeSpreadsheetValidator(_model, _caseReferenceService);
+        _employerDetails = new EmployerDetailsModel
+        {
+            CaseReference = _model.Employee[0].Header.CaseReference,
+            EmployerName = "Test Company"
+        };
+        _validator = new EmployeeSpreadsheetValidator(_model);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    public async Task MissingCaseRef_ValidateAsync_ReturnsError(string? caseRef)
+    [Fact]
+    public void MismatchCaseRef_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
-        employee.Header.CaseReference = caseRef;
+        employee.Header.CaseReference = "CN87654321";
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
             employee, 
             employee.Header.CaseReference, 
-            CaseValidationInfo.MissingCaseReference());
-    }
-    
-    [Fact]
-    public async Task InvalidLengthCaseRef_ValidateAsync_ReturnsError()
-    {
-        RP14AEmployee employee = _model.Employee[0];
-        employee.Header.CaseReference = "CN123456789";
-        
-        ValidatorContext context = await _validator.ValidateAsync();
-
-        EmployeeSpreadsheetHelper.AssertError(
-            context.Errors, 
-            employee, 
-            employee.Header.CaseReference, 
-            CaseValidationInfo.InvalidCaseReferenceLength());
+            CaseValidationInfo.CaseReferenceMismatch(employee.Header.CaseReference));
     }
 
     [Fact]
-    public async Task UnknownCaseRef_ValidateAsync_ReturnsError()
-    {
-        // Arrange
-        RP14AEmployee employee = _model.Employee[0];
-
-        _caseReferenceService.GetCaseDetailsAsync(employee.Header.CaseReference).Returns(Task.FromResult<CaseDetailModel?>(null));
-
-        // Act
-        ValidatorContext context = await _validator.ValidateAsync();
-
-        // Assert
-        Assert.NotNull(context);
-        Assert.NotNull(context.Errors);
-    }
-
-    [Fact]
-    public async Task InvalidAverageHoursWorked_ValidateAsync_ReturnsError()
+    public void InvalidAverageHoursWorked_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.AverageHoursWorked = 37.55M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -93,12 +55,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmployerName_ValidateAsync_ReturnsError()
+    public void InvalidEmployerName_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.EmployerName = new string('X', 100);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -111,12 +73,12 @@ public class EmployeeSpreadsheetValidatorTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public async Task MissingEmployeeSurname_ValidateAsync_ReturnsError(string? surname)
+    public void MissingEmployeeSurname_ValidateAsync_ReturnsError(string? surname)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.EmployeeName.Surname = surname;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -126,12 +88,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmployeeSurname_ValidateAsync_ReturnsError()
+    public void InvalidEmployeeSurname_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.EmployeeName.Surname = new string('X', 100);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -144,12 +106,12 @@ public class EmployeeSpreadsheetValidatorTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public async Task MissingEmployeeNino_ValidateAsync_ReturnsError(string? nino)
+    public void MissingEmployeeNino_ValidateAsync_ReturnsError(string? nino)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.NINO = nino;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -163,12 +125,12 @@ public class EmployeeSpreadsheetValidatorTests
     [InlineData("ABC112233G")] // Preceding chars - no spaces
     [InlineData("AB 11 22 33 GH")] // Trailing chars
     [InlineData("AB112233GH")] // Trailing chars - no spaces
-    public async Task InvalidEmployeeNino_ValidateAsync_ReturnsError(string? nino)
+    public void InvalidEmployeeNino_ValidateAsync_ReturnsError(string? nino)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.NINO = nino;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -178,12 +140,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidMoneyOwedToEmployer_ValidateAsync_ReturnsError()
+    public void InvalidMoneyOwedToEmployer_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.MoneyOwedToEmployer = 300.123M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -193,13 +155,13 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmploymentDates_ValidateAsync_ReturnsError()
+    public void InvalidEmploymentDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
         employee.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -209,12 +171,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmployeeBasicPay_ValidateAsync_ReturnsError()
+    public void InvalidEmployeeBasicPay_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.PayDetails.BasicPayPerWeek = 250.123M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -224,13 +186,13 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidAOPOwed_ValidateAsync_ReturnsError()
+    public void InvalidAOPOwed_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1 aop = employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod1;
         aop.AOPOwed1 = 250.123M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -240,14 +202,14 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidAOPDates_ValidateAsync_ReturnsError()
+    public void InvalidAOPDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeePayDetailsArrearsOfPayArrearsOfPayPeriod1 aop = employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod1;
         aop.AOP1StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
         aop.AOP1EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -257,12 +219,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayEntitlement_ValidateAsync_ReturnsError()
+    public void InvalidHolidayEntitlement_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayContractedEntitlementDays = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -274,12 +236,12 @@ public class EmployeeSpreadsheetValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayEntitlementRange_ValidateAsync_ReturnsError(decimal entitlement)
+    public void InvalidHolidayEntitlementRange_ValidateAsync_ReturnsError(decimal entitlement)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayContractedEntitlementDays = entitlement;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -289,12 +251,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayCarriedForward_ValidateAsync_ReturnsError()
+    public void InvalidHolidayCarriedForward_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysCarriedForward = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -306,12 +268,12 @@ public class EmployeeSpreadsheetValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayCarriedForwardRange_ValidateAsync_ReturnsError(decimal carriedForward)
+    public void InvalidHolidayCarriedForwardRange_ValidateAsync_ReturnsError(decimal carriedForward)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysCarriedForward = carriedForward;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -321,12 +283,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayDaysTaken_ValidateAsync_ReturnsError()
+    public void InvalidHolidayDaysTaken_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysTaken = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -338,12 +300,12 @@ public class EmployeeSpreadsheetValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayDaysTakenRange_ValidateAsync_ReturnsError(decimal daysTaken)
+    public void InvalidHolidayDaysTakenRange_ValidateAsync_ReturnsError(decimal daysTaken)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysTaken = daysTaken;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -353,12 +315,12 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayDaysOwed_ValidateAsync_ReturnsError()
+    public void InvalidHolidayDaysOwed_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.NoDaysHolidayOwed = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -370,12 +332,12 @@ public class EmployeeSpreadsheetValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayDaysOwedRange_ValidateAsync_ReturnsError(decimal daysOwed)
+    public void InvalidHolidayDaysOwedRange_ValidateAsync_ReturnsError(decimal daysOwed)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.NoDaysHolidayOwed = daysOwed;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -385,14 +347,14 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayNotPaidDates_ValidateAsync_ReturnsError()
+    public void InvalidHolidayNotPaidDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeeHolidayHolidayNotPaidHoliday1 holidayNotPaid = employee.Holiday.HolidayNotPaid.Holiday1;
         holidayNotPaid.Holiday1StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
         holidayNotPaid.Holiday1EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeSpreadsheetHelper.AssertError(
             context.Errors, 
@@ -402,9 +364,9 @@ public class EmployeeSpreadsheetValidatorTests
     }
     
     [Fact]
-    public async Task ValidModel_ValidateAsync_ReturnsNoErrors()
+    public void ValidModel_ValidateAsync_ReturnsNoErrors()
     {
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         Assert.NotNull(context.Errors);
     }

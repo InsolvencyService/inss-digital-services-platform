@@ -25,12 +25,14 @@ public class FileUploadFlowNodeExecutorTests
     [Fact]
     public async Task NoErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
-        IBaseValidator validator = Substitute.For<IBaseValidator>();
-        validator.ValidateAsync().Returns(new EmployeeValidatorContext());
-        _validationFactory.Create(Arg.Any<object>()).Returns(validator);
         FormModel form = TestFormModels.CreateWithIPUploadSection();
         SectionModel ipUploadSection = form.Sections["IP Upload"];
+        EmployerDetailsModel employerDetails = ipUploadSection.Pages.GetFirstOf<EmployerDetailsModel>();
         XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
+        IBaseValidator validator = Substitute.For<IBaseValidator>();
+        validator.Validate(employerDetails).Returns(new EmployeeValidatorContext());
+        _validationFactory.Create(Arg.Any<object>()).Returns(validator);
+        
         FlowNode node = new() { Id = "NodeId1", PagePath = ipUpload.Path, NextNodes = ["NodeId2", "NodeId3"] };
         FlowNodeContext context = new()
         {
@@ -50,14 +52,15 @@ public class FileUploadFlowNodeExecutorTests
     [Fact]
     public async Task WithErrors_ExecuteAsync_ReturnsSummaryNodeId()
     {
+        FormModel form = TestFormModels.CreateWithIPUploadSection();
+        SectionModel ipUploadSection = form.Sections["IP Upload"];
+        EmployerDetailsModel employerDetails = ipUploadSection.Pages.GetFirstOf<EmployerDetailsModel>();
+        XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
         IBaseValidator validator = Substitute.For<IBaseValidator>();
         var validatorContext = new EmployeeValidatorContext();
         validatorContext.AddError(new ValidationInfo(), "Error");
-        validator.ValidateAsync().Returns(validatorContext);
+        validator.Validate(employerDetails).Returns(validatorContext);
         _validationFactory.Create(Arg.Any<object>()).Returns(validator);
-        FormModel form = TestFormModels.CreateWithIPUploadSection();
-        SectionModel ipUploadSection = form.Sections["IP Upload"];
-        XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
         FlowNode node = new() { Id = "NodeId1", PagePath = ipUpload.Path, NextNodes = ["NodeId2", "NodeId3"] };
         FlowNodeContext context = new()
         {

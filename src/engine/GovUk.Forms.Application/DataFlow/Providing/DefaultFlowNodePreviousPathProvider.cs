@@ -1,5 +1,4 @@
 ﻿using GovUk.Forms.Application.Providers;
-using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 
 namespace GovUk.Forms.Application.DataFlow.Providing;
@@ -16,18 +15,12 @@ public class DefaultFlowNodePreviousPathProvider : IFlowNodePreviousPathProvider
     
     public virtual ValueTask UpdateAsync(FlowNodeContext context)
     {
-        // Special case: If referer is the summary page then set to summary path so we return there
-        if (context.RefererPath is not null && context.RefererPath != EmptyPath)
+        if (context.CurrentPage.ReturnUrl is not null)
         {
-            PageModel? refererPage = context.Section.Pages.FindPage(context.RefererPath);
-
-            if (refererPage is SummaryModel)
-            {
-                _pagePropertiesProvider.PreviousPagePath = refererPage.Path;
-                return ValueTask.CompletedTask;
-            }
+            _pagePropertiesProvider.PreviousPagePath = context.CurrentPage.ReturnUrl;
+            return ValueTask.CompletedTask;
         }
-
+        
         // Get the node before the current node from the section
         if (context.Section.VisitedNodes.Length > 0)
         {

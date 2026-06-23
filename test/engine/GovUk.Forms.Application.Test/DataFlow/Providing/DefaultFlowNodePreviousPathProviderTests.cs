@@ -18,30 +18,6 @@ public class DefaultFlowNodePreviousPathProviderTests
         _pagePropertiesProvider = Substitute.For<IPagePropertiesProvider>();
         _provider = new DefaultFlowNodePreviousPathProvider(_pagePropertiesProvider);
     }
-
-    [Fact]
-    public async Task RefererIsSummary_UpdateAsync_SetsProviderPreviousPathToSummaryPage()
-    {
-        FormModel form = TestFormModels.CreateWithYourDetailsSection();
-        SectionModel section = form.Sections[0];
-        SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
-        FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();
-        FlowNode fullNameNode = new() { Id = "FullNameId", PagePath = fullName.Path };
-        FlowNode summaryNode = new() { Id = "SummaryId", PagePath = summary.Path };
-        FlowNodeContext context = new()
-        {
-            Nodes = [fullNameNode, summaryNode],
-            CurrentNode = fullNameNode,
-            Form = form,
-            Section = section,
-            CurrentPage = fullName,
-            RefererPath = summary.Path
-        };
-
-        await _provider.UpdateAsync(context);
-        
-        Assert.Equal(summary.Path, _pagePropertiesProvider.PreviousPagePath);
-    }
      
     [Fact]
     public async Task RefererIsFullName_UpdateAsync_SetsProviderPreviousPathToFullName()

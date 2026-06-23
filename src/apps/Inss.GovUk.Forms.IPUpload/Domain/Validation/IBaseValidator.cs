@@ -2,5 +2,5 @@
 
 public interface IBaseValidator
 {
-    Task<ValidatorContext> ValidateAsync();
+    ValidatorContext Validate(EmployerDetailsModel employerDetails);
 }

@@ -1,40 +1,59 @@
 ﻿@model EmployerDetailsModel
+@inject IPagePropertiesProvider PagePropertiesProvider
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Employer details</h1>
+@{
+    // Temp fix to handle back button pending a better solution using the flowchart
+    if (Model.ReturnUrl is null)
+    {
+        PagePropertiesProvider.PreviousPagePath = "/ip-upload/redundancy-payment/check-case-reference";
+    }
+}
 
-        <p class="govuk-body">We have matched to the following employer:</p>
-        <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Case reference number
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.CaseRefNum
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Employer name
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.EmployerName
-                </dd>
-            </div>
-        </dl>
-</div>
-</div>
+@{
+    Dictionary<string, string?> inLineOptions = new()
+    {
+        { "class", "govuk-radios--inline" }
+    };
+}
 
-<govuk-radios for="@Model.YesorNoItem" orientation="Horizontal">
+@* Required as we only display the values but need to be persisted *@
+@Html.HiddenFor(m => m.CaseReference)
+@Html.HiddenFor(m => m.EmployerName)
+
+<h1 class="govuk-heading-l">Employer details</h1>
+
+<p class="govuk-body">We have matched to the following employer:</p>
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Case reference number
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.CaseReference
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Employer name
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.EmployerName
+        </dd>
+    </div>
+</dl>
+
+<govuk-radios for="@Model.DetailsMatch" radios-attributes="@inLineOptions">
     <govuk-radios-fieldset>
-        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
-            @(Model.MetaData.Question ?? "Is this the correct employer name?")
+        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--m">
+            Is this the correct employer name?
         </govuk-radios-fieldset-legend>
         <govuk-radios-hint>
-            @(Model.MetaData.Hint ?? "This case reference number you have provided matches with this employer in our system.")
+            This case reference number you have provided matches with this employer in our system.
         </govuk-radios-hint>
         <govuk-radios-item value="true">Yes</govuk-radios-item>
         <govuk-radios-item value="false">No</govuk-radios-item>
     </govuk-radios-fieldset>
 </govuk-radios>
+
+
+

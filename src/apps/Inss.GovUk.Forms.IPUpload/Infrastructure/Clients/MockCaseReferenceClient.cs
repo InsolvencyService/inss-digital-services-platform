@@ -7,10 +7,6 @@ namespace Inss.GovUk.Forms.IPUpload.Infrastructure.Clients;
 
 public sealed class MockCaseReferenceClient : ICaseReferenceClient
 {
-    public MockCaseReferenceClient(HttpClient client)
-    {
-    }
-    
     public Task<CaseDetailModel?> LookupCaseDetails(string caseReference)
     {
         const string unknownCaseReference = "CN12345678";

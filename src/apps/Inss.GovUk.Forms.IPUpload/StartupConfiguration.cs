@@ -40,15 +40,8 @@ public class StartupConfiguration : IHostingStartup
 
             if (context.HostingEnvironment.IsDevelopment())
             {
-                services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
-                    {
-                        client.BaseAddress = new Uri(dynamicsOptions.Url);
-                    });
-
-                services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
-                    {
-                        client.BaseAddress = new Uri(submissionOptions.Url);
-                    });
+                services.AddSingleton<ICaseReferenceClient, MockCaseReferenceClient>();
+                services.AddSingleton<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>();
             }
             else
             {

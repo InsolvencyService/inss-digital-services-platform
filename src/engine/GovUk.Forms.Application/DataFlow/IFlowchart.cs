@@ -6,6 +6,7 @@ namespace GovUk.Forms.Application.DataFlow;
 
 public interface IFlowchart
 {
+    FlowNode[] Nodes { get; }
     void AddNode(FlowNode node);
     ValueTask<ContentPath> PreProcessAsync(FormModel form, SectionModel section, PageModel page, ContentPath refererPath, string? state);
     ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page);

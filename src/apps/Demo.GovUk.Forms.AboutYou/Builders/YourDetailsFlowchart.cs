@@ -2,7 +2,6 @@ using Demo.GovUk.Forms.AboutYou.Application.DataFlow;
 using Demo.GovUk.Forms.AboutYou.Domain;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
-using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -60,7 +59,7 @@ public sealed class YourDetailsFlowchart : DefineFlowchartBuilder
             .AddTransitionNode(homeValueId, homeValue.Path, summaryId)
             .Next()
             .AddEndNode(summaryId, summary.Path)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<AboutYouSummaryFlowNodeLoader>()
             .WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }
