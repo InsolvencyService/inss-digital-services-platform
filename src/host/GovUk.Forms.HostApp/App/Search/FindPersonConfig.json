@@ -1,5 +1,5 @@
 {
-  "PageSize": 3,
+  "PageSize": 5,
   "DisplayAsTable": true,
   "ResultColumns": [
     {
@@ -9,7 +9,7 @@
       "Css": "govuk-!-font-weight-bold"
     },
     {
-      "Name": "Titlea",
+      "Name": "Title",
       "Header": "Title",
       "Order": 2,
       "Css": ""

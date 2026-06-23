@@ -6,14 +6,14 @@ namespace GovUk.Forms.Infrastructure.Helpers.SearchHelpers;
 
 public sealed class SearchConfigProvider : ISearchConfigProvider
 {
-    public SearchModel LoadSearchConfig()
+    public SearchModel LoadConfig(string filename)
     {
         // Load the search configuration from a JSON file or other source
         string path = Path.Combine(
             AppContext.BaseDirectory,
             "App",
             "Search",
-            "FindPersonConfig.json");
+            filename);
 
         string json = File.ReadAllText(path);
 

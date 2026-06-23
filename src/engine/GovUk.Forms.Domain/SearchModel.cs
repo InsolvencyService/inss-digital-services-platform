@@ -28,8 +28,6 @@ public class SearchModel : PageModel
         ResultColumns = columns.ToArray();
     }
 
-
-
     // public List<SearchColumnOptions> Columns { get; set; } = new List<SearchColumnOptions>();
 
     public override string[] GetSummaryInfo()

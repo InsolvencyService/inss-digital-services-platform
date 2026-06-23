@@ -13,7 +13,7 @@ public sealed class SearchPersonService : ISearchService
     private readonly HttpClient _httpClient;
     private readonly SearchPersonOptions _options;
 
-    public SearchPersonService(HttpClient httpClient, SearchPersonOptions options)// IOptions<SearchPersonOptions> options)
+    public SearchPersonService(HttpClient httpClient, SearchPersonOptions options)
     {
         _httpClient = httpClient;
         _options = options;
@@ -21,7 +21,6 @@ public sealed class SearchPersonService : ISearchService
 
     public async Task<SearchResult[]> SearchAsync(string searchText, int pageSize, int CurrentPageNumber)
     {
-        // TODO: Implement search logic
         if (string.IsNullOrEmpty(searchText))
         {
             return [];

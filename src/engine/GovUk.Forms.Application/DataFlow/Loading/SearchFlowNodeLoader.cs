@@ -9,13 +9,13 @@ namespace GovUk.Forms.Application.DataFlow.Loading;
 
 public sealed class SearchFlowNodeLoader : IFlowNodeLoader
 {
-    private readonly ISearchConfigProvider _findPersonConfig;
+    private readonly ISearchConfigProvider _configSettings;
     private readonly ILogger<SearchFlowNodeLoader> _logger;
 
 
-    public SearchFlowNodeLoader(ILogger<SearchFlowNodeLoader> logger, ISearchConfigProvider findPersonConfig)
+    public SearchFlowNodeLoader(ILogger<SearchFlowNodeLoader> logger, ISearchConfigProvider configSettings)
     {
-        _findPersonConfig = findPersonConfig;
+        _configSettings = configSettings;
         _logger = logger;
     }
 
@@ -25,7 +25,7 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         search.CurrentResult = null;
 
         // Get configuration settings
-        SearchModel searchConfig = _findPersonConfig.LoadSearchConfig();
+        SearchModel searchConfig = _configSettings.LoadConfig("FindPersonConfig.json");
 
         // Handle result detail by setting it on the search model..
         search.ResultColumns = searchConfig.ResultColumns;
