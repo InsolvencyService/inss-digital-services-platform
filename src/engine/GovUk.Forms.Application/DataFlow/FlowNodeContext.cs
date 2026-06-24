@@ -16,6 +16,8 @@ public sealed class FlowNodeContext
     
     public PageModel CurrentPage { get; init; }
     
+    public PageModel? PageBeforeChanges { get; init; }
+    
     public string? State { get; init; }
 
     public ContentPath? RefererPath { get; init; }

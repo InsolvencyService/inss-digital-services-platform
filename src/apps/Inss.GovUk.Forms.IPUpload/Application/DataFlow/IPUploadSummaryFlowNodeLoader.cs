@@ -19,7 +19,7 @@ public sealed class IPUploadSummaryFlowNodeLoader : SummaryFlowNodeLoader
         
         List<SummaryCategoryDetail> details = [];
         
-        AppendSummaryDetail(details, "What is your case reference number?", [employerDetails.CaseReference], caseReference.Path);
+        AppendSummaryDetail(details, "Enter the 10 character case reference number", [employerDetails.CaseReference], caseReference.Path);
         AppendSummaryDetail(details, "Employer name", [employerDetails.EmployerName]);
         AppendSummaryDetail(details, "Is this the correct employer name?", [employerDetails.DetailsMatch ? "Yes" : "No"]);
         

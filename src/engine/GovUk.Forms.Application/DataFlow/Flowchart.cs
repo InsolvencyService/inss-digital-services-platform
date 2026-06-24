@@ -88,9 +88,10 @@ public sealed class Flowchart : IFlowchart
         section.Track(node.Id);
         
         PageModel targetPage = section.Pages.GetPage(page.Path);
+        PageModel pageBeforeChanges = targetPage.Clone();
         CopyPageData(page, targetPage);
         
-        NodeId? nextNodeId = await GetNextNodeForUpdatedPageAsync(node, page, form, section);
+        NodeId? nextNodeId = await GetNextNodeForUpdatedPageAsync(node, page, pageBeforeChanges, form, section);
 
         // If this is the first visit then we just set the link to the next node, otherwise we need to determine if the data entered
         // has changed the route to go down. If it has then we reset downstream page. If not then we can return to the previous page
@@ -188,13 +189,19 @@ public sealed class Flowchart : IFlowchart
     private async ValueTask<NodeId?> GetNextNodeForUpdatedPageAsync(
         FlowNode node, 
         PageModel updatedPage, 
+        PageModel pageBeforeChanges,
         FormModel form, 
         SectionModel section)
     {
         IFlowNodeExecutor executor = _serviceProvider.GetKeyedService<IFlowNodeExecutor>(node.Id) ?? NoopFlowNodeExecutor.Default;
         FlowNodeContext context = new()
         {
-            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = updatedPage
+            Nodes = Nodes, 
+            CurrentNode = node, 
+            Form = form, 
+            Section = section, 
+            CurrentPage = updatedPage, 
+            PageBeforeChanges = pageBeforeChanges
         };
         return await executor.ExecuteAsync(context);
     }
