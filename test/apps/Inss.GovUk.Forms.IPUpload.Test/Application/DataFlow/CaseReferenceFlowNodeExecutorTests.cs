@@ -129,7 +129,8 @@ public class CaseReferenceFlowNodeExecutorTests
             CurrentNode = currentNode,
             Form = _form,
             Section = _section,
-            CurrentPage = currentPage
+            CurrentPage = currentPage,
+            PageBeforeChanges = _section.Pages.GetPage(currentPage.Path)
         };
     }
 }
