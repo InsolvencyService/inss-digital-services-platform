@@ -1,8 +1,10 @@
 ﻿@inject IOptions<AnalyticsOptions> Analytics;
-@inject IPagePropertiesProvider PagePropertiesProvider; 
+@inject IPagePropertiesProvider PagePropertiesProvider;
+
 @{
     // ReSharper disable once Razor.LayoutNotResolved
     Layout = "_GovUkPageTemplate";
+    ViewData["Title"] = PagePropertiesProvider.PageTitle;
 }
 
 @* ReSharper disable once Razor.SectionNotResolved *@

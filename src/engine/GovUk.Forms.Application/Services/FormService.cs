@@ -33,6 +33,7 @@ public sealed class FormService : IFormService
 
             if (content is PageModel page)
             {
+                _pagePropertiesProvider.PageTitle = page.Title;
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
                 ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, refererPath, state);
