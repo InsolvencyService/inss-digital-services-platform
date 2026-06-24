@@ -8,8 +8,6 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
 
 public class FileUploadFlowNodeLoaderTests
 {
-    private const string? NoState = null;
-    
     [Fact]
     public async Task LoadingFileUploadIfDeclarationNotAccepted_LoadAsync_ThrowsException()
     {
@@ -25,8 +23,7 @@ public class FileUploadFlowNodeLoaderTests
             CurrentNode = node,
             Form = form,
             Section = ipUploadSection,
-            CurrentPage = declaration,
-            State = NoState
+            CurrentPage = declaration
         };
         
         InvalidOperationException exception = await Assert.ThrowsAsync<InvalidOperationException>(
@@ -53,8 +50,7 @@ public class FileUploadFlowNodeLoaderTests
                 CurrentNode = node,
                 Form = form,
                 Section = ipUploadSection,
-                CurrentPage = declaration,
-                State = NoState
+                CurrentPage = declaration
             };
             await loader.LoadAsync(context);
         }

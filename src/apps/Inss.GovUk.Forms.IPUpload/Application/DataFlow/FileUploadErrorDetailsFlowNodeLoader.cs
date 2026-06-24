@@ -18,14 +18,16 @@ public sealed class FileUploadErrorDetailsFlowNodeLoader : IFlowNodeLoader
     
     public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
-        if (context.State is null)
+        string? errorId = context.GetQueryParam<string?>("errorId");
+        
+        if (errorId is null)
         {
-            throw new IPUploadException("Unable to load the IP upload error details as the state is unset.");
+            throw new IPUploadException("Unable to load the IP upload error details as the error Id is unset.");
         }
 
         IPUploadXmlErrorsModel fileUploadErrors = context.Section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         IPUploadXmlErrorDetailsModel fileUploadErrorDetails = context.Section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
-        fileUploadErrorDetails.CurrentErrorDetail = fileUploadErrors.GetPropertyErrors(context.State);
+        fileUploadErrorDetails.CurrentErrorDetail = fileUploadErrors.GetPropertyErrors(errorId);
         _pagePropertiesProvider.FullPageLayout = true;
         
         return ValueTask.FromResult<NodeId?>(null);

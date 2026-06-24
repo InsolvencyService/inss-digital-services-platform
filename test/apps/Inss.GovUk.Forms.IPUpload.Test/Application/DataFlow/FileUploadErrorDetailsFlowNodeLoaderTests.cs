@@ -17,12 +17,12 @@ public class FileUploadErrorDetailsFlowNodeLoaderTests
     }
     
     [Fact]
-    public async Task NullState_LoadAsync_ThrowsException()
+    public async Task EmptyQueryParams_LoadAsync_ThrowsException()
     {
-        FlowNodeContext context = new() { State = null };
+        FlowNodeContext context = new() { QueryParams = [] };
 
         IPUploadException exception = await Assert.ThrowsAsync<IPUploadException>(() => _loader.LoadAsync(context).AsTask());
         
-        Assert.Equal("Unable to load the IP upload error details as the state is unset.", exception.Message);
+        Assert.Equal("Unable to load the IP upload error details as the error Id is unset.", exception.Message);
     }
 }

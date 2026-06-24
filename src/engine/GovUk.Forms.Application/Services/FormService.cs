@@ -23,7 +23,7 @@ public sealed class FormService : IFormService
     public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(
         ContentPath requestPath, 
         ContentPath refererPath, 
-        string? state)
+        Dictionary<string, string?> queryParams)
     {
         FormModel form = await _userFormService.GetAsync(requestPath);
         
@@ -35,7 +35,7 @@ public sealed class FormService : IFormService
             {
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, refererPath, state);
+                ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, refererPath, queryParams);
                 section.PreviousPagePath = _pagePropertiesProvider.PreviousPagePath;
                 return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != requestPath ? altPath : null);
             }

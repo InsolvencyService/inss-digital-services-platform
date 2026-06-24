@@ -1,4 +1,3 @@
-using System.Globalization;
 using GovUk.Forms.Application.Exceptions;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -12,10 +11,12 @@ public sealed class CheckAnswersFlowNodeLoader : IFlowNodeLoader
         CheckAnswersModel checkAnswers = context.CurrentPage.As<CheckAnswersModel>();
         AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(checkAnswers.MetaData.Group);
 
-        if (context.State is not null)
+        int? setIndex = context.GetQueryParam<int?>("index");
+        
+        if (setIndex is not null)
         {
-            int setIndex = int.Parse(context.State, CultureInfo.InvariantCulture);
-            PageModel[] pages = groupInfo.AddAnother.Items.Skip(setIndex * groupInfo.WorkingPages.Count).Take(groupInfo.WorkingPages.Count).ToArray();
+            PageModel[] pages = groupInfo.AddAnother.Items.Skip(
+                setIndex.Value * groupInfo.WorkingPages.Count).Take(groupInfo.WorkingPages.Count).ToArray();
             
             if (groupInfo.WorkingPages.Count != pages.Length)
             {

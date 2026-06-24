@@ -36,10 +36,10 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         CheckAndLogConfiguratonFiles(search);
 
 
-        if (context.State is not null)
-        {
-
-        }
+        // if (context.State is not null)
+        // {
+        //
+        // }
 
         // The context has a state with will be the Id for the result so you can find it and set the CurrentResult
         return new ValueTask<NodeId?>((NodeId?)null);

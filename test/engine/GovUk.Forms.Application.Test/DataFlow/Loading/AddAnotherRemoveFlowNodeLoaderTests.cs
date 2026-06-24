@@ -26,7 +26,7 @@ public class AddAnotherRemoveFlowNodeLoaderTests
             Form = _form,
             Section = section,
             CurrentPage = remove,
-            State = "0"
+            QueryParams = new Dictionary<string, string?> { ["errorId"] = "0" }
         };
         
         await _loader.LoadAsync(context);
@@ -49,7 +49,7 @@ public class AddAnotherRemoveFlowNodeLoaderTests
             Form = _form,
             Section = section,
             CurrentPage = remove,
-            State = "0"
+            QueryParams = new Dictionary<string, string?> { ["errorId"] = "0" }
         };
         
         await _loader.LoadAsync(context);
@@ -72,7 +72,7 @@ public class AddAnotherRemoveFlowNodeLoaderTests
             Form = _form,
             Section = section,
             CurrentPage = remove,
-            State = "0"
+            QueryParams = new Dictionary<string, string?> { ["errorId"] = "0" }
         };
         
         NodeId? nextNodeId = await _loader.LoadAsync(context);
