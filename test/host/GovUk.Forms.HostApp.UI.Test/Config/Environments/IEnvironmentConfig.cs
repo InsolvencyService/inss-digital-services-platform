@@ -4,4 +4,5 @@ public interface IEnvironmentConfig
 {
     TestEnvironment EnvironmentType { get; }
     string BaseUrl { get; }
+    string CosmosEndpoint { get; }
 }

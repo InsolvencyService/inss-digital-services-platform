@@ -31,4 +31,7 @@ public sealed class ScenarioConstant
 
 
     public const string InvalidCaseReference = "CN99335678";
+
+    // Valid case reference that exists in the Dynamics test environment — update if the test record changes
+    public const string ValidCaseReference = "CN123456K";
 }

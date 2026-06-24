@@ -1,3 +1,4 @@
+using GovUk.Forms.HostApp.UI.Test.Config.Environments;
 using GovUk.Forms.HostApp.UI.Test.Models.Settings;
 using Microsoft.Azure.Cosmos;
 using System.Net;
@@ -15,7 +16,9 @@ public sealed class CosmosDbService : ICosmosDbService, IAsyncDisposable
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        _client = new CosmosClient(settings.Endpoint, settings.PrimaryKey);
+        IEnvironmentConfig config = EnvironmentConfigFactory.EnvironmentConfig;
+
+        _client = new CosmosClient(config.CosmosEndpoint, settings.PrimaryKey);
 
         _container = _client
             .GetDatabase(settings.DatabaseName)

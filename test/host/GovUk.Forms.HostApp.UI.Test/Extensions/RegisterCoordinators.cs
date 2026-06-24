@@ -22,6 +22,7 @@ public static class RegisterCoordinators
         services.AddScoped<CheckYourAnswersCoordinator>();
         services.AddScoped<SubmissionConfirmationCoordinator>();
         services.AddScoped<NavigationCoordinator>();
+        services.AddScoped<CaseReferenceCoordinator>();
         services.AddScoped<IUploadPageCoordinator, UploadPageCoordinator>();
         services.AddScoped<IFileUploadCoordinator, FileUploadCoordinator>();
         services.AddScoped<Func<IRp14aFixtureBuilder>>(sp =>
