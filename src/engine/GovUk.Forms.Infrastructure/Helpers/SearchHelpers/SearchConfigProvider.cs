@@ -17,7 +17,7 @@ public sealed class SearchConfigProvider : ISearchConfigProvider
     public SearchModel LoadConfig(string filename)
     {
 
-    // Load the search configuration from a JSON file or other source
+    // Load the search configuration...
     string path = Path.Combine(
             AppContext.BaseDirectory,
             "App",

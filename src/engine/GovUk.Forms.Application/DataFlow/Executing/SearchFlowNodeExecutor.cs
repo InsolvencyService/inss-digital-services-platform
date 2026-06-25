@@ -28,7 +28,7 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
             return context.Nodes[0].Id;
         }
 
-        // Add the initial current page number, unable to retrieve it from the loader...
+        // Retrieve options from config file...
         SearchModel config = _configSettings.LoadConfig("FindPersonConfig.json"); 
 
         if (config.PageSize <= 0)

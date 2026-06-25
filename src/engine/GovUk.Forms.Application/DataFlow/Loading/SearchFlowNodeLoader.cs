@@ -27,7 +27,7 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         SearchModel search = context.CurrentPage.As<SearchModel>();
         search.CurrentResult = null;
 
-        // Get configuration settings
+        // Get configuration settings...
         SearchModel searchConfig = _configSettings.LoadConfig("FindPersonConfig.json");
 
         // Handle result detail by setting it on the search model..
@@ -35,14 +35,10 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         search.PageSize = searchConfig.PageSize;
         search.DisplayAsTable = searchConfig.DisplayAsTable;
      
-        // Check if column are within the azure search - if not log warning.
+        // Check if columns in config...
         CheckAndLogConfiguratonFiles(search);
 
         string? searchText = context.GetQueryParam<string>("searchText");
-        if (searchText == null)
-        {
-            // loading - no search has been entered yet..
-        }
 
         int currentPageNumber = context.GetQueryParam<int>("currentPageNumber");
         if (currentPageNumber < 1)
