@@ -11,15 +11,20 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
 {
     private readonly ISearchConfigProvider _configSettings;
     private readonly ILogger<SearchFlowNodeLoader> _logger;
+    private readonly ISearchService _searchService;
 
 
-    public SearchFlowNodeLoader(ILogger<SearchFlowNodeLoader> logger, ISearchConfigProvider configSettings)
+    public SearchFlowNodeLoader(
+        ILogger<SearchFlowNodeLoader> logger,
+        ISearchConfigProvider configSettings,
+        ISearchService searchService)
     {
         _configSettings = configSettings;
         _logger = logger;
+        _searchService = searchService;
     }
 
-    public ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
+    public async ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
     {
         SearchModel search = context.CurrentPage.As<SearchModel>();
         search.CurrentResult = null;
@@ -31,10 +36,38 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         search.ResultColumns = searchConfig.ResultColumns;
         search.PageSize = searchConfig.PageSize;
         search.DisplayAsTable = searchConfig.DisplayAsTable;
-        search.HasNextPage = search.Results.Length == search.PageSize;
-
+     
+        // Check if column are within the azure search - if not log warning.
         CheckAndLogConfiguratonFiles(search);
 
+        string? searchText = context.GetQueryParam<string>("searchText");
+        if (searchText == null)
+        {
+            // loading - no search has been entered yet..
+        }
+
+        int currentPageNumber = context.GetQueryParam<int>("currentPageNumber");
+        if (currentPageNumber < 1)
+        {
+            currentPageNumber = 1;
+        }
+        search.CurrentPageNumber = currentPageNumber;
+
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            SearchResponse response = await
+                _searchService.SearchAsync(
+                    searchText, 
+                    search.PageSize, 
+                    search.CurrentPageNumber);
+
+            search.SearchText = searchText;
+            search.Results = response.Results;
+            search.TotalResults = response.TotalResults;
+            search.TotalPages = (int)Math.Ceiling((double)search.TotalResults / search.PageSize);
+
+        }
 
         // if (context.State is not null)
         // {
@@ -42,13 +75,13 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         // }
 
         // The context has a state with will be the Id for the result so you can find it and set the CurrentResult
-        return new ValueTask<NodeId?>((NodeId?)null);
+        //return new ValueTask<NodeId?>((NodeId?)null);
+        return context.Nodes[0].Id;
     }
 
 
     private void CheckAndLogConfiguratonFiles(SearchModel search)
     {
-        // Check if column are within the azure search - if not log warning.
         foreach (SearchResult result in search.Results)
         {
             foreach (SearchResultColumn column in search.ResultColumns)

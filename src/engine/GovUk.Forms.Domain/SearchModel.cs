@@ -14,6 +14,10 @@ public class SearchModel : PageModel
 
     public int CurrentPageNumber { get; set; }
 
+    public int TotalPages { get; set; }
+
+    public int TotalResults { get; set; }
+
     public bool HasNextPage { get; set; }
 
     public SearchResultColumn[] ResultColumns { get; set; } = [];

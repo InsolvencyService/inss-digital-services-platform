@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.Application.Services.Search;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Infrastructure.Options;
+using GovUk.Forms.Infrastructure.Services;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Reflection;
@@ -19,14 +20,22 @@ public sealed class SearchPersonService : ISearchService
         _options = options;
     }
 
-    public async Task<SearchResult[]> SearchAsync(string searchText, int pageSize, int CurrentPageNumber)
+    public async Task<SearchResponse> SearchAsync(
+        string searchText, 
+        int pageSize,
+        int currentPageNumber)
     {
         if (string.IsNullOrEmpty(searchText))
         {
-            return [];
+            // Return emoty class....
+            return new SearchResponse
+            {
+                Results = [],
+                TotalResults = 0
+            };
         }
 
-        int skip = (CurrentPageNumber - 1) * pageSize;
+        int skip = (currentPageNumber - 1) * pageSize;
 
         string url = $"{_options.Endpoint}/indexes/{_options.IndexName}/docs/search?api-version={_options.ApiVersion}";
         using HttpRequestMessage request = new(HttpMethod.Post, url);
@@ -45,6 +54,13 @@ public sealed class SearchPersonService : ISearchService
 
         JsonDocument json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
 
+        int totalResults = 0;
+
+        if (json.RootElement.TryGetProperty("@odata.count", out JsonElement countElement))
+        {
+            totalResults = countElement.GetInt32();
+        }
+
         List<SearchResult> results = [];
 
         foreach (JsonElement item in json.RootElement
@@ -53,8 +69,7 @@ public sealed class SearchPersonService : ISearchService
         {
             SearchResult result = new()
             {
-                Fields = item.EnumerateObject()
-            .ToDictionary(
+                Fields = item.EnumerateObject().ToDictionary(
                 property => property.Name,
                 property => property.Value.ToString())
             };
@@ -62,8 +77,11 @@ public sealed class SearchPersonService : ISearchService
             results.Add(result);
         }
 
-
-        return [.. results];
+        return new SearchResponse
+        {
+            Results = [.. results],
+            TotalResults = totalResults
+        };
     }
 }
 

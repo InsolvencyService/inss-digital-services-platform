@@ -1,6 +1,6 @@
 {
   "PageSize": 5,
-  "DisplayAsTable": true,
+  "DisplayAsTable": false,
   "ResultColumns": [
     {
       "Name": "CaseNumber",
