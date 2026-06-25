@@ -1,94 +1,94 @@
-﻿using GovUk.Forms.Application.Services.Search;
+﻿using Azure;
+using Azure.Search.Documents;
+using Azure.Search.Documents.Models;
+using GovUk.Forms.Application.Services.Search;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Infrastructure.Helpers.SearchHelpers;
-using GovUk.Forms.Infrastructure.Options;
 using Microsoft.Extensions.Logging;
-using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace GovUk.Forms.Infrastructure.Services;
 
 public sealed class SearchPersonService : ISearchService
 {
-    private readonly HttpClient _httpClient;
-    private readonly SearchPersonOptions _options;
     private readonly ILogger<SearchPersonService> _logger;
+    private readonly SearchClient _searchClient;
 
-    public SearchPersonService(HttpClient httpClient, SearchPersonOptions options, Logger<SearchPersonService> logger)
+    public SearchPersonService(SearchClient searchClient, ILogger<SearchPersonService> logger)
     {
-        _httpClient = httpClient;
-        _options = options;
         _logger = logger;
+        _searchClient = searchClient;
     }
 
     public async Task<SearchResponse> SearchAsync(
-        string searchText, 
-        int pageSize,
-        int currentPageNumber)
+    string searchText,
+    int pageSize,
+    int currentPageNumber)
     {
-        if (string.IsNullOrEmpty(searchText))
+        if (string.IsNullOrWhiteSpace(searchText))
         {
-            return new SearchResponse
-            {
-                Results = [],
-                TotalResults = 0
-            };
-        }
-
-        int skip = (currentPageNumber - 1) * pageSize;
-
-        string url = $"{_options.Endpoint}/indexes/{_options.IndexName}/docs/search?api-version={_options.ApiVersion}";
-        using HttpRequestMessage request = new(HttpMethod.Post, url);
-        request.Headers.Add("api-key", _options.ApiKey);
-        request.Content = JsonContent.Create(new
-        {
-            search = searchText,
-            top = pageSize,
-            count = true,
-            skip
-
-        });
-
-        HttpResponseMessage response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Azure Search request has failed.  Status Code: {StatusCode}", response.StatusCode);
+            _logger.LogWarning("Azure Search request sent with an empty search text.");
             return new SearchResponse();
         }
 
-        JsonDocument json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
-
-        int totalResults = 0;
-
-        if (json.RootElement.TryGetProperty("@odata.count", out JsonElement countElement))
+        if (pageSize <= 0)
         {
-            totalResults = countElement.GetInt32();
+            _logger.LogError(
+                "Azure Search request made with invalid page size : {PageSize}.", 
+                pageSize);
+            return new SearchResponse();
+        }
+
+        if (currentPageNumber <= 0)
+        {
+            _logger.LogWarning(
+                "Azure Search request sent with invalid current page number: {CurrentPageNumber}", 
+                currentPageNumber);
+            // Reset to 1 if invalid..
+           currentPageNumber = 1;
+        }
+
+        int skip = (currentPageNumber - 1) * pageSize;
+ 
+        SearchOptions searchOptions = new()
+        {
+            Size = pageSize,
+            Skip = skip,
+            IncludeTotalCount = true
+        };
+
+        Response<SearchResults<SearchDocument>> response =
+            await _searchClient.SearchAsync<SearchDocument>(searchText, searchOptions);
+
+        int statusCode = response.GetRawResponse().Status;
+
+        if (statusCode is < 200 or > 299)
+        {
+            _logger.LogError(
+                "Azure Search request has failed.  Status Code:  {StatusCode}, SearchText: {SearchText}", 
+                statusCode, 
+                searchText);
+
+            return new SearchResponse();
         }
 
         List<SearchResult> results = [];
 
-        foreach (JsonElement item in json.RootElement
-            .GetProperty("value")
-            .EnumerateArray())
+        await foreach (SearchResult<SearchDocument> result in response.Value.GetResultsAsync())
         {
-            SearchResult result = new()
-            {
-                Fields = item.EnumerateObject().ToDictionary(
-                property => property.Name,
-                property => property.Value.ToString())
-            };
+            Dictionary<string, string> fields = result.Document
+                .ToDictionary(
+                    field => field.Key,
+                    field => field.Value?.ToString() ?? string.Empty);
 
-            results.Add(result);
+            results.Add(new SearchResult
+            {
+                Fields = fields
+            });
         }
 
         return new SearchResponse
         {
             Results = [.. results],
-            TotalResults = totalResults
+            TotalResults = (int)(response.Value.TotalCount ?? 0)
         };
     }
 }
-
-   

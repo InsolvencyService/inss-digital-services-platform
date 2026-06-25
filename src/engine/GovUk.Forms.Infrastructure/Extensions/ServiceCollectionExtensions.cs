@@ -1,4 +1,6 @@
+using Azure;
 using Azure.Identity;
+using Azure.Search.Documents;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services.Search;
 using GovUk.Forms.Infrastructure.Helpers.SearchHelpers;
@@ -40,20 +42,26 @@ public static class ServiceCollectionExtensions
                 return new TestFormStorageProvider();
             });
 
+            services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
 
             services.AddSingleton<ISearchConfigProvider, SearchConfigProvider>();
-
             SearchPersonOptions searchOptions = new();
             configuration
                 .GetSection("EIIRPersonSearch")
                 .Bind(searchOptions);
-
             services.AddSingleton(searchOptions);
 
-            services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             services.AddScoped<ISearchService, SearchPersonService>();
+            services.AddSingleton(serviceProvider =>
+            {
+                SearchPersonOptions options =
+                    serviceProvider.GetRequiredService<SearchPersonOptions>();
 
-        
+                return new SearchClient(
+                    new Uri(options.Endpoint),
+                    options.IndexName,
+                    new AzureKeyCredential(options.ApiKey));
+            });
 
             return services;
         }
