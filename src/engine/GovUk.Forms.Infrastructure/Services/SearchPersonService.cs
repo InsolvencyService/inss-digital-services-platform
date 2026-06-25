@@ -1,10 +1,9 @@
 ﻿using GovUk.Forms.Application.Services.Search;
 using GovUk.Forms.Domain;
+using GovUk.Forms.Infrastructure.Helpers.SearchHelpers;
 using GovUk.Forms.Infrastructure.Options;
-using GovUk.Forms.Infrastructure.Services;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
-using System.Reflection;
 using System.Text.Json;
 
 namespace GovUk.Forms.Infrastructure.Services;
@@ -13,11 +12,13 @@ public sealed class SearchPersonService : ISearchService
 {
     private readonly HttpClient _httpClient;
     private readonly SearchPersonOptions _options;
+    private readonly ILogger<SearchPersonService> _logger;
 
-    public SearchPersonService(HttpClient httpClient, SearchPersonOptions options)
+    public SearchPersonService(HttpClient httpClient, SearchPersonOptions options, Logger<SearchPersonService> logger)
     {
         _httpClient = httpClient;
         _options = options;
+        _logger = logger;
     }
 
     public async Task<SearchResponse> SearchAsync(
@@ -27,7 +28,6 @@ public sealed class SearchPersonService : ISearchService
     {
         if (string.IsNullOrEmpty(searchText))
         {
-            // Return emoty class....
             return new SearchResponse
             {
                 Results = [],
@@ -51,6 +51,12 @@ public sealed class SearchPersonService : ISearchService
 
         HttpResponseMessage response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("Azure Search request has failed.  Status Code: {StatusCode}", response.StatusCode);
+            return new SearchResponse();
+        }
 
         JsonDocument json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
 

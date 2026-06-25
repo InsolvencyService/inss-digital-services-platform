@@ -1,6 +1,11 @@
 ﻿@model SearchModel
+@inject IPagePropertiesProvider PagePropertiesProvider
 
+@{
+    PagePropertiesProvider.FullPageLayout = true;
+}
 @* 
+
 If the search text is empty then show the field to allow the user to enter a search else display any results 
 We will want to (potentially) show details which will be based upon the state passed in e.g. an Id of a specific
 result
@@ -19,10 +24,14 @@ else if (Model.CurrentResult is not null)
 
 else if (Model.Results.Length > 0)
 {
-
         <div>
-        <p class="govuk-body">
-            Some text here.... then </p>
+        @if (Model.MetaData.Description != null)
+        {
+            <p class="govuk-body">
+               @Model.MetaData.Description
+            </p>
+        }
+      
         <p class="govuk-body govuk-!-font-weight-bold">
             Total count: @Model.TotalResults
             </p>

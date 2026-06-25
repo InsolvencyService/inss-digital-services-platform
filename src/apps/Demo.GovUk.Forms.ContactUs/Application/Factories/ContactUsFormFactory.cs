@@ -22,7 +22,7 @@ public sealed class ContactUsFormFactory : IFormFactory
 
             // TODO: Add a specific builder to help construct the search page with columns and display info
             .AddSection("Find People", "find-people")
-            .AddSearchPage<SearchModel>("Search", "search", submitButtonText: "Search")
+            .AddSearchPage<SearchModel>("Search", "search",description:"hello", submitButtonText: "Search")
             .AddSearchResultColumn("Column1")
             .AddSearchResultColumn("Column2")
             .AddFinalColumn("Column3")

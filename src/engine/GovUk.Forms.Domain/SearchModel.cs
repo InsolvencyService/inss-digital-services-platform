@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Contracts;
 
 namespace GovUk.Forms.Domain;
 
@@ -31,8 +30,6 @@ public class SearchModel : PageModel
         List<SearchResultColumn> columns = [..ResultColumns, new() { Name = name, Css = css }];
         ResultColumns = columns.ToArray();
     }
-
-    // public List<SearchColumnOptions> Columns { get; set; } = new List<SearchColumnOptions>();
 
     public override string[] GetSummaryInfo()
     {
@@ -69,6 +66,5 @@ public sealed class SearchResultColumn
 
 public sealed class SearchResult
 {
-    //public string Id { get; init; }
     public Dictionary<string, string> Fields { get; init; } = [];
 }

@@ -1,6 +1,7 @@
 using GovUk.Forms.Application.Services.Search;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using Microsoft.Extensions.Logging;
 
 namespace GovUk.Forms.Application.DataFlow.Executing;
 
@@ -8,11 +9,13 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
 {
     private readonly ISearchService _searchService;
     private readonly ISearchConfigProvider _configSettings;
+    private readonly ILogger<SearchFlowNodeExecutor> _logger;
 
-    public SearchFlowNodeExecutor(ISearchService searchService, ISearchConfigProvider configSettings)
+    public SearchFlowNodeExecutor(ISearchService searchService, ISearchConfigProvider configSettings, ILogger<SearchFlowNodeExecutor> logger)
     {
         _searchService = searchService;
         _configSettings = configSettings;
+        _logger = logger;
     }
     
     public async ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context)
@@ -21,16 +24,19 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
 
         if (string.IsNullOrWhiteSpace(search.SearchText))
         {
-            // TODO: Inject service to use search text and get results. If we have results and are executing then we want to continue
-            //search.Results = [new SearchResult { Id = "1" }, new SearchResult { Id = "2" }];
-
-            // If results exist then goto next node (index 1)
-            //return ValueTask.FromResult<NodeId?>(context.Nodes[0].Id).Result;
+            _logger.LogWarning("Search Text is missing.");
             return context.Nodes[0].Id;
         }
 
         // Add the initial current page number, unable to retrieve it from the loader...
-        SearchModel config = _configSettings.LoadConfig("FindPersonConfig.json"); //SearchModel searchConfig = _configSettings.LoadConfig("FindPersonConfig.json");
+        SearchModel config = _configSettings.LoadConfig("FindPersonConfig.json"); 
+
+        if (config.PageSize <= 0)
+        {
+            // Invalid page size in the config....
+            _logger.LogError("Page size is required.");
+            return context.Nodes[0].Id;
+        }
         search.PageSize = config.PageSize;
 
         if (search.CurrentPageNumber < 1)
@@ -43,15 +49,16 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
             search.PageSize = config.PageSize;
         }
 
-        //SearchResult[] results = await _searchService.SearchAsync(search.SearchText, search.PageSize, search.CurrentPageNumber);
-        SearchResponse response = await _searchService.SearchAsync(search.SearchText, search.PageSize, search.CurrentPageNumber);
+        SearchResponse response = await _searchService.SearchAsync(
+            search.SearchText, 
+            search.PageSize, 
+            search.CurrentPageNumber);
         
         SearchModel pageSearch = context.Section.Pages.GetFirstOf<SearchModel>();
         pageSearch.SearchText = search.SearchText;
         pageSearch.ResultColumns = search.ResultColumns;
         pageSearch.CurrentPageNumber = search.CurrentPageNumber;
         pageSearch.PageSize = search.PageSize;
-
         pageSearch.Results = response.Results;
         pageSearch.TotalResults = response.TotalResults;
         pageSearch.TotalPages = (int)Math.Ceiling((double)pageSearch.TotalResults / search.PageSize);
