@@ -18,7 +18,7 @@ public class DateModel : PageModel
         }
     }
 
-    private string DateAsString => $"{Year:D4}-{Month:D2}-{Day:D2}";
+    public string DateAsString => $"{Year:D4}-{Month:D2}-{Day:D2}";
 
     public override string[] GetSummaryInfo()
     {

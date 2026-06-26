@@ -134,7 +134,7 @@ public sealed class FlowchartValidator
                 continue;
             }
 
-            if (serviceProvider.GetKeyedService<IFlowNodeLoader>(node.Id) is not SectionSummaryFlowNodeLoader)
+            if (serviceProvider.GetKeyedService<IFlowNodeLoader>(node.Id) is not SummaryFlowNodeLoader)
             {
                 flowchartErrors.Add(
                     $"Unable to find required summary loader for node with Id {node.Id} for page path {node.PagePath}.");

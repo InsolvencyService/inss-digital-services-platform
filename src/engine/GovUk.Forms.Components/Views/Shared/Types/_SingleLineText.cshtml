@@ -1,0 +1,9 @@
+﻿@model SingleLineText
+
+<govuk-input for="@Model.Value" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--@(Model.LabelSize.Description())">@(Model.Label)</govuk-input-label>
+    @if (!string.IsNullOrWhiteSpace(Model.Hint))
+    {
+        <govuk-input-hint>@(Model.Hint)</govuk-input-hint>
+    }
+</govuk-input>

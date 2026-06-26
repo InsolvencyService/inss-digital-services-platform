@@ -1,5 +1,4 @@
 ﻿using Inss.Common.IPUpload.Employer.Api;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
@@ -7,16 +6,16 @@ public sealed class EmployerApiValidator : EmployerValidator
 {
     private readonly RP14 _model;
 
-    public EmployerApiValidator(RP14 model, ICaseReferenceService caseReferenceService) : base(caseReferenceService)
+    public EmployerApiValidator(RP14 model)
     {
         _model = model;
     }
 
-    public override async Task<ValidatorContext> ValidateAsync()
+    public override ValidatorContext Validate(EmployerDetailsModel employerDetails)
     {
         EmployerValidatorContext context = new();
 
-        await ValidateCaseReferenceAsync(context, _model.Header.CaseReference);
+        ValidateCaseReference(context, _model.Header.CaseReference, employerDetails.CaseReference);
         
         ValidateBusinessName(context, _model.NameOfBusiness);
         ValidateNatureOfBusiness(context, _model.NatureOfBusiness);

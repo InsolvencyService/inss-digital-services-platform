@@ -23,7 +23,7 @@ public sealed class YourCreditorsAndDebtorsFlowchart : DefineFlowchartBuilder
         NodeId checkDebtorDetailsId = "CheckDebtorDetails";
         NodeId removeDebtorDetailsId = "RemoveDebtorDetails";
         NodeId addAnotherDebtorId = "AddAnotherDebtor";
-        NodeId summaryId = "Summary";
+        NodeId summaryId = "EmployeeSummary";
         
         FormModel form = GetForm(services);
         SectionModel section = form.Sections["Creditors and Debtors"];
@@ -79,7 +79,7 @@ public sealed class YourCreditorsAndDebtorsFlowchart : DefineFlowchartBuilder
             .WithExecutor<AddAnotherRemoveFlowNodeExecutor>()
             .Next()
             .AddEndNode(summaryId, summary.Path)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<CreditorsAndDebtorSummaryFlowNodeLoader>()
             .WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }

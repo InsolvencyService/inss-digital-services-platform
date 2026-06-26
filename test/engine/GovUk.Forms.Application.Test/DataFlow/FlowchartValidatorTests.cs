@@ -5,6 +5,7 @@ using GovUk.Forms.Application.Exceptions;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Xunit;
 
 namespace GovUk.Forms.Application.Test.DataFlow;
@@ -142,7 +143,7 @@ public class FlowchartValidatorTests
         FlowNode salaryNode = CreateFlowNode(_salaryNodeId, section.Pages[3].Path, _bankAccountNodeId);
         FlowNode bankAccountNode = CreateFlowNode(_bankAccountNodeId, section.Pages[4].Path, _summaryNodeId);
         FlowNode summaryNode = CreateFlowNode(_summaryNodeId, section.Pages[5].Path);
-        _services.AddKeyedSingleton<IFlowNodeLoader, SectionSummaryFlowNodeLoader>(summaryNode.Id);
+        _services.AddKeyedSingleton<IFlowNodeLoader>(summaryNode.Id, (_, _) => Substitute.For<SummaryFlowNodeLoader>());
         FlowchartValidator flowchartValidator = new([fullNameNode, addressNode, ageNode, salaryNode, bankAccountNode, summaryNode]);
         
         try
@@ -173,7 +174,7 @@ public class FlowchartValidatorTests
         _services.AddKeyedSingleton<IFlowNodeExecutor, AddAnotherFlowNodeExecutor>(addAnotherNode.Id);
         _services.AddKeyedSingleton<IFlowNodeLoader, AddAnotherRemoveFlowNodeLoader>(removeNode.Id);
         _services.AddKeyedSingleton<IFlowNodeExecutor, AddAnotherRemoveFlowNodeExecutor>(removeNode.Id);
-        _services.AddKeyedSingleton<IFlowNodeLoader, SectionSummaryFlowNodeLoader>(summaryNode.Id);
+        _services.AddKeyedSingleton<IFlowNodeLoader>(summaryNode.Id, (_, _) => Substitute.For<SummaryFlowNodeLoader>());
         FlowchartValidator flowchartValidator = new([fullNameNode, ageNode, checkAnswersNode, removeNode, addAnotherNode, summaryNode]);
         
         try
