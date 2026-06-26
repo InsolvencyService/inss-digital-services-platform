@@ -1,6 +1,12 @@
 ﻿@model SummaryModel
+@inject IPagePropertiesProvider PagePropertiesProvider;
 
-<h1 class="govuk-heading-l">@(Model.MetaData.Question ?? "Check your answers before continuing")</h1>
+@{
+    const string fallbackQuestion = "Check your answers before continuing";
+    PagePropertiesProvider.PageTitle = Model.MetaData.Question ?? fallbackQuestion;
+}
+
+<h1 class="govuk-heading-l">@(Model.MetaData.Question ?? fallbackQuestion)</h1>
 
 @if (Model.MetaData.Description is not null)
 {

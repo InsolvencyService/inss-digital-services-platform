@@ -6,4 +6,5 @@ public interface IPagePropertiesProvider
 {
     ContentPath? PreviousPagePath { get; set; }
     bool FullPageLayout { get; set; }
+    string PageTitle { get; set; }
 }
