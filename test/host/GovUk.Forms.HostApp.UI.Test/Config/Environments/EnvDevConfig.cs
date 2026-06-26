@@ -3,6 +3,6 @@
 public class EnvDevConfig : BaseEnvironmentConfig
 {
     public override TestEnvironment EnvironmentType => TestEnvironment.Dev;
-    public override string BaseUrl => "https://localhost:5056/";
-    public override string CosmosEndpoint => "https://localhost:8081";
+    public override string BaseUrl => "https://dev.ipus.redundancy-payments.service.gov.uk/";
+    public override string CosmosEndpoint => "https://cosmos-platform-uksouth-sit.documents.azure.com:443";
 }
