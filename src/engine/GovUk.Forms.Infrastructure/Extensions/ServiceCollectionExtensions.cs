@@ -1,17 +1,18 @@
 using Azure;
 using Azure.Identity;
 using Azure.Search.Documents;
+using GovUk.Forms.Application.Clients;
 using GovUk.Forms.Application.Providers;
-using GovUk.Forms.Application.Services.Search;
-using GovUk.Forms.Infrastructure.Helpers.SearchHelpers;
+using GovUk.Forms.Application.Services;
+using GovUk.Forms.Infrastructure.Clients;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
-using GovUk.Forms.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 
 namespace GovUk.Forms.Infrastructure.Extensions;
@@ -51,7 +52,7 @@ public static class ServiceCollectionExtensions
                 .Bind(searchOptions);
             services.AddSingleton(searchOptions);
 
-            services.AddScoped<ISearchService, SearchPersonService>();
+            services.AddScoped<ISearchService, SearchService>();
             services.AddSingleton(serviceProvider =>
             {
                 SearchPersonOptions options =
@@ -63,6 +64,35 @@ public static class ServiceCollectionExtensions
                     new AzureKeyCredential(options.ApiKey));
             });
 
+            return services;
+        }
+
+        public IServiceCollection AddSearchInfrastructure(IConfiguration configuration, string configKey)
+        {
+            /*
+            services.AddOptions<HeaderOptions>()
+                .Bind(context.Configuration.GetSection("Header"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+             */
+            AzureSearchOptions searchOptions = new();
+            configuration.GetSection(configKey).Bind(searchOptions).ValidateDataAnnotations()
+                .ValidateOnStart();
+            
+            services.AddKeyedSingleton<ISearchConfigProvider>(configKey, (provider, _) =>
+            {
+                ILogger<SearchConfigProvider> logger = provider.GetRequiredService<ILogger<SearchConfigProvider>>();
+                return new SearchConfigProvider(searchOptions.ConfigPath, logger);
+            });
+            
+            services.AddKeyedSingleton<ISearchClient>(configKey, (provider, _) =>
+            {
+                SearchClient searchClient = new(
+                    new Uri(searchOptions.Endpoint), searchOptions.IndexName, new AzureKeyCredential(searchOptions.ApiKey));
+                ILogger<SearchService> logger = provider.GetRequiredService<ILogger<SearchService>>();
+                return new AzureSearchClient(searchClient, logger);
+            });
+            
             return services;
         }
     }

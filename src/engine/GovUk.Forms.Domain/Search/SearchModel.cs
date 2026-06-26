@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GovUk.Forms.Domain;
+namespace GovUk.Forms.Domain.Search;
 
 public class SearchModel : PageModel
 {
@@ -8,6 +8,8 @@ public class SearchModel : PageModel
     public string SearchText { get; set; }
 
     public bool DisplayAsTable { get; set; }
+    
+    public string ConfigKey { get; set; }
 
     public int PageSize { get; set; }
 
@@ -67,4 +69,22 @@ public sealed class SearchResultColumn
 public sealed class SearchResult
 {
     public Dictionary<string, string> Fields { get; init; } = [];
+}
+
+public sealed class SearchRequest
+{
+    // string searchText, int pageSize, int currentPageNumber
+    public string SearchText { get; init; }
+    
+    public int PageSize { get; init; }
+    
+    public int CurrentPageNumber { get; init; }
+    
+    public int Skip => (CurrentPageNumber - 1) * PageSize;
+
+}
+public sealed class SearchResponse
+{
+    public SearchResult[] Results { get; set; } = [];
+    public int TotalResults { get; init; }
 }

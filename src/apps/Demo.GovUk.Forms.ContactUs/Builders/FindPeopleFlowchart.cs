@@ -4,6 +4,7 @@ using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using GovUk.Forms.Domain.Search;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Demo.GovUk.Forms.ContactUs.Builders;

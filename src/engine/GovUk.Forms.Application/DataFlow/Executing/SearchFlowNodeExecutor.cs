@@ -1,18 +1,25 @@
-using GovUk.Forms.Application.Services.Search;
+using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using GovUk.Forms.Domain.Search;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace GovUk.Forms.Application.DataFlow.Executing;
 
 public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly ISearchService _searchService;
     private readonly ISearchConfigProvider _configSettings;
     private readonly ILogger<SearchFlowNodeExecutor> _logger;
 
-    public SearchFlowNodeExecutor(ISearchService searchService, ISearchConfigProvider configSettings, ILogger<SearchFlowNodeExecutor> logger)
+    public SearchFlowNodeExecutor(
+        IServiceProvider serviceProvider,
+        ISearchService searchService, ISearchConfigProvider configSettings, ILogger<SearchFlowNodeExecutor> logger)
     {
+        _serviceProvider = serviceProvider;
         _searchService = searchService;
         _configSettings = configSettings;
         _logger = logger;
@@ -28,8 +35,9 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
             return context.Nodes[0].Id;
         }
 
-        // Retrieve options from config file...
-        SearchModel config = _configSettings.LoadConfig("FindPersonConfig.json"); 
+        ISearchConfigProvider searchConfigProvider = _serviceProvider.GetRequiredKeyedService<ISearchConfigProvider>(search.ConfigKey);
+        
+        SearchModel config = searchConfigProvider.LoadConfig(); 
 
         if (config.PageSize <= 0)
         {
@@ -37,6 +45,7 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
             _logger.LogError("Page size is required.");
             return context.Nodes[0].Id;
         }
+        
         search.PageSize = config.PageSize;
 
         if (search.CurrentPageNumber < 1)
@@ -49,7 +58,8 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
             search.PageSize = config.PageSize;
         }
 
-        SearchResponse response = await _searchService.SearchAsync(
+        ISearchService searchService = _serviceProvider.GetRequiredKeyedService<ISearchService>(search.ConfigKey);
+        SearchResponse response = await searchService.SearchAsync(
             search.SearchText, 
             search.PageSize, 
             search.CurrentPageNumber);

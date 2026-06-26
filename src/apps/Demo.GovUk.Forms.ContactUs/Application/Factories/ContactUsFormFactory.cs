@@ -2,6 +2,7 @@ using Demo.GovUk.Forms.ContactUs.Domain;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Search;
 
 namespace Demo.GovUk.Forms.ContactUs.Application.Factories;
 
@@ -22,19 +23,13 @@ public sealed class ContactUsFormFactory : IFormFactory
 
             // TODO: Add a specific builder to help construct the search page with columns and display info
             .AddSection("Find People", "find-people")
-            .AddSearchPage<SearchModel>("Search", "search",description:"hello", submitButtonText: "Search")
-            .AddSearchResultColumn("Column1")
-            .AddSearchResultColumn("Column2")
-            .AddFinalColumn("Column3")
+            .AddSearchPage<SearchModel>("Search", "search", "Config1",description:"hello", submitButtonText: "Search")
             .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
 
 
             // TODO: Testing how to use the component so it is re-useable!!
             .AddSection("Finding Peoples Part Two", "find-people")
-            .AddSearchPage<SearchModel>("Search", "search", submitButtonText: "Search")
-            .AddSearchResultColumn("Column1")
-            .AddSearchResultColumn("Column2")
-            .AddFinalColumn("Column3")
+            .AddSearchPage<SearchModel>("Search", "search", "Config2", submitButtonText: "Search")
             .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
 
             .ValidateAndComplete();

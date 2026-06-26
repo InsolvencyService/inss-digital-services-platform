@@ -1,6 +1,7 @@
-﻿using GovUk.Forms.Application.Services.Search;
-using GovUk.Forms.Domain;
+﻿using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain.Primitives;
+using GovUk.Forms.Domain.Search;
 using Microsoft.Extensions.Logging;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
@@ -28,7 +29,7 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         search.CurrentResult = null;
 
         // Get configuration settings...
-        SearchModel searchConfig = _configSettings.LoadConfig("FindPersonConfig.json");
+        SearchModel searchConfig = _configSettings.LoadConfig(search.ConfigKey);// "FindPersonConfig.json");
 
         // Handle result detail by setting it on the search model..
         search.ResultColumns = searchConfig.ResultColumns;
@@ -50,24 +51,21 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
-            SearchResponse response = await
-                _searchService.SearchAsync(
-                    searchText, 
-                    search.PageSize, 
-                    search.CurrentPageNumber);
+            SearchRequest request = new() 
+            { 
+                SearchText = searchText,
+                PageSize = search.PageSize,
+                CurrentPageNumber = search.CurrentPageNumber
+            };
+            
+            SearchResponse response = await _searchService.SearchAsync(request);
 
             search.SearchText = searchText;
             search.Results = response.Results;
             search.TotalResults = response.TotalResults;
             search.TotalPages = (int)Math.Ceiling((double)search.TotalResults / search.PageSize);
-
         }
-
-        // if (context.State is not null)
-        // {
-        //
-        // }
-
+        
         // The context has a state with will be the Id for the result so you can find it and set the CurrentResult
         //return new ValueTask<NodeId?>((NodeId?)null);
         return context.Nodes[0].Id;
