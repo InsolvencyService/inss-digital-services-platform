@@ -12,6 +12,7 @@ public sealed class CaseReferenceCoordinator(
     IEmployerDetailsPage employerDetailsPage,
     ICommonPage commonPage,
     IPlaywrightDriver playwrightDriver,
+    ScenarioContext scenarioContext,
     TestArtifacts testArtifacts)
     : BaseCoordinator(testArtifacts)
 {
@@ -36,6 +37,8 @@ public sealed class CaseReferenceCoordinator(
             {
                 await caseReferenceNumberPage.EnterCaseReferenceNumberAsync(caseReference);
                 await caseReferenceNumberPage.ClickContinueAsync();
+
+                scenarioContext.Set(caseReference, ScenarioConstant.CaseReference);
 
                 await AttachCurrentPageScreenshotAsync(
                     $"Case reference '{caseReference}' entered and continued");
@@ -118,6 +121,7 @@ public sealed class CaseReferenceCoordinator(
             async () =>
             {
                 await caseReferenceNumberPage.EnterCaseReferenceNumberAsync(caseReference);
+                scenarioContext.Set(caseReference, ScenarioConstant.CaseReference);
                 AddAllureLog($"Case reference entered: {caseReference}");
             });
     }
@@ -128,12 +132,17 @@ public sealed class CaseReferenceCoordinator(
             "Click Continue",
             async () =>
             {
-                await playwrightDriver.Page
-                    .GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton })
-                    .ClickAsync();
+                Task<IResponse> responseTask = playwrightDriver.Page.WaitForResponseAsync(response =>
+                    response.Url.Contains("/case-reference-match") &&
+                    response.Status == 200);
 
-                await playwrightDriver.Page.WaitForLoadStateAsync(
-                    LoadState.Load, new() { Timeout = ScenarioConstant.ElementTimeout });
+                await Task.WhenAll(
+                    responseTask,
+                    playwrightDriver.Page
+                        .GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton })
+                        .ClickAsync());
+
+                IResponse response = await responseTask;
 
                 await AttachCurrentPageScreenshotAsync("Continue clicked");
             });

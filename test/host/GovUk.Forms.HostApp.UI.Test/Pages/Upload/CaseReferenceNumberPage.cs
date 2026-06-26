@@ -32,6 +32,7 @@ public class CaseReferenceNumberPage : BasePage, ICaseReferenceNumberPage
 
     public async Task EnterCaseReferenceNumberAsync(string caseReference)
     {
+        await PageContentLoadedAsync();
         await CaseReferenceInput.FillAsync(caseReference);
     }
 

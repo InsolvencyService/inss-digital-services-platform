@@ -17,8 +17,8 @@ public class UploadLocators
         public const string AffectedEmployees = "Affected employees";
 
         // Case Reference Number Page
-        public const string CaseReferenceNumberHeading = "Whats the case reference number?";
-        public const string CaseReferenceNumberHint = "For example, 'CN123456K'. This must match the case reference number in your form.";
+        public const string CaseReferenceNumberHeading = "Enter the 10 character case reference number";
+        public const string CaseReferenceNumberHint = "For example, ‘CN12345678’. This must match the case reference number in your uploaded file.";
 
         // Employer Details Page
         public const string EmployerDetailsHeading = "Employer details";
@@ -47,6 +47,6 @@ public class UploadLocators
         public const string UploadFileName = "p.govuk-body strong";
 
         // Case Reference Number Page
-        public const string CaseReferenceNumberInput = "#caseReferenceNumber";
+        public const string CaseReferenceNumberInput = "#CaseReference_Value";
     }
 }

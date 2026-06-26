@@ -85,6 +85,7 @@ public sealed class EmployerDetailsPage(
 
     public async Task SelectYesAsync()
     {
+        await Expect(YesRadio).Not.ToBeCheckedAsync();
         await YesRadio.CheckAsync();
         await Expect(YesRadio).ToBeCheckedAsync();
     }

@@ -24,7 +24,7 @@ Scenario: Review and submit an uploaded RP14A form
      And I should be able to log out successfully
 
 @functional @rp14a @cleanCosmosDb
-Scenario: Change the uploaded RP14A form before submitting
+Scenario: Change the uploaded RP14A form before submission
     Given I am reviewing my uploaded RP14A document
     When I choose to change the uploaded document
     Then I should be returned to the document upload page

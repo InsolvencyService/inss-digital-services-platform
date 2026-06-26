@@ -21,16 +21,18 @@ public sealed class CheckYourAnswersCoordinator(
             {
                 await summaryPage.WaitForPageToLoadAsync();
 
-                string uploadedFileName =
-                    scenarioContext.Get<string>(
-                        ScenarioConstant.UploadedFileName);
+                string caseReference =
+                    scenarioContext.Get<string>(ScenarioConstant.CaseReference);
 
-                await summaryPage.VerifyUploadedDocumentAsync(
-                    uploadedFileName);
+                string uploadedFileName =
+                    scenarioContext.Get<string>(ScenarioConstant.UploadedFileName);
+
+                await summaryPage.VerifyCaseReferenceNumberAsync(caseReference);
+                await summaryPage.VerifyUploadedDocumentAsync(uploadedFileName);
 
                 AddAllureLog(
                     "CheckYourAnswers",
-                    $"Verified uploaded document: {uploadedFileName}");
+                    $"Verified case reference: {caseReference}, uploaded document: {uploadedFileName}");
             });
     }
 

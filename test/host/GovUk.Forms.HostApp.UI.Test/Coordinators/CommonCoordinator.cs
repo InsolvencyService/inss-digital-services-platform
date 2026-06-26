@@ -3,6 +3,7 @@ using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Factories;
 using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
+using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators;
 
@@ -13,15 +14,19 @@ public class CommonCoordinator(
     UploadDocumentCoordinator uploadDocument,
     CheckYourAnswersCoordinator checkYourAnswers,
     SubmissionConfirmationCoordinator submissionConfirmation,
+    CaseReferenceCoordinator caseReferenceCoordinator,
     IPlaywrightDriver playwrightDriver,
     ICommonPage commonPage)
 {
-    public async Task VerifyThatUploadDocumentPageIsDisplayedAsync(TestUser? user = null)
+    public async Task VerifyThatUploadDocumentPageIsDisplayedAsync(TestUser? user = null, string? caseReference = null)
     {
         user ??= UserFactory.GetUser("InssTestManTwo");
 
         await VerifyThatDeclarationPageIsDisplayedAsync(user);
         await declarationCoordinator.NavigateToUploadAFilePageAsync();
+        await caseReferenceCoordinator.VerifyCaseReferencePageIsDisplayedAsync();
+        await caseReferenceCoordinator.EnterCaseReferenceAndContinueAsync(caseReference ?? ScenarioConstant.ValidCaseReference);
+        await caseReferenceCoordinator.ConfirmCorrectEmployerAsync();
         await uploadDocument.VerifyUploadDocumentPageIsDisplayedAsync();
     }
 

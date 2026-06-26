@@ -11,6 +11,11 @@ public class DocumentSummaryLocators
         public const string Change = "Change";
         public const string Submit = "Submit";
         public const string UploadDocument = "Upload document";
+        public const string WeHaveMatchedToTheFollowingEmployer = "We have matched to the following employer";
+        public const string UploadedDocumentKey = "Uploaded document";
+        public const string CaseReferenceNumberKey = "Enter the 10 character case reference number";
+        public const string EmployerNameKey = "Employer name";
+        public const string IsThisTheCorrectEmployerNameKey = "Is this the correct employer name?";
         public const string UploadAnotherForm = "Upload another form";
         public const string WhatHappensNext = "What happens next";
     }

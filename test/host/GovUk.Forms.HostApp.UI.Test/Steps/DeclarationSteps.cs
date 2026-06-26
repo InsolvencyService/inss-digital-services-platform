@@ -10,15 +10,18 @@ public class DeclarationSteps
     private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
     private readonly CommonCoordinator _commonCoordinator;
     private readonly StartPageCoordinator _startPageCoordinator;
+    private readonly CaseReferenceCoordinator _caseReferenceCoordinator;
     public DeclarationSteps(DeclarationCoordinator demoCoordinator,
         UploadDocumentCoordinator uploadDocumentCoordinator,
         CommonCoordinator commonCoordinator,
-        StartPageCoordinator startPageCoordinator)
+        StartPageCoordinator startPageCoordinator,
+        CaseReferenceCoordinator caseReferenceCoordinator)
     {
         _declarationCoordinator = demoCoordinator;
         _uploadDocumentCoordinator = uploadDocumentCoordinator;
         _commonCoordinator = commonCoordinator;
         _startPageCoordinator = startPageCoordinator;
+        _caseReferenceCoordinator = caseReferenceCoordinator;
     }
 
     [Given("I am on the declaration page")]
@@ -63,10 +66,10 @@ public class DeclarationSteps
         await _startPageCoordinator.VerifyStartPageIsDisplayedAsync();
     }
 
-    [Then("I will be taken to the file upload page")]
+    [Then("I will be taken to the case reference page")]
     public async Task ThenIWillBeTakenToTheFileUploadPage()
     {
-        await _uploadDocumentCoordinator.VerifyUploadDocumentPageIsDisplayedAsync();
+        await _caseReferenceCoordinator.VerifyCaseReferencePageIsDisplayedAsync();
     }
 
     [Then("I will see the terms I need to agree to")]
