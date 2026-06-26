@@ -4,6 +4,9 @@
 @{
     PagePropertiesProvider.FullPageLayout = true;
 }
+
+@Html.HiddenFor(m => m.ConfigKey)
+
 @* 
 
 If the search text is empty then show the field to allow the user to enter a search else display any results 

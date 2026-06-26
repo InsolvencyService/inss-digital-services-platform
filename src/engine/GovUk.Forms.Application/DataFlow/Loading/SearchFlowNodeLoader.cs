@@ -2,25 +2,20 @@
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Domain.Search;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
 
 public sealed class SearchFlowNodeLoader : IFlowNodeLoader
 {
-    private readonly ISearchConfigProvider _configSettings;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<SearchFlowNodeLoader> _logger;
-    private readonly ISearchService _searchService;
-
-
-    public SearchFlowNodeLoader(
-        ILogger<SearchFlowNodeLoader> logger,
-        ISearchConfigProvider configSettings,
-        ISearchService searchService)
+    
+    public SearchFlowNodeLoader(IServiceProvider serviceProvider, ILogger<SearchFlowNodeLoader> logger)
     {
-        _configSettings = configSettings;
+        _serviceProvider = serviceProvider;
         _logger = logger;
-        _searchService = searchService;
     }
 
     public async ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
@@ -28,27 +23,28 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         SearchModel search = context.CurrentPage.As<SearchModel>();
         search.CurrentResult = null;
 
-        // Get configuration settings...
-        SearchModel searchConfig = _configSettings.LoadConfig(search.ConfigKey);// "FindPersonConfig.json");
+        ISearchConfigProvider searchConfigProvider = _serviceProvider.GetRequiredKeyedService<ISearchConfigProvider>(search.ConfigKey);
+        SearchModel config = searchConfigProvider.LoadConfig(); 
 
-        // Handle result detail by setting it on the search model..
-        search.ResultColumns = searchConfig.ResultColumns;
-        search.PageSize = searchConfig.PageSize;
-        search.DisplayAsTable = searchConfig.DisplayAsTable;
+        // Handle result detail by setting it on the search model
+        search.ResultColumns = config.ResultColumns;
+        search.PageSize = config.PageSize;
+        search.DisplayAsTable = config.DisplayAsTable;
      
-        // Check if columns in config...
-        CheckAndLogConfiguratonFiles(search);
+        // Check if columns in config
+        CheckAndLogConfigurationFiles(search);
 
         string? searchText = context.GetQueryParam<string>("searchText");
 
         int currentPageNumber = context.GetQueryParam<int>("currentPageNumber");
+        
         if (currentPageNumber < 1)
         {
             currentPageNumber = 1;
         }
+        
         search.CurrentPageNumber = currentPageNumber;
-
-
+        
         if (!string.IsNullOrWhiteSpace(searchText))
         {
             SearchRequest request = new() 
@@ -58,7 +54,8 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
                 CurrentPageNumber = search.CurrentPageNumber
             };
             
-            SearchResponse response = await _searchService.SearchAsync(request);
+            ISearchService searchService = _serviceProvider.GetRequiredKeyedService<ISearchService>(search.ConfigKey);
+            SearchResponse response = await searchService.SearchAsync(request);
 
             search.SearchText = searchText;
             search.Results = response.Results;
@@ -67,12 +64,11 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         }
         
         // The context has a state with will be the Id for the result so you can find it and set the CurrentResult
-        //return new ValueTask<NodeId?>((NodeId?)null);
         return context.Nodes[0].Id;
     }
 
 
-    private void CheckAndLogConfiguratonFiles(SearchModel search)
+    private void CheckAndLogConfigurationFiles(SearchModel search)
     {
         foreach (SearchResult result in search.Results)
         {

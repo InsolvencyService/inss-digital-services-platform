@@ -1,6 +1,5 @@
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services;
-using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Domain.Search;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,17 +10,11 @@ namespace GovUk.Forms.Application.DataFlow.Executing;
 public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly ISearchService _searchService;
-    private readonly ISearchConfigProvider _configSettings;
     private readonly ILogger<SearchFlowNodeExecutor> _logger;
 
-    public SearchFlowNodeExecutor(
-        IServiceProvider serviceProvider,
-        ISearchService searchService, ISearchConfigProvider configSettings, ILogger<SearchFlowNodeExecutor> logger)
+    public SearchFlowNodeExecutor(IServiceProvider serviceProvider, ILogger<SearchFlowNodeExecutor> logger)
     {
         _serviceProvider = serviceProvider;
-        _searchService = searchService;
-        _configSettings = configSettings;
         _logger = logger;
     }
     
@@ -53,16 +46,14 @@ public sealed class SearchFlowNodeExecutor : IFlowNodeExecutor
             search.CurrentPageNumber = 1;
         }
 
-        if (search.CurrentPageNumber < 1)
-        {
-            search.PageSize = config.PageSize;
-        }
-
         ISearchService searchService = _serviceProvider.GetRequiredKeyedService<ISearchService>(search.ConfigKey);
-        SearchResponse response = await searchService.SearchAsync(
-            search.SearchText, 
-            search.PageSize, 
-            search.CurrentPageNumber);
+        SearchRequest request = new() 
+        { 
+            SearchText = search.SearchText, 
+            PageSize = search.PageSize, 
+            CurrentPageNumber = search.CurrentPageNumber
+        };
+        SearchResponse response = await searchService.SearchAsync(request);
         
         SearchModel pageSearch = context.Section.Pages.GetFirstOf<SearchModel>();
         pageSearch.SearchText = search.SearchText;

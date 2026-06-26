@@ -28,9 +28,9 @@ public sealed class ContactUsFormFactory : IFormFactory
 
 
             // TODO: Testing how to use the component so it is re-useable!!
-            .AddSection("Finding Peoples Part Two", "find-people")
-            .AddSearchPage<SearchModel>("Search", "search", "Config2", submitButtonText: "Search")
-            .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
+            //.AddSection("Finding Peoples Part Two", "find-people")
+            //.AddSearchPage<SearchModel>("Search", "search", "Config2", submitButtonText: "Search")
+            //.EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
 
             .ValidateAndComplete();
     }

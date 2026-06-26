@@ -27,12 +27,6 @@ public class SearchModel : PageModel
     
     public SearchResult? CurrentResult { get; set; }
     
-    public void AddResultColumn(string name, string? css)
-    {
-        List<SearchResultColumn> columns = [..ResultColumns, new() { Name = name, Css = css }];
-        ResultColumns = columns.ToArray();
-    }
-
     public override string[] GetSummaryInfo()
     {
         // TODO: Determine what this should be

@@ -45,39 +45,31 @@ public static class ServiceCollectionExtensions
 
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
 
-            services.AddSingleton<ISearchConfigProvider, SearchConfigProvider>();
-            SearchPersonOptions searchOptions = new();
-            configuration
-                .GetSection("EIIRPersonSearch")
-                .Bind(searchOptions);
-            services.AddSingleton(searchOptions);
-
-            services.AddScoped<ISearchService, SearchService>();
-            services.AddSingleton(serviceProvider =>
-            {
-                SearchPersonOptions options =
-                    serviceProvider.GetRequiredService<SearchPersonOptions>();
-
-                return new SearchClient(
-                    new Uri(options.Endpoint),
-                    options.IndexName,
-                    new AzureKeyCredential(options.ApiKey));
-            });
+            // services.AddSingleton<ISearchConfigProvider, SearchConfigProvider>();
+            // SearchPersonOptions searchOptions = new();
+            // configuration
+            //     .GetSection("EIIRPersonSearch")
+            //     .Bind(searchOptions);
+            // services.AddSingleton(searchOptions);
+            //
+            // services.AddScoped<ISearchService, SearchService>();
+            // services.AddSingleton(serviceProvider =>
+            // {
+            //     SearchPersonOptions options =
+            //         serviceProvider.GetRequiredService<SearchPersonOptions>();
+            //
+            //     return new SearchClient(
+            //         new Uri(options.Endpoint),
+            //         options.IndexName,
+            //         new AzureKeyCredential(options.ApiKey));
+            // });
 
             return services;
         }
 
         public IServiceCollection AddSearchInfrastructure(IConfiguration configuration, string configKey)
         {
-            /*
-            services.AddOptions<HeaderOptions>()
-                .Bind(context.Configuration.GetSection("Header"))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-             */
-            AzureSearchOptions searchOptions = new();
-            configuration.GetSection(configKey).Bind(searchOptions).ValidateDataAnnotations()
-                .ValidateOnStart();
+            AzureSearchOptions searchOptions = configuration.BindAndValidate<AzureSearchOptions>(configKey);
             
             services.AddKeyedSingleton<ISearchConfigProvider>(configKey, (provider, _) =>
             {
@@ -90,7 +82,7 @@ public static class ServiceCollectionExtensions
                 SearchClient searchClient = new(
                     new Uri(searchOptions.Endpoint), searchOptions.IndexName, new AzureKeyCredential(searchOptions.ApiKey));
                 ILogger<SearchService> logger = provider.GetRequiredService<ILogger<SearchService>>();
-                return new AzureSearchClient(searchClient, logger);
+                return new MockSearchClient();// new AzureSearchClient(searchClient, logger);
             });
             
             return services;
