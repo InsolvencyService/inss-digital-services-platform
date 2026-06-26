@@ -1,5 +1,10 @@
 ﻿@using Inss.GovUk.Forms.IPUpload.Domain.Validation
 @model IPUploadXmlErrorDetailsModel
+@inject IPagePropertiesProvider PagePropertiesProvider;
+
+@{
+    PagePropertiesProvider.PageTitle = Model.CurrentErrorDetail.Info.Property;
+}
 
 <h1 class="govuk-heading-l">@(Model.CurrentErrorDetail.Info.Property)</h1>
 
