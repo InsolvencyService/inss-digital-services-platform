@@ -142,8 +142,6 @@ public sealed class CaseReferenceCoordinator(
                         .GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton })
                         .ClickAsync());
 
-                IResponse response = await responseTask;
-
                 await AttachCurrentPageScreenshotAsync("Continue clicked");
             });
     }
