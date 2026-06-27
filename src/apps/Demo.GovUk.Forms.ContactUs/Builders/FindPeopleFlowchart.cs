@@ -1,3 +1,4 @@
+using Demo.GovUk.Forms.ContactUs.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
@@ -22,7 +23,6 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
         SearchModel search = section.Pages.GetFirstOf<SearchModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         
-        
         FlowchartBuilder
             .ForSection(section, services)
             .AddDecisionNode(searchId, search.Path, searchId, summaryId)
@@ -30,7 +30,7 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
             .WithExecutor<SearchFlowNodeExecutor>()
             .Next()
             .AddEndNode(summaryId, summary.Path)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<ContactUsSummaryFlowNodeLoader>()
             .WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }
