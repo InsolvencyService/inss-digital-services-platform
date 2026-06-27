@@ -107,8 +107,14 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
             
             _logger.SendingGovNotifyEmail(reference);
             await SendEmailAsync(reference, userId, submissionDate, isEmployeeSubmission, submissions);
+
+            _logger.UpdateSubmissionEmailReceipts();
+            
+            foreach (DynamicsSubmission submission in submissions)
+            {
+                await _dynamicsStoreProvider.StoreAsync(submission, cancellationToken);
+            }
         });
-    
     }
 
     private async Task<SubmitResponse> SubmitMessageToDynamicsAsync(JsonMessage jsonMessage, CancellationToken cancellationToken)

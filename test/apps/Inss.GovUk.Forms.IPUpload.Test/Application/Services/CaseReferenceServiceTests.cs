@@ -23,10 +23,10 @@ public class CaseReferenceServiceTests
     {
         const string caseReference = "CN12345678";
         _caseReferenceClient.LookupCaseDetails(caseReference).Returns((CaseDetailModel?)null);
-        
-        bool result = await _caseReferenceService.CheckExistsAsync(caseReference);
-        
-        Assert.False(result);
+
+        CaseDetailModel? result = await _caseReferenceService.GetCaseDetailsAsync(caseReference);
+
+        Assert.Null(result);
     }
     
     [Fact]
@@ -34,9 +34,9 @@ public class CaseReferenceServiceTests
     {
         const string caseReference = "CN12345678";
         _caseReferenceClient.LookupCaseDetails(caseReference).Returns(new CaseDetailModel());
-        
-        bool result = await _caseReferenceService.CheckExistsAsync(caseReference);
-        
-        Assert.True(result);
+
+        CaseDetailModel? result = await _caseReferenceService.GetCaseDetailsAsync(caseReference);
+
+        Assert.NotNull(result);
     }
 }

@@ -481,7 +481,7 @@ public sealed class Rp14SpreadsheetFixtureBuilder : IRp14FixtureBuilder
     {
         Header = new RP14Header
         {
-            CaseReference = "CN01344678"
+            CaseReference = "CN70000537"
         },
         NameOfBusiness = _faker.Company.CompanyName(),
         CompanyNumber = "7821478",

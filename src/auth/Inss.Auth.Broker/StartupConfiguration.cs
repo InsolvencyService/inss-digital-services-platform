@@ -11,7 +11,9 @@ using Inss.Auth.Broker.Infrastructure.Providers;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Azure.Cosmos;
+using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
 [assembly: HostingStartup(typeof(StartupConfiguration))]
 
@@ -21,6 +23,16 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
+        builder.ConfigureAppConfiguration((_, configurationBuilder) =>
+        {
+            IConfigurationRoot config = configurationBuilder.Build();
+            string? configFileOverride = config["config"];
+            
+            if (configFileOverride is not null && File.Exists(configFileOverride)){
+                configurationBuilder.AddJsonFile(configFileOverride, optional: true);
+            }
+        });
+        
         builder.ConfigureServices((context, services) =>
         {
             services.AddOptions<BrokerOptions>()
@@ -48,7 +60,11 @@ public class StartupConfiguration : IHostingStartup
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                 })
-                .AddCookie()
+                .AddCookie(options =>
+                {
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                })
                 .AddOneLogin()
                 .AddRps()
                 .AddEntra();
@@ -78,6 +94,13 @@ public class StartupConfiguration : IHostingStartup
         
         builder.Configure(app =>
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedHost |
+                    ForwardedHeaders.XForwardedProto
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");

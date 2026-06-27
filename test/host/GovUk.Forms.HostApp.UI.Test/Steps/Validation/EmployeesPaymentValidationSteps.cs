@@ -92,6 +92,16 @@ public sealed class EmployeesPaymentValidationSteps : ValidationStepsBase
             .UploadRp14aWithEmployeeBasicPayPerWeekForEmployeesAsync(employeeCount, basicPayPerWeek);
     }
 
+    [Given("the RP14A contains {int} employees with arrears of pay start date after end date")]
+    public async Task GivenTheRp14aContainsEmployeesWithArrearsOfPayStartDateAfterEndDate(int employeeCount)
+    {
+        DateOnly startDate = new(2026, 4, 30);
+        DateOnly endDate = new(2026, 4, 1);
+
+        await UploadDocumentCoordinator.UploadRp14aWithArrearsDatesForEmployeesAsync(
+            employeeCount, startDate, endDate);
+    }
+
     [Then("I should see the following basic pay per week validation errors")]
     public async Task ThenIShouldSeeTheFollowingBasicPayPerWeekValidationErrors(DataTable dataTable)
     {
@@ -185,5 +195,19 @@ public sealed class EmployeesPaymentValidationSteps : ValidationStepsBase
             expectedError,
             affectedEmployees,
             ErrorDetailsHeaderType.BasicPayPerWeek);
+    }
+
+    [Then("I should be able to view arrears dates error details for multiple employees")]
+    public async Task ThenIShouldBeAbleToViewArrearsDatesErrorDetailsForMultipleEmployees()
+    {
+        UploadErrorSummary expectedError = ScenarioContext.Get<UploadErrorSummary>();
+
+        List<AffectedEmployee> affectedEmployees =
+            ScenarioContext.Get<List<AffectedEmployee>>(AffectedEmployeesKey);
+
+        await UploadErrorDetailsCoordinator.VerifyErrorDetailsAsync(
+            expectedError,
+            affectedEmployees,
+            ErrorDetailsHeaderType.ArrearsOfPayDates);
     }
 }

@@ -1,4 +1,3 @@
-using GovUk.Forms.Components;
 using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
@@ -14,7 +13,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Binding;
 using Inss.GovUk.Forms.IPUpload.Application.Factories;
+using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Infrastructure.Handlers;
 
@@ -29,9 +30,8 @@ public class StartupConfiguration : IHostingStartup
     {
         builder.ConfigureServices((context, services) =>
         {
-            WebRoot webRoot = new();
-            services.AddSingleton<IWebRoot>(webRoot);
             services.AddSingleton<IFormFactory, IPUploadFormFactory>();
+            services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(XmlFileUploadModel).FullName);
             
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
 
@@ -40,15 +40,8 @@ public class StartupConfiguration : IHostingStartup
 
             if (context.HostingEnvironment.IsDevelopment())
             {
-                services.AddHttpClient<ICaseReferenceClient, MockCaseReferenceClient>(client =>
-                    {
-                        client.BaseAddress = new Uri(dynamicsOptions.Url);
-                    });
-
-                services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
-                    {
-                        client.BaseAddress = new Uri(submissionOptions.Url);
-                    });
+                services.AddSingleton<ICaseReferenceClient, MockCaseReferenceClient>();
+                services.AddSingleton<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>();
             }
             else
             {

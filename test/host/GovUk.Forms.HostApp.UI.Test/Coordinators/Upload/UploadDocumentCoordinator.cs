@@ -115,6 +115,9 @@ public sealed class UploadDocumentCoordinator :
     public Task UploadRp14aWithCaseReferenceAsync(params string?[] caseReferences)
         => _scenarioCoordinator.UploadRp14aWithCaseReferenceAsync(caseReferences);
 
+    public Task UploadRp14aWithTooLongCaseReferencesAsync(int count)
+        => _scenarioCoordinator.UploadRp14aWithTooLongCaseReferencesAsync(count);
+
     public Task UploadRp14aWithEmployerNameAsync(params string?[] employerNames)
         => _scenarioCoordinator.UploadRp14aWithEmployerNameAsync(employerNames);
 
@@ -337,9 +340,48 @@ public sealed class UploadDocumentCoordinator :
     public Task UploadRp14WithCompanyAddressLinesCountAsync(int lineCount)
         => _rp14ScenarioCoordinator.UploadRp14WithCompanyAddressLinesCountAsync(lineCount);
 
+    public Task UploadRp14WithCrossCategoryErrorsAsync(
+        string caseReference,
+        string? businessName,
+        string directorNino,
+        string shareholderPercentage,
+        string? payRecordsContactName)
+        => _rp14ScenarioCoordinator.UploadRp14WithCrossCategoryErrorsAsync(
+            caseReference,
+            businessName,
+            directorNino,
+            shareholderPercentage,
+            payRecordsContactName);
+
+    public Task UploadRp14WithRepeatedValidationErrorsAsync(
+        int directorNinoCount,
+        int shareholderPercentageCount,
+        int addressLineCount,
+        int businessNameCount)
+        => _rp14ScenarioCoordinator.UploadRp14WithRepeatedValidationErrorsAsync(
+            directorNinoCount,
+            shareholderPercentageCount,
+            addressLineCount,
+            businessNameCount);
+
     public Task UploadRp14aWithHolidayDaysTakenForEmployeesAsync(int employeeCount, string? holidayDaysTaken)
         => _scenarioCoordinator.UploadRp14aWithHolidayDaysTakenForEmployeesAsync(employeeCount, holidayDaysTaken);
 
     public Task UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(int employeeCount, string? holidayDaysCarriedForward)
         => _scenarioCoordinator.UploadRp14aWithHolidayDaysCarriedForwardForEmployeesAsync(employeeCount, holidayDaysCarriedForward);
+
+    public Task UploadRp14aWithHolidayContractedEntitlementDaysForEmployeesAsync(int employeeCount, string? value)
+        => _scenarioCoordinator.UploadRp14aWithHolidayContractedEntitlementDaysForEmployeesAsync(employeeCount, value);
+
+    public Task UploadRp14aWithHolidayNotPaidDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate)
+        => _scenarioCoordinator.UploadRp14aWithHolidayNotPaidDatesForEmployeesAsync(employeeCount, startDate, endDate);
+
+    public Task UploadRp14aWithSurnameForEmployeesAsync(int employeeCount, string? surname)
+        => _scenarioCoordinator.UploadRp14aWithSurnameForEmployeesAsync(employeeCount, surname);
+
+    public Task UploadRp14aWithEmploymentDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate)
+        => _scenarioCoordinator.UploadRp14aWithEmploymentDatesForEmployeesAsync(employeeCount, startDate, endDate);
+
+    public Task UploadRp14aWithArrearsDatesForEmployeesAsync(int employeeCount, DateOnly? startDate, DateOnly? endDate)
+        => _scenarioCoordinator.UploadRp14aWithArrearsDatesForEmployeesAsync(employeeCount, startDate, endDate);
 }

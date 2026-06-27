@@ -1,15 +1,10 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
 
 public abstract partial class EmployeeValidator : BaseValidator
 {
-    protected EmployeeValidator(ICaseReferenceService caseReferenceService) : base(caseReferenceService)
-    {
-    }
-    
     protected static void ValidateAverageHoursWorked(ValidatorContext context, decimal averageHours)
     {
         string value = averageHours.ToString(CultureInfo.InvariantCulture);

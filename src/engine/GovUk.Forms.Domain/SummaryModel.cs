@@ -1,9 +1,6 @@
 namespace GovUk.Forms.Domain;
 
-public sealed class SummaryModel : CheckAnswersModel
+public sealed class SummaryModel : PageModel
 {
-    public SummaryModel()
-    {
-        ViewName = "_CheckAnswers";
-    }
+    public SummaryCategory[] Categories { get; set; } = [];
 }

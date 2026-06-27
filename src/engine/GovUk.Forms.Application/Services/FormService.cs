@@ -33,6 +33,7 @@ public sealed class FormService : IFormService
 
             if (content is PageModel page)
             {
+                _pagePropertiesProvider.PageTitle = page.Title;
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
                 ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, refererPath, queryParams);
@@ -65,7 +66,7 @@ public sealed class FormService : IFormService
         {
             SectionModel section = form.GetSectionForPage(page.Path);
             IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-            ValidationResult[] validationResults = await flowchart.ValidateAsync(page);
+            ValidationResult[] validationResults = await flowchart.ValidateAsync(form, section, page);
 
             if (validationResults.Length > 0)
             {

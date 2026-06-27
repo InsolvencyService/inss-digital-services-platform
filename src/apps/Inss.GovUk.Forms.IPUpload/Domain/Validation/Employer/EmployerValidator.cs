@@ -1,15 +1,10 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain.Validation.Employer;
 
 public abstract partial class EmployerValidator : BaseValidator
 {
-    protected EmployerValidator(ICaseReferenceService caseReferenceService) : base(caseReferenceService)
-    {
-    }
-
     protected static void ValidateBusinessName(ValidatorContext context, string businessName)
     {
         if (string.IsNullOrWhiteSpace(businessName))

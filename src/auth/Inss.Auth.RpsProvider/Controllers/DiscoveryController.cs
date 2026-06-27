@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Inss.Auth.RpsProvider.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Inss.Auth.RpsProvider.Controllers;
 
@@ -8,11 +9,11 @@ public class DiscoveryController : Controller
     private static readonly string[] _idTokenSigningAlgValuesSupported = ["RS256"];
     private static readonly string[] _responseTypesSupported = ["code"];
     private static readonly string[] _subjectTypesSupported = ["public"];
-
+    
     [HttpGet("/.well-known/openid-configuration")]
     public IActionResult Discovery()
     {
-        var issuer = $"{Request.Scheme}://{Request.Host}";
+        string issuer = Request.GetForwardedHost();
         return Json(new
         {
             issuer,

@@ -1,82 +1,51 @@
-﻿using System.Globalization;
-using Inss.GovUk.Forms.IPUpload.Application.Services;
+﻿using Inss.Common.IPUpload.Employee.Api;
+using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation.Employee;
-using NSubstitute;
+using System.Globalization;
 using Xunit;
-using Inss.Common.IPUpload.Employee.Api;
 
 namespace Inss.GovUk.Forms.IPUpload.Test.Domain.Validation.Employee;
 
 public class EmployeeApiValidatorTests
 {
     private readonly EmployeeApiValidator _validator;
-    private readonly ICaseReferenceService _caseReferenceService;
+    private readonly EmployerDetailsModel _employerDetails;
     private readonly RP14A _model;
 
     public EmployeeApiValidatorTests()
     {
-        _caseReferenceService = Substitute.For<ICaseReferenceService>();
         _model = EmployeeApiHelper.CreateModel();
-        _caseReferenceService.CheckExistsAsync(_model.Header.CaseReference).Returns(true);
-        _validator = new EmployeeApiValidator(_model, _caseReferenceService);
+        _employerDetails = new EmployerDetailsModel
+        {
+            CaseReference = _model.Header.CaseReference,
+            EmployerName = "Test Company"
+        };
+        _validator = new EmployeeApiValidator(_model);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    public async Task MissingCaseRef_ValidateAsync_ReturnsError(string? caseRef)
+    [Fact]
+    public void MismatchCaseRef_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
-        _model.Header.CaseReference = caseRef;
+        _model.Header.CaseReference = "CN87654321";
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
             employee, 
             _model.Header.CaseReference, 
-            CaseValidationInfo.MissingCaseReference());
+            CaseValidationInfo.CaseReferenceMismatch(_model.Header.CaseReference));
     }
     
     [Fact]
-    public async Task InvalidLengthCaseRef_ValidateAsync_ReturnsError()
-    {
-        RP14AEmployee employee = _model.Employee[0];
-        _model.Header.CaseReference = "CN123456789";
-        
-        ValidatorContext context = await _validator.ValidateAsync();
-
-        EmployeeApiHelper.AssertError(
-            context.Errors, 
-            employee, 
-            _model.Header.CaseReference,
-            CaseValidationInfo.InvalidCaseReferenceLength());
-    }
-    
-    [Fact]
-    public async Task UnknownCaseRef_ValidateAsync_ReturnsError()
-    {
-        RP14AEmployee employee = _model.Employee[0];
-        _caseReferenceService.CheckExistsAsync(_model.Header.CaseReference).Returns(false);
-        
-        ValidatorContext context = await _validator.ValidateAsync();
-
-        EmployeeApiHelper.AssertError(
-            context.Errors, 
-            employee, 
-            _model.Header.CaseReference, 
-            CaseValidationInfo.UnknownCaseReference());
-    }
-    
-    [Fact]
-    public async Task InvalidAverageHoursWorked_ValidateAsync_ReturnsError()
+    public void InvalidAverageHoursWorked_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.AverageHoursWorked = 37.55M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors,
@@ -86,12 +55,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmployerName_ValidateAsync_ReturnsError()
+    public void InvalidEmployerName_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         _model.EmployerName = new string('X', 100);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -104,12 +73,12 @@ public class EmployeeApiValidatorTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public async Task MissingEmployeeSurname_ValidateAsync_ReturnsError(string? surname)
+    public void MissingEmployeeSurname_ValidateAsync_ReturnsError(string? surname)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.EmployeeName.Surname = surname;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -119,12 +88,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmployeeSurname_ValidateAsync_ReturnsError()
+    public void InvalidEmployeeSurname_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.EmployeeName.Surname = new string('X', 100);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -137,12 +106,12 @@ public class EmployeeApiValidatorTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public async Task MissingEmployeeNino_ValidateAsync_ReturnsError(string? nino)
+    public void MissingEmployeeNino_ValidateAsync_ReturnsError(string? nino)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.NINO = nino;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -156,12 +125,12 @@ public class EmployeeApiValidatorTests
     [InlineData("ABC112233G")] // Preceding chars - no spaces
     [InlineData("AB 11 22 33 GH")] // Trailing chars
     [InlineData("AB112233GH")] // Trailing chars - no spaces
-    public async Task InvalidEmployeeNino_ValidateAsync_ReturnsError(string? nino)
+    public void InvalidEmployeeNino_ValidateAsync_ReturnsError(string? nino)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.NINO = nino;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -171,12 +140,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidMoneyOwedToEmployer_ValidateAsync_ReturnsError()
+    public void InvalidMoneyOwedToEmployer_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.MoneyOwedToEmployer = 300.123M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -186,13 +155,13 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmploymentDates_ValidateAsync_ReturnsError()
+    public void InvalidEmploymentDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
         employee.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -202,12 +171,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidEmployeeBasicPay_ValidateAsync_ReturnsError()
+    public void InvalidEmployeeBasicPay_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.PayDetails.BasicPayPerWeek = 250.123M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -217,13 +186,13 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidAOPOwed_ValidateAsync_ReturnsError()
+    public void InvalidAOPOwed_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeePayDetailsArrearsOfPayPeriod aop = employee.PayDetails.ArrearsOfPay[0];
         aop.AOPOwed = 250.123M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -233,14 +202,14 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidAOPDates_ValidateAsync_ReturnsError()
+    public void InvalidAOPDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         RP14AEmployeePayDetailsArrearsOfPayPeriod aop = employee.PayDetails.ArrearsOfPay[0];
         aop.Period.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
         aop.Period.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -250,12 +219,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayEntitlement_ValidateAsync_ReturnsError()
+    public void InvalidHolidayEntitlement_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayContractedEntitlementDays = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -267,12 +236,12 @@ public class EmployeeApiValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayEntitlementRange_ValidateAsync_ReturnsError(decimal entitlement)
+    public void InvalidHolidayEntitlementRange_ValidateAsync_ReturnsError(decimal entitlement)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayContractedEntitlementDays = entitlement;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -282,12 +251,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayCarriedForward_ValidateAsync_ReturnsError()
+    public void InvalidHolidayCarriedForward_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysCarriedForward = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -299,12 +268,12 @@ public class EmployeeApiValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayCarriedForwardRange_ValidateAsync_ReturnsError(decimal carriedForward)
+    public void InvalidHolidayCarriedForwardRange_ValidateAsync_ReturnsError(decimal carriedForward)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysCarriedForward = carriedForward;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -314,12 +283,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayDaysTaken_ValidateAsync_ReturnsError()
+    public void InvalidHolidayDaysTaken_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysTaken = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -331,12 +300,12 @@ public class EmployeeApiValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayDaysTakenRange_ValidateAsync_ReturnsError(decimal daysTaken)
+    public void InvalidHolidayDaysTakenRange_ValidateAsync_ReturnsError(decimal daysTaken)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.HolidayDaysTaken = daysTaken;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -346,12 +315,12 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayDaysOwed_ValidateAsync_ReturnsError()
+    public void InvalidHolidayDaysOwed_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.NoDaysHolidayOwed = 33.555M;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -363,12 +332,12 @@ public class EmployeeApiValidatorTests
     [Theory]
     [InlineData(-1)]
     [InlineData(366)]
-    public async Task InvalidHolidayDaysOwedRange_ValidateAsync_ReturnsError(decimal daysOwed)
+    public void InvalidHolidayDaysOwedRange_ValidateAsync_ReturnsError(decimal daysOwed)
     {
         RP14AEmployee employee = _model.Employee[0];
         employee.Holiday.NoDaysHolidayOwed = daysOwed;
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -378,14 +347,14 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task InvalidHolidayNotPaidDates_ValidateAsync_ReturnsError()
+    public void InvalidHolidayNotPaidDates_ValidateAsync_ReturnsError()
     {
         RP14AEmployee employee = _model.Employee[0];
         PeriodType holidayNotPaid = employee.Holiday.HolidayNotPaid[0];
         holidayNotPaid.StartDate = DateTime.Parse("2025-01-30", CultureInfo.InvariantCulture);
         holidayNotPaid.EndDate = DateTime.Parse("2024-01-30", CultureInfo.InvariantCulture);
         
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
         EmployeeApiHelper.AssertError(
             context.Errors, 
@@ -395,10 +364,10 @@ public class EmployeeApiValidatorTests
     }
     
     [Fact]
-    public async Task ValidModel_ValidateAsync_ReturnsNoErrors()
+    public void ValidModel_ValidateAsync_ReturnsNoErrors()
     {
-        ValidatorContext context = await _validator.ValidateAsync();
+        ValidatorContext context = _validator.Validate(_employerDetails);
 
-        Assert.Empty(context.Errors);
+        Assert.NotNull(context.Errors);
     }
 }

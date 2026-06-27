@@ -22,7 +22,7 @@ public static class TestValidator
 
         IEnvironmentConfig environmentConfig = EnvironmentConfigFactory.EnvironmentConfig;
 
-        if (!environmentConfig.EnvironmentType.IsAnyOf(TestEnvironment.Prod))
+        if (!environmentConfig.EnvironmentType.IsAnyOf(TestEnvironment.PreProd))
         {
             ValidateCodeOnce();
         }

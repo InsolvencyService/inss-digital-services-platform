@@ -9,7 +9,7 @@ using GovUk.Forms.HostApp.UI.Test.Tags;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps.Validation;
 
-[Scope(Feature = "Employer Validation")]
+[Scope(Feature = "Employer Details Validation")]
 [Binding]
 public class EmployerValidationSteps : ValidationStepsBase
 {

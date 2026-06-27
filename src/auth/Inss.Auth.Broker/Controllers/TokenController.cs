@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Domain;
+using Inss.Auth.Broker.Extensions;
 using Inss.Auth.Broker.Options;
 using Inss.Common.Tokens;
 using Microsoft.AspNetCore.Mvc;
@@ -31,9 +32,9 @@ public class TokenController : Controller
     [HttpPost("/connect/token")]
     public async Task<IActionResult> TokenExchange()
     {
-        var form = await Request.ReadFormAsync();
-        var code = form["code"].ToString();
-        var codeVerifier = form["code_verifier"].ToString();
+        IFormCollection form = await Request.ReadFormAsync();
+        string code = form["code"].ToString();
+        string codeVerifier = form["code_verifier"].ToString();
 
         AuthCode? authCode = await _authCodeStoreProvider.GetAsync(code);
         
@@ -63,13 +64,13 @@ public class TokenController : Controller
         AppendNonceClaim(identity, authCode.Nonce);
         AppendSubmissionClaim(identity);
     
-        var tokenHandler = new JwtSecurityTokenHandler();
+        JwtSecurityTokenHandler tokenHandler = new();
 
         SigningCredentials signingCredentials = _tokenSecurityProvider.GetSigningCredentials();
         
-        var issuer = $"{Request.Scheme}://{Request.Host}";
+        string issuer = Request.GetForwardedHost();
         
-        var idToken = tokenHandler.CreateJwtSecurityToken(
+        JwtSecurityToken idToken = tokenHandler.CreateJwtSecurityToken(
             issuer: issuer,
             audience: _brokerOptions.Value.ClientId,
             subject: new ClaimsIdentity(principal.Claims),
@@ -77,7 +78,7 @@ public class TokenController : Controller
             signingCredentials: signingCredentials
         );
         
-        var accessToken = tokenHandler.CreateJwtSecurityToken(
+        JwtSecurityToken accessToken = tokenHandler.CreateJwtSecurityToken(
             issuer: issuer,
             audience: _brokerOptions.Value.ClientId,
             subject: new ClaimsIdentity(identity.Claims),

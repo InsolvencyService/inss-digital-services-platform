@@ -39,9 +39,15 @@ public static class AuthenticationBuilderExtensions
                 
                 options.Events = new OpenIdConnectEvents
                 {
-                    OnRedirectToIdentityProviderForSignOut = ctx =>
+                    OnRedirectToIdentityProviderForSignOut = context =>
                     {
-                        ctx.ProtocolMessage.PostLogoutRedirectUri = ctx.Request.Query["post_logout_redirect_uri"];
+                        context.ProtocolMessage.PostLogoutRedirectUri = context.Request.Query["post_logout_redirect_uri"];
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToIdentityProvider = context =>
+                    {
+                        string host = context.Request.GetForwardedHost();
+                        context.ProtocolMessage.RedirectUri = $"{host}/signin-oidc-rps";
                         return Task.CompletedTask;
                     }
                 };

@@ -23,13 +23,13 @@ public sealed class RP14ApiMapper : IMapper
             CorrelationId = Guid.NewGuid(),
             CaseReference = _model.Header?.CaseReference ?? null!,
             Company = MapCompany(_model),
-            Directors = MapDirectors(_model.Directors.Director),
+            Directors = MapDirectors(_model.Directors),
             DirectorsClaimingRedundancy = _model.Directors.ClaimingRPAsEmployeeSpecified 
                 ? MapYesNo(_model.Directors.ClaimingRPAsEmployee) : null,
             Shareholders = MapShareholders(_model.Shareholders),
             LegallyAssociatedCompanies = _model.AssociatedCompanies?.LegallyAssociatedCompaniesSpecified == true 
                 ? MapYesNo(_model.AssociatedCompanies.LegallyAssociatedCompanies) : null,
-            AssociatedCompanies = MapAssociatedCompanies(_model.AssociatedCompanies?.AssociatedCompany ?? []),
+            AssociatedCompanies = MapAssociatedCompanies(_model.AssociatedCompanies),
             Insolvency = MapInsolvency(_model.InsolvencyDetails),
             Transfer = MapTransferDetails(_model.TransferDetails),
             Paye = MapPaye(_model.PAYE),
@@ -132,9 +132,14 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
     
-    private static List<Director> MapDirectors(RP14DirectorsDirector[] directors)
+    private static List<Director> MapDirectors(RP14Directors directors)
     {
-        return directors
+        if (directors.Director is null || directors.Director.Length == 0)
+        {
+            return [];
+        }
+        
+        return directors.Director
             .Where(d => d.Name is not null && !string.IsNullOrEmpty(d.Name.Surname))
             .Select(d => new Director
             {
@@ -145,8 +150,13 @@ public sealed class RP14ApiMapper : IMapper
             .ToList();
     }
 
-    private static List<Shareholder> MapShareholders(RP14Shareholder[] shareholders)
+    private static List<Shareholder> MapShareholders(RP14Shareholder[]? shareholders)
     {
+        if (shareholders is null || shareholders.Length == 0)
+        {
+            return [];
+        }
+        
         return shareholders
             .Select(s => new Shareholder
             {
@@ -157,9 +167,14 @@ public sealed class RP14ApiMapper : IMapper
             .ToList();
     }
 
-    private static List<AssociatedCompany> MapAssociatedCompanies(RP14AssociatedCompaniesAssociatedCompany[] associatedCompanies)
+    private static List<AssociatedCompany> MapAssociatedCompanies(RP14AssociatedCompanies? associatedCompanies)
     {
-        return associatedCompanies
+        if (associatedCompanies is null || associatedCompanies.AssociatedCompany.Length == 0)
+        {
+            return [];
+        }
+        
+        return associatedCompanies.AssociatedCompany
             .Select(ac => new AssociatedCompany
             {
                 Name = ac.CompanyName,

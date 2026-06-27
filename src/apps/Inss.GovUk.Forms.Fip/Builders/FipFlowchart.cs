@@ -1,9 +1,9 @@
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
-using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using Inss.GovUk.Forms.Fip.Application.DataFlow;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Inss.GovUk.Forms.Fip.Builders;
@@ -28,7 +28,7 @@ public sealed class FipFlowchart : DefineFlowchartBuilder
             .AddTransitionNode(dateId, bankruptcyDate.Path, summaryId)
             .Next()
             .AddEndNode(summaryId, summary.Path)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<FipSummaryFlowNodeLoader>()
             .WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }

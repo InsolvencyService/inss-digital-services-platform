@@ -1,8 +1,13 @@
 ﻿@inject IOptions<AnalyticsOptions> Analytics;
-@inject IPagePropertiesProvider PagePropertiesProvider; 
+@inject IPagePropertiesProvider PagePropertiesProvider;
+@inject IOptions<HeaderOptions> HeaderOptions;
+
 @{
     // ReSharper disable once Razor.LayoutNotResolved
     Layout = "_GovUkPageTemplate";
+    string serviceLabel = HeaderOptions.Value.Service.Label;
+    ViewData["Title"] = !string.IsNullOrWhiteSpace(PagePropertiesProvider.PageTitle)
+        ? $"{PagePropertiesProvider.PageTitle} - {serviceLabel}" : serviceLabel;
 }
 
 @* ReSharper disable once Razor.SectionNotResolved *@

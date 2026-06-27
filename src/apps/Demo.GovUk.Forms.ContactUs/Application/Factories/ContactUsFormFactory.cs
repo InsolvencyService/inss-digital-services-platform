@@ -1,4 +1,3 @@
-using Demo.GovUk.Forms.ContactUs.Domain;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
@@ -16,7 +15,8 @@ public sealed class ContactUsFormFactory : IFormFactory
             .AddSection("Send Us Files", "send-us-files")
             .AddPage<FullNameModel>("Your name", "your-name", submitButtonText: "Continue")
             .AddGroup<AddAnotherGroup>("Files")
-            .AddGroupPage<FileUploadModel>("Upload file", "upload-file", submitButtonText: "Continue")
+            .AddGroupPage<FileUploadModel>("Upload file", "upload-file", submitButtonText: "Continue", 
+                hint: "The uploaded file must be PDF ending with '.pdf'. (Other formats e.g. XML, XLS are NOT supported).")
             .AddGroupPage<RemoveModel>("Remove uploaded file", "remove-uploaded-file", submitButtonText: "Continue")
             .AddFinalGroupPage<AddAnotherModel>("Uploaded files", "add-another-file", submitButtonText: "Continue")
             .EndSection<SummaryModel>("Contact us summary", "summary", submitButtonText: "Continue")

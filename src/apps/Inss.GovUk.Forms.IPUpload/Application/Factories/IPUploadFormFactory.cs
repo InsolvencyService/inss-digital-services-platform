@@ -15,11 +15,13 @@ public sealed class IPUploadFormFactory : IFormFactory
             
             .AddSection("IP Upload", "redundancy-payment")
             .AddPage<IPUploadDeclarationModel>("Declaration", "declaration", submitButtonText: "Agree and continue")
-            .AddPage<XmlFileUploadModel>("Upload document", "upload-document", submitButtonText: "Continue")
-            .AddPage<IPUploadXmlErrorsModel>("IP upload errors", "upload-errors", submitButtonText: "Continue")
+            .AddPage<CheckCaseReferenceModel>("Enter the 10 character case reference number", "check-case-reference", submitButtonText: "Continue", question: "Whats the case reference number?", hint: "For example, �CN12345678�. This must match the case reference number in your form.")
+            .AddPage<EmployerDetailsModel>("Employer details", "case-reference-match", submitButtonText: "Continue")
+            .AddPage<XmlFileUploadModel>("Upload redundancy payment forms (RP14/A)", "upload-document", submitButtonText: "Continue")
+            .AddPage<IPUploadXmlErrorsModel>("Your form has errors", "upload-errors", submitButtonText: "Continue")
             .AddPage<IPUploadXmlErrorDetailsModel>("IP upload error details", "upload-error-details")
-            .AddPage<SummaryModel>("Redundancy payment summary", "summary", question: "Check your answers before submitting the form", submitButtonText: "Submit", description: "Your form has passed initial validation.")
-            .EndSection<PostSubmitModel>("Submitted", "submit-completed", submitButtonText: "Upload another form")
+            .AddPage<SummaryModel>("Redundancy payment summary", "summary", question: "Check your answers before submitting the form", submitButtonText: "Submit")
+            .EndSection<PostSubmitModel>("What happens next", "submit-completed", submitButtonText: "Upload another form")
 
             .ValidateAndComplete();
     }

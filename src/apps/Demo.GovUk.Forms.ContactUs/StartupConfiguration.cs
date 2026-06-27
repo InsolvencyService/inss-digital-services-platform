@@ -18,8 +18,6 @@ public class StartupConfiguration : IHostingStartup
     {
         builder.ConfigureServices((context, services) =>
         {
-            WebRoot webRoot = new();
-            services.AddSingleton<IWebRoot>(webRoot);
             services.AddSingleton<IFormFactory, ContactUsFormFactory>();
             
             ContactUsFlowchart contactUsBuilder = new();
@@ -33,6 +31,8 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddSearch("Config2");
             services.AddSearchInfrastructure(context.Configuration, "Config2");
+            ContactUsFlowchart flowchartBuilder = new();
+            flowchartBuilder.Construct(services);
         });
     }
 }

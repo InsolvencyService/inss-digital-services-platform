@@ -1,4 +1,9 @@
 ﻿@model PostSubmitModel
+@inject IPagePropertiesProvider PagePropertiesProvider
+
+@{
+    PagePropertiesProvider.PreviousPagePath = null;
+}
 
 <govuk-panel heading-level="2">
     <govuk-panel-title>Redundancy payment form(RP14/A) submitted</govuk-panel-title>

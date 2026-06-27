@@ -20,6 +20,16 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
+        builder.ConfigureAppConfiguration((_, configurationBuilder) =>
+        {
+            IConfigurationRoot config = configurationBuilder.Build();
+            string? configFileOverride = config["config"];
+            
+            if (configFileOverride is not null && File.Exists(configFileOverride)){
+                configurationBuilder.AddJsonFile(configFileOverride, optional: true);
+            }
+        });
+        
         builder.ConfigureServices((context, services) =>
         {
             TokenOptions tokenOptions = new();

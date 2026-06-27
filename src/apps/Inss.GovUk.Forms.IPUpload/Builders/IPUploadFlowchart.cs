@@ -1,6 +1,4 @@
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.DataFlow.Loading;
-using GovUk.Forms.Application.DataFlow.Visiting;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -15,6 +13,8 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
     public override void Construct(IServiceCollection services)
     {
         NodeId declarationId = "Declaration";
+        NodeId caseRefNumId = "CaseReferenceNumber";
+        NodeId employerId = "EmployerDetails";
         NodeId fileUploadId = "FileUpload";
         NodeId fileUploadErrorId = "FileUploadErrors";
         NodeId fileUploadErrorDetailsId = "FileUploadErrorDetails";
@@ -25,6 +25,8 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         SectionModel section = form.Sections["IP Upload"];
             
         IPUploadDeclarationModel declaration = section.Pages.GetFirstOf<IPUploadDeclarationModel>();
+        CheckCaseReferenceModel checkCaseReference = section.Pages.GetFirstOf<CheckCaseReferenceModel>();
+        EmployerDetailsModel employerDetails = section.Pages.GetFirstOf<EmployerDetailsModel>();
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
         IPUploadXmlErrorsModel uploadErrors = section.Pages.GetFirstOf<IPUploadXmlErrorsModel>();
         IPUploadXmlErrorDetailsModel errorDetails = section.Pages.GetFirstOf<IPUploadXmlErrorDetailsModel>();
@@ -33,30 +35,34 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         
         FlowchartBuilder
             .ForSection(section, services)
-            .AddTransitionNode(declarationId, declaration.Path, fileUploadId)
+            .AddTransitionNode(declarationId, declaration.Path, caseRefNumId)
             .WithExecutor<DeclarationFlowNodeExecutor>()
+            .Next()
+            .AddTransitionNode(caseRefNumId, checkCaseReference.Path, employerId)
+            .WithValidator<CaseReferenceFlowNodeValidator>()
+            .WithExecutor<CaseReferenceFlowNodeExecutor>()
+            .Next()
+            .AddDecisionNode(employerId, employerDetails.Path, caseRefNumId, fileUploadId)
+            .WithExecutor<EmployerDetailsFlowNodeExecutor>()
             .Next()
             .AddDecisionNode(fileUploadId, fileUpload.Path, fileUploadErrorId, summaryId)
             .WithLoader<FileUploadFlowNodeLoader>()
             .WithValidator<FileUploadFlowNodeValidator>()
             .WithExecutor<FileUploadFlowNodeExecutor>()
-            .WithPreviousPathProvider<FileUploadFlowNodePreviousPathProvider>()
             .Next()
             .AddSpurNode(fileUploadErrorId, uploadErrors.Path, fileUploadId, fileUploadErrorDetailsId)
             .WithLoader<FileUploadErrorFlowNodeLoader>()
             .Next()
             .AddTransitionNode(fileUploadErrorDetailsId, errorDetails.Path, fileUploadErrorId)
             .WithLoader<FileUploadErrorDetailsFlowNodeLoader>()
-            .WithPreviousPathProvider<FileUploadErrorDetailsFlowNodePreviousPathProvider>()
             .Next()
             .AddTransitionNode(summaryId, summary.Path, postSubmitSuccessId)
-            .WithLoader<SectionSummaryFlowNodeLoader>()
+            .WithLoader<IPUploadSummaryFlowNodeLoader>()
             .WithExecutor<SubmitFileUploadFlowNodeExecutor>()
             .Next()
             .AddEndNode(postSubmitSuccessId, postSubmit.Path, declarationId)
             .WithLoader<PostSubmitFlowNodeLoader>()
-            .WithVisitor<ResetTrackingFlowNodeVisitor>()
-            .WithPreviousPathProvider<PostSubmitFlowNodePreviousPathProvider>()
+            .WithExecutor<PostSubmitFlowNodeExecutor>()
             .BuildAndRegister();
     }
 }

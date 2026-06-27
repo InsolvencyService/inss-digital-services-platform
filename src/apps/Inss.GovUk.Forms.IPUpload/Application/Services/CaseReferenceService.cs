@@ -16,10 +16,10 @@ public sealed class CaseReferenceService : ICaseReferenceService
         _logger = logger;
     }
 
-    public async Task<bool> CheckExistsAsync(string caseReference)
+    public async Task<CaseDetailModel?> GetCaseDetailsAsync(string caseReference)
     {
         _logger.LookupCaseDetailsExists(caseReference);
-        CaseDetailModel? result = await _caseReferenceClient.LookupCaseDetails(caseReference);
-        return result is not null;
+         
+        return await _caseReferenceClient.LookupCaseDetails(caseReference);
     }
 }
