@@ -24,8 +24,7 @@ public class FormController : Controller
     public async Task<IActionResult> Edit(string? state = null)
     {
         ContentPath requestPath = new(Request.Path);
-        ContentPath refererPath = GetRefererPath();
-        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, refererPath, state);
+        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, state);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
 
@@ -55,18 +54,5 @@ public class FormController : Controller
     public IActionResult LogOut()
     {
         return SignOut(OpenIdConnectDefaults.AuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
-    }
-
-    private ContentPath GetRefererPath()
-    {
-        string referer = Request.Headers.Referer.ToString();
-
-        if (string.IsNullOrEmpty(referer))
-        {
-            return new ContentPath("/");
-        }
-        
-        Uri refererUri = new(referer);
-        return new ContentPath(refererUri.PathAndQuery);
     }
 }

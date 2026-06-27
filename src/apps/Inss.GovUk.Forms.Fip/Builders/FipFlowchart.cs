@@ -1,5 +1,6 @@
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
+using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -23,6 +24,8 @@ public sealed class FipFlowchart : DefineFlowchartBuilder
         DateModel bankruptcyDate = section.Pages.GetFirstOf<DateModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
             
+        services.AddKeyedTransient<IFlowNodePreviousPathProvider, FlowNodePreviousPathProvider>(section.Path);
+        
         FlowchartBuilder
             .ForSection(section, services)
             .AddTransitionNode(dateId, bankruptcyDate.Path, summaryId)

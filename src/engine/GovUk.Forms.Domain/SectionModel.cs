@@ -12,10 +12,10 @@ public class SectionModel : ContentModel
     public DateTimeOffset? StartedDate { get; set; }
     
     public DateTimeOffset? CompletedDate { get; set; }
-
-    public NodeId[] VisitedNodes { get; set; } = [];
     
     public ContentPath? PreviousPagePath { get; set; }
+    
+    public ContentPath? ReturnUrl { get; set; }
     
     [JsonIgnore]
     public PageModel FirstPage
@@ -39,44 +39,5 @@ public class SectionModel : ContentModel
     public void SetCompleted()
     {
         CompletedDate = DateTimeOffset.Now;
-    }
-    
-    public void Track(NodeId? nodeId)
-    {
-        if (nodeId is not null && VisitedNodes.IndexOf(nodeId) == -1)
-        {
-            List<NodeId> nodeIdList = [..VisitedNodes, nodeId];
-            VisitedNodes = nodeIdList.ToArray();
-        }
-    }
-
-    public void Untrack(params NodeId[] nodeIdToUntrack)
-    {
-        List<NodeId> nodeIdList = [..VisitedNodes];
-
-        foreach (NodeId nodeId in nodeIdToUntrack)
-        {
-            nodeIdList.Remove(nodeId);
-        }
-        
-        VisitedNodes = nodeIdList.ToArray();
-    }
-    
-    public void ResetVisitedNodesFrom(NodeId? fromNodeId)
-    {
-        int currentPageNodeIndex = VisitedNodes.IndexOf(fromNodeId);
-
-        if (currentPageNodeIndex > -1)
-        {
-            NodeId[] nodeIdsToReset = VisitedNodes.Skip(currentPageNodeIndex + 1).ToArray();
-            IEnumerable<PageModel> pagesToReset = nodeIdsToReset.Select(nodeId => Pages.First(p => p.LinkedToNode == nodeId));
-
-            foreach (PageModel resetPage in pagesToReset)
-            {
-                resetPage.ClearValues();
-            }
-                    
-            Untrack(nodeIdsToReset);
-        }
     }
 }
