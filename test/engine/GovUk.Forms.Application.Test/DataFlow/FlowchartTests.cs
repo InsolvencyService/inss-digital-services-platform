@@ -71,7 +71,7 @@ public class FlowchartTests
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", []);
+        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, []);
 
         Assert.NotNull(_yourDetails.StartedDate);
     }
@@ -85,7 +85,7 @@ public class FlowchartTests
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", []);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, []);
         
         Assert.Equal(fullName.Path, path);
     }
@@ -103,7 +103,7 @@ public class FlowchartTests
         BuildTestFlowchart(services);
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", []);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, []);
         
         Assert.Equal(age.Path, path);
     }

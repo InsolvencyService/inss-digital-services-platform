@@ -40,7 +40,6 @@ public sealed class Flowchart : IFlowchart
         FormModel form, 
         SectionModel section, 
         PageModel page, 
-        ContentPath refererPath, 
         Dictionary<string, string?> queryParams)
     {
         _logger.LoadingPage(page.Path, section.Title);
