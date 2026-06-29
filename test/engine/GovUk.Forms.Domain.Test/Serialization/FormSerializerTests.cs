@@ -134,7 +134,6 @@ public class FormSerializerTests
         Assert.Equal("Homer Simpson", fullName.Value);
         Assert.Equal("/form/your-details/your-fullname", fullName.Path);
         Assert.Equal("_FullName", fullName.ViewName);
-        //Assert.Null(fullName.ReturnUrl);
         Assert.Null(fullName.CompletedDate);
     }
     
