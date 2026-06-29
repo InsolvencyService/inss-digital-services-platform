@@ -1,4 +1,5 @@
 using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -33,6 +34,8 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         PostSubmitModel  postSubmit = section.Pages.GetFirstOf<PostSubmitModel>();
         
+        services.AddKeyedTransient<IFlowNodePreviousPathProvider, FlowNodePreviousPathProvider>(section.Path);
+        
         FlowchartBuilder
             .ForSection(section, services)
             .AddTransitionNode(declarationId, declaration.Path, caseRefNumId)
@@ -62,7 +65,6 @@ public sealed class IPUploadFlowchart : DefineFlowchartBuilder
             .Next()
             .AddEndNode(postSubmitSuccessId, postSubmit.Path, declarationId)
             .WithLoader<PostSubmitFlowNodeLoader>()
-            .WithExecutor<PostSubmitFlowNodeExecutor>()
             .BuildAndRegister();
     }
 }

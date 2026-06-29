@@ -13,7 +13,7 @@ public sealed class ContactUsSummaryFlowNodeLoader : SummaryFlowNodeLoader
         AddAnotherModel addAnother = context.Section.Pages.GetFirstOf<AddAnotherModel>();
         SummaryModel summary = context.Section.Pages.GetFirstOf<SummaryModel>();
 
-        SetReturnUrl(summary, context.Section.Pages.GetCompletedPages());
+        context.Section.ReturnUrl = summary.Path;
         
         List<SummaryCategoryDetail> details = [];
 

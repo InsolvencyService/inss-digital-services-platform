@@ -9,15 +9,7 @@ public abstract class SummaryFlowNodeLoader : IFlowNodeLoader
     {
         return ValueTask.FromResult<NodeId?>(null);
     }
-
-    protected static void SetReturnUrl(SummaryModel summary, PageModelList pages)
-    {
-        foreach (PageModel page in pages)
-        {
-            page.ReturnUrl = summary.Path;
-        }
-    }
-
+    
     protected static void AppendSummaryDetail(List<SummaryCategoryDetail> details, string label, string[] values, ContentPath? change = null)
     {
         List<SummaryAction> actions = [];

@@ -7,8 +7,6 @@ public abstract class PageModel : ContentModel
 {
     public string Title { get; init; } = string.Empty;
     
-    public string? ReturnUrl { get; set; }
-
     public PageMetaData MetaData { get; init; } = new();
 
     public NodeId? LinkedToNode { get; set; }
@@ -23,8 +21,7 @@ public abstract class PageModel : ContentModel
         {
             return;
         }
-            
-        ReturnUrl = null;
+        
         CompletedDate = null;
     }
 

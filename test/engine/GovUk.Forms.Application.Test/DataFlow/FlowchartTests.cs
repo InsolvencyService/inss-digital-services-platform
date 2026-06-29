@@ -72,7 +72,7 @@ public class FlowchartTests
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", NoState);
+        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
 
         Assert.NotNull(_yourDetails.StartedDate);
     }
@@ -86,7 +86,7 @@ public class FlowchartTests
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", NoState);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
         
         Assert.Equal(fullName.Path, path);
     }
@@ -104,7 +104,7 @@ public class FlowchartTests
         BuildTestFlowchart(services);
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, "/", NoState);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
         
         Assert.Equal(age.Path, path);
     }
@@ -149,7 +149,7 @@ public class FlowchartTests
         AgeModel age = _yourDetails.Pages.GetFirstOf<AgeModel>();
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
-        fullName.ReturnUrl = age.Path;
+        _yourDetails.ReturnUrl = age.Path;
         fullName.Value = string.Empty;
         fullName.LinkedToNextNode = _addressNode.Id;
         FullNameModel copyOfFullName = (FullNameModel)fullName.Clone();

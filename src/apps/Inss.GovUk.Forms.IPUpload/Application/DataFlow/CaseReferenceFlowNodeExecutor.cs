@@ -21,20 +21,10 @@ public sealed class CaseReferenceFlowNodeExecutor : IFlowNodeExecutor
 
         // If the page is being edited from the summary and the case has changed from what was saved then we need to force the user 
         // through the upload flow again
-        if (previousCaseReference != caseReference && previousCheckCaseReference.ReturnUrl is not null)
+        if (previousCaseReference != caseReference && context.Section.ReturnUrl is not null)
         {
-            CheckCaseReferenceModel savedCheckCaseReference = context.Section.Pages.GetFirstOf<CheckCaseReferenceModel>();
-            
             // We don't want the user to return to the summary
-            savedCheckCaseReference.ReturnUrl = null;
-
-            // Reset the return for the next page as we won't be resetting all of it as described below
-            EmployerDetailsModel employerDetails = context.Section.Pages.GetFirstOf<EmployerDetailsModel>();
-            employerDetails.ReturnUrl = null;
-            
-            // Reset file upload page and downwards. We want the next page as the validation has added the details for the new case
-            // reference and user needs to verify them 
-            context.Section.ResetVisitedNodesFrom(context.CurrentNode.NextNodes[EmployerNodeIndex]);
+            context.Section.ReturnUrl = null;
         }
 
         return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[EmployerNodeIndex]);

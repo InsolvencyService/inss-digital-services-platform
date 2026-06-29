@@ -20,10 +20,7 @@ public sealed class FormService : IFormService
         _pagePropertiesProvider = pagePropertiesProvider;
     }
     
-    public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(
-        ContentPath requestPath, 
-        ContentPath refererPath, 
-        string? state)
+    public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(ContentPath requestPath, string? state)
     {
         FormModel form = await _userFormService.GetAsync(requestPath);
         
@@ -36,7 +33,7 @@ public sealed class FormService : IFormService
                 _pagePropertiesProvider.PageTitle = page.Title;
                 SectionModel section = form.GetSectionForPage(page.Path);
                 IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, refererPath, state);
+                ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, state);
                 section.PreviousPagePath = _pagePropertiesProvider.PreviousPagePath;
                 return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != requestPath ? altPath : null);
             }

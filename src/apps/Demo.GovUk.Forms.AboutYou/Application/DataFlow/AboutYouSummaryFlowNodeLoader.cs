@@ -21,7 +21,7 @@ public sealed class AboutYouSummaryFlowNodeLoader : SummaryFlowNodeLoader
         HomeValueModel homeValue = context.Section.Pages.GetFirstOf<HomeValueModel>();
         SummaryModel summary = context.Section.Pages.GetFirstOf<SummaryModel>();
 
-        SetReturnUrl(summary, context.Section.Pages.GetCompletedPages());
+        context.Section.ReturnUrl = summary.Path;
         
         List<SummaryCategoryDetail> details = [];
         

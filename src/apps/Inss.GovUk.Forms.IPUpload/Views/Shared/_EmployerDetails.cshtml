@@ -1,13 +1,4 @@
 ﻿@model EmployerDetailsModel
-@inject IPagePropertiesProvider PagePropertiesProvider
-
-@{
-    // Temp fix to handle back button pending a better solution using the flowchart
-    if (Model.ReturnUrl is null)
-    {
-        PagePropertiesProvider.PreviousPagePath = "/ip-upload/redundancy-payment/check-case-reference";
-    }
-}
 
 @{
     Dictionary<string, string?> inLineOptions = new()

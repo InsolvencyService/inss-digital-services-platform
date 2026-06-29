@@ -8,7 +8,7 @@ public interface IFlowchart
 {
     FlowNode[] Nodes { get; }
     void AddNode(FlowNode node);
-    ValueTask<ContentPath> PreProcessAsync(FormModel form, SectionModel section, PageModel page, ContentPath refererPath, string? state);
+    ValueTask<ContentPath> PreProcessAsync(FormModel form, SectionModel section, PageModel page, string? state);
     ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page);
     ValueTask<ContentPath> ProcessAsync(FormModel form, SectionModel section, PageModel page);
     void TransitionPageToStart(PageModel page);

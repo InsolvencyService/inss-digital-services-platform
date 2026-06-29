@@ -20,7 +20,7 @@ public class DefaultFlowNodePreviousPathProviderTests
     }
      
     [Fact]
-    public async Task RefererIsFullName_UpdateAsync_SetsProviderPreviousPathToFullName()
+    public async Task AnyPage_UpdateAsync_SetsProviderPreviousPathToRoot()
     {
         FormModel form = TestFormModels.CreateWithYourDetailsSection();
         SectionModel section = form.Sections[0];
@@ -28,38 +28,13 @@ public class DefaultFlowNodePreviousPathProviderTests
         AddressModel address = section.Pages.GetFirstOf<AddressModel>();
         FlowNode fullNameNode = new() { Id = "FullNameId", PagePath = fullName.Path };
         FlowNode addressNode = new() { Id = "AddressId", PagePath = address.Path };
-        section.Track(fullNameNode.Id);
         FlowNodeContext context = new()
         {
             Nodes = [fullNameNode, addressNode],
             CurrentNode = addressNode,
             Form = form,
             Section = section,
-            CurrentPage = address,
-            RefererPath = fullName.Path
-        };
-
-        await _provider.UpdateAsync(context);
-        
-        Assert.Equal(fullName.Path, _pagePropertiesProvider.PreviousPagePath);
-    }
-    
-    [Fact]
-    public async Task CurrentPageIsFirstPageInSingleSection_UpdateAsync_SetsProviderPreviousPathToEmptyPath()
-    {
-        FormModel form = TestFormModels.CreateWithYourDetailsSection();
-        SectionModel section = form.Sections[0];
-        FullNameModel fullName = section.Pages.GetFirstOf<FullNameModel>();
-        AddressModel address = section.Pages.GetFirstOf<AddressModel>();
-        FlowNode fullNameNode = new() { Id = "FullNameId", PagePath = fullName.Path };
-        FlowNode addressNode = new() { Id = "AddressId", PagePath = address.Path };
-        FlowNodeContext context = new()
-        {
-            Nodes = [fullNameNode, addressNode],
-            CurrentNode = fullNameNode,
-            Form = form,
-            Section = section,
-            CurrentPage = fullName
+            CurrentPage = address
         };
 
         await _provider.UpdateAsync(context);

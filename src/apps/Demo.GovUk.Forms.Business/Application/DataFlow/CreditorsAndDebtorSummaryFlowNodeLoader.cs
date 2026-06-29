@@ -14,7 +14,7 @@ public sealed class CreditorsAndDebtorSummaryFlowNodeLoader : SummaryFlowNodeLoa
         AddAnotherModel addAnotherDebtor = context.Section.Pages.GetAtIndex<AddAnotherModel>(1);
         SummaryModel summary = context.Section.Pages.GetFirstOf<SummaryModel>();
 
-        SetReturnUrl(summary, context.Section.Pages.GetCompletedPages());
+        context.Section.ReturnUrl = summary.Path;
         
         List<SummaryCategoryDetail> details = [];
 
