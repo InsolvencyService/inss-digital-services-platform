@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Domain;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain;
@@ -8,7 +9,8 @@ public sealed class EmployerDetailsModel : PageModel
     
     public string EmployerName { get; set; }
 
-    public bool DetailsMatch { get; set; }
+    [Required(ErrorMessage = "You must confirm the case reference matches the employer")]
+    public bool? DetailsMatch { get; set; }
 
     public override string[] GetSummaryInfo()
     {

@@ -10,7 +10,7 @@ public sealed class AddAnotherRemoveFlowNodeLoader : IFlowNodeLoader
         RemoveModel remove = context.CurrentPage.As<RemoveModel>();
         AddAnotherGroup groupInfo = context.Section.Pages.GetGroup<AddAnotherGroup>(remove.MetaData.Group);
         remove.SetIndex = context.GetQueryParam<int>("index");
-        remove.ReturnUrl = groupInfo.AddAnother.Path;
+        context.Section.ReturnUrl = groupInfo.AddAnother.Path;
         PageModel[] subItems = groupInfo.AddAnother.Items.Skip(remove.SetIndex * groupInfo.WorkingPages.Count).Take(groupInfo.WorkingPages.Count).ToArray();
         PageModel firstPageForRemoving = subItems[0];
         string[] summaryInfo = firstPageForRemoving.GetSummaryInfo();

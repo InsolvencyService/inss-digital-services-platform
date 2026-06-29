@@ -12,7 +12,6 @@ public interface IFlowchart
         FormModel form, 
         SectionModel section, 
         PageModel page, 
-        ContentPath refererPath, 
         Dictionary<string, string?> queryParams);
     ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page);
     ValueTask<ContentPath> ProcessAsync(FormModel form, SectionModel section, PageModel page);

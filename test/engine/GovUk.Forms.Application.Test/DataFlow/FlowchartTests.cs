@@ -148,7 +148,7 @@ public class FlowchartTests
         AgeModel age = _yourDetails.Pages.GetFirstOf<AgeModel>();
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
-        fullName.ReturnUrl = age.Path;
+        _yourDetails.ReturnUrl = age.Path;
         fullName.Value = string.Empty;
         fullName.LinkedToNextNode = _addressNode.Id;
         FullNameModel copyOfFullName = (FullNameModel)fullName.Clone();

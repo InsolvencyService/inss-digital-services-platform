@@ -119,7 +119,6 @@ public class FormSerializerTests
         JsonDocument doc = JsonDocument.Parse(json);
         Assert.True(FindPropertyValues(doc.RootElement, "$type", "FullNameModel"));
         Assert.True(FindPropertyValues(doc.RootElement, "value", "Homer Simpson"));
-        Assert.True(FindPropertyValues(doc.RootElement, "returnUrl", null));
         Assert.True(FindPropertyValues(doc.RootElement, "path", "/form/your-details/your-fullname"));
         Assert.True(FindPropertyValues(doc.RootElement, "viewName", "_FullName"));
         Assert.True(FindPropertyValues(doc.RootElement, "typeName", "GovUk.Forms.Domain.FullNameModel"));
@@ -135,7 +134,6 @@ public class FormSerializerTests
         Assert.Equal("Homer Simpson", fullName.Value);
         Assert.Equal("/form/your-details/your-fullname", fullName.Path);
         Assert.Equal("_FullName", fullName.ViewName);
-        Assert.Null(fullName.ReturnUrl);
         Assert.Null(fullName.CompletedDate);
     }
     
@@ -199,7 +197,6 @@ public class FormSerializerTests
               ""value"" : ""Homer Simpson"",
               ""completedDate"": null,
               ""title"" : ""Your Name"",
-              ""returnUrl"" : null,
               ""id"" : ""70a36a67-4db5-4d11-a4c5-0769497e2221"",
               ""path"" : ""/form/your-details/your-fullname"",
               ""viewName"" : ""_FullName"",
@@ -214,7 +211,6 @@ public class FormSerializerTests
               ""postcode"" : ""TN33 0DN"",
               ""completedDate"": null,
               ""title"" : ""Your Address"",
-              ""returnUrl"" : null,
               ""id"" : ""390a79cc-1dad-467e-ac08-d091dc9a44d3"",
               ""path"" : ""/form/your-details/your-address"",
               ""viewName"" : ""_Address"",

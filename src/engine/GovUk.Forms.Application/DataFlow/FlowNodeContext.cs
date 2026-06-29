@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Primitives;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global - might be used pending back button review
 
 namespace GovUk.Forms.Application.DataFlow;
@@ -20,8 +20,6 @@ public sealed class FlowNodeContext
     public Dictionary<string, string?> QueryParams { get; init; } = [];
     
     public PageModel? PageBeforeChanges { get; init; }
-    
-    public ContentPath? RefererPath { get; init; }
 
     public T? GetQueryParam<T>(string key)
     {

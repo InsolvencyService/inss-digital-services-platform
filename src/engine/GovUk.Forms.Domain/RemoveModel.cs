@@ -14,6 +14,5 @@ public class RemoveModel : PageModel
     {
         SetIndex = -1;
         RemoveConfirmed = false;
-        ReturnUrl = null;
     }
 }

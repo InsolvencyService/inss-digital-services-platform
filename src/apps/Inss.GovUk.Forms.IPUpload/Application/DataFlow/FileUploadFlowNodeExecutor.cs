@@ -25,6 +25,7 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
         EmployerDetailsModel employerDetails = context.Section.Pages.GetFirstOf<EmployerDetailsModel>();
         fileUploadErrors.ClearErrors();
         fileUploadErrors.Filename = fileUpload.Filename;
+        context.Section.ReturnUrl = null;
         
         object redundancyPayment = FileHelper.GetRedundancyPaymentObject(fileUpload.Contents);
         Validate(fileUploadErrors, employerDetails, redundancyPayment);

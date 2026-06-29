@@ -26,8 +26,7 @@ public class FormController : Controller
     {
         Dictionary<string, string?> queryParams = GetQueryParams();
         ContentPath requestPath = new(Request.Path);
-        ContentPath refererPath = GetRefererPath();
-        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, refererPath, queryParams);
+        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, queryParams);
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
 

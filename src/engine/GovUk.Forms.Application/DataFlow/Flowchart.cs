@@ -59,7 +59,7 @@ public sealed class Flowchart : IFlowchart
 
         section.SetInProgress();
         
-        await UpdateBackButtonAsync(form, section, page, refererPath);
+        await UpdateBackButtonAsync(form, section, page);
         return pageAssociatedToNode.Path;
     }
     
@@ -85,7 +85,6 @@ public sealed class Flowchart : IFlowchart
         _logger.ProcessingPage(page.Path, section.Title);
         
         FlowNode node = GetNode(page.LinkedToNode);
-        section.Track(node.Id);
         
         PageModel targetPage = section.Pages.GetPage(page.Path);
         PageModel pageBeforeChanges = targetPage.Clone();
@@ -102,19 +101,13 @@ public sealed class Flowchart : IFlowchart
         }
         else
         {
-            bool resetPages = false;
-            
-            if (targetPage.LinkedToNextNode != nextNodeId)
-            {
-                section.ResetVisitedNodesFrom(targetPage.LinkedToNode);
-                resetPages = true;
-            }
-            
+            bool resetPages = targetPage.LinkedToNextNode != nextNodeId;
+
             targetPage.LinkedToNextNode = nextNodeId;
             
-            if (!resetPages && targetPage.ReturnUrl is not null)
+            if (!resetPages && section.ReturnUrl is not null)
             {
-                return targetPage.ReturnUrl;
+                return section.ReturnUrl;
             }
         }
         
@@ -142,15 +135,13 @@ public sealed class Flowchart : IFlowchart
         throw new FlowchartException($"Unable to find a node Id for page with path {page.Path}");
     }
 
-    private async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page, ContentPath refererPath)
+    private async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page)
     {
         FlowNode node = GetNode(page.LinkedToNode);
-        IFlowNodePreviousPathProvider flowNodePreviousPathProvider = _serviceProvider.GetKeyedService<IFlowNodePreviousPathProvider>(section.Path) 
-                                               ?? _serviceProvider.GetRequiredService<IFlowNodePreviousPathProvider>();
-        FlowNodeContext context = new()
-        {
-            Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page, RefererPath = refererPath
-        };
+        IFlowNodePreviousPathProvider flowNodePreviousPathProvider =
+            _serviceProvider.GetKeyedService<IFlowNodePreviousPathProvider>(section.Path)
+            ?? _serviceProvider.GetRequiredService<IFlowNodePreviousPathProvider>();
+        FlowNodeContext context = new() { Nodes = Nodes, CurrentNode = node, Form = form, Section = section, CurrentPage = page };
         await flowNodePreviousPathProvider.UpdateAsync(context);
     }
     

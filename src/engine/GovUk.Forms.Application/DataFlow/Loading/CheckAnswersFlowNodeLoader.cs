@@ -31,10 +31,10 @@ public sealed class CheckAnswersFlowNodeLoader : IFlowNodeLoader
         }
         
         List<CheckAnswersItem> itemList = [];
+        context.Section.ReturnUrl = checkAnswers.Path;
         
         foreach (PageModel groupPage in groupInfo.WorkingPages)
         {
-            groupPage.ReturnUrl = checkAnswers.Path;
             string[] values = groupPage.GetSummaryInfo();
             itemList.Add(new CheckAnswersItem
             {

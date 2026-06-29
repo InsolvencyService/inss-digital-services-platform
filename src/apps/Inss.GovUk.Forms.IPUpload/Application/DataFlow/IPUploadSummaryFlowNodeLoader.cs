@@ -15,13 +15,13 @@ public sealed class IPUploadSummaryFlowNodeLoader : SummaryFlowNodeLoader
         XmlFileUploadModel fileUpload = context.Section.Pages.GetFirstOf<XmlFileUploadModel>();
         SummaryModel summary = context.Section.Pages.GetFirstOf<SummaryModel>();
 
-        SetReturnUrl(summary, context.Section.Pages.GetCompletedPages());
+        context.Section.ReturnUrl = summary.Path;
         
         List<SummaryCategoryDetail> details = [];
         
         AppendSummaryDetail(details, "Enter the 10 character case reference number", [employerDetails.CaseReference], caseReference.Path);
         AppendSummaryDetail(details, "Employer name", [employerDetails.EmployerName]);
-        AppendSummaryDetail(details, "Is this the correct employer name?", [employerDetails.DetailsMatch ? "Yes" : "No"]);
+        AppendSummaryDetail(details, "Is this the correct employer name?", [employerDetails.DetailsMatch ?? false ? "Yes" : "No"]);
         
         SummaryCategory caseInfoCategory = new() { Label = "We have matched to the following employer", Details = details.ToArray() };
 

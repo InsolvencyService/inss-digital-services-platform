@@ -25,7 +25,7 @@ public class PageModelTests
         TestSectionDefaults.YourDetails(section);
         AddressModel address = section.Pages.GetFirstOf<AddressModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
-        address.ReturnUrl = summary.Path;
+        section.ReturnUrl = summary.Path;
         address.SetCompleted();
 
         address.ClearValues();
@@ -35,7 +35,6 @@ public class PageModelTests
         Assert.Empty(address.TownCity);
         Assert.Null(address.County);
         Assert.Empty(address.Postcode);
-        Assert.Null(address.ReturnUrl);
         Assert.Null(address.CompletedDate);
     }
 
