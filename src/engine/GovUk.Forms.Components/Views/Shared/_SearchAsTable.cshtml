@@ -1,0 +1,47 @@
+﻿@model GovUk.Forms.Domain.Search.SearchModel
+
+<p class="govuk-body">@(Model.GetResultsInfo())<strong>@(Model.SearchText)</strong></p>
+<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+<table class="govuk-table">
+    <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+        Search results table
+    </caption>
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+        @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+        {
+
+            <th scope="col" class="govuk-table__header">
+                @column.Header
+            </th>
+        }
+        <th scope="col" class="govuk-table__header"> </th>
+    </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+    @foreach (var row in Model.Results)
+    {
+        <tr class="govuk-table__row">
+
+            @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+            {
+                string value = string.Empty;
+                if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
+                {
+                    value = fieldValue ?? string.Empty;
+                }
+
+                <td class="govuk-table__cell @column.Css">
+                    @value
+                </td>
+            }
+
+            <td class="govuk-table__cell">
+                <a href="#" class="govuk-link"> Select </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

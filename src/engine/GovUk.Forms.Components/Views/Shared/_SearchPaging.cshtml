@@ -43,15 +43,14 @@ result
 }
 else if (Model.Results.Length > 0)
 {
-        @* Display list of result *@
-        if (Model.DisplayAsTable)
-        {
-            @await Html.PartialAsync("_SearchAsTable", Model)
-        }
-        else
-        {
-            @await Html.PartialAsync("_SearchAsList", Model);
-        }
+    if (Model.DisplayAsTable)
+    {
+        @await Html.PartialAsync("_SearchAsTable", Model)
+    }
+    else
+    {
+        @await Html.PartialAsync("_SearchAsList", Model);
+    }
 
     @if (Model.TotalPages > 1)
     {           

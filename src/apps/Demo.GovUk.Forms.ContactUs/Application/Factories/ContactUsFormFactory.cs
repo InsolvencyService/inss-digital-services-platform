@@ -23,7 +23,15 @@ public sealed class ContactUsFormFactory : IFormFactory
 
             // TODO: Add a specific builder to help construct the search page with columns and display info
             .AddSection("Find People", "find-people")
-            .AddSearchPage<SearchModel>("Search", "search", "Config1",description:"hello", submitButtonText: "Search")
+            .AddSearchPage<SearchModel>("Search", "search", "Config1",
+                question: "Find people",
+                description:"<p class=\"govuk-body\">Search using one or more of the following:</p>" +
+                "<ul class=\"govuk-list govuk-list--bullet\">" +
+                "<li>surname</li>" +
+                "<li>forename</li>" +
+                "<li>a combination of these</li>" +
+                "</ul>", 
+                submitButtonText: null)
             .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
 
 

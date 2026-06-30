@@ -52,7 +52,7 @@ public class SearchModel : PageModel
     {
         int start = (CurrentPageNumber - 1) * PageSize + 1;
         int end = (start - 1) + PageSize > TotalResults ? TotalResults : (start - 1) + PageSize;
-        return $"Showing {start} to {end} of {TotalResults} results for {SearchText}";
+        return $"Showing {start} to {end} of {TotalResults} results for ";
     }
 }
 
