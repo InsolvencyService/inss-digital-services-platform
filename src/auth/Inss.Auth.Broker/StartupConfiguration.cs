@@ -75,13 +75,17 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
             services.AddSingleton<IAuthCodeStoreProvider>(_ =>
             {
-                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString) ||
-                    !string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
                 {
                     CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
-                    CosmosClient client = cosmosDbOptions.ConnectionString is not null
-                        ? new CosmosClient(cosmosDbOptions.ConnectionString, options)
-                        : new CosmosClient(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
+                    CosmosClient client = new(cosmosDbOptions.ConnectionString, options);
+                    return new CosmosAuthCodeStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
+                }
+
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient client = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
                     return new CosmosAuthCodeStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
                 }
 
