@@ -21,13 +21,19 @@ public static class ServiceCollectionExtensions
 
             services.AddSingleton<IFormStorageProvider>(provider =>
             {
-                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString) ||
-                    !string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
                 {
                     CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
-                    CosmosClient client = cosmosDbOptions.ConnectionString is not null
-                        ? new CosmosClient(cosmosDbOptions.ConnectionString, options)
-                        : new CosmosClient(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
+                    CosmosClient client = new(cosmosDbOptions.ConnectionString, options);
+                    IHttpContextAccessor httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    return new CosmosFormStorageProvider(
+                        client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName, httpContextAccessor);
+                }
+
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient client = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
                     IHttpContextAccessor httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
                     return new CosmosFormStorageProvider(
                         client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName, httpContextAccessor);
