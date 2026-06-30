@@ -35,3 +35,29 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
             .BuildAndRegister();
     }
 }
+
+public sealed class FindOtherPeopleFlowchart : DefineFlowchartBuilder
+{
+    public override void Construct(IServiceCollection services)
+    {
+        NodeId searchId = "Search";
+        NodeId summaryId = "Summary";
+        
+        FormModel form = GetForm(services);
+        SectionModel section = form.Sections["Find Other People"];
+
+        SearchModel search = section.Pages.GetFirstOf<SearchModel>();
+        SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
+        
+        FlowchartBuilder
+            .ForSection(section, services)
+            .AddDecisionNode(searchId, search.Path, searchId, summaryId)
+            .WithLoader<SearchFlowNodeLoader>()
+            .WithExecutor<SearchFlowNodeExecutor>()
+            .Next()
+            .AddEndNode(summaryId, summary.Path)
+            .WithLoader<ContactUsSummaryFlowNodeLoader>()
+            .WithExecutor<SectionSummaryFlowNodeExecutor>()
+            .BuildAndRegister();
+    }
+}

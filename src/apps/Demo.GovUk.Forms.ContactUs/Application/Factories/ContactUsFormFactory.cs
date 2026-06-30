@@ -20,25 +20,30 @@ public sealed class ContactUsFormFactory : IFormFactory
             .AddGroupPage<RemoveModel>("Remove uploaded file", "remove-uploaded-file", submitButtonText: "Continue")
             .AddFinalGroupPage<AddAnotherModel>("Uploaded files", "add-another-file", submitButtonText: "Continue")
             .EndSection<SummaryModel>("Contact us summary", "summary", submitButtonText: "Continue")
-
-            // TODO: Add a specific builder to help construct the search page with columns and display info
+            
             .AddSection("Find People", "find-people")
             .AddSearchPage<SearchModel>("Search", "search", "Config1",
                 question: "Find people",
-                description:"<p class=\"govuk-body\">Search using one or more of the following:</p>" +
-                "<ul class=\"govuk-list govuk-list--bullet\">" +
-                "<li>surname</li>" +
-                "<li>forename</li>" +
-                "<li>a combination of these</li>" +
-                "</ul>", 
+                description: "<p class=\"govuk-body\">Search using one or more of the following:</p>" +
+                    "<ul class=\"govuk-list govuk-list--bullet\">" +
+                    "<li>surname</li>" +
+                    "<li>forename</li>" +
+                    "<li>a combination of these</li>" +
+                    "</ul>", 
                 submitButtonText: null)
             .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
 
-
-            // TODO: Testing how to use the component so it is re-useable!!
-            .AddSection("Finding Peoples Part Two", "find-people")
-            .AddSearchPage<SearchModel>("Search", "search", "Config2", submitButtonText: "Search")
-            .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
+            .AddSection("Find Other People", "find-other-people")
+            .AddSearchPage<SearchModel>("Search", "search", "Config2",
+                question: "Find other people",
+                description:"<p class=\"govuk-body\">Search using one or more of the following:</p>" +
+                    "<ul class=\"govuk-list govuk-list--bullet\">" +
+                    "<li>surname</li>" +
+                    "<li>forename</li>" +
+                    "<li>a combination of these</li>" +
+                    "</ul>", 
+                submitButtonText: null)
+            .EndSection<SummaryModel>("Find other people summary", "summary", submitButtonText: "Continue")
 
             .ValidateAndComplete();
     }

@@ -8,10 +8,8 @@
     </caption>
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-
         @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
         {
-
             <th scope="col" class="govuk-table__header">
                 @column.Header
             </th>
@@ -28,19 +26,26 @@
             @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
             {
                 string value = string.Empty;
+                
                 if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
                 {
-                    value = fieldValue ?? string.Empty;
+                    value = fieldValue;
                 }
 
-                <td class="govuk-table__cell @column.Css">
-                    @value
-                </td>
+                if (Model.ResultColumns.IndexOf(column) == 0)
+                {
+                    @* TODO: Need to determine the ID and what should be in the details *@
+                    <td class="govuk-table__cell">
+                        <a href="#" class="govuk-link">@value</a>
+                    </td>
+                }
+                else
+                {
+                    <td class="govuk-table__cell @column.Css">
+                        @value
+                    </td>   
+                }
             }
-
-            <td class="govuk-table__cell">
-                <a href="#" class="govuk-link"> Select </a>
-            </td>
         </tr>
     }
     </tbody>
