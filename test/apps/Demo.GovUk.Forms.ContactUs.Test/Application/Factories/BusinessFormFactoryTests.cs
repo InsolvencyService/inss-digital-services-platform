@@ -28,8 +28,8 @@ public class BusinessFormFactoryTests
         Assert.Equal("/contact-us/send-us-files", form.Sections[0].Path);
         Assert.Equal("Find People", form.Sections[1].Title);
         Assert.Equal("/contact-us/find-people", form.Sections[1].Path);
-        Assert.Equal("Finding Peoples Part Two", form.Sections[2].Title);
-        Assert.Equal("/contact-us/find-people", form.Sections[2].Path);
+        Assert.Equal("Find Other People", form.Sections[2].Title);
+        Assert.Equal("/contact-us/find-other-people", form.Sections[2].Path);
     }
     
     [Fact]
