@@ -27,7 +27,7 @@ public sealed class IPUploadSummaryFlowNodeLoader : SummaryFlowNodeLoader
 
         details = [];
         
-        AppendSummaryDetail(details, "Uploaded document", [fileUpload.Filename], fileUpload.Path);
+        AppendSummaryDetail(details, "Uploaded document", [fileUpload.Filename]);
         
         SummaryCategory fileInfoCategory = new() { Label = "Your form has passed initial validation.", Details = details.ToArray() };
 
