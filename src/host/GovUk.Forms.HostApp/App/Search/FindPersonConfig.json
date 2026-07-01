@@ -1,0 +1,38 @@
+{
+  "PageSize": 5,
+  "DisplayAsTable": true,
+  "ResultColumns": [
+    {
+      "Name": "CaseNumber",
+      "Header": "Case Number",
+      "Order": 1,
+      "Css": "govuk-!-font-weight-bold"
+    },
+    {
+      "Name": "Title",
+      "Header": "Title",
+      "Order": 2,
+      "Css": ""
+    },
+    {
+      "Name": "FirstName",
+      "Header": "Forename",
+      "Order": 4,
+      "Css": ""
+    },
+    {
+      "Name": "FamilyName",
+      "Header": "Surname",
+      "Order": 3,
+      "Css": ""
+    },
+    {
+      "Name": "DateOfBirth",
+      "Header": "Date Of Birth",
+      "Order": 5,
+      "CssClass": ""
+    }
+  ]
+}
+
+

@@ -16,4 +16,13 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 103, Level = LogLevel.Information, Message = "Processing page {PagePath} in section {SectionTitle}.")]
     public static partial void ProcessingPage(this ILogger logger, ContentPath pagePath, string sectionTitle);
+    
+    [LoggerMessage(EventId = 104, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search text.")]
+    public static partial void MissingSearchText(this ILogger logger);
+    
+    [LoggerMessage(EventId = 105, Level = LogLevel.Error, Message = "Azure Search request made with invalid page size : {PageSize}.")]
+    public static partial void InvalidSearchPageSize(this ILogger logger, int pageSize);
+    
+    [LoggerMessage(EventId = 106, Level = LogLevel.Error, Message = "Azure Search request sent with invalid current page number: {CurrentPageNumber}")]
+    public static partial void InvalidCurrentPageNumber(this ILogger logger, int currentPageNumber);
 }

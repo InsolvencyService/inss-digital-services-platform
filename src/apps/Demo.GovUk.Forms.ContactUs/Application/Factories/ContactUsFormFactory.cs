@@ -1,6 +1,7 @@
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Search;
 
 namespace Demo.GovUk.Forms.ContactUs.Application.Factories;
 
@@ -19,6 +20,30 @@ public sealed class ContactUsFormFactory : IFormFactory
             .AddGroupPage<RemoveModel>("Remove uploaded file", "remove-uploaded-file", submitButtonText: "Continue")
             .AddFinalGroupPage<AddAnotherModel>("Uploaded files", "add-another-file", submitButtonText: "Continue")
             .EndSection<SummaryModel>("Contact us summary", "summary", submitButtonText: "Continue")
+            
+            .AddSection("Find People", "find-people")
+            .AddSearchPage<SearchModel>("Search", "search", "Config1",
+                question: "Find people",
+                description: "<p class=\"govuk-body\">Search using one or more of the following:</p>" +
+                    "<ul class=\"govuk-list govuk-list--bullet\">" +
+                    "<li>surname</li>" +
+                    "<li>forename</li>" +
+                    "<li>a combination of these</li>" +
+                    "</ul>", 
+                submitButtonText: null)
+            .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
+
+            .AddSection("Find Other People", "find-other-people")
+            .AddSearchPage<SearchModel>("Search", "search", "Config2",
+                question: "Find other people",
+                description:"<p class=\"govuk-body\">Search using one or more of the following:</p>" +
+                    "<ul class=\"govuk-list govuk-list--bullet\">" +
+                    "<li>surname</li>" +
+                    "<li>forename</li>" +
+                    "<li>a combination of these</li>" +
+                    "</ul>", 
+                submitButtonText: null)
+            .EndSection<SummaryModel>("Find other people summary", "summary", submitButtonText: "Continue")
 
             .ValidateAndComplete();
     }

@@ -1,0 +1,55 @@
+﻿@model GovUk.Forms.Domain.Search.SearchModel
+@inject IPagePropertiesProvider PagePropertiesProvider
+
+@{
+    PagePropertiesProvider.FullPageLayout = true;
+}
+
+@Html.HiddenFor(m => m.ConfigKey)
+
+@{
+    string heading = Model.MetaData.Question ?? "Search for something";
+    string? description = Model.MetaData.Description;
+}
+
+<h1 class="govuk-heading-l">@heading</h1>
+
+@if (!string.IsNullOrWhiteSpace(description))
+{
+    @Html.Raw(description)
+}
+
+<govuk-input for="@Model.SearchText" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--m">Search</govuk-input-label>
+    @if (!string.IsNullOrWhiteSpace(Model.MetaData.Hint))
+    {
+        <govuk-input-hint>@(Model.MetaData.Hint)</govuk-input-hint>
+    }
+</govuk-input>
+
+@* We switch off the form button so we have control where we place it *@
+<govuk-button type="submit">Search</govuk-button>
+
+@if (Model.Results.Length > 0)
+{
+    if (Model.DisplayAsTable)
+    {
+        @await Html.PartialAsync("_SearchAsTable", Model)
+    }
+    else
+    {
+        @await Html.PartialAsync("_SearchAsList", Model)
+    }
+
+    @if (Model.TotalPages > 1)
+    {       
+        @await Html.PartialAsync("_SearchPagination", Model)
+    }
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(Model.SearchText))
+    {
+        <p class="govuk-body">No results found</p>
+    }
+}

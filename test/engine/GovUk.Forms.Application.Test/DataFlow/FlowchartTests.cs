@@ -26,7 +26,6 @@ public class FlowchartTests
     private readonly FlowNode _bankAccountNode;
     private readonly FlowNode _summaryNode;
     private Flowchart _flowchart;
-    private const string? NoState = null;
     
     public FlowchartTests()
     {
@@ -72,7 +71,7 @@ public class FlowchartTests
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
+        await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, []);
 
         Assert.NotNull(_yourDetails.StartedDate);
     }
@@ -86,7 +85,7 @@ public class FlowchartTests
         FullNameModel fullName = _yourDetails.Pages.GetFirstOf<FullNameModel>();
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, []);
         
         Assert.Equal(fullName.Path, path);
     }
@@ -104,7 +103,7 @@ public class FlowchartTests
         BuildTestFlowchart(services);
         fullName.LinkedToNode = _fullNameNode.Id;
         
-        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, NoState);
+        ContentPath path = await _flowchart.PreProcessAsync(_form, _yourDetails, fullName, []);
         
         Assert.Equal(age.Path, path);
     }

@@ -1,0 +1,60 @@
+﻿@model GovUk.Forms.Domain.Search.SearchModel
+
+@* This needs implementing correcly *@
+
+<h1 class="govuk-summary-card__title">
+    List of eIIR Results
+</h1>
+<br />
+<ul class="govuk-list">
+    @foreach (var row in Model.Results)
+    {
+        <li class="govuk-!-margin-bottom-6">
+            <div class="govuk-summary-card">
+
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">
+                        Search Result
+                    </h2>
+
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <a class="govuk-link" href="#">
+                                Select
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="govuk-summary-card__content">
+
+                    <dl class="govuk-summary-list">
+
+                        @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+                        {
+                            string value = string.Empty;
+
+                            row.Fields.TryGetValue(
+                                column.Name,
+                                out string? fieldValue);
+
+                            value = fieldValue ?? string.Empty;
+
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @column.Header
+                                </dt>
+
+                                <dd class="govuk-summary-list__value @column.Css">
+                                    @value
+                                </dd>
+                            </div>
+                        }
+                    </dl>
+
+                </div>
+
+            </div>
+        </li>
+    }
+</ul>

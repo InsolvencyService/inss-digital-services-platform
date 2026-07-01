@@ -1,5 +1,6 @@
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using GovUk.Forms.Domain.Search;
 
 namespace GovUk.Forms.Components.Builders;
 
@@ -42,6 +43,34 @@ public sealed class SectionModelBuilder
         return this;
     }
 
+    public SectionModelBuilder AddSearchPage<TPage>(
+        string title, 
+        string path, 
+        string configKey,
+        string? question = null, 
+        string? hint = null,
+        string? description = null,
+        string? submitButtonText = null) 
+        where TPage : SearchModel, new()
+    {
+        TPage page = new()
+        {
+            Title = title, 
+            Path = $"{_section.Path}/{path}", 
+            ConfigKey = configKey,
+            SubmitType = _section.SubmitType,
+            MetaData =
+            {
+                Question = question,
+                Hint = hint,
+                Description = description,
+                SubmitButtonText = submitButtonText 
+            }
+        };
+        _section.Pages.Add(page);
+        return this;
+    }
+    
     public GroupModelBuilder AddGroup<TGroup>(GroupId group) where TGroup : GroupPageModel, new()
     {
         return new GroupModelBuilder(new TGroup { MetaData = { Group = group } }, _section, this);
