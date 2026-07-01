@@ -22,6 +22,8 @@ public static class RegisterPageObjects
         services.AddScoped<IUploadErrorsPage, UploadErrorsPage>();
         services.AddScoped<IUploadDocumentSummaryPage, UploadDocumentSummaryPage>();
         services.AddScoped<ISubmissionConfirmationPage, SubmissionConfirmationPage>();
+        services.AddScoped<ICaseReferenceNumberPage, CaseReferenceNumberPage>();
+        services.AddScoped<IEmployerDetailsPage, EmployerDetailsPage>();
         services.AddScoped<IPageNotFoundPage, PageNotFoundPage>();
         services.AddScoped<DirectorConductReportingServicePage>();
     }

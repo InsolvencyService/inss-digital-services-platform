@@ -1,4 +1,5 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
+using GovUk.Forms.HostApp.UI.Test.Support;
 
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
@@ -9,16 +10,19 @@ public class SubmissionConfirmationSteps
     private readonly SubmissionConfirmationCoordinator _submissionConfirmationCoordinator;
     private readonly DeclarationCoordinator _declarationCoordinator;
     private readonly CheckYourAnswersCoordinator _checkYourAnswersCoordinator;
+    private readonly CaseReferenceCoordinator _caseReferenceCoordinator;
     public SubmissionConfirmationSteps(
         CommonCoordinator commonCoordinator,
         SubmissionConfirmationCoordinator submissionConfirmationCoordinator,
         DeclarationCoordinator declarationCoordinator,
-        CheckYourAnswersCoordinator checkYourAnswersCoordinator)
+        CheckYourAnswersCoordinator checkYourAnswersCoordinator,
+        CaseReferenceCoordinator caseReferenceCoordinator)
     {
         _commonCoordinator = commonCoordinator;
         _submissionConfirmationCoordinator = submissionConfirmationCoordinator;
         _declarationCoordinator = declarationCoordinator;
         _checkYourAnswersCoordinator = checkYourAnswersCoordinator;
+        _caseReferenceCoordinator = caseReferenceCoordinator;
     }
 
     [Given("I am on the submission confirmation page")]
@@ -77,6 +81,22 @@ public class SubmissionConfirmationSteps
     public async Task WhenIUploadAnotherRPAForm()
     {
         await _commonCoordinator.VerifyThatCheckYourAnswersPageIsDisplayedAsync();
+    }
+
+    [Given("I have validated the case reference")]
+    [When("I validate the case reference")]
+    public async Task GivenIHaveValidatedTheCaseReference()
+    {
+        await _caseReferenceCoordinator.VerifyCaseReferencePageIsDisplayedAsync();
+        await _caseReferenceCoordinator.EnterCaseReferenceNumberAsync(ScenarioConstant.ValidCaseReference);
+        await _caseReferenceCoordinator.ClickContinueAsync();
+    }
+
+    [Given("I have verified the employee details")]
+    [When("I am verifying the employee details")]
+    public async Task GivenIHaveVerifiedTheEmployeeDetails()
+    {
+        await _caseReferenceCoordinator.ConfirmCorrectEmployerAsync();
     }
 
     [Then("I will be taken to the declaration page")]

@@ -16,7 +16,7 @@ Scenario: Verify that section 187 page is accessible from declaration page
 @functional @addVideo
  Scenario: Navigate to file upload page after agreeing
     When I choose to Agree and continue
-    Then I will be taken to the file upload page
+    Then I will be taken to the case reference page
 	And I should be able to sign out directly from the file upload page
 
 @functional

@@ -1,7 +1,8 @@
 ﻿namespace GovUk.Forms.HostApp.UI.Test.Config.Environments;
 
-public class EnvPredProdConfig : IEnvironmentConfig
+public class EnvPredProdConfig : BaseEnvironmentConfig
 {
-    public TestEnvironment EnvironmentType => TestEnvironment.PreProd;
-    public string BaseUrl => "";
+    public override TestEnvironment EnvironmentType => TestEnvironment.PreProd;
+    public override string BaseUrl => "";
+    public override string CosmosEndpoint => "";
 }

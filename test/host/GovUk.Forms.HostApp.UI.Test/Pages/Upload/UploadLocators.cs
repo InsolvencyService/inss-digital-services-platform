@@ -15,6 +15,20 @@ public class UploadLocators
         public const string ErrorPageTitle = "Your form has errors";
         public const string CaseReference = "Case reference";
         public const string AffectedEmployees = "Affected employees";
+
+        // Case Reference Number Page
+        public const string CaseReferenceNumberHeading = "Enter the 10 character case reference number";
+        public const string CaseReferenceNumberHint = "For example, ‘CN12345678’. This must match the case reference number in your uploaded file.";
+
+        // Employer Details Page
+        public const string EmployerDetailsHeading = "Employer details";
+        public const string WeHaveMatchedText = "We have matched to the following employer:";
+        public const string IsThisTheCorrectEmployerNameHeading = "Is this the correct employer name?";
+        public const string MatchesWithEmployerText = "This case reference number you have provided matches with this employer in our system.";
+        public const string EmployerNameLabel = "Employer name";
+        public const string CaseReferenceNumberLabel = "Case reference number";
+        public const string YesOption = "Yes";
+        public const string NoOption = "No";
     }
 
     public class Selectors
@@ -31,5 +45,8 @@ public class UploadLocators
         public const string HintSelector = ".govuk-hint";
         public const int ErrorCountParseIndex = 0;
         public const string UploadFileName = "p.govuk-body strong";
+
+        // Case Reference Number Page
+        public const string CaseReferenceNumberInput = "#CaseReference_Value";
     }
 }

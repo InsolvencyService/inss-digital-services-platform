@@ -35,12 +35,24 @@ internal static class ServiceCollectionExtensions
                 CosmosDbOptions cosmosDbOptions = new();
                 context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
                 
-                CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
-                CosmosClient cosmosClient = cosmosDbOptions.ConnectionString is not null
-                    ? new CosmosClient(cosmosDbOptions.ConnectionString, options)
-                    : new CosmosClient(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
-                services.AddTransient<IDynamicsStoreProvider>(
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient cosmosClient = new(cosmosDbOptions.ConnectionString, options);
+                    services.AddTransient<IDynamicsStoreProvider>(
                     _ => new DynamicsStoreProvider(cosmosClient, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName));
+                }
+                else if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient cosmosClient = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
+                    services.AddTransient<IDynamicsStoreProvider>(
+                    _ => new DynamicsStoreProvider(cosmosClient, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName));
+                }
+                else
+                {
+                    throw new InvalidOperationException("No connection string or account endpoint for CosmosDb has been provided.");
+                }
                 
                 DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
             

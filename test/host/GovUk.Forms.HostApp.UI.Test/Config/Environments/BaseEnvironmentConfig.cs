@@ -10,5 +10,8 @@ public enum TestEnvironment
 public abstract class BaseEnvironmentConfig : IEnvironmentConfig
 {
     public abstract TestEnvironment EnvironmentType { get; }
+
     public abstract string BaseUrl { get; }
+
+    public abstract string CosmosEndpoint { get; }
 }
