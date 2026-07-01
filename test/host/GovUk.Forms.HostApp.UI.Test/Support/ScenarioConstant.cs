@@ -15,6 +15,7 @@ public sealed class ScenarioConstant
 
     public const string UploadedFilePath = "UploadedFilePath";
     public const string UploadedFileName = "UploadedFileName";
+    public const string CaseReference = "CaseReference";
     public const string ErrorMessage = "ErrorMessage";
     public const string SubmissionOutcome = "SubmissionOutcome";
 
@@ -31,4 +32,7 @@ public sealed class ScenarioConstant
 
 
     public const string InvalidCaseReference = "CN99335678";
+
+    // Valid case reference that exists in the Dynamics test environment — update if the test record changes
+    public const string ValidCaseReference = "CN70000537";
 }

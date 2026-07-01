@@ -30,6 +30,8 @@ Scenario: Insolvency Practitioner starts a new RP14A submission
      And the first submission confirmation email contains the submitted details
     When I select Upload another form
      And I agree to the declaration
+     And I validate the case reference 
+     And I am verifying the employee details
      And I upload another RP14A form
     Then I should be able to submit the new RP14A form successfully
      And I retrieve the second submission confirmation email
@@ -39,6 +41,8 @@ Scenario: Insolvency Practitioner starts a new RP14A submission
 Scenario: Insolvency Practitioner starts a new RP14A API submission 
             Given I have selected Upload another form
               And I have agreed to the declaration
+	          And I have validated the case reference 
+              And I have verified the employee details
              When I upload another RP14A form
              Then I will be able to upload a new RP14A form
 
@@ -62,16 +66,20 @@ Scenario: Insolvency Practitioner chooses to submit another RP14 API form
 Scenario: Insolvency Practitioner starts a new RP14 submission
             Given I have selected Upload another RP14 form
               And I have agreed to the declaration
+              And I have validated the case reference 
+              And I have verified the employee details
              When I upload another RP14 form
              Then I will be able to upload a new RP14 form
 
 @regression @rp14 @cleanCosmosDb @api-upload
 Scenario: Insolvency Practitioner starts a new RP14 API submission
            Given I am on the RP14 submission confirmation page
-             And I retrieve the first submission confirmation email
-             And the first submission confirmation email contains the submitted RP14 details
+            And I retrieve the first submission confirmation email
+            And the first submission confirmation email contains the submitted RP14 details
            When I select Upload another form
             And I agree to the declaration
+            And I validate the case reference 
+            And I am verifying the employee details
             And I upload another RP14 form
           Then I will be able to upload a new RP14 form
             And I retrieve the second submission confirmation email
