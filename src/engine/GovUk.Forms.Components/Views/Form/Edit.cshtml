@@ -1,8 +1,15 @@
 ﻿@model ContentModel
+@inject IPageMetaDataResolver PageMetaDataResolver
 
 @{
-    string? buttonText = Model.GetButtonText();
+    string? buttonText = Model.GetButtonText(); // TODO: Sort form/section
     PageModel? page = Model as PageModel;
+
+    if (page is not null)
+    {
+        PageMetaData2? buttonMetaData = page.MetaData2.FindButton();
+        buttonText = buttonMetaData is not null ? await PageMetaDataResolver.ResolveAsync(buttonMetaData) : null;
+    }
 }
 
 @using (Html.BeginForm(Model))

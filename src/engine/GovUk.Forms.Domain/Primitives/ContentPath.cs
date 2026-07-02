@@ -43,6 +43,16 @@ public sealed record ContentPath
         string[] segments = Value.Split(ForwardSlash, StringSplitOptions.RemoveEmptyEntries);
         return $"{ForwardSlash}{segments.First()}";
     }
+
+    public ContentPath? FindSection()
+    {
+        // The path is in one of the following forms:
+        // /form
+        // /form/section
+        // /form/section/page
+        string[] segments = Value.Split(ForwardSlash, StringSplitOptions.RemoveEmptyEntries);
+        return segments.Length > 1 ? (ContentPath)$"/{segments[0]}/{segments[1]}" : null;
+    }
     
     public override string ToString() => Value;
 }

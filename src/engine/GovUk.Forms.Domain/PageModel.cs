@@ -1,3 +1,4 @@
+using GovUk.Forms.Domain.MetaData;
 using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Domain.Serialization;
 
@@ -9,6 +10,8 @@ public abstract class PageModel : ContentModel
     
     public PageMetaData MetaData { get; init; } = new();
 
+    public PageMetaDataList MetaData2 { get; set; }
+    
     public NodeId? LinkedToNode { get; set; }
     
     public NodeId? LinkedToNextNode { get; set; }

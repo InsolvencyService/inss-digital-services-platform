@@ -129,7 +129,6 @@ public class FormModel : ContentModel
             yield return new FormHasSectionsFormValidatorRule();
             yield return new SectionPathsExistFormValidatorRule();
             yield return new SectionTitlesExistFormValidatorRule();
-            yield return new SectionHasPagesFormValidatorRule();
             yield return new SectionHasUniqueGroupsFormValidatorRule();
             yield return new PagePathsExistFormValidatorRule();
             yield return new PageTitlesExistFormValidatorRule();

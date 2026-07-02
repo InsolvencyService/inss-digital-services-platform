@@ -1,55 +1,55 @@
 using System.ComponentModel.DataAnnotations;
 using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GovUk.Forms.Application.Services;
 
 public sealed class FormService : IFormService
 {
     private readonly IUserFormService _userFormService;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IPagePropertiesProvider _pagePropertiesProvider;
+    private readonly ITreeViewManager _treeViewManager;
 
-    public FormService(IUserFormService userFormService, IServiceProvider serviceProvider, IPagePropertiesProvider pagePropertiesProvider)
+    public FormService(IUserFormService userFormService, ITreeViewManager treeViewManager)
     {
         _userFormService = userFormService;
-        _serviceProvider = serviceProvider;
-        _pagePropertiesProvider = pagePropertiesProvider;
+        _treeViewManager = treeViewManager;
     }
     
     public async Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(
         ContentPath requestPath, 
         Dictionary<string, string?> queryParams)
     {
+        // TODO: Fix return to just the model
         FormModel form = await _userFormService.GetAsync(requestPath);
-        
+
         try
         {
-            ContentModel content = form.GetContent(requestPath);
-
-            if (content is PageModel page)
+            SectionModel? section = null;
+            
+            if (form.Path == requestPath)
             {
-                _pagePropertiesProvider.PageTitle = page.Title;
-                SectionModel section = form.GetSectionForPage(page.Path);
-                IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                ContentPath altPath = await flowchart.PreProcessAsync(form, section, page, queryParams);
-                section.PreviousPagePath = _pagePropertiesProvider.PreviousPagePath;
-                return new ValueTuple<ContentModel?, ContentPath?>(content, altPath != requestPath ? altPath : null);
+                if (form.Sections.Count > 1)
+                {
+                    return new ValueTuple<ContentModel?, ContentPath?>(form, null); 
+                }
+                
+                section = form.Sections.First();
             }
 
-            if (form.Sections.Count == 1)
+            if (section is null)
             {
-                return new ValueTuple<ContentModel?, ContentPath?>(null, form.Sections[0].FirstPage.Path);
-            }
-            else
-            {
-                _pagePropertiesProvider.PreviousPagePath = "/";
+                section = form.Sections.FindSection(requestPath);
+                
+                if (section is null) // TODO: Throw if the request path is not the form
+                {
+                    return new ValueTuple<ContentModel?, ContentPath?>(form, null);
+                }
             }
             
-            return new ValueTuple<ContentModel?, ContentPath?>(form, null);
+            PageModel page = await _treeViewManager.LoadAsync(form, section, requestPath, queryParams);
+
+            return new ValueTuple<ContentModel?, ContentPath?>(page, null);
         }
         finally
         {
@@ -64,17 +64,7 @@ public sealed class FormService : IFormService
         if (postedContent is PageModel page)
         {
             SectionModel section = form.GetSectionForPage(page.Path);
-            IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-            ValidationResult[] validationResults = await flowchart.ValidateAsync(form, section, page);
-
-            if (validationResults.Length > 0)
-            {
-                PageModel savedPage = section.Pages.GetPage(page.Path);
-                savedPage.MetaData.CopyTo(page.MetaData);
-                _pagePropertiesProvider.PreviousPagePath = section.PreviousPagePath;
-            }
-            
-            return validationResults;
+            return await _treeViewManager.ValidateAsync(form, section, page);
         }
 
         return [];
@@ -89,8 +79,7 @@ public sealed class FormService : IFormService
             if (postedContent is PageModel page)
             {
                 SectionModel section = form.GetSectionForPage(page.Path);
-                IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                return await flowchart.ProcessAsync(form, section, page);
+                return await _treeViewManager.SaveAsync(form, section, page);
             }
 
             FormModel submittableForm = form.GetSubmittable();

@@ -17,6 +17,8 @@ public class SectionModel : ContentModel
     
     public ContentPath? ReturnUrl { get; set; }
     
+    public string? TreeNodeId { get; set; }
+    
     [JsonIgnore]
     public PageModel FirstPage
     {

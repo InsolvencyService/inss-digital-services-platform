@@ -13,7 +13,7 @@ public abstract class ContentModel
     
     public ContentId Id { get; set; } = ContentId.New();
 
-    public ContentPath Path { get; init; } = "/";
+    public ContentPath Path { get; set; } = "/";
     
     public string ViewName { get; init; }
 

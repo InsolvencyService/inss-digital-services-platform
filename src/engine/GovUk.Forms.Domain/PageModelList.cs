@@ -156,4 +156,20 @@ public sealed class PageModelList : List<PageModel>
 
         return matchingPages.Count > 0;
     }
+
+    public void SwapPage(PageModel newPage)
+    {
+        PageModel? currentPage = this.FirstOrDefault(p => p.Id == newPage.Id);
+
+        if (currentPage is not null)
+        {
+            int currentPageIndex = this.IndexOf(currentPage);
+            this.Remove(currentPage);
+            this.Insert(currentPageIndex, newPage);
+        }
+        else
+        {
+            this.Add(newPage);
+        }
+    }
 }

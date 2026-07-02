@@ -1,6 +1,15 @@
 ﻿@model FullNameModel
+@inject IPageMetaDataResolver PageMetaDataResolver
+
+@{
+    PageMetaData2 questionMetaData = Model.MetaData2.GetQuestion();
+    string question = await PageMetaDataResolver.ResolveAsync(questionMetaData);
+    
+    PageMetaData2 hintMetaData = Model.MetaData2.GetHint();
+    string hint = await PageMetaDataResolver.ResolveAsync(hintMetaData);
+}
 
 <govuk-input for="@Model.Value" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
-    <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.MetaData.Question ?? "What is your full name?")</govuk-input-label>
-    <govuk-input-hint>@(Model.MetaData.Hint ?? "Enter your first name, middle name (if applicable), and last name")</govuk-input-hint>
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">@question</govuk-input-label>
+    <govuk-input-hint>@hint</govuk-input-hint>
 </govuk-input>

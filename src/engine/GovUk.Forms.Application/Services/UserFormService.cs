@@ -1,9 +1,7 @@
-﻿using GovUk.Forms.Application.DataFlow;
-using GovUk.Forms.Application.Factories;
+﻿using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GovUk.Forms.Application.Services;
 
@@ -13,20 +11,17 @@ public sealed class UserFormService : IUserFormService
     private readonly IFormStorageProvider _formStorageProvider;
     private readonly IFormFactory _formFactory;
     private readonly ISubmitFormService _submitFormService;
-    private readonly IServiceProvider _serviceProvider;
 
     public UserFormService(
         IUserSessionProvider userSessionProvider, 
         IFormStorageProvider formStorageProvider, 
         IFormFactory formFactory,
-        ISubmitFormService submitFormService,
-        IServiceProvider serviceProvider)
+        ISubmitFormService submitFormService)
     {
         _userSessionProvider = userSessionProvider;
         _formStorageProvider = formStorageProvider;
         _formFactory = formFactory;
         _submitFormService = submitFormService;
-        _serviceProvider = serviceProvider;
     }
 
     public async Task<FormModel> GetAsync(ContentPath path)
@@ -68,16 +63,6 @@ public sealed class UserFormService : IUserFormService
         {
             FormModel form = _formFactory.Create();
             form.Id = userSessionId;
-            
-            foreach (SectionModel section in form.Sections)
-            {
-                IFlowchart flowchart = _serviceProvider.GetRequiredKeyedService<IFlowchart>(section.Path);
-                flowchart.TransitionPageToStart(section.FirstPage);
-            }
-            
-            IFormPrePopulationService formPrePopulationService = 
-                _serviceProvider.GetService<IFormPrePopulationService>() ?? NoopFormPrePopulationService.Default;
-            await formPrePopulationService.PrePopulateAsync(form, userSessionId);
             await _formStorageProvider.SaveAsync(userSessionId, form);
         }
     }

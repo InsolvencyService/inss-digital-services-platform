@@ -12,14 +12,12 @@ namespace GovUk.Forms.Application.Test.Services;
 
 public class UserFormServiceTests
 {
-    private readonly IUserSessionProvider _userSessionProvider;
     private readonly IFormStorageProvider _formStorageProvider;
     private readonly ISubmitFormService _submitFormService;
-    private readonly IFormFactory _formFactory;
     private readonly IFlowchart _sectionFlowchart;
     private readonly ServiceCollection _services = [];
     private readonly FormModel _form;
-    private UserFormService _userFormService;
+    private readonly UserFormService _userFormService;
     private const string UserId = "UserId";
     
     public UserFormServiceTests()
@@ -27,8 +25,8 @@ public class UserFormServiceTests
         _form = TestFormModels.CreateWithYourDetailsSection();
         SectionModel section = _form.Sections["Your Details"];
 
-        _userSessionProvider = Substitute.For<IUserSessionProvider>();
-        _userSessionProvider.ResolveAsync().Returns(UserId);
+        IUserSessionProvider userSessionProvider = Substitute.For<IUserSessionProvider>();
+        userSessionProvider.ResolveAsync().Returns(UserId);
 
         _formStorageProvider = Substitute.For<IFormStorageProvider>();
         _formStorageProvider.GetAsync(_form.Path, UserId).Returns(_form);
@@ -36,17 +34,18 @@ public class UserFormServiceTests
         _sectionFlowchart = Substitute.For<IFlowchart>();
         _services.AddKeyedSingleton(section.Path, _sectionFlowchart);
 
-        _formFactory = Substitute.For<IFormFactory>();
-        _formFactory.Create().Returns(_form);
+        IFormFactory formFactory = Substitute.For<IFormFactory>();
+        formFactory.Create().Returns(_form);
         
         _submitFormService = Substitute.For<ISubmitFormService>();
+        
+        _userFormService = new UserFormService(userSessionProvider, _formStorageProvider, formFactory, _submitFormService);
     }
     
     [Fact]
     public async Task FormNotExists_GetAsync_TransitionsStartPagesToFirstNode()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
-        BuildForService();
         FullNameModel fullName = _form.Sections["Your Details"].Pages.GetFirstOf<FullNameModel>();
         
         await _userFormService.GetAsync(_form.Path);
@@ -58,7 +57,6 @@ public class UserFormServiceTests
     public async Task FormNotExists_GetAsync_AssignsUserSessionIdToForm()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
-        BuildForService();
         
         await _userFormService.GetAsync(_form.Path);
         
@@ -70,7 +68,6 @@ public class UserFormServiceTests
     {
         _form.Id = ContentId.Empty;
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
-        BuildForService();
         
         await _userFormService.SaveAsync(_form);
 
@@ -81,7 +78,6 @@ public class UserFormServiceTests
     public async Task FormHasId_SaveAsync_CallsSavesFormWithProvider()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
-        BuildForService();
         
         await _userFormService.SaveAsync(_form);
 
@@ -92,7 +88,6 @@ public class UserFormServiceTests
     public async Task ForForm_RemoveAsync_CallsRemoveFormWithProvider()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
-        BuildForService();
         
         await _userFormService.RemoveAsync(_form);
 
@@ -103,7 +98,6 @@ public class UserFormServiceTests
     public async Task ForForm_RemoveAsync_ResetsFormId()
     {
         _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
-        BuildForService();
         
         await _userFormService.RemoveAsync(_form);
 
@@ -113,17 +107,8 @@ public class UserFormServiceTests
     [Fact]
     public async Task ContentIsForm_SubmitAsync_CallsFormSubmissionService()
     {
-        BuildForService();
-
         await _userFormService.SubmitAsync(_form);
         
         await _submitFormService.Received(1).SubmitAsync(Arg.Is<FormModel>(f => f.Path == _form.Path), UserId);
-    }
-    
-    private void BuildForService()
-    {
-        IServiceProvider serviceProvider = _services.BuildServiceProvider();
-        _userFormService = new UserFormService(
-            _userSessionProvider, _formStorageProvider, _formFactory, _submitFormService, serviceProvider);
     }
 }

@@ -1,10 +1,12 @@
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Binding;
+using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Components.Controllers;
 using GovUk.Forms.Components.Options;
 using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Infrastructure.Extensions;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -67,6 +69,7 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<IContentBinder, DefaultContentBinder>();
             services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(FileUploadModel).FullName);
             services.AddSingleton<ITypeNameResolver, TypeNameResolver>();
+            services.AddSingleton<IPageMetaDataResolver, PageMetaDataResolver>();
             services.AddHttpClient();
             services.AddGovUkFrontend();
             services.AddHealthChecks();
@@ -113,9 +116,19 @@ public class StartupConfiguration : IHostingStartup
 
                 if (componentOptions.Value.BootstrapFormFramework)
                 {
-                    IFormFactory formProvider = serviceProvider.GetRequiredService<IFormFactory>();
-                    FormModel form = formProvider.Create();
+                    IFormPathManager formPathManager = serviceProvider.GetRequiredService<IFormPathManager>();
+                    //IFormFactory formProvider = serviceProvider.GetRequiredService<IFormFactory>();
+                    //FormModel form = formProvider.Create();
 
+                    foreach (ContentPath path in formPathManager.Paths)
+                    {
+                        endpoints.MapControllerRoute(
+                                name: $"{path.Value}/edit",
+                                pattern: path.Value,
+                                defaults: new { controller = "Form", action = "Edit" })
+                            .WithStaticAssets();    
+                    }
+                    /*
                     endpoints.MapControllerRoute(
                             name: $"{form.Path.Value}/edit",
                             pattern: form.Path.Value,
@@ -130,7 +143,7 @@ public class StartupConfiguration : IHostingStartup
                                 defaults: new { controller = "Form", action = "Edit" })
                             .WithStaticAssets();
                     }
-
+                    */
                     endpoints.MapControllerRoute(
                             name: "FormSignOut",
                             pattern: "sign-out",
