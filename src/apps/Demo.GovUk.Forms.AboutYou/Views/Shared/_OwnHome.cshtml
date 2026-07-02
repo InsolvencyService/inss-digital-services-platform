@@ -1,13 +1,18 @@
 ﻿@model Demo.GovUk.Forms.AboutYou.Domain.OwnHomeModel
+@inject IPageMetaDataResolver PageMetaDataResolver
+
+@{
+    PageMetaData2 questionMetaData = Model.MetaData2.GetQuestion();
+    string question = await PageMetaDataResolver.ResolveAsync(questionMetaData);
+    
+    PageMetaData2 hintMetaData = Model.MetaData2.GetHint();
+    string hint = await PageMetaDataResolver.ResolveAsync(hintMetaData);
+}
 
 <govuk-radios for="@Model.OwnsHome" orientation="Vertical">
     <govuk-radios-fieldset>
-        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
-            Do you own your own home?
-        </govuk-radios-fieldset-legend>
-        <govuk-radios-hint>
-            If you do, choose yes
-        </govuk-radios-hint>
+        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">@question</govuk-radios-fieldset-legend>
+        <govuk-radios-hint>@hint</govuk-radios-hint>
         <govuk-radios-item value="true">Yes</govuk-radios-item>
         <govuk-radios-item value="false">No</govuk-radios-item>
     </govuk-radios-fieldset>
