@@ -89,7 +89,7 @@ public class TreeViewManager : ITreeViewManager
         page.MetaData2 = node.MetaData;
         
         // Find the loader and execute it
-        IPageLoader loader = _serviceProvider.GetKeyedService<IPageLoader>(node.Id) ?? NoopPageLoader.Default;
+        IPageLoader loader = _serviceProvider.GetKeyedService<IPageLoader>(node.FlowNodeId) ?? NoopPageLoader.Default;
         LoadPageContext context = new() { Form = form, Section = section, CurrentPage = page, QueryParams = queryParams };
         await loader.LoadAsync(context);
 
@@ -110,7 +110,7 @@ public class TreeViewManager : ITreeViewManager
             throw new InvalidOperationException($"Unable to find the tree node for {section.TreeNodeId}."); // TODO: Fix
         }
         
-        IPageValidator validator = _serviceProvider.GetKeyedService<IPageValidator>(node.Id) ?? DefaultPageValidator.Default;
+        IPageValidator validator = _serviceProvider.GetKeyedService<IPageValidator>(node.FlowNodeId) ?? DefaultPageValidator.Default;
         ValidatePageContext context = new()
         {
             //Nodes = Nodes,
@@ -155,7 +155,7 @@ public class TreeViewManager : ITreeViewManager
         
         
         
-        IPageExecutor executor = _serviceProvider.GetKeyedService<IPageExecutor>(node.Id) ?? NoopPageExecutor.Default;
+        IPageExecutor executor = _serviceProvider.GetKeyedService<IPageExecutor>(node.FlowNodeId) ?? NoopPageExecutor.Default;
         ExecutePageContext context = new()
         {
             //Nodes = Nodes, 
@@ -220,6 +220,8 @@ public sealed class TreeNode
     
     public string Id { get; init; } = Guid.NewGuid().ToString(); // TODO: Primitive
 
+    public NodeId FlowNodeId => _flowNode.Id;
+    
     public Type PageType => _flowNode.PageType;
     
     public ContentPath PagePath => _flowNode.PagePath;
