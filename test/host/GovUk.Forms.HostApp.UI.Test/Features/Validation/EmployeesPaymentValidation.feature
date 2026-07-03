@@ -1,4 +1,4 @@
-﻿@cleanCosmosDb
+﻿@cleanCosmosDb @addVideo
 Feature: Employees Payment Validation
 
 A short summary of the feature
@@ -140,7 +140,7 @@ A short summary of the feature
                   | 15.345          |
                   | -100            |
 
-@regression @validation @rp14a @allure.story:Payment @addVideo
+@regression @validation @rp14a @allure.story:Payment 
  Scenario Outline: RP14A Display error for multiple invalid employee basic pay per week formats
             Given the RP14A contains <employeeCount> employees with employee basic pay per week "<basicPayPerWeek>"
              When I attempt to submit the RP14A

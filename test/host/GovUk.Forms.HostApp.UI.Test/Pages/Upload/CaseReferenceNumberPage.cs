@@ -20,7 +20,10 @@ public class CaseReferenceNumberPage : BasePage, ICaseReferenceNumberPage
     private ILocator ContinueButton => Page.GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton });
     private ILocator BackLink => Page.GetByRole(AriaRole.Link, new() { Name = SharedLocactors.BackButton, Exact = true });
     private ILocator ErrorSummary => Page.Locator(UploadLocators.Selectors.ErrorSummary);
-    private ILocator MainContent => Page.Locator("#main-content");
+    private ILocator ErrorSummaryTitle => Page.Locator(UploadLocators.Selectors.ErrorSummaryTitle);
+    private ILocator CaseReferenceFieldError => Page.Locator(UploadLocators.Selectors.CaseReferenceFieldError);
+    private ILocator ErrorInputGroup => Page.Locator(UploadLocators.Selectors.ErrorGroupForm);
+    private ILocator MainContent => Page.Locator(UploadLocators.Selectors.MainContent);
 
     protected override async Task PageContentLoadedAsync()
     {
@@ -54,14 +57,23 @@ public class CaseReferenceNumberPage : BasePage, ICaseReferenceNumberPage
         await Expect(ErrorSummary.GetByRole(AriaRole.Link, new() { Name = errorMessage })).ToBeVisibleAsync();
     }
 
+    public async Task VerifyValidationErrorsAsync(string errorMessage)
+    {
+        await Expect(ErrorSummary).ToBeVisibleAsync();
+        await Expect(ErrorSummaryTitle).ToHaveTextAsync(UploadLocators.Labels.ThereIsAProblem);
+        await Expect(ErrorSummary.GetByRole(AriaRole.Link, new() { Name = errorMessage })).ToBeVisibleAsync();
+        await Expect(ErrorInputGroup).ToBeVisibleAsync();
+        await Expect(CaseReferenceFieldError).ToContainTextAsync(errorMessage);
+    }
+
     public async Task VerifyAriaSnapshotAsync()
     {
         await WaitForPageToLoadAsync();
 
         await Expect(MainContent).ToMatchAriaSnapshotAsync("""
-            - heading "Whats the case reference number?" [level=1]
-            - text: For example, 'CN123456K'. This must match the case reference number in your form.
-            - textbox "Whats the case reference number?"
+            - heading "Enter the 10 character case reference number" [level=1]
+            - text: For example, 'CN12345678'. This must match the case reference number in your uploaded file.
+            - textbox "Enter the 10 character case reference number": /.*/
             - button "Continue"
             """);
     }

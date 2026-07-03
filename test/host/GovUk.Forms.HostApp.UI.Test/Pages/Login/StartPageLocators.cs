@@ -17,6 +17,5 @@ public class StartPageLocators
     public class Selectors
     {
         public const string MainContent = "#main-content";
-
     }
 }

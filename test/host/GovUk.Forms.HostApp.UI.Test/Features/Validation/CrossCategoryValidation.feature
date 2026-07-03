@@ -1,4 +1,4 @@
-@cleanCosmosDb
+@cleanCosmosDb @addVideo
 Feature: Cross Category Validation
 
 As an Insolvency Practitioner
@@ -8,23 +8,21 @@ So that I can fix issues across different sections in one go
   Background:
     Given I am on the upload page as a "InssTestNine" user
 
-@regression @validation @rp14 @api-upload @addVideo
+@regression @validation @rp14 @api-upload
 Scenario: RP14 Api displays errors from different categories together
-    Given the RP14 XML contains the following invalid values
-        | caseReference | businessName | directorNationalInsuranceNumber | shareholderPercentage | payRecordsContactName |
-        | ABC12345      |              | 00123456C                       | 50.588                |                       |
+    Given the RP14 XML contains the following invalid values and errors
+        | Field                            | Value     | Message                                                                            | Hint                                                  | Type                                |
+        | CaseReference                    | ABC12345  | 1 case reference does not match the validated case reference {validCaseReference} |                                                        | Case reference                      |
+        | BusinessName                     |           | 1 business name is missing                                                        |                                                        | Name of business                    |
+        | DirectorNationalInsuranceNumber  | 00123456C | 1 National Insurance number is in the wrong format                                | Enter a National Insurance number like QQ 12 34 56 C  | Director national insurance number  |
+        | ShareholderPercentage            | 50.588    | 1 shareholder percentage is incorrect                                             | Enter a number like 50.50 or 100                      | Shareholder percentage              |
+        | PayRecordsContactName            |           | 1 pay records contact name is missing                                             |                                                        | Pay records contact name            |
     When I attempt to submit the RP14
-    Then I should see the following validation errors
-        | Message                                            | Hint                                                 | Type                               |
-        | 1 case reference is in the wrong format            |                                                      | Case reference                     |
-        | 1 business name is missing                         |                                                      | Name of business                   |
-        | 1 National Insurance number is in the wrong format | Enter a National Insurance number like QQ 12 34 56 C | Director national insurance number |
-        | 1 shareholder percentage is incorrect              | Enter a number like 50.50 or 100                     | Shareholder percentage             |
-        | 1 pay records contact name is missing              |                                                      | Pay records contact name           |
+    Then I should see the expected validation errors
 
 
 
-@regression @validation @rp14 @addVideo
+@regression @validation @rp14
 Scenario: RP14 displays correct counts for repeated validation errors
     Given the RP14 XML contains the following invalid values
         | Type                            | Count |
