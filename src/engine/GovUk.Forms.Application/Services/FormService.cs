@@ -46,9 +46,14 @@ public sealed class FormService : IFormService
                     return new ValueTuple<ContentModel?, ContentPath?>(form, null);
                 }
             }
+
+            if (section.Pages.Count == 0 && section.TreeNodeId is null)
+            {
+                ContentPath redirectPath = _treeViewManager.TransitionToStart(section);
+                return new ValueTuple<ContentModel?, ContentPath?>(null, redirectPath);    
+            }
             
             PageModel page = await _treeViewManager.LoadAsync(form, section, requestPath, queryParams);
-
             return new ValueTuple<ContentModel?, ContentPath?>(page, null);
         }
         finally
@@ -63,7 +68,7 @@ public sealed class FormService : IFormService
         
         if (postedContent is PageModel page)
         {
-            SectionModel section = form.GetSectionForPage(page.Path);
+            SectionModel section = form.Sections.FindSection(page.Path)!; // TODO: Fix ! form.GetSectionForPage(page.Path);
             return await _treeViewManager.ValidateAsync(form, section, page);
         }
 
@@ -78,7 +83,7 @@ public sealed class FormService : IFormService
         {
             if (postedContent is PageModel page)
             {
-                SectionModel section = form.GetSectionForPage(page.Path);
+                SectionModel section = form.Sections.FindSection(page.Path)!; // TODO: Fix ! form.GetSectionForPage(page.Path);
                 return await _treeViewManager.SaveAsync(form, section, page);
             }
 

@@ -10,15 +10,15 @@ public sealed class AboutYouSummaryPageLoader : SummaryPageLoader
 {
     public override ValueTask LoadAsync(LoadPageContext context)
     {
+        SummaryModel summary = context.CurrentPage.As<SummaryModel>();
         FullNameModel fullName = context.Section.Pages.GetFirstOf<FullNameModel>();
         AddressModel address = context.Section.Pages.GetFirstOf<AddressModel>();
         ContactDetailsModel contactDetails = context.Section.Pages.GetFirstOf<ContactDetailsModel>();
         AgeModel age = context.Section.Pages.GetFirstOf<AgeModel>();
-        SalaryModel salary = context.Section.Pages.GetFirstOf<SalaryModel>();
-        BankAccountModel bankAccount = context.Section.Pages.GetFirstOf<BankAccountModel>();
-        OwnHomeModel ownHome = context.Section.Pages.GetFirstOf<OwnHomeModel>();
-        HomeValueModel homeValue = context.Section.Pages.GetFirstOf<HomeValueModel>();
-        SummaryModel summary = context.Section.Pages.GetFirstOf<SummaryModel>();
+        SalaryModel? salary = context.Section.Pages.FindFirstOf<SalaryModel>();
+        BankAccountModel? bankAccount = context.Section.Pages.FindFirstOf<BankAccountModel>();
+        OwnHomeModel? ownHome = context.Section.Pages.FindFirstOf<OwnHomeModel>();
+        HomeValueModel? homeValue = context.Section.Pages.FindFirstOf<HomeValueModel>();
 
         context.Section.ReturnUrl = summary.Path;
         
@@ -29,25 +29,25 @@ public sealed class AboutYouSummaryPageLoader : SummaryPageLoader
         AppendSummaryDetail(details, "Contact details", [contactDetails.Email.Value, contactDetails.Number.Value], contactDetails.Path);
         AppendSummaryDetail(details, "Age", [age.Value.AsString()], age.Path);
 
-        if (salary.CompletedDate is not null)
+        if (salary is not null)
         {
             AppendSummaryDetail(details, "Salary", [salary.Value.AsMoney()], salary.Path);
         }
 
-        if (bankAccount.CompletedDate is not null)
+        if (bankAccount is not null)
         {
             AppendSummaryDetail(details, "Bank account", [bankAccount.AccountName, bankAccount.AccountNumber,  
                 bankAccount.SortCode, bankAccount.BuildingSocietyRollNumber!], bankAccount.Path);
         }
         
-        if (ownHome.CompletedDate is not null)
+        if (ownHome is not null)
         {
             AppendSummaryDetail(details, "Owns home", [ownHome.OwnsHome ? "Yes" : "No"], ownHome.Path);
-        }
-        
-        if (homeValue.CompletedDate is not null)
-        {
-            AppendSummaryDetail(details, "Home value", [homeValue.Value.AsMoney()], ownHome.Path);
+            
+            if (homeValue is not null)
+            {
+                AppendSummaryDetail(details, "Home value", [homeValue.Value.AsMoney()], ownHome.Path);
+            }
         }
         
         SummaryCategory aboutYouCategory = new() { Label = "These are the details we have collected", Details = details.ToArray() };

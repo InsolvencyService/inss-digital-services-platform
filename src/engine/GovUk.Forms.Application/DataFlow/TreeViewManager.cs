@@ -12,6 +12,7 @@ namespace GovUk.Forms.Application.DataFlow;
 
 public interface ITreeViewManager
 {
+    ContentPath TransitionToStart(SectionModel section);
     ValueTask<PageModel> LoadAsync(FormModel form, SectionModel section, ContentPath path, Dictionary<string, string?> queryParams);
     ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page);
     ValueTask<ContentPath> SaveAsync(FormModel form, SectionModel section, PageModel page);
@@ -28,14 +29,83 @@ public class TreeViewManager : ITreeViewManager
         _serviceProvider = serviceProvider;
     }
 
-    public async ValueTask<PageModel> LoadAsync(FormModel form, SectionModel section, ContentPath path, Dictionary<string, string?> queryParams)
+    public ContentPath TransitionToStart(SectionModel section)
     {
         TreeNode rootNode = _treeNodeFactory.GetRootNode(section.Path);
+        section.TreeNodeId = rootNode.Id;
+        return rootNode.PagePath;
+    }
+    
+    public async ValueTask<PageModel> LoadAsync(FormModel form, SectionModel section, ContentPath path, Dictionary<string, string?> queryParams)
+    {
+        if (section.TreeNodeId is null)
+        {
+            throw new InvalidOperationException("The section tree node Id is unset."); // TODO:
+        }
+        
+        IPagePropertiesProvider pagePropertiesProvider = _serviceProvider.GetRequiredService<IPagePropertiesProvider>();
+        TreeNode rootNode = _treeNodeFactory.GetRootNode(section.Path);
+        TreeNode pageNode = rootNode.GetNode(section.TreeNodeId);
 
+        // Handle back button navigation
+        if (pageNode.PagePath != path)
+        {
+            TreeNode x = rootNode.FindNodeForPath(path)!; // TODO Fix ! Perhaps throw as an invalid action?
+            
+            PageModel parentPage = section.Pages.FindPage(x.PagePath) ?? (PageModel)Activator.CreateInstance(x.PageType, [])!;
+            parentPage.Path = x.PagePath;
+            parentPage.MetaData2 = x.MetaData;
+            section.TreeNodeId = x.Id;
+
+            IPageLoader loader2 = _serviceProvider.GetKeyedService<IPageLoader>(x.FlowNodeId) ?? NoopPageLoader.Default;
+            LoadPageContext context2 = new() { Form = form, Section = section, CurrentPage = parentPage, QueryParams = queryParams };
+            await loader2.LoadAsync(context2);
+            
+            if (section.ReturnUrl is not null)
+            {
+                pagePropertiesProvider.PreviousPagePath = section.ReturnUrl;
+            }
+            else
+            {
+                TreeNode? parentNode2 = rootNode.FindParent(x);
+                pagePropertiesProvider.PreviousPagePath = parentNode2?.PagePath ?? "/";
+            }
+
+            return parentPage;
+        }
+        
+        PageModel page = (PageModel)Activator.CreateInstance(pageNode.PageType, [])!;
+        page.Path = pageNode.PagePath;
+        page.MetaData2 = pageNode.MetaData;
+        
+        IPageLoader loader = _serviceProvider.GetKeyedService<IPageLoader>(pageNode.FlowNodeId) ?? NoopPageLoader.Default;
+        LoadPageContext context = new() { Form = form, Section = section, CurrentPage = page, QueryParams = queryParams };
+        await loader.LoadAsync(context);
+
+        TreeNode? parentNode = rootNode.FindParent(pageNode);
+        pagePropertiesProvider.PreviousPagePath = parentNode?.PagePath ?? "/";
+        return page;
+/*        
+        // If the section has no pages then we need to add a new page and assign the Id to it
+        
+        
+
+        PageModel? page = section.Pages.FindPage(path);
+
+        if (page is null)
+        {
+            page = (PageModel)Activator.CreateInstance(rootNode.PageType, [])!;
+            page.Path = rootNode.PagePath;
+            page.TreeNodeId = rootNode.Id;
+            section.Pages.Add(page);
+        }
+        
+        TreeNode node = rootNode.GetNode(page.TreeNodeId);
+        
         //TreeNode pageTreeNode = rootNode.FindNodeForPath(path) ?? rootNode;
-        section.TreeNodeId ??= rootNode.Id;
+        //section.TreeNodeId ??= rootNode.Id;
 
-        TreeNode? node = rootNode.Find(section.TreeNodeId);
+        TreeNode? node = rootNode.FindNode(section.TreeNodeId);
 
         if (node is null)
         {
@@ -97,13 +167,14 @@ public class TreeViewManager : ITreeViewManager
         TreeNode? parentNode = rootNode.FindParent(node);
         pagePropertiesProvider.PreviousPagePath = parentNode?.PagePath ?? "/";
         return page;
+        */
     }
     
     public async ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page)
     {
         //_logger.ValidatingPage(page.Path);
         TreeNode rootNode = _treeNodeFactory.GetRootNode(section.Path);
-        TreeNode? node = rootNode.Find(section.TreeNodeId!); // TODO: Handle !
+        TreeNode? node = rootNode.FindNode(section.TreeNodeId!); // TODO: Handle !
 
         if (node is null)
         {
@@ -135,7 +206,7 @@ public class TreeViewManager : ITreeViewManager
     {
         //_logger.ProcessingPage(page.Path, section.Title);
         TreeNode rootNode = _treeNodeFactory.GetRootNode(section.Path);
-        TreeNode? node = rootNode.Find(section.TreeNodeId!); // TODO: Handle !
+        TreeNode? node = rootNode.FindNode(section.TreeNodeId!); // TODO: Handle !
         
         if (node is null)
         {
@@ -168,7 +239,9 @@ public class TreeViewManager : ITreeViewManager
         };
         await executor.ExecuteAsync(context);
 
-        return node.Children[context.ChildNodeIndex].PagePath;
+        TreeNode nextNode = node.Children[context.ChildNodeIndex];
+        section.TreeNodeId = nextNode.Id;
+        return nextNode.PagePath;
         
         /*PageModel targetPage = section.Pages.GetPage(page.Path);
         PageModel pageBeforeChanges = targetPage.Clone();
@@ -230,7 +303,7 @@ public sealed class TreeNode
     
     public TreeNode[] Children { get; set; } = [];
 
-    public TreeNode? Find(string id)
+    public TreeNode? FindNode(string id)
     {
         if (Id == id)
         {
@@ -239,7 +312,7 @@ public sealed class TreeNode
 
         foreach (TreeNode childNode in Children)
         {
-            TreeNode? match = childNode.Find(id);
+            TreeNode? match = childNode.FindNode(id);
 
             if (match is not null)
             {
@@ -250,9 +323,14 @@ public sealed class TreeNode
         return null;
     }
 
-    /*public TreeNode? FindNodeForPath(ContentPath path)
+    public TreeNode GetNode(string id)
     {
-        if (Node.PagePath == path)
+        return FindNode(id) ?? throw new InvalidOperationException($"Unable to find the tree node for {id}.");
+    }
+
+    public TreeNode? FindNodeForPath(ContentPath path)
+    {
+        if (PagePath == path)
         {
             return this;
         }
@@ -268,7 +346,7 @@ public sealed class TreeNode
         }
 
         return null;
-    }*/
+    }
     
     public TreeNode? FindParent(TreeNode node)
     {
