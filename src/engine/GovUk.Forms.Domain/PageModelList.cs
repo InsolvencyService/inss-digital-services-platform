@@ -90,6 +90,30 @@ public sealed class PageModelList : List<PageModel>
         throw new ModelException($"Unable to find page of type {typeof(T)}.");
     }
 
+    public T? FindFirstOf<T>() where T : PageModel
+    {
+        foreach (PageModel page in this)
+        {
+            if (page is GroupPageModel groupPage)
+            {
+                foreach (PageModel subPage in groupPage.Pages)
+                {
+                    if (subPage is T subPageAsType)
+                    {
+                        return subPageAsType;
+                    }
+                }
+            }
+            
+            if (page is T pageAsType)
+            {
+                return pageAsType;
+            }
+        }
+
+        return null;
+    }
+    
     public TGroup GetGroup<TGroup>(GroupId groupId) where TGroup : GroupPageModel
     {
         foreach (PageModel page in this)
