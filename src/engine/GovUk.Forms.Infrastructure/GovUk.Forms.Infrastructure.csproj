@@ -10,6 +10,7 @@
     <PackageReference Include="Azure.Search.Documents" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
     <PackageReference Include="Microsoft.Azure.Cosmos" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
