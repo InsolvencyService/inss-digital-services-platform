@@ -19,3 +19,21 @@ public sealed class DefaultFlowNodeValidator : IFlowNodeValidator
         return ValueTask.FromResult(validationResults.ToArray());
     }
 }
+
+public sealed class DefaultPageValidator : IPageValidator
+{
+    public static readonly IPageValidator Default = new DefaultPageValidator();
+    private const bool AllProperties = true;
+    
+    private DefaultPageValidator()
+    {
+    }
+    
+    public ValueTask<ValidationResult[]> ValidateAsync(ValidatePageContext context)
+    {
+        List<ValidationResult> validationResults = [];
+        ValidationContext validationContext = new(context.CurrentPage);
+        Validator.TryValidateObject(context.CurrentPage, validationContext, validationResults, AllProperties);
+        return ValueTask.FromResult(validationResults.ToArray());
+    }
+}

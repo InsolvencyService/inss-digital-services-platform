@@ -6,3 +6,8 @@ public interface IFlowNodeValidator
 {
     ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context);
 }
+
+public interface IPageValidator
+{
+    ValueTask<ValidationResult[]> ValidateAsync(ValidatePageContext context);
+}

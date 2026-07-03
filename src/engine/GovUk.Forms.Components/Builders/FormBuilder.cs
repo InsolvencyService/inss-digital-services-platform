@@ -68,12 +68,12 @@ public sealed class SectionBuilder
         _form.Sections.Add(_section);
     }
     
-    public FlowNodeBuilder AddNode<TPageModel>(NodeId nodeId, ContentPath pagePath, NodeId[] nextNodeIds) where TPageModel : PageModel
+    public TreeNodeBuilder AddNode<TPageModel>(NodeId nodeId, ContentPath pagePath, NodeId[] nextNodeIds) where TPageModel : PageModel
     {
         FlowNode node = new() { Id = nodeId, PagePath = $"{_section.Path}/{pagePath}", PageType = typeof(TPageModel), NextNodes = nextNodeIds };
         _nodes.Add(node);
         _formPathManager.AddPath(node.PagePath);
-        return new FlowNodeBuilder(_formBuilder, this, node, _services);
+        return new TreeNodeBuilder(_formBuilder, this, node, _services);
     }
 
     public FormBuilder RegisterSection()
@@ -110,14 +110,14 @@ public sealed class SectionBuilder
     }
 }
 
-public sealed class FlowNodeBuilder
+public sealed class TreeNodeBuilder
 {
     private readonly FormBuilder _formBuilder;
     private readonly SectionBuilder _sectionBuilder;
     private readonly FlowNode _node;
     private readonly IServiceCollection _services;
 
-    internal FlowNodeBuilder(FormBuilder formBuilder, SectionBuilder sectionBuilder, FlowNode node, IServiceCollection services)
+    internal TreeNodeBuilder(FormBuilder formBuilder, SectionBuilder sectionBuilder, FlowNode node, IServiceCollection services)
     {
         _formBuilder = formBuilder;
         _sectionBuilder = sectionBuilder;
@@ -125,25 +125,25 @@ public sealed class FlowNodeBuilder
         _services = services;
     }
 
-    public FlowNodeBuilder WithLoader<TLoader>() where TLoader : class, IFlowNodeLoader
+    public TreeNodeBuilder WithLoader<TLoader>() where TLoader : class, IPageLoader
     {
-        _services.AddKeyedTransient<IFlowNodeLoader, TLoader>(_node.Id);
+        _services.AddKeyedTransient<IPageLoader, TLoader>(_node.Id);
         return this;
     }
     
-    public FlowNodeBuilder WithValidator<TValidator>() where TValidator : class, IFlowNodeValidator
+    public TreeNodeBuilder WithValidator<TValidator>() where TValidator : class, IPageValidator
     {
-        _services.AddKeyedTransient<IFlowNodeValidator, TValidator>(_node.Id);
+        _services.AddKeyedTransient<IPageValidator, TValidator>(_node.Id);
         return this;
     }
     
-    public FlowNodeBuilder WithExecutor<TExecutor>() where TExecutor : class, IFlowNodeExecutor
+    public TreeNodeBuilder WithExecutor<TExecutor>() where TExecutor : class, IPageExecutor
     {
-        _services.AddKeyedTransient<IFlowNodeExecutor, TExecutor>(_node.Id);
+        _services.AddKeyedTransient<IPageExecutor, TExecutor>(_node.Id);
         return this;
     }
     
-    public FlowNodeBuilder WithMetaData(PageMetaData2 metaData)
+    public TreeNodeBuilder WithMetaData(PageMetaData2 metaData)
     {
         _node.AddMetaData(metaData);
         return this;

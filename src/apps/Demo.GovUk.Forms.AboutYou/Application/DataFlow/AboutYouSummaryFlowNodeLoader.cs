@@ -3,13 +3,12 @@ using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Primitives;
 
 namespace Demo.GovUk.Forms.AboutYou.Application.DataFlow;
 
-public sealed class AboutYouSummaryFlowNodeLoader : SummaryFlowNodeLoader
+public sealed class AboutYouSummaryPageLoader : SummaryPageLoader
 {
-    public override ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
+    public override ValueTask LoadAsync(LoadPageContext context)
     {
         FullNameModel fullName = context.Section.Pages.GetFirstOf<FullNameModel>();
         AddressModel address = context.Section.Pages.GetFirstOf<AddressModel>();
@@ -55,6 +54,6 @@ public sealed class AboutYouSummaryFlowNodeLoader : SummaryFlowNodeLoader
 
         summary.Categories = [aboutYouCategory];
         
-        return ValueTask.FromResult<NodeId?>(null);
+        return ValueTask.CompletedTask;
     }
 }

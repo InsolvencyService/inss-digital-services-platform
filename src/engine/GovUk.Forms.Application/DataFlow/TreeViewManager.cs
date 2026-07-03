@@ -89,9 +89,9 @@ public class TreeViewManager : ITreeViewManager
         page.MetaData2 = node.MetaData;
         
         // Find the loader and execute it
-        IFlowNodeLoader loader = _serviceProvider.GetKeyedService<IFlowNodeLoader>(node.Id) ?? NoopFlowNodeLoader.Default;
-        //LoadTreeNodeContext context = new() { Form = form, Section = section, CurrentPage = page, QueryParams = queryParams };
-        //await loader.LoadAsync(context);
+        IPageLoader loader = _serviceProvider.GetKeyedService<IPageLoader>(node.Id) ?? NoopPageLoader.Default;
+        LoadPageContext context = new() { Form = form, Section = section, CurrentPage = page, QueryParams = queryParams };
+        await loader.LoadAsync(context);
 
         IPagePropertiesProvider pagePropertiesProvider = _serviceProvider.GetRequiredService<IPagePropertiesProvider>();
         TreeNode? parentNode = rootNode.FindParent(node);
@@ -110,8 +110,8 @@ public class TreeViewManager : ITreeViewManager
             throw new InvalidOperationException($"Unable to find the tree node for {section.TreeNodeId}."); // TODO: Fix
         }
         
-        IFlowNodeValidator validator = _serviceProvider.GetKeyedService<IFlowNodeValidator>(node.Id) ?? DefaultFlowNodeValidator.Default;
-        FlowNodeContext context = new()
+        IPageValidator validator = _serviceProvider.GetKeyedService<IPageValidator>(node.Id) ?? DefaultPageValidator.Default;
+        ValidatePageContext context = new()
         {
             //Nodes = Nodes,
             //CurrentNode = node,
@@ -155,8 +155,8 @@ public class TreeViewManager : ITreeViewManager
         
         
         
-        IFlowNodeExecutor executor = _serviceProvider.GetKeyedService<IFlowNodeExecutor>(node.Id) ?? NoopFlowNodeExecutor.Default;
-        FlowNodeContext context = new()
+        IPageExecutor executor = _serviceProvider.GetKeyedService<IPageExecutor>(node.Id) ?? NoopPageExecutor.Default;
+        ExecutePageContext context = new()
         {
             //Nodes = Nodes, 
             //CurrentNode = node,
@@ -168,7 +168,7 @@ public class TreeViewManager : ITreeViewManager
         };
         await executor.ExecuteAsync(context);
 
-        return node.Children[0].PagePath;//[context.ChildNodeIndex].PagePath;
+        return node.Children[context.ChildNodeIndex].PagePath;
         
         /*PageModel targetPage = section.Pages.GetPage(page.Path);
         PageModel pageBeforeChanges = targetPage.Clone();

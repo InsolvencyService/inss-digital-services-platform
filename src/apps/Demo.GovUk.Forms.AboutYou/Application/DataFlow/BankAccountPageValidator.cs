@@ -7,13 +7,13 @@ using GovUk.Forms.Domain;
 
 namespace Demo.GovUk.Forms.AboutYou.Application.DataFlow;
 
-public sealed partial class BankAccountFlowNodeValidator : IFlowNodeValidator
+public sealed partial class BankAccountPageValidator : IPageValidator
 {
     private static readonly Regex _regex = BuildingSocietyRollNumberRegex();
     
-    public async ValueTask<ValidationResult[]> ValidateAsync(FlowNodeContext context)
+    public async ValueTask<ValidationResult[]> ValidateAsync(ValidatePageContext context)
     {
-        ValidationResult[] baseValidationResults = await DefaultFlowNodeValidator.Default.ValidateAsync(context);
+        ValidationResult[] baseValidationResults = await DefaultPageValidator.Default.ValidateAsync(context);
         List<ValidationResult> validationResults = baseValidationResults.ToList();
         BankAccountModel bankAccount = context.CurrentPage.As<BankAccountModel>();
 

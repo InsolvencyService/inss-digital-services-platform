@@ -6,3 +6,8 @@ public interface IFlowNodeLoader
 {
     ValueTask<NodeId?> LoadAsync(FlowNodeContext context);
 }
+
+public interface IPageLoader
+{
+    ValueTask LoadAsync(LoadPageContext context);
+}

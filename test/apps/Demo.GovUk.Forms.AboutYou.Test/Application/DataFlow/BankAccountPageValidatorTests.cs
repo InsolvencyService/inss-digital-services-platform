@@ -6,15 +6,15 @@ using Xunit;
 
 namespace Demo.GovUk.Forms.AboutYou.Test.Application.DataFlow;
 
-public class BankAccountFlowNodeValidatorTests
+public class BankAccountPageValidatorTests
 {
     [Fact]
     public async Task InvalidBankAccountDetails_ValidateAsync_ReturnsErrorDetails()
     {
-        BankAccountFlowNodeValidator validator = new();
+        BankAccountPageValidator validator = new();
         BankAccountModel bankAccount = new() { AccountName = "H J Simpson", AccountNumber = "12345678", SortCode = "11-22-33" };
-        FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
+        TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = bankAccount.Path });
+        ValidatePageContext context = new() { CurrentNode = node, CurrentPage = bankAccount };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
@@ -26,7 +26,7 @@ public class BankAccountFlowNodeValidatorTests
     [Fact]
     public async Task InvalidBuildingSocietyRollNumber_ValidateAsync_ReturnsErrorDetails()
     {
-        BankAccountFlowNodeValidator validator = new();
+        BankAccountPageValidator validator = new();
         BankAccountModel bankAccount = new()
         {
             AccountName = "H J Simpson",
@@ -34,8 +34,8 @@ public class BankAccountFlowNodeValidatorTests
             SortCode = "11-22-33", 
             BuildingSocietyRollNumber = "ABC-123$"
         };
-        FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
+        TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = bankAccount.Path });
+        ValidatePageContext context = new() { CurrentNode = node, CurrentPage = bankAccount };
         
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
@@ -47,10 +47,10 @@ public class BankAccountFlowNodeValidatorTests
     [Fact]
     public async Task ValidBankAccountDetails_ValidateAsync_ReturnsNoErrorDetails()
     {
-        BankAccountFlowNodeValidator validator = new();
+        BankAccountPageValidator validator = new();
         BankAccountModel bankAccount = new() { AccountName = "H J Simpson", AccountNumber = "11223344", SortCode = "11-22-33" };
-        FlowNode node = new() { Id = "NodeId1", PagePath = bankAccount.Path };
-        FlowNodeContext context = new() { Nodes = [node], CurrentNode = node, CurrentPage = bankAccount };
+        TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = bankAccount.Path });
+        ValidatePageContext context = new() { CurrentNode = node, CurrentPage = bankAccount };
         ValidationResult[] validationResults = await validator.ValidateAsync(context);
 
         Assert.Empty(validationResults);

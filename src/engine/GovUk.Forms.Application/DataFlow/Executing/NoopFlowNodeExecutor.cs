@@ -17,3 +17,19 @@ public sealed class NoopFlowNodeExecutor : IFlowNodeExecutor
         return ValueTask.FromResult<NodeId?>(context.CurrentNode.NextNodes[0]);
     }
 }
+
+[ExcludeFromCodeCoverage]
+public sealed class NoopPageExecutor : IPageExecutor
+{
+    public static readonly IPageExecutor Default = new NoopPageExecutor();
+    
+    private NoopPageExecutor()
+    {
+    }
+    
+    public ValueTask ExecuteAsync(ExecutePageContext context)
+    {
+        context.ChildNodeIndex = 0;
+        return ValueTask.CompletedTask;
+    }
+}
