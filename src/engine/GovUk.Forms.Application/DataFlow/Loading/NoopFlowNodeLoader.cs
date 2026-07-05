@@ -17,18 +17,3 @@ public sealed class NoopFlowNodeLoader : IFlowNodeLoader
         return ValueTask.FromResult<NodeId?>(null);
     }
 }
-
-[ExcludeFromCodeCoverage]
-public sealed class NoopPageLoader : IPageLoader
-{
-    public static readonly IPageLoader Default = new NoopPageLoader();
-    
-    private NoopPageLoader()
-    {
-    }
-    
-    public ValueTask LoadAsync(LoadPageContext context)
-    {
-        return ValueTask.CompletedTask;
-    }
-}

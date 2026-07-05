@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Demo.GovUk.Forms.AboutYou.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow;
+using GovUk.Forms.Application.PageFlow;
 using GovUk.Forms.Domain;
 using Xunit;
 
@@ -16,11 +17,11 @@ public class BankAccountPageValidatorTests
         TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = bankAccount.Path });
         ValidatePageContext context = new() { CurrentNode = node, CurrentPage = bankAccount };
         
-        ValidationResult[] validationResults = await validator.ValidateAsync(context);
+        await validator.ValidateAsync(context);
 
-        Assert.Single(validationResults);
-        AssertError(validationResults[0], "The bank account details are invalid", "AccountNumber");
-        AssertError(validationResults[0], "The bank account details are invalid", "SortCode");
+        Assert.Single(context.ValidationResults);
+        AssertError(context.ValidationResults[0], "The bank account details are invalid", "AccountNumber");
+        AssertError(context.ValidationResults[0], "The bank account details are invalid", "SortCode");
     }
     
     [Fact]
@@ -37,11 +38,11 @@ public class BankAccountPageValidatorTests
         TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = bankAccount.Path });
         ValidatePageContext context = new() { CurrentNode = node, CurrentPage = bankAccount };
         
-        ValidationResult[] validationResults = await validator.ValidateAsync(context);
+        await validator.ValidateAsync(context);
 
-        Assert.Single(validationResults);
-        AssertError(validationResults[0], "Building society roll number must only include letters a to z, numbers, " +
-                                          "hyphens, spaces, forward slashes and full stops", "BuildingSocietyRollNumber");
+        Assert.Single(context.ValidationResults);
+        AssertError(context.ValidationResults[0], "Building society roll number must only include letters a to z, numbers, " +
+                                                  "hyphens, spaces, forward slashes and full stops", "BuildingSocietyRollNumber");
     }
     
     [Fact]
@@ -51,9 +52,10 @@ public class BankAccountPageValidatorTests
         BankAccountModel bankAccount = new() { AccountName = "H J Simpson", AccountNumber = "11223344", SortCode = "11-22-33" };
         TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = bankAccount.Path });
         ValidatePageContext context = new() { CurrentNode = node, CurrentPage = bankAccount };
-        ValidationResult[] validationResults = await validator.ValidateAsync(context);
+        
+        await validator.ValidateAsync(context);
 
-        Assert.Empty(validationResults);
+        Assert.Empty(context.ValidationResults);
     }
     
     private static void AssertError(ValidationResult result, string message, string property)

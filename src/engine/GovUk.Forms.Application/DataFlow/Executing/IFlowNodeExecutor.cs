@@ -6,8 +6,3 @@ public interface IFlowNodeExecutor
 {
     ValueTask<NodeId?> ExecuteAsync(FlowNodeContext context);
 }
-
-public interface IPageExecutor
-{
-    ValueTask ExecuteAsync(ExecutePageContext context);
-}

@@ -1,13 +1,13 @@
-﻿using GovUk.Forms.Domain;
+using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
 
-namespace GovUk.Forms.Application.DataFlow.Loading;
+namespace GovUk.Forms.Application.PageFlow;
 
-public abstract class SummaryFlowNodeLoader : IFlowNodeLoader
+public abstract class SummaryPageLoader : IPageLoader
 {
-    public virtual ValueTask<NodeId?> LoadAsync(FlowNodeContext context)
+    public virtual ValueTask LoadAsync(LoadPageContext context)
     {
-        return ValueTask.FromResult<NodeId?>(null);
+        return ValueTask.CompletedTask;
     }
     
     protected static void AppendSummaryDetail(List<SummaryCategoryDetail> details, string label, string[] values, ContentPath? change = null)

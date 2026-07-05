@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Application.DataFlow.Validating;
+using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.MetaData;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace GovUk.Forms.Application.DataFlow;
+namespace GovUk.Forms.Application.PageFlow;
 
 public interface ITreeViewManager
 {
@@ -22,11 +25,13 @@ public class TreeViewManager : ITreeViewManager
 {
     private readonly ITreeNodeFactory _treeNodeFactory;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<TreeViewManager> _logger;
 
-    public TreeViewManager(ITreeNodeFactory treeNodeFactory, IServiceProvider serviceProvider)
+    public TreeViewManager(ITreeNodeFactory treeNodeFactory, IServiceProvider serviceProvider, ILogger<TreeViewManager> logger)
     {
         _treeNodeFactory = treeNodeFactory;
         _serviceProvider = serviceProvider;
+        _logger = logger;
     }
 
     public ContentPath TransitionToStart(SectionModel section)
@@ -38,6 +43,8 @@ public class TreeViewManager : ITreeViewManager
     
     public async ValueTask<PageModel> LoadAsync(FormModel form, SectionModel section, ContentPath path, Dictionary<string, string?> queryParams)
     {
+        _logger.LoadingPage(path, section.Title);
+        
         if (section.TreeNodeId is null)
         {
             throw new InvalidOperationException("The section tree node Id is unset."); // TODO:
@@ -172,7 +179,8 @@ public class TreeViewManager : ITreeViewManager
     
     public async ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page)
     {
-        //_logger.ValidatingPage(page.Path);
+        _logger.ValidatingPage(page.Path);
+        
         TreeNode rootNode = _treeNodeFactory.GetRootNode(section.Path);
         TreeNode? node = rootNode.FindNode(section.TreeNodeId!); // TODO: Handle !
 
@@ -182,29 +190,24 @@ public class TreeViewManager : ITreeViewManager
         }
         
         IPageValidator validator = _serviceProvider.GetKeyedService<IPageValidator>(node.FlowNodeId) ?? DefaultPageValidator.Default;
-        ValidatePageContext context = new()
-        {
-            //Nodes = Nodes,
-            //CurrentNode = node,
-            Form = form,
-            Section = section,
-            CurrentPage = page
-        };
-        ValidationResult[] validationResults = await validator.ValidateAsync(context);
+        ValidatePageContext context = new() { Form = form, Section = section, CurrentPage = page };
+        
+        await validator.ValidateAsync(context);
 
-        if (validationResults.Length > 0)
+        if (context.ValidationResults.Count > 0)
         {
             IPagePropertiesProvider pagePropertiesProvider = _serviceProvider.GetRequiredService<IPagePropertiesProvider>();
             TreeNode? parentNode = rootNode.FindParent(node);
             pagePropertiesProvider.PreviousPagePath = parentNode?.PagePath ?? "/";
         }
 
-        return validationResults;
+        return context.ValidationResults.ToArray();
     }
     
     public async ValueTask<ContentPath> SaveAsync(FormModel form, SectionModel section, PageModel page)
     {
-        //_logger.ProcessingPage(page.Path, section.Title);
+        _logger.ProcessingPage(page.Path, section.Title);
+        
         TreeNode rootNode = _treeNodeFactory.GetRootNode(section.Path);
         TreeNode? node = rootNode.FindNode(section.TreeNodeId!); // TODO: Handle !
         
