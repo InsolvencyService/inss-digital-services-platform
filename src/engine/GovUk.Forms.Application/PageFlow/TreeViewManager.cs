@@ -193,6 +193,9 @@ public class TreeViewManager : ITreeViewManager
 
         if (context.ValidationResults.Count > 0)
         {
+            page.Path = node.PagePath;
+            page.MetaData2 = node.MetaData;
+            
             IPagePropertiesProvider pagePropertiesProvider = _serviceProvider.GetRequiredService<IPagePropertiesProvider>();
             TreeNode? parentNode = rootNode.FindParent(node);
             pagePropertiesProvider.PreviousPagePath = parentNode?.PagePath ?? "/";

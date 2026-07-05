@@ -3,7 +3,7 @@ using GovUk.Forms.Application.PageFlow;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Domain;
 
-namespace Demo.GovUk.Forms.AboutYou.Application.DataFlow;
+namespace Demo.GovUk.Forms.AboutYou.Application.PageFlow;
 
 public sealed class AboutYouSummaryPageLoader : SummaryPageLoader
 {

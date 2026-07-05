@@ -1,7 +1,7 @@
 using Demo.GovUk.Forms.AboutYou.Domain;
 using GovUk.Forms.Application.PageFlow;
 
-namespace Demo.GovUk.Forms.AboutYou.Application.DataFlow;
+namespace Demo.GovUk.Forms.AboutYou.Application.PageFlow;
 
 public sealed class OwnHomePageExecutor : IPageExecutor
 {

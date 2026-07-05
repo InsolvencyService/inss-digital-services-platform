@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
-using Demo.GovUk.Forms.AboutYou.Application.DataFlow;
+using Demo.GovUk.Forms.AboutYou.Application.PageFlow;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.PageFlow;
 using GovUk.Forms.Domain;
 using Xunit;
 
-namespace Demo.GovUk.Forms.AboutYou.Test.Application.DataFlow;
+namespace Demo.GovUk.Forms.AboutYou.Test.Application.PageFlow;
 
 public class BankAccountPageValidatorTests
 {

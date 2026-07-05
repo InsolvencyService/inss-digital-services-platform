@@ -1,4 +1,4 @@
-using Demo.GovUk.Forms.AboutYou.Application.DataFlow;
+using Demo.GovUk.Forms.AboutYou.Application.PageFlow;
 using Demo.GovUk.Forms.AboutYou.Domain;
 using GovUk.Forms.Application.PageFlow;
 using GovUk.Forms.Components.Builders;
@@ -7,6 +7,7 @@ using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.MetaData;
 using GovUk.Forms.Domain.Primitives;
 using Microsoft.AspNetCore.Hosting;
+using BankAccountPageValidator = Demo.GovUk.Forms.AboutYou.Application.PageFlow.BankAccountPageValidator;
 
 [assembly: HostingStartup(typeof(Demo.GovUk.Forms.AboutYou.StartupConfiguration))]
 

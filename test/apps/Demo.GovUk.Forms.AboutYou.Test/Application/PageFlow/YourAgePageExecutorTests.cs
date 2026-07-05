@@ -1,17 +1,17 @@
-using Demo.GovUk.Forms.AboutYou.Application.DataFlow;
+using Demo.GovUk.Forms.AboutYou.Application.PageFlow;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.PageFlow;
 using GovUk.Forms.Domain;
 using Xunit;
 
-namespace Demo.GovUk.Forms.AboutYou.Test.Application.DataFlow;
+namespace Demo.GovUk.Forms.AboutYou.Test.Application.PageFlow;
 
-public class YourSalaryPageExecutorTests
+public class YourAgePageExecutorTests
 {
     [Fact]
-    public async Task Below10000_ProcessAsync_SetsFalseNode()
+    public async Task Below18_ExecuteAsync_SetsFalseNode()
     {
-        YourSalaryPageExecutor executor = new();
+        YourAgePageExecutor executor = new();
         TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = "/form/section/page1", NextNodes = ["NodeId2", "NodeId3"] })
         {
             Children =
@@ -22,14 +22,14 @@ public class YourSalaryPageExecutorTests
         };
         FormModel form = TestFormModels.CreateWithYourDetailsSection();
         SectionModel yourDetails = form.Sections["Your Details"];
-        SalaryModel salary = yourDetails.Pages.GetFirstOf<SalaryModel>();
-        salary.Value = 9_999;
+        AgeModel age = yourDetails.Pages.GetFirstOf<AgeModel>();
+        age.Value = 17;
         ExecutePageContext context = new()
         {
             CurrentNode = node,
             Form = form,
             Section = yourDetails,
-            CurrentPage = salary
+            CurrentPage = age
         };
         
         await executor.ExecuteAsync(context);
@@ -38,11 +38,11 @@ public class YourSalaryPageExecutorTests
     }
     
     [Theory]
-    [InlineData(10_000)]
-    [InlineData(20_000)]
-    public async Task EqualToOrAbove10000_ProcessAsync_SetsTrueNode(int value)
+    [InlineData(18)]
+    [InlineData(140)]
+    public async Task EqualToOrAbove18_ExecuteAsync_SetsTrueNode(int value)
     {
-        YourSalaryPageExecutor executor = new();
+        YourAgePageExecutor executor = new();
         TreeNode node = new(new FlowNode { Id = "NodeId1", PagePath = "/form/section/page1", NextNodes = ["NodeId2", "NodeId3"] })
         {
             Children =
@@ -53,14 +53,14 @@ public class YourSalaryPageExecutorTests
         };
         FormModel form = TestFormModels.CreateWithYourDetailsSection();
         SectionModel yourDetails = form.Sections["Your Details"];
-        SalaryModel salary = yourDetails.Pages.GetFirstOf<SalaryModel>();
-        salary.Value = value;
+        AgeModel age = yourDetails.Pages.GetFirstOf<AgeModel>();
+        age.Value = value;
         ExecutePageContext context = new()
         {
             CurrentNode = node,
             Form = form,
             Section = yourDetails,
-            CurrentPage = salary
+            CurrentPage = age
         };
         
         await executor.ExecuteAsync(context);

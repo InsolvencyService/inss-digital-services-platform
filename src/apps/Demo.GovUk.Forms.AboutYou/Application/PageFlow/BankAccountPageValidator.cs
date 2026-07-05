@@ -1,10 +1,9 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.PageFlow;
 using GovUk.Forms.Domain;
 
-namespace Demo.GovUk.Forms.AboutYou.Application.DataFlow;
+namespace Demo.GovUk.Forms.AboutYou.Application.PageFlow;
 
 public sealed partial class BankAccountPageValidator : DefaultPageValidator
 {
