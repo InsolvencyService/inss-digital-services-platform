@@ -1,4 +1,5 @@
 using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Resolvers;
 using Inss.GovUk.Forms.Fip.Application.Factories;
 using Inss.GovUk.Forms.Fip.Builders;
@@ -13,7 +14,7 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureServices((context, services) =>
         {
             services.AddSingleton<IFormFactory, FipFormFactory>();
             
@@ -21,6 +22,13 @@ public class StartupConfiguration : IHostingStartup
             flowchartBuilder.Construct(services);
 
             services.AddSingleton<IStartPageResolver, StartPageResolver>();
+            
+            services.AddFormEngine(context.Configuration);
+        });
+        
+        builder.Configure(app =>
+        {
+            app.UseFormEngine();
         });
     }
 }

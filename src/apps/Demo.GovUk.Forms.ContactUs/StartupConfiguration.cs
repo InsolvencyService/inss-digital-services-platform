@@ -2,6 +2,7 @@ using Demo.GovUk.Forms.ContactUs.Application.Factories;
 using Demo.GovUk.Forms.ContactUs.Builders;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,13 @@ public class StartupConfiguration : IHostingStartup
             
             ContactUsFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
+            
+            services.AddFormEngine(context.Configuration);
+        });
+        
+        builder.Configure(app =>
+        {
+            app.UseFormEngine();
         });
     }
 }

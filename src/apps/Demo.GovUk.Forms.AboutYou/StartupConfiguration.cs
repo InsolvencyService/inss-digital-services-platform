@@ -2,6 +2,7 @@ using Demo.GovUk.Forms.AboutYou.Application.DataFlow;
 using Demo.GovUk.Forms.AboutYou.Domain;
 using GovUk.Forms.Application.PageFlow;
 using GovUk.Forms.Components.Builders;
+using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.MetaData;
 using GovUk.Forms.Domain.Primitives;
@@ -15,7 +16,7 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureServices((context, services) =>
         {
             NodeId fullNameId = "FullName";
             NodeId addressId = "Address";
@@ -76,6 +77,13 @@ public class StartupConfiguration : IHostingStartup
                 .NodesDone()
                 .RegisterSection()
                 .FinalizeForm();
+
+            services.AddFormEngine(context.Configuration);
+        });
+
+        builder.Configure(app =>
+        {
+            app.UseFormEngineNew();
         });
     }
 }

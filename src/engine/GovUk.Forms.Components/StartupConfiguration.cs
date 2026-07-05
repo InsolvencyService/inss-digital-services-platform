@@ -1,20 +1,10 @@
-using GovUk.Forms.Application.Extensions;
-using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Binding;
-using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Components.Controllers;
 using GovUk.Forms.Components.Options;
-using GovUk.Forms.Components.Resolvers;
-using GovUk.Forms.Domain;
-using GovUk.Forms.Domain.Primitives;
-using GovUk.Forms.Infrastructure.Extensions;
 using GovUk.Frontend.AspNetCore;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 [assembly: HostingStartup(typeof(GovUk.Forms.Components.StartupConfiguration))]
 
@@ -46,118 +36,14 @@ public class StartupConfiguration : IHostingStartup
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
             
-            services.AddOptions<ComponentOptions>()
-                .Bind(context.Configuration.GetSection("Components"))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-            
-            ComponentOptions componentOptions = new();
-            context.Configuration.GetSection("Components").Bind(componentOptions);
-
-            if (componentOptions.BootstrapFormFramework)
-            {
-                services.AddApplication();
-                services.AddInfrastructure(context.Configuration);
-            }
-
             IMvcBuilder mvcBuilder = services
                 .AddControllersWithViews(o => o.ModelBinderProviders.Insert(0, new ContentModelBinderProvider()))
                 .AddApplicationPart(typeof(FormController).Assembly);
             RemoveNonHostedDiscoveredParts(mvcBuilder);
-
-            services.AddSingleton<IContentBinderFactory, ContentBinderFactory>();
-            services.AddSingleton<IContentBinder, DefaultContentBinder>();
-            services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(FileUploadModel).FullName);
-            services.AddSingleton<ITypeNameResolver, TypeNameResolver>();
-            services.AddSingleton<IPageMetaDataResolver, PageMetaDataResolver>();
+            
             services.AddHttpClient();
             services.AddGovUkFrontend();
             services.AddHealthChecks();
-        });
-        
-        builder.Configure(app =>
-        {
-            /*
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            */
-            
-            app.Use(async (context, next) =>
-            {
-                context.Response.Headers.XFrameOptions = "DENY";
-                context.Response.Headers.ContentSecurityPolicy = 
-                    "default-src 'self' https://app.rybbit.io 'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw=' " +
-                    "'sha256-+MPr4O+XRBNAduB7gNJMvYtSAF5bNPiBYOUmvIx/CSA='";
-                context.Response.Headers.XContentTypeOptions = "nosniff";
-                context.Response.Headers.XXSSProtection = "1; mode=block";
-                await next();
-            });
-            
-            app.UseExceptionHandler("/error");
-            app.UseStatusCodePagesWithReExecute("/Error/{0}");
-            app.UseGovUkFrontend();
-            app.UseHttpsRedirection();
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseHealthChecks("/health");
-            app.UseStaticFiles();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-
-                IServiceProvider serviceProvider = endpoints.ServiceProvider;
-
-                IOptions<ComponentOptions> componentOptions = serviceProvider.GetRequiredService<IOptions<ComponentOptions>>();
-
-                if (componentOptions.Value.BootstrapFormFramework)
-                {
-                    IFormPathManager formPathManager = serviceProvider.GetRequiredService<IFormPathManager>();
-                    //IFormFactory formProvider = serviceProvider.GetRequiredService<IFormFactory>();
-                    //FormModel form = formProvider.Create();
-
-                    foreach (ContentPath path in formPathManager.Paths)
-                    {
-                        endpoints.MapControllerRoute(
-                                name: $"{path.Value}/edit",
-                                pattern: path.Value,
-                                defaults: new { controller = "Form", action = "Edit" })
-                            .WithStaticAssets();    
-                    }
-                    /*
-                    endpoints.MapControllerRoute(
-                            name: $"{form.Path.Value}/edit",
-                            pattern: form.Path.Value,
-                            defaults: new { controller = "Form", action = "Edit" })
-                        .WithStaticAssets();
-
-                    foreach (PageModel page in form.GetAllPages())
-                    {
-                        endpoints.MapControllerRoute(
-                                name: $"{page.Path.Value}/edit",
-                                pattern: page.Path.Value,
-                                defaults: new { controller = "Form", action = "Edit" })
-                            .WithStaticAssets();
-                    }
-                    */
-                    endpoints.MapControllerRoute(
-                            name: "FormSignOut",
-                            pattern: "sign-out",
-                            defaults: new { controller = "Form", action = "LogOut" })
-                        .WithStaticAssets();
-                }
-                
-                endpoints.MapControllerRoute(
-                        name: "default",
-                        pattern: "{controller=Start}/{action=Index}/{id?}")
-                    .WithStaticAssets();
-
-                endpoints.MapStaticAssets();
-            });
         });
     }
 

@@ -1,6 +1,7 @@
 using Demo.GovUk.Forms.Business.Application.Factories;
 using Demo.GovUk.Forms.Business.Builders;
 using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +13,7 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureServices((context, services) =>
         {
             services.AddSingleton<IFormFactory, BusinessFormFactory>();
             
@@ -21,6 +22,13 @@ public class StartupConfiguration : IHostingStartup
             
             YourEmployeesFlowchart yourEmployeesFlowchart = new();
             yourEmployeesFlowchart.Construct(services);
+            
+            services.AddFormEngine(context.Configuration);
+        });
+        
+        builder.Configure(app =>
+        {
+            app.UseFormEngine();
         });
     }
 }
