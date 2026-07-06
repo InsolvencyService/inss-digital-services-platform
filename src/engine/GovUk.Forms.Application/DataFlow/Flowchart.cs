@@ -58,7 +58,6 @@ public sealed class Flowchart : IFlowchart
 
         section.SetInProgress();
         
-        await UpdateBackButtonAsync(form, section, page);
         return pageAssociatedToNode.Path;
     }
     
@@ -134,7 +133,7 @@ public sealed class Flowchart : IFlowchart
         throw new FlowchartException($"Unable to find a node Id for page with path {page.Path}");
     }
 
-    private async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page)
+    public async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page)
     {
         FlowNode node = GetNode(page.LinkedToNode);
         IFlowNodePreviousPathProvider flowNodePreviousPathProvider =

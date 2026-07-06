@@ -7,7 +7,7 @@ public abstract class PageModel : ContentModel
 {
     public string Title { get; init; } = string.Empty;
     
-    public PageMetaData MetaData { get; init; } = new();
+    public PageMetaData MetaData { get; set; } = new();
 
     public NodeId? LinkedToNode { get; set; }
     

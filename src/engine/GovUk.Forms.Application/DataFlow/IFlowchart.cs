@@ -16,4 +16,5 @@ public interface IFlowchart
     ValueTask<ValidationResult[]> ValidateAsync(FormModel form, SectionModel section, PageModel page);
     ValueTask<ContentPath> ProcessAsync(FormModel form, SectionModel section, PageModel page);
     void TransitionPageToStart(PageModel page);
+    ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page);
 }
