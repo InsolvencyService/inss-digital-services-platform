@@ -1,4 +1,4 @@
-﻿@cleanCosmosDb
+﻿@cleanCosmosDb @addVideo
 Feature: Director Validation
 
 As an Insolvency Practitioner
@@ -79,7 +79,7 @@ Scenario Outline: RP14 director initials length boundary validation
                   |    101 | 1 director initials are the wrong length | Enter up to 100 characters | Director initials |
 
 
-@regression @validation @rp14 @cleanCosmosDb @addVideo
+@regression @validation @rp14 @cleanCosmosDb 
 Scenario Outline: RP14 director surname length boundary validation
             Given the RP14 XML contains director surname of length <length>
              When I attempt to submit the RP14
@@ -91,7 +91,7 @@ Scenario Outline: RP14 director surname length boundary validation
                   |    101 | 1 director surname is the wrong length | Enter up to 100 characters | Director surname |
 
        
-@regression @validation @rp14 @cleanCosmosDb @addVideo @api-upload
+@regression @validation @rp14 @cleanCosmosDb  @api-upload
 Scenario Outline: RP14 Api director surname length boundary validation
             Given the RP14 XML contains director surname of length <length>
              When I attempt to submit the RP14
@@ -102,7 +102,7 @@ Scenario Outline: RP14 Api director surname length boundary validation
                   |    100 | none                                   | none                       | Director surname |
                   |    101 | 1 director surname is the wrong length | Enter up to 100 characters | Director surname |
 
-@regression @validation @rp14 @addVideo
+@regression @validation @rp14 
 Scenario Outline: RP14 multiple director surnames exceeding maximum length
             Given the RP14 XML contains <count> director surnames exceeding the maximum length
              When I attempt to submit the RP14

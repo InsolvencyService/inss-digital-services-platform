@@ -1,4 +1,4 @@
-﻿@cleanCosmosDb
+﻿@cleanCosmosDb @addVideo
 Feature: Business Validation
 
 As an Insolvency Practitioner

@@ -8,4 +8,5 @@ public interface ICaseReferenceNumberPage
     Task ClickBackAsync();
     Task VerifyAriaSnapshotAsync();
     Task VerifyErrorMessageAsync(string errorMessage);
+    Task VerifyValidationErrorsAsync(string errorMessage);
 }

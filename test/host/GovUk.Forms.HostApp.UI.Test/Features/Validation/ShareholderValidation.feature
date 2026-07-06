@@ -1,4 +1,4 @@
-﻿@cleanCosmosDb
+﻿@cleanCosmosDb @addVideo
 Feature: Shareholder Validation
 
 As an Insolvency Practitioner

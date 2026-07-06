@@ -4,6 +4,7 @@ using GovUk.Forms.HostApp.UI.Test.Models;
 using GovUk.Forms.HostApp.UI.Test.Support;
 using System.Globalization;
 using System.Xml.Linq;
+using GovUk.Forms.HostApp.UI.Test.Builders;
 
 namespace GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 
@@ -22,7 +23,7 @@ public sealed class Rp14aScenarioCoordinator : ScenarioCoordinatorBase, IRp14aSc
     private static readonly string _formattedScenarioDob =
         DateTime
             .ParseExact(ScenarioConstant.DOB, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-            .ToString("M/d/yyyy", CultureInfo.InvariantCulture);
+            .ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
 
     public Rp14aScenarioCoordinator(
         IFileUploadCoordinator fileUploadCoordinator,

@@ -8,23 +8,23 @@ So that I can continue the RP14/14A upload journeyA short summary of the feature
 Background: 
 	Given I am on the declaration page
 
-@functional      
+@functional @cleanCosmosDb
 Scenario: Verify that section 187 page is accessible from declaration page
-	When I choose to view section 187 
+	When I choose to view section 187
 	Then I will be taken to the section 187 page
 
-@functional @addVideo
- Scenario: Navigate to file upload page after agreeing
+@functional @cleanCosmosDb
+  Scenario: Navigate to file upload page after agreeing
     When I choose to Agree and continue
     Then I will be taken to the case reference page
 	And I should be able to sign out directly from the file upload page
 
-@functional
+@functional @cleanCosmosDb
   Scenario: Navigate back to start page
 	When I choose to return to the start page
 	Then the start page should be displayed
 
-@visual @smoke
+@visual @smoke @cleanCosmosDb
  Scenario: View declaration terms
     When I am on the declaration page
     Then I will see the terms I need to agree to

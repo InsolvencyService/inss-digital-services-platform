@@ -1,4 +1,4 @@
-﻿@MEDS-1063
+﻿@MEDS-1063 @addVideo
 Feature: Upload Documents
 
 A short summary of the feature
@@ -6,12 +6,12 @@ A short summary of the feature
 Background: 
   Given I am on the upload page as a "InssTestFive" user
 
-@functional @upload @Addvideo @rp14a @cleanCosmosDb
+@functional @upload @rp14a @cleanCosmosDb
 Scenario: Upload a valid RP14A file successfully
   When I upload a valid RP14A file
   Then the uploaded file should appear in the file list
 
-@functional @upload @addVideo @rp14a @cleanCosmosDb
+@functional @upload @rp14a @cleanCosmosDb
 Scenario: Prevent uploading the same file twice
   When I upload a valid RP14A file
   And I upload the same file again
@@ -54,7 +54,7 @@ Examples:
   | .zip      |
 
 
-@regression @validation @fileSize
+@regression @validation @fileSize @cleanCosmosDb
 Scenario: Upload an empty RP14A XML file
   Given an empty RP14A XML file with a size of 0 bytes
   When I upload the file

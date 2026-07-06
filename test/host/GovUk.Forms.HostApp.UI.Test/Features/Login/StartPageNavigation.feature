@@ -1,4 +1,4 @@
-﻿@MEDS-1061
+﻿@MEDS-1061 @@addVideo
 Feature: Start Page Navigation
 
 As an Insolvency Practitioner

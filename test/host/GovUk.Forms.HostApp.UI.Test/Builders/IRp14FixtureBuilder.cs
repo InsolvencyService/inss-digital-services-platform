@@ -1,7 +1,8 @@
 using GovUk.Forms.HostApp.UI.Test.Helpers;
 using GovUk.Forms.HostApp.UI.Test.Models;
+using GovUk.Forms.HostApp.UI.Test.Support;
 
-namespace GovUk.Forms.HostApp.UI.Test.Support;
+namespace GovUk.Forms.HostApp.UI.Test.Builders;
 
 public interface IRp14FixtureBuilder
 {

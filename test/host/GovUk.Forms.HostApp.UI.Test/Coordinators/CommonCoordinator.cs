@@ -32,7 +32,7 @@ public class CommonCoordinator(
 
     public async Task VerifyThatDeclarationPageIsDisplayedAsync(TestUser? user = null)
     {
-        user ??= UserFactory.DefaultUser();
+        user ??= UserFactory.GetUser("InssTestManOne");
 
         await startPageCoordinator.NavigateToLoginPageAsync();
         await signInCoordinator.SignInAsync(user.Email, user.Password);
@@ -59,6 +59,27 @@ public class CommonCoordinator(
     {
         await uploadDocument.UploadValidRp14Async();
         await uploadDocument.VerifyThatFileIsUploadedAsync();
+    }
+
+    public async Task NavigateToUploadPageAndUploadRp14Async(string? caseReference = null)
+    {
+        await declarationCoordinator.NavigateToUploadAFilePageAsync();
+        await caseReferenceCoordinator.VerifyCaseReferencePageIsDisplayedAsync();
+        await caseReferenceCoordinator.EnterCaseReferenceAndContinueAsync(caseReference ?? ScenarioConstant.ValidCaseReference);
+        await caseReferenceCoordinator.ConfirmCorrectEmployerAsync();
+        await UploadAValidRP14AndVerifyAsync();
+    }
+
+    public async Task ViewPreviouslyUploadedRp14DocumentAsync(string? caseReference = null)
+    {
+        await declarationCoordinator.NavigateToUploadAFilePageAsync();
+        await caseReferenceCoordinator.VerifyCaseReferencePageIsDisplayedAsync();
+        await caseReferenceCoordinator.EnterCaseReferenceAndContinueAsync(caseReference ?? ScenarioConstant.ValidCaseReference);
+        await caseReferenceCoordinator.ConfirmCorrectEmployerAsync();
+        await uploadDocument.VerifyUploadDocumentPageIsDisplayedAsync();
+        await uploadDocument.VerifyThatFileIsUploadedAsync();
+        await uploadDocument.NavigateToSubmitPageAsync();
+        await checkYourAnswers.VerifyCheckYourAnswersPageIsDisplayedAsync();
     }
 
     public async Task VerifySubmissionComfirmationPageIsDisplayedAsync()
