@@ -18,6 +18,8 @@ public abstract class PageModel : ContentModel
     
     public DateTimeOffset? CompletedDate { get; set; }
     
+    public string LinkToTreeNode { get; set; }
+    
     public virtual void ClearValues()
     {
         if (this is SummaryModel)

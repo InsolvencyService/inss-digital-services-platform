@@ -59,6 +59,7 @@ public class TreeViewManager : ITreeViewManager
             PageModel parentPage = section.Pages.FindPage(x.PagePath) ?? (PageModel)Activator.CreateInstance(x.PageType, [])!;
             parentPage.Path = x.PagePath;
             parentPage.MetaData2 = x.MetaData;
+            parentPage.LinkToTreeNode = x.Id;
             section.TreeNodeId = x.Id;
 
             IPageLoader loader2 = _serviceProvider.GetKeyedService<IPageLoader>(x.FlowNodeId) ?? NoopPageLoader.Default;
@@ -81,6 +82,7 @@ public class TreeViewManager : ITreeViewManager
         PageModel page = (PageModel)Activator.CreateInstance(pageNode.PageType, [])!;
         page.Path = pageNode.PagePath;
         page.MetaData2 = pageNode.MetaData;
+        page.LinkToTreeNode = pageNode.Id;
         
         IPageLoader loader = _serviceProvider.GetKeyedService<IPageLoader>(pageNode.FlowNodeId) ?? NoopPageLoader.Default;
         LoadPageContext context = new() { Form = form, Section = section, CurrentPage = page, QueryParams = queryParams };
@@ -195,6 +197,7 @@ public class TreeViewManager : ITreeViewManager
         {
             page.Path = node.PagePath;
             page.MetaData2 = node.MetaData;
+            page.LinkedToNextNode = node.Id;
             
             IPagePropertiesProvider pagePropertiesProvider = _serviceProvider.GetRequiredService<IPagePropertiesProvider>();
             TreeNode? parentNode = rootNode.FindParent(node);
@@ -223,11 +226,6 @@ public class TreeViewManager : ITreeViewManager
         // Swap the page in the section (if it exists)
         section.Pages.SwapPage(page);
         
-        // TODO: Temp - just get first child
-        await Task.Delay(10);
-
-        
-        
         
         IPageExecutor executor = _serviceProvider.GetKeyedService<IPageExecutor>(node.FlowNodeId) ?? NoopPageExecutor.Default;
         ExecutePageContext context = new()
@@ -244,6 +242,26 @@ public class TreeViewManager : ITreeViewManager
 
         TreeNode nextNode = node.Children[context.ChildNodeIndex];
         section.TreeNodeId = nextNode.Id;
+        
+        PageModel? nextPage = section.Pages.FindPage(nextNode.PagePath);
+
+        // If we find a page and the next node Id matches then we are not changing branch and we may be going back to a specific page
+        if (nextPage is not null && nextPage.LinkToTreeNode == nextNode.Id)
+        {
+            return section.ReturnUrl ?? nextNode.PagePath;
+        }
+        
+        // Clear all downstream children
+        foreach (TreeNode descendant in node.GetAllDescendants())
+        {
+            PageModel? descendantPage = section.Pages.FindPage(descendant.PagePath);
+
+            if (descendantPage is not null && descendantPage.LinkToTreeNode == descendant.Id)
+            {
+                section.Pages.Remove(descendantPage);
+            }
+        }
+        
         return nextNode.PagePath;
         
         /*PageModel targetPage = section.Pages.GetPage(page.Path);
@@ -329,6 +347,21 @@ public sealed class TreeNode
     public TreeNode GetNode(string id)
     {
         return FindNode(id) ?? throw new InvalidOperationException($"Unable to find the tree node for {id}.");
+    }
+
+    public TreeNode[] GetAllDescendants()
+    {
+        List<TreeNode> descendants = [];
+
+        foreach (TreeNode childNode in Children)
+        {
+            descendants.Add(childNode);
+
+            TreeNode[] childDescendants = childNode.GetAllDescendants();
+            descendants.AddRange(childDescendants);
+        }
+        
+        return descendants.ToArray();
     }
 
     public TreeNode? FindNodeForPath(ContentPath path)
