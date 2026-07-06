@@ -1,11 +1,15 @@
 using GovUk.Forms.HostApp.UI.Test.Config.Driver;
 using GovUk.Forms.HostApp.UI.Test.Pages.Common;
 using GovUk.Forms.HostApp.UI.Test.Support;
+using System.Text.RegularExpressions;
 
 namespace GovUk.Forms.HostApp.UI.Test.Pages.Upload;
 
-public class CaseReferenceNumberPage : BasePage, ICaseReferenceNumberPage
+public partial class CaseReferenceNumberPage : BasePage, ICaseReferenceNumberPage
 {
+    [GeneratedRegex(@".*/ip-upload/redundancy-payment/check-case-reference(\?.*)?$")]
+    private static partial Regex CheckCaseReferenceUrlRegex();
+
     private readonly IPlaywrightDriver _playwrightDriver;
 
     public CaseReferenceNumberPage(IPlaywrightDriver playwrightDriver)
@@ -64,6 +68,7 @@ public class CaseReferenceNumberPage : BasePage, ICaseReferenceNumberPage
         await Expect(ErrorSummary.GetByRole(AriaRole.Link, new() { Name = errorMessage })).ToBeVisibleAsync();
         await Expect(ErrorInputGroup).ToBeVisibleAsync();
         await Expect(CaseReferenceFieldError).ToContainTextAsync(errorMessage);
+        await Expect(Page).ToHaveURLAsync(CheckCaseReferenceUrlRegex(), new PageAssertionsToHaveURLOptions { IgnoreCase = true });
     }
 
     public async Task VerifyAriaSnapshotAsync()
