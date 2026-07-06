@@ -6,7 +6,7 @@ namespace GovUk.Forms.Application.Services;
 
 public interface IFormService
 {
-    Task<(ContentModel? Content, ContentPath? RedirectTo)> LoadAsync(
+    Task<(ContentModel? Content, ContentPath? RedirectTo, PageValidationError[]? ValidationErrors)> LoadAsync(
         ContentPath requestPath, 
         Dictionary<string, string?> queryParams);
     Task<ValidationResult[]> ValidateAsync(ContentModel postedContent);
