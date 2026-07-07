@@ -84,6 +84,12 @@ public sealed class TreeNode
 
         return null;
     }
+
+    public TreeNode GetNodeForPath(ContentPath path)
+    {
+        TreeNode? node = FindNodeForPath(path);
+        return node ?? throw new InvalidOperationException($"Unable to find tree node for page path {path}.");
+    }
     
     public TreeNode? FindParent(TreeNode node)
     {

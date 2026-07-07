@@ -11,12 +11,14 @@ namespace GovUk.Forms.Application.PageFlow;
 public class TreeViewManager : ITreeViewManager
 {
     private readonly ITreeNodeFactory _treeNodeFactory;
+    private readonly IPagePropertiesProvider _pagePropertiesProvider;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<TreeViewManager> _logger;
 
-    public TreeViewManager(ITreeNodeFactory treeNodeFactory, IServiceProvider serviceProvider, ILogger<TreeViewManager> logger)
+    public TreeViewManager(ITreeNodeFactory treeNodeFactory, IPagePropertiesProvider pagePropertiesProvider, IServiceProvider serviceProvider, ILogger<TreeViewManager> logger)
     {
         _treeNodeFactory = treeNodeFactory;
+        _pagePropertiesProvider = pagePropertiesProvider;
         _serviceProvider = serviceProvider;
         _logger = logger;
     }
@@ -37,49 +39,40 @@ public class TreeViewManager : ITreeViewManager
             throw new InvalidOperationException("The section tree node Id is unset."); // TODO:
         }
         
-        IPagePropertiesProvider pagePropertiesProvider = _serviceProvider.GetRequiredService<IPagePropertiesProvider>();
+        //IPagePropertiesProvider pagePropertiesProvider = _serviceProvider.GetRequiredService<IPagePropertiesProvider>();
         TreeNode rootNode = _treeNodeFactory.GetRootNode(section.Path);
         TreeNode pageNode = rootNode.GetNode(section.TreeNodeId);
 
         // Handle back button navigation
         if (pageNode.PagePath != path)
         {
-            TreeNode x = rootNode.FindNodeForPath(path)!; // TODO Fix ! Perhaps throw as an invalid action?
-            
-            PageModel parentPage = section.Pages.FindPage(x.PagePath) ?? (PageModel)Activator.CreateInstance(x.PageType, [])!;
-            parentPage.Path = x.PagePath;
-            parentPage.MetaData2 = x.MetaData;
-            parentPage.LinkToTreeNode = x.Id;
-            section.TreeNodeId = x.Id;
+            pageNode = rootNode.GetNodeForPath(path);
 
-            IPageLoader loader2 = _serviceProvider.GetKeyedService<IPageLoader>(x.FlowNodeId) ?? NoopPageLoader.Default;
-            LoadPageContext context2 = new() { Form = form, Section = section, CurrentPage = parentPage, QueryParams = queryParams };
-            await loader2.LoadAsync(context2);
+            PageModel parentPage = CreatePage(section, pageNode);
+            section.TreeNodeId = pageNode.Id;
+
+            await RunLoaderAsync(form, section, parentPage, pageNode, queryParams);
             
             if (section.ReturnUrl is not null)
             {
-                pagePropertiesProvider.PreviousPagePath = section.ReturnUrl;
+                _pagePropertiesProvider.PreviousPagePath = section.ReturnUrl;
             }
             else
             {
-                TreeNode? parentNode2 = rootNode.FindParent(x);
-                pagePropertiesProvider.PreviousPagePath = parentNode2?.PagePath ?? "/";
+                TreeNode? parentNode2 = rootNode.FindParent(pageNode);
+                _pagePropertiesProvider.PreviousPagePath = parentNode2?.PagePath ?? "/";
             }
 
             return parentPage;
         }
 
-        PageModel page = section.Pages.FindPage(pageNode.PagePath) ?? (PageModel)Activator.CreateInstance(pageNode.PageType, [])!;
-        page.Path = pageNode.PagePath;
-        page.MetaData2 = pageNode.MetaData;
-        page.LinkToTreeNode = pageNode.Id;
+        PageModel page = CreatePage(section, pageNode);
         
-        IPageLoader loader = _serviceProvider.GetKeyedService<IPageLoader>(pageNode.FlowNodeId) ?? NoopPageLoader.Default;
-        LoadPageContext context = new() { Form = form, Section = section, CurrentPage = page, QueryParams = queryParams };
-        await loader.LoadAsync(context);
+        await RunLoaderAsync(form, section, page, pageNode, queryParams);
 
         TreeNode? parentNode = rootNode.FindParent(pageNode);
-        pagePropertiesProvider.PreviousPagePath = parentNode?.PagePath ?? "/";
+        _pagePropertiesProvider.PreviousPagePath = parentNode?.PagePath ?? "/";
+        
         return page;
     }
     
@@ -160,5 +153,26 @@ public class TreeViewManager : ITreeViewManager
         }
         
         return nextNode.PagePath;
+    }
+
+    private async ValueTask RunLoaderAsync(
+        FormModel form, 
+        SectionModel section, 
+        PageModel currentPage, 
+        TreeNode pageTreeNode, 
+        Dictionary<string, string?> queryParams)
+    {
+        IPageLoader loader = _serviceProvider.GetKeyedService<IPageLoader>(pageTreeNode.FlowNodeId) ?? NoopPageLoader.Default;
+        LoadPageContext context = new() { Form = form, Section = section, CurrentPage = currentPage, QueryParams = queryParams };
+        await loader.LoadAsync(context);
+    }
+
+    private static PageModel CreatePage(SectionModel section, TreeNode pageNode)
+    {
+        PageModel page = section.Pages.FindPage(pageNode.PagePath) ?? (PageModel)Activator.CreateInstance(pageNode.PageType, [])!;
+        page.Path = pageNode.PagePath;
+        page.MetaData2 = pageNode.MetaData;
+        page.LinkToTreeNode = pageNode.Id;
+        return page;
     }
 }
