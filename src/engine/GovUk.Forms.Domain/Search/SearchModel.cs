@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GovUk.Forms.Domain.Search;
 
+// TODO: Rename to SearchResult
+
 public class SearchModel : PageModel
 {
     [Required(ErrorMessage = "You must enter a search text")]
@@ -88,4 +90,10 @@ public sealed class SearchResponse
 {
     public SearchResult[] Results { get; set; } = [];
     public int TotalResults { get; init; }
+}
+
+public class SearchTermModel : PageModel
+{
+    [Required(ErrorMessage = "You must enter a search text")]
+    public string SearchText { get; set; }
 }

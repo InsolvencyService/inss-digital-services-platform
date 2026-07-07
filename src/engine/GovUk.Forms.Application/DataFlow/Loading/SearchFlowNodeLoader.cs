@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
 
+// TODO: Rename to SearchResultFlowNodeLoader
+
 public sealed class SearchFlowNodeLoader : IFlowNodeLoader
 {
     private readonly IServiceProvider _serviceProvider;
@@ -34,7 +36,7 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
         // Check if columns in config
         CheckAndLogConfigurationFiles(search);
 
-        string? searchText = context.GetQueryParam<string>("searchText");
+        string? searchText = context.GetQueryParam<string>("keyword");
 
         int currentPageNumber = context.GetQueryParam<int>("currentPageNumber");
         
@@ -63,8 +65,7 @@ public sealed class SearchFlowNodeLoader : IFlowNodeLoader
             search.TotalPages = (int)Math.Ceiling((double)search.TotalResults / search.PageSize);
         }
         
-        // The context has a state with will be the Id for the result so you can find it and set the CurrentResult
-        return context.Nodes[0].Id;
+        return null;
     }
 
 

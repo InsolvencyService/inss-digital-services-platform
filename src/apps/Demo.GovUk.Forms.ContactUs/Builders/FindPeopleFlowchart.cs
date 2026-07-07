@@ -14,17 +14,22 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
+        NodeId searchTermId = "SearchTerm";
         NodeId searchId = "Search";
         NodeId summaryId = "Summary";
         
         FormModel form = GetForm(services);
         SectionModel section = form.Sections["Find People"];
 
+        SearchTermModel searchTerm = section.Pages.GetFirstOf<SearchTermModel>();
         SearchModel search = section.Pages.GetFirstOf<SearchModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         
         FlowchartBuilder
             .ForSection(section, services)
+            .AddTransitionNode(searchTermId, searchTerm.Path, searchId)
+            .WithExecutor<SearchTermFlowNodeExecutor>()
+            .Next()
             .AddDecisionNode(searchId, search.Path, searchId, summaryId)
             .WithLoader<SearchFlowNodeLoader>()
             .WithExecutor<SearchFlowNodeExecutor>()
@@ -40,17 +45,22 @@ public sealed class FindOtherPeopleFlowchart : DefineFlowchartBuilder
 {
     public override void Construct(IServiceCollection services)
     {
+        NodeId searchTermId = "SearchTerm";
         NodeId searchId = "Search";
         NodeId summaryId = "Summary";
         
         FormModel form = GetForm(services);
         SectionModel section = form.Sections["Find Other People"];
 
+        SearchTermModel searchTerm = section.Pages.GetFirstOf<SearchTermModel>();
         SearchModel search = section.Pages.GetFirstOf<SearchModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
         
         FlowchartBuilder
             .ForSection(section, services)
+            .AddTransitionNode(searchTermId, searchTerm.Path, searchId)
+            .WithExecutor<SearchTermFlowNodeExecutor>()
+            .Next()
             .AddDecisionNode(searchId, search.Path, searchId, summaryId)
             .WithLoader<SearchFlowNodeLoader>()
             .WithExecutor<SearchFlowNodeExecutor>()

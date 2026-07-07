@@ -1,0 +1,26 @@
+﻿@model GovUk.Forms.Domain.Search.SearchTermModel
+@inject IPagePropertiesProvider PagePropertiesProvider
+
+@{
+    PagePropertiesProvider.FullPageLayout = true;
+}
+
+@{
+    string heading = Model.MetaData.Question ?? "Search for something";
+    string? description = Model.MetaData.Description;
+}
+
+<h1 class="govuk-heading-l">@heading</h1>
+
+@if (!string.IsNullOrWhiteSpace(description))
+{
+    @Html.Raw(description)
+}
+
+<govuk-input for="@Model.SearchText" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--m">Search</govuk-input-label>
+    @if (!string.IsNullOrWhiteSpace(Model.MetaData.Hint))
+    {
+        <govuk-input-hint>@(Model.MetaData.Hint)</govuk-input-hint>
+    }
+</govuk-input>
