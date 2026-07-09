@@ -187,7 +187,7 @@ public sealed class Flowchart : IFlowchart
         return await loader.LoadAsync(context);
     }
 
-    private static ContentPath FormatRedirectPath(ContentPath path, Dictionary<string, string?> queryParams)
+    private static ContentPath FormatRedirectPath(ContentPath path, IDictionary<string, string?> queryParams)
     {
         if (queryParams.Count == 0)
         {

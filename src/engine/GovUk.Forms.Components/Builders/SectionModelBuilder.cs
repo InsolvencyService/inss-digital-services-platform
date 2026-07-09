@@ -51,7 +51,7 @@ public sealed class SectionModelBuilder
         string? hint = null,
         string? description = null,
         string? submitButtonText = null) 
-        where TPage : SearchModel, new()
+        where TPage : SearchResultModel, new()
     {
         TPage page = new()
         {

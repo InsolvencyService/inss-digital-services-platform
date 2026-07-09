@@ -38,4 +38,15 @@ public sealed class SearchService : ISearchService
 
         return await _searchClient.SearchAsync(request);
     }
+
+    public async Task<SearchDetailResponse?> SearchDetailAsync(SearchDetailRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Key))
+        {
+            _logger.MissingSearchKey();
+            return null;
+        }
+
+        return await _searchClient.SearchDetailAsync(request);
+    }
 }

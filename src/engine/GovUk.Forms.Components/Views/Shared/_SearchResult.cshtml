@@ -1,23 +1,14 @@
-﻿@model GovUk.Forms.Domain.Search.SearchModel
+﻿@model GovUk.Forms.Domain.Search.SearchResultModel
 @inject IPagePropertiesProvider PagePropertiesProvider
 
 @{
     PagePropertiesProvider.FullPageLayout = true;
+    string heading = Model.MetaData.Question ?? "Search results";
 }
 
 @Html.HiddenFor(m => m.ConfigKey)
 
-@{
-    string heading = Model.MetaData.Question ?? "Search for something";
-    string? description = Model.MetaData.Description;
-}
-
 <h1 class="govuk-heading-l">@heading</h1>
-
-@if (!string.IsNullOrWhiteSpace(description))
-{
-    @Html.Raw(description)
-}
 
 <govuk-input for="@Model.SearchText" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
     <govuk-input-label is-page-heading="true" class="govuk-label--m">Search</govuk-input-label>
@@ -32,7 +23,7 @@
 
 @if (Model.Results.Length > 0)
 {
-    if (Model.DisplayAsTable)
+    if (Model.Definition.DisplayAsTable)
     {
         @await Html.PartialAsync("_SearchAsTable", Model)
     }

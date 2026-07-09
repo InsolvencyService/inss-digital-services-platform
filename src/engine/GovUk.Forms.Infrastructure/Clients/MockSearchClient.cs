@@ -21,6 +21,16 @@ public sealed class MockSearchClient : ISearchClient
         });
     }
 
+    public Task<SearchDetailResponse?> SearchDetailAsync(SearchDetailRequest request)
+    {
+        SearchResult? result = _searchResultList.FirstOrDefault(r => r.Fields["CaseNumber"] == request.Key);
+
+        return Task.FromResult(
+            result is not null 
+                ? new SearchDetailResponse { Result = new SearchResult { Fields = result.Fields } }
+                : null);
+    }
+
     private static SearchResult[] CreateMockSearchResults()
     {
         List<SearchResult> searchResults = [];

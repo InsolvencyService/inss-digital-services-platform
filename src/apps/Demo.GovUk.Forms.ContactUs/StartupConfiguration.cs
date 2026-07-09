@@ -31,9 +31,6 @@ public class StartupConfiguration : IHostingStartup
             FindPeopleFlowchart findPeopleFlowchart = new();
             findPeopleFlowchart.Construct(services);
             
-            FindOtherPeopleFlowchart findOtherPeopleFlowchart = new();
-            findOtherPeopleFlowchart.Construct(services);
-            
             ContactUsFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
         });

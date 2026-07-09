@@ -22,12 +22,12 @@ public static class TestFormModels
         };
     }
     
-    public static FormModel CreateWithIPUploadSection()
+    public static FormModel CreateWithSearchSection()
     {
         return new FormModel
         {
             Path = "/form",
-            Sections = [TestSectionModels.CreateStaticSection()]
+            Sections = [TestSectionModels.CreateFindPeopleSection()]
         };
     }
 }

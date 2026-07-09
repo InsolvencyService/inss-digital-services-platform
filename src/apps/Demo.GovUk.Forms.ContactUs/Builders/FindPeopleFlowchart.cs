@@ -2,6 +2,7 @@ using Demo.GovUk.Forms.ContactUs.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
+using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -15,55 +16,31 @@ public sealed class FindPeopleFlowchart : DefineFlowchartBuilder
     public override void Construct(IServiceCollection services)
     {
         NodeId searchTermId = "SearchTerm";
-        NodeId searchId = "Search";
+        NodeId searchResultId = "SearchResult";
+        NodeId searchDetailId = "SearchDetail";
         NodeId summaryId = "Summary";
         
         FormModel form = GetForm(services);
         SectionModel section = form.Sections["Find People"];
 
         SearchTermModel searchTerm = section.Pages.GetFirstOf<SearchTermModel>();
-        SearchModel search = section.Pages.GetFirstOf<SearchModel>();
+        SearchResultModel searchResult = section.Pages.GetFirstOf<SearchResultModel>();
+        SearchResultDetailModel searchResultDetail = section.Pages.GetFirstOf<SearchResultDetailModel>();
         SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
+        
+        services.AddKeyedTransient<IFlowNodePreviousPathProvider, FindPeopleFlowNodePreviousPathProvider>(section.Path);
         
         FlowchartBuilder
             .ForSection(section, services)
-            .AddTransitionNode(searchTermId, searchTerm.Path, searchId)
+            .AddTransitionNode(searchTermId, searchTerm.Path, searchResultId)
             .WithExecutor<SearchTermFlowNodeExecutor>()
             .Next()
-            .AddDecisionNode(searchId, search.Path, searchId, summaryId)
-            .WithLoader<SearchFlowNodeLoader>()
-            .WithExecutor<SearchFlowNodeExecutor>()
+            .AddSpurNode(searchResultId, searchResult.Path, searchResultId, searchDetailId)
+            .WithLoader<SearchResultFlowNodeLoader>()
+            .WithExecutor<SearchResultFlowNodeExecutor>()
             .Next()
-            .AddEndNode(summaryId, summary.Path)
-            .WithLoader<ContactUsSummaryFlowNodeLoader>()
-            .WithExecutor<SectionSummaryFlowNodeExecutor>()
-            .BuildAndRegister();
-    }
-}
-
-public sealed class FindOtherPeopleFlowchart : DefineFlowchartBuilder
-{
-    public override void Construct(IServiceCollection services)
-    {
-        NodeId searchTermId = "SearchTerm";
-        NodeId searchId = "Search";
-        NodeId summaryId = "Summary";
-        
-        FormModel form = GetForm(services);
-        SectionModel section = form.Sections["Find Other People"];
-
-        SearchTermModel searchTerm = section.Pages.GetFirstOf<SearchTermModel>();
-        SearchModel search = section.Pages.GetFirstOf<SearchModel>();
-        SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
-        
-        FlowchartBuilder
-            .ForSection(section, services)
-            .AddTransitionNode(searchTermId, searchTerm.Path, searchId)
-            .WithExecutor<SearchTermFlowNodeExecutor>()
-            .Next()
-            .AddDecisionNode(searchId, search.Path, searchId, summaryId)
-            .WithLoader<SearchFlowNodeLoader>()
-            .WithExecutor<SearchFlowNodeExecutor>()
+            .AddTransitionNode(searchDetailId, searchResultDetail.Path, searchTermId)
+            .WithLoader<SearchResultDetailFlowNodeLoader>()
             .Next()
             .AddEndNode(summaryId, summary.Path)
             .WithLoader<ContactUsSummaryFlowNodeLoader>()

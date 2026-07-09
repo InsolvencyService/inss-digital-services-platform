@@ -1,36 +1,57 @@
 {
   "PageSize": 5,
   "DisplayAsTable": true,
-  "ResultColumns": [
+  "Fields": [
     {
       "Name": "CaseNumber",
       "Header": "Case Number",
       "Order": 1,
-      "Css": "govuk-!-font-weight-bold"
+      "Css": "govuk-!-font-weight-bold",
+      "Category": "Overview",
+      "ResultView": true
     },
     {
       "Name": "Title",
       "Header": "Title",
       "Order": 2,
-      "Css": ""
+      "Css": "",
+      "Category": "Overview",
+      "ResultView": true
     },
     {
       "Name": "FirstName",
       "Header": "Forename",
       "Order": 4,
-      "Css": ""
+      "Css": "",
+      "Category": "Overview",
+      "ResultView": true
     },
     {
       "Name": "FamilyName",
       "Header": "Surname",
       "Order": 3,
-      "Css": ""
+      "Css": "",
+      "Category": "Information",
+      "ResultView": true,
+      "FormatterType": "Demo.GovUk.Forms.ContactUs.Formatting.GoogleSearchFieldValueFormatter,Demo.GovUk.Forms.ContactUs"
     },
     {
       "Name": "DateOfBirth",
       "Header": "Date Of Birth",
       "Order": 5,
-      "CssClass": ""
+      "CssClass": "",
+      "Category": "Information",
+      "ResultView": false
+    }
+  ],
+  "Categories": [
+    {
+      "Label": "Overview",
+      "Css": "govuk-heading-l"
+    },
+    {
+      "Label": "Information",
+      "Css": "govuk-heading-m"
     }
   ]
 }
