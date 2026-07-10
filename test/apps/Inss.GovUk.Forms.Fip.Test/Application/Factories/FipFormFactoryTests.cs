@@ -1,4 +1,5 @@
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Search;
 using Inss.GovUk.Forms.Fip.Application.Factories;
 using Xunit;
 
@@ -38,9 +39,10 @@ public class FipFormFactoryTests
         FormModel form = factory.Create();
 
         SectionModel section = form.Sections["Find an Insolvency Practitioner"];
-        Assert.Equal(2, section.Pages.Count);
-        AssertSectionPage<DateModel>(section, "Todo", "/fip/search/todo");
-        AssertSectionPage<SummaryModel>(section, "TODO summary", "/fip/search/summary");
+        Assert.Equal(3, section.Pages.Count);
+        AssertSectionPage<SearchTermModel>(section, "Enter search", "/fip/search/search");
+        AssertSectionPage<SearchResultModel>(section, "Search", "/fip/search/search-results");
+        AssertSectionPage<SearchResultDetailModel>(section, "Search", "/fip/search/search-result-detail");
     }
     
     private static void AssertSectionPage<TPage>(SectionModel section, string title, string path) where TPage : PageModel
