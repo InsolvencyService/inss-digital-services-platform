@@ -16,9 +16,9 @@ public sealed class SearchDefinitionField
 
     public string Header { get; init; }
     
-    public string Category { get; init; }
-    
-    public bool ResultView { get; init; }
+    public string? Category { get; init; }
+
+    public bool ResultView => Category is null;
 
     public string? FormatterType { get; init; }
 

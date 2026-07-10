@@ -2,13 +2,13 @@
 using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Search;
 
 namespace Inss.GovUk.Forms.Fip.Application.DataFlow;
 
 public class FlowNodePreviousPathProvider : IFlowNodePreviousPathProvider
 {
     private readonly IPagePropertiesProvider _pagePropertiesProvider;
-    private const string EmptyPath = "/";
     
     public FlowNodePreviousPathProvider(IPagePropertiesProvider pagePropertiesProvider)
     {
@@ -27,9 +27,10 @@ public class FlowNodePreviousPathProvider : IFlowNodePreviousPathProvider
 
         _pagePropertiesProvider.PreviousPagePath = context.CurrentPage switch
         {
-            DateModel => EmptyPath,
-            SummaryModel => section.Pages.GetFirstOf<DateModel>().Path,
-            _ => EmptyPath
+            SearchTermModel => context.Form.Path,
+            SearchResultModel => section.Pages.GetFirstOf<SearchTermModel>().Path,
+            SearchResultDetailModel => section.Pages.GetFirstOf<SearchResultModel>().SearchPath,
+            _ => context.Form.Path
         };
         
         return ValueTask.CompletedTask;

@@ -14,7 +14,7 @@ public sealed class SearchResultDetailModel : PageModel
         {
             List<CategorizedSearchResultDetail> categoryDetailList = [];
             
-            foreach (SearchDefinitionField categoryField in Definition.Fields.Where(f => f.Category == category.Label))
+            foreach (SearchDefinitionField categoryField in Definition.Fields.Where(f => f.Category == category.Label).OrderBy(f => f.Order))
             {
                 KeyValuePair<string, string> field = Result.Fields.FirstOrDefault(f => f.Key == categoryField.Name);
                 
