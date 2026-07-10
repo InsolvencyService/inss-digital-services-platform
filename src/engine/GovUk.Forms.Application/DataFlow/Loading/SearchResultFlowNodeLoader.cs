@@ -4,6 +4,7 @@ using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Domain.Search;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
 
@@ -73,12 +74,9 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
     {
         foreach (SearchResult result in searchResult.Results)
         {
-            foreach (SearchDefinitionField column in searchResult.Definition.Fields)
+            foreach (SearchDefinitionField column in searchResult.Definition.Fields.Where(column => !result.Fields.ContainsKey(column.Name)))
             {
-                if (!result.Fields.ContainsKey(column.Name))
-                {
-                    _logger.LogWarning("Unable to find column  Azure search field '{FieldName}'.", column.Name);
-                }
+                _logger.LogWarning("Unable to find column  Azure search field '{FieldName}'.", column.Name);
             }
         }
     }
