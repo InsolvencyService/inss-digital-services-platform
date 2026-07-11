@@ -14,34 +14,25 @@ public sealed class TestFormStorageProvider : IFormStorageProvider
     
     public Task<bool> ExistsAsync(ContentPath path, string sessionId)
     {
-        string key = GetKey(path.GetRoot(), sessionId);
-        return Task.FromResult(_cache.ContainsKey(key));
+        return Task.FromResult(_cache.ContainsKey(sessionId));
     }
 
     public Task<FormModel> GetAsync(ContentPath path, string sessionId)
     {
-        string key = GetKey(path.GetRoot(), sessionId);
-        return _cache.TryGetValue(key, out FormModel? form) 
+        return _cache.TryGetValue(sessionId, out FormModel? form) 
             ? Task.FromResult(form) 
             : throw new StorageProviderException($"Unable to find the form model for the session {sessionId}");
     }
     
     public Task SaveAsync(string sessionId, FormModel form)
     {
-        string key = GetKey(form.Path, sessionId);
-        _cache[key] = form;
+        _cache[sessionId] = form;
         return Task.CompletedTask;
     }
 
     public Task RemoveAsync(string sessionId, FormModel form)
     {
-        string key = GetKey(form.Path, sessionId);
-        _cache.TryRemove(key, out FormModel? _);
+        _cache.TryRemove(sessionId, out FormModel? _);
         return Task.CompletedTask;
-    }
-    
-    private static string GetKey(ContentPath path, string sessionId)
-    {
-        return $"{path}-{sessionId}";
     }
 }
