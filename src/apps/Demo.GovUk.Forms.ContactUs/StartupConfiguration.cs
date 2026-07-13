@@ -1,10 +1,12 @@
 using Demo.GovUk.Forms.ContactUs.Application.Factories;
 using Demo.GovUk.Forms.ContactUs.Builders;
+using Demo.GovUk.Forms.ContactUs.Infrastructure.Clients;
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using StartupConfiguration = Demo.GovUk.Forms.ContactUs.StartupConfiguration;
 
 [assembly: HostingStartup(typeof(StartupConfiguration))]
@@ -21,18 +23,20 @@ public class StartupConfiguration : IHostingStartup
             
             ContactUsFlowchart contactUsBuilder = new();
             contactUsBuilder.Construct(services);
-            
+
             services.AddSearch("Config1");
-            services.AddSearchInfrastructure(context.Configuration, "Config1");
             
-            services.AddSearch("Config2");
-            services.AddSearchInfrastructure(context.Configuration, "Config2");
+            if (context.HostingEnvironment.IsDevelopment())
+            {
+                services.AddMockSearchInfrastructure<MockSearchClient>(context.Configuration, "Config1");
+            }
+            else
+            {
+                services.AddSearchInfrastructure(context.Configuration, "Config1");
+            }
             
             FindPeopleFlowchart findPeopleFlowchart = new();
             findPeopleFlowchart.Construct(services);
-            
-            FindOtherPeopleFlowchart findOtherPeopleFlowchart = new();
-            findOtherPeopleFlowchart.Construct(services);
             
             ContactUsFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);

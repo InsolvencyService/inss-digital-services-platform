@@ -18,18 +18,18 @@ public sealed class SearchConfigProvider : ISearchConfigProvider
         _logger = logger;
     }
 
-    public SearchModel LoadConfig()
+    public SearchDefinition LoadConfig()
     {
         string json = File.ReadAllText(_configFile);
 
-        SearchModel? searchConfig = JsonSerializer.Deserialize<SearchModel>(json, _jsonOptions);
+        SearchDefinition? definition = JsonSerializer.Deserialize<SearchDefinition>(json, _jsonOptions);
 
-        if (searchConfig is null)
+        if (definition is null)
         {
             _logger.SearchConfigMissing(_configFile);
-            return new SearchModel(); // TODO: Throw and also check file?
+            return new SearchDefinition(); // TODO: Throw and also check file?
         }
 
-        return searchConfig;
+        return definition;
     }
 }

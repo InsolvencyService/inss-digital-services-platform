@@ -1,9 +1,11 @@
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
+using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Application.DataFlow.Providing;
 using GovUk.Forms.Components.Builders;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using GovUk.Forms.Domain.Search;
 using Inss.GovUk.Forms.Fip.Application.DataFlow;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,24 +17,34 @@ public sealed class FipFlowchart : DefineFlowchartBuilder
     
     public override void Construct(IServiceCollection services)
     {
-        NodeId dateId = "Date";
-        NodeId summaryId = "Summary";
+        NodeId searchTermId = "SearchTerm";
+        NodeId searchResultId = "SearchResult";
+        NodeId searchDetailId = "SearchDetail";
         
         FormModel form = GetForm(services);
         SectionModel section = form.Sections["Find an Insolvency Practitioner"];
             
-        DateModel bankruptcyDate = section.Pages.GetFirstOf<DateModel>();
-        SummaryModel summary = section.Pages.GetFirstOf<SummaryModel>();
+        SearchTermModel searchTerm = section.Pages.GetFirstOf<SearchTermModel>();
+        SearchResultModel searchResult = section.Pages.GetFirstOf<SearchResultModel>();
+        SearchResultDetailModel searchResultDetail = section.Pages.GetFirstOf<SearchResultDetailModel>();
             
         services.AddKeyedTransient<IFlowNodePreviousPathProvider, FlowNodePreviousPathProvider>(section.Path);
         
         FlowchartBuilder
             .ForSection(section, services)
-            .AddTransitionNode(dateId, bankruptcyDate.Path, summaryId)
+            .AddTransitionNode(searchTermId, searchTerm.Path, searchResultId)
+            .WithExecutor<SearchTermFlowNodeExecutor>()
             .Next()
-            .AddEndNode(summaryId, summary.Path)
-            .WithLoader<FipSummaryFlowNodeLoader>()
-            .WithExecutor<SectionSummaryFlowNodeExecutor>()
+            .AddSpurNode(searchResultId, searchResult.Path, searchResultId, searchDetailId)
+            .WithLoader<SearchResultFlowNodeLoader>()
+            .WithExecutor<SearchResultFlowNodeExecutor>()
+            .Next()
+            .AddEndNode(searchDetailId, searchResultDetail.Path, searchTermId)
+            .WithLoader<SearchResultDetailFlowNodeLoader>()
+            //.Next()
+            //.AddEndNode(summaryId, summary.Path)
+            //.WithLoader<ContactUsSummaryFlowNodeLoader>()
+            //.WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }
 }

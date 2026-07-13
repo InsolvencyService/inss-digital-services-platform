@@ -31,6 +31,7 @@ public class FormController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(ContentModel postedContent)
     {
         ValidationResult[] validationResults = await _formService.ValidateAsync(postedContent);
@@ -69,18 +70,5 @@ public class FormController : Controller
         }
 
         return queryParams;
-    }
-    
-    private ContentPath GetRefererPath()
-    {
-        string referer = Request.Headers.Referer.ToString();
-
-        if (string.IsNullOrEmpty(referer))
-        {
-            return new ContentPath("/");
-        }
-        
-        Uri refererUri = new(referer);
-        return new ContentPath(refererUri.PathAndQuery);
     }
 }

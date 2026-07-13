@@ -1,6 +1,6 @@
-﻿@model GovUk.Forms.Domain.Search.SearchModel
+﻿@model GovUk.Forms.Domain.Search.SearchResultModel
 
-@* This needs implementing correcly *@
+@* This needs implementing correcly as we do not have a requirement for list-based results yet *@
 
 <h1 class="govuk-summary-card__title">
     List of eIIR Results
@@ -30,13 +30,11 @@
 
                     <dl class="govuk-summary-list">
 
-                        @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+                        @foreach (var column in Model.Definition.Fields.Where(f => f.ResultView).OrderBy(x => x.Order))
                         {
                             string value = string.Empty;
 
-                            row.Fields.TryGetValue(
-                                column.Name,
-                                out string? fieldValue);
+                            row.Fields.TryGetValue(column.Name, out string? fieldValue);
 
                             value = fieldValue ?? string.Empty;
 
