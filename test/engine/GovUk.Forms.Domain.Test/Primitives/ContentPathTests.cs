@@ -6,6 +6,16 @@ namespace GovUk.Forms.Domain.Test.Primitives;
 public class ContentPathTests
 {
     [Fact]
+    public void NoPath_GetRoot_ReturnsSelf()
+    {
+        ContentPath path = "/";
+
+        ContentPath rootPath = path.GetRoot();
+        
+        Assert.Equal("/", rootPath);
+    }
+    
+    [Fact]
     public void PathIsRoot_GetRoot_ReturnsPath()
     {
         ContentPath path = "/test";
