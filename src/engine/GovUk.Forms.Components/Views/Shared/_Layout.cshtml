@@ -19,7 +19,8 @@
 @section Header {
     @if (Analytics.Value.IsEnabled)
     {
-        <script src="@(Analytics.Value.Url)" data-site-id="@(Analytics.Value.SiteId)" defer>
+        string nonce = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(16));
+        <script src="@(Analytics.Value.Url)" data-site-id="@(Analytics.Value.SiteId)" defer nonce="@nonce">
         </script>
     }
     @await Html.PartialAsync("_LayoutHeader")

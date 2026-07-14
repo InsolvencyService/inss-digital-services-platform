@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.Application.Factories;
+﻿using System.Security.Cryptography;
+using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Domain;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -14,8 +15,9 @@ public static class ApplicationBuilderExtensions
         {
             app.Use(async (context, next) =>
             {
+                string nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
                 context.Response.Headers.XFrameOptions = "DENY";
-                context.Response.Headers.ContentSecurityPolicy = "default-src 'self' https://app.rybbit.io";
+                context.Response.Headers.ContentSecurityPolicy = $"default-src 'self' https://app.rybbit.io 'nonce-{nonce}'";
                 //context.Response.Headers.ContentSecurityPolicy = 
                 //    "default-src 'self' https://app.rybbit.io 'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw=' " +
                 //    "'sha256-+MPr4O+XRBNAduB7gNJMvYtSAF5bNPiBYOUmvIx/CSA='";
