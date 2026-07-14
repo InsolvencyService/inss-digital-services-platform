@@ -12,6 +12,7 @@ using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
+using GovUk.Forms.Components.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 
 [assembly: HostingStartup(typeof(Inss.Auth.RpsProvider.StartupConfiguration))]
@@ -100,10 +101,13 @@ public class StartupConfiguration : IHostingStartup
             services.AddGovUkFrontend();
             services.AddControllersWithViews();
             services.AddOpenTelemetry().UseAzureMonitor();
+
+            services.AddComponents(context.Configuration);
         });
         
         builder.Configure(app =>
         {
+            app.UseComponents();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders =
