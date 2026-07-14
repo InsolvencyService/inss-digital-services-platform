@@ -1,0 +1,9 @@
+﻿@model EmailAddress
+
+<govuk-input for="Value" input-class="govuk-input govuk-!-width-two-thirds" spellcheck="false" autocomplete="email">
+    <govuk-input-label is-page-heading="true" class="govuk-label--@(Model.LabelSize.Description())">@(Model.Label)</govuk-input-label>
+    @if (!string.IsNullOrWhiteSpace(Model.Hint))
+    {
+        <govuk-input-hint>@(Model.Hint)</govuk-input-hint>
+    }
+</govuk-input>

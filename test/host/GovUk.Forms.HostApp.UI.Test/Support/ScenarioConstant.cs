@@ -1,0 +1,41 @@
+namespace GovUk.Forms.HostApp.UI.Test.Support;
+
+public sealed class ScenarioConstant
+{
+    public const string StartPage = nameof(StartPage);
+    public const string SnapShots = nameof(SnapShots);
+    public const string DeclarationPage = nameof(DeclarationPage);
+    public const string UploadPage = nameof(UploadPage);
+    public const string UploadPageWithWarning = nameof(UploadPageWithWarning);
+    public const string UploadPageWithCommonIssuesSection = nameof(UploadPageWithCommonIssuesSection);
+
+    // TODO: move test credentials to appsettings.json / environment variables
+    public const string EmailAddress = "insstestone@gmail.com";
+    public const string Password = "Agresso!17";
+
+    public const string UploadedFilePath = "UploadedFilePath";
+    public const string UploadedFileName = "UploadedFileName";
+    public const string CaseReference = "CaseReference";
+    public const string ErrorMessage = "ErrorMessage";
+    public const string SubmissionOutcome = "SubmissionOutcome";
+
+    public const int ElementTimeout = 8000;
+    public const int WaitForVisual = 1000;
+
+    // Default employee details
+    public const string Surname = "Surname Test";
+    public const string Forename = "Forname Test";
+    public const string Title = "Mr";
+    public const string EmployerName = "Employer Test";
+    public const string DOB = "1990-01-01";
+    public const string NationalInsuranceNumber = "BP011752C";
+
+
+    public const string InvalidCaseReference = "CN99335678";
+
+    // Valid case reference that exists in the Dynamics test environment — update if the test record changes
+    public const string ValidCaseReference = "CN70000537";
+
+    // Valid format but not linked to any employer in the Dynamics test environment — update if the test record changes
+    public const string UnlinkedCaseReference = "CN00004551";
+}

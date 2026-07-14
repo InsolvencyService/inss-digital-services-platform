@@ -1,0 +1,50 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/apis/">
+    <Project Path="src/apis/Inss.FormsSubmission.Service/Inss.FormsSubmission.Service.csproj" />
+  </Folder>
+  <Folder Name="/src/apps/">
+    <Project Path="src/apps/Demo.GovUk.Forms.ContactUs/Demo.GovUk.Forms.ContactUs.csproj" />
+    <Project Path="src/apps/Inss.GovUk.Forms.Fip/Inss.GovUk.Forms.Fip.csproj" />
+    <Project Path="src\apps\Demo.GovUk.Forms.AboutYou\Demo.GovUk.Forms.AboutYou.csproj" />
+    <Project Path="src\apps\Demo.GovUk.Forms.Bankruptcy\Demo.GovUk.Forms.Bankruptcy.csproj" />
+    <Project Path="src\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
+    <Project Path="src\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
+  </Folder>
+  <Folder Name="/src/auth/">
+    <File Path="src/auth/Readme.md" />
+    <Project Path="src/auth/Inss.Auth.Broker/Inss.Auth.Broker.csproj" />
+    <Project Path="src/auth/Inss.Auth.RpsProvider/Inss.Auth.RpsProvider.csproj" />
+  </Folder>
+  <Folder Name="/src/common/">
+    <Project Path="src/common/Inss.Common.Infrastructure/Inss.Common.Infrastructure.csproj" />
+    <Project Path="src/common/Inss.Common/Inss.Common.csproj" />
+  </Folder>
+  <Folder Name="/src/engine/">
+    <Project Path="src/engine/GovUk.Forms.Application/GovUk.Forms.Application.csproj" />
+    <Project Path="src/engine/GovUk.Forms.Components/GovUk.Forms.Components.csproj" />
+    <Project Path="src/engine/GovUk.Forms.Domain/GovUk.Forms.Domain.csproj" />
+    <Project Path="src/engine/GovUk.Forms.Infrastructure/GovUk.Forms.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/test/host/">
+    <Project Path="test/host/GovUk.Forms.HostApp.UI.Test/GovUk.Forms.HostApp.UI.Test.csproj" />
+    <Project Path="test\host\GovUk.Forms.HostApp.Test\GovUk.Forms.HostApp.Test.csproj" />
+  </Folder>
+  <Folder Name="/src/host/">
+    <Project Path="src\host\GovUk.Forms.HostApp\GovUk.Forms.HostApp.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+  <Folder Name="/test/apps/">
+    <Project Path="test/apps/Demo.GovUk.Forms.ContactUs.Test/Demo.GovUk.Forms.ContactUs.Test.csproj" />
+    <Project Path="test/apps/Inss.GovUk.Forms.Fip.Test/Inss.GovUk.Forms.Fip.Test.csproj" />
+    <Project Path="test\apps\Demo.GovUk.Forms.AboutYou.Test\Demo.GovUk.Forms.AboutYou.Test.csproj" />
+    <Project Path="test\apps\Demo.GovUk.Forms.Bankruptcy.Test\Demo.GovUk.Forms.Bankruptcy.Test.csproj" />
+    <Project Path="test\apps\Demo.GovUk.Forms.Business.Test\Demo.GovUk.Forms.Business.Test.csproj" />
+    <Project Path="test\apps\Inss.GovUk.Forms.IPUpload.Test\Inss.GovUk.Forms.IPUpload.Test.csproj" />
+  </Folder>
+  <Folder Name="/test/engine/">
+    <Project Path="test/engine/GovUk.Forms.Application.Test/GovUk.Forms.Application.Test.csproj" />
+    <Project Path="test/engine/GovUk.Forms.Components.Test/GovUk.Forms.Components.Test.csproj" />
+    <Project Path="test/engine/GovUk.Forms.Domain.Test/GovUk.Forms.Domain.Test.csproj" />
+  </Folder>
+</Solution>

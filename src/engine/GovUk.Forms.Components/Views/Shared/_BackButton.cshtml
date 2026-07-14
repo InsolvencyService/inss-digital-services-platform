@@ -1,0 +1,6 @@
+﻿@inject IPagePropertiesProvider PagePropertiesProvider
+
+@if (PagePropertiesProvider.PreviousPagePath is not null)
+{
+    <govuk-back-link href="@(PagePropertiesProvider.PreviousPagePath)"/>
+}

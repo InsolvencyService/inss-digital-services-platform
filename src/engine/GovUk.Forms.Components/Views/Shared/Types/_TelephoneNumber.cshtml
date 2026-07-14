@@ -1,0 +1,9 @@
+﻿@model TelephoneNumber
+
+<govuk-input for="Value" input-class="govuk-input--width-20" inputmode="text" spellcheck="false">
+    <govuk-input-label class="govuk-label--@(Model.LabelSize.Description())">@(Model.Label)</govuk-input-label>
+    @if (!string.IsNullOrWhiteSpace(Model.Hint))
+    {
+        <govuk-input-hint>@(Model.Hint)</govuk-input-hint>
+    }
+</govuk-input>

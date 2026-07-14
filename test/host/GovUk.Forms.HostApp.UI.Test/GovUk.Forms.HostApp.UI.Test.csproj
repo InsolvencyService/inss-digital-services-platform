@@ -1,0 +1,59 @@
+﻿   <Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<UserSecretsId>govuk-forms-hostapp-ui-test</UserSecretsId>
+	</PropertyGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Allure.Reqnroll" />
+    <PackageReference Include="Bogus" />
+	<PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Expressium.LivingDoc.ReqnrollPlugin" />
+    <PackageReference Include="GovukNotify" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Playwright" />
+    <PackageReference Include="Microsoft.Playwright.Nunit" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Reqnroll.Assist.Dynamic" />
+    <PackageReference Include="Reqnroll.ExternalData" />
+    <PackageReference Include="Reqnroll.Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Reqnroll.NUnit" />
+    <PackageReference Include="Verify.NUnit" />
+    <PackageReference Include="Verify.Playwright" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Validation\" />
+    <Folder Include="Hook\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\common\Inss.Common\Inss.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="C:\Users\Berthe.Kuatche\.nuget\packages\allure.reqnroll\2.14.1\contentFiles\any\netstandard2.0\allureConfig.Template.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

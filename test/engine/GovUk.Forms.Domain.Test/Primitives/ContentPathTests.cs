@@ -1,0 +1,57 @@
+using GovUk.Forms.Domain.Primitives;
+using Xunit;
+
+namespace GovUk.Forms.Domain.Test.Primitives;
+
+public class ContentPathTests
+{
+    [Fact]
+    public void NoPath_GetRoot_ReturnsSelf()
+    {
+        ContentPath path = "/";
+
+        ContentPath rootPath = path.GetRoot();
+        
+        Assert.Equal("/", rootPath);
+    }
+    
+    [Fact]
+    public void PathIsRoot_GetRoot_ReturnsPath()
+    {
+        ContentPath path = "/test";
+
+        ContentPath rootPath = path.GetRoot();
+        
+        Assert.Equal("/test", rootPath);
+    }
+    
+    [Fact]
+    public void PathSubPath_GetRoot_ReturnsPath()
+    {
+        ContentPath path = "/test/section";
+
+        ContentPath rootPath = path.GetRoot();
+        
+        Assert.Equal("/test", rootPath);
+    }
+    
+    [Fact]
+    public void RootPath_Value_ReturnsSamePath()
+    {
+        ContentPath path = "/";
+
+        ContentPath rootPath = path.Value;
+        
+        Assert.Equal("/", rootPath);
+    }
+    
+    [Fact]
+    public void PathEndsWithSlash_Value_ReturnsTrimmedPath()
+    {
+        ContentPath path = "/test/";
+
+        ContentPath rootPath = path.Value;
+        
+        Assert.Equal("/test", rootPath);
+    }
+}

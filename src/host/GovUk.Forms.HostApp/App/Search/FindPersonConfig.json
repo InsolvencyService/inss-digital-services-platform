@@ -1,0 +1,77 @@
+{
+  "PageSize": 5,
+  "DisplayAsTable": true,
+  "Fields": [
+    {
+      "Name": "CaseNumber",
+      "Header": "Case Number",
+      "Order": 1,
+      "Css": "govuk-!-font-weight-bold"
+    },
+    {
+      "Name": "Title",
+      "Header": "Title",
+      "Order": 2,
+      "Css": ""
+    },
+    {
+      "Name": "FirstName",
+      "Header": "Forename",
+      "Order": 3,
+      "Css": ""
+    },
+    {
+      "Name": "FamilyName",
+      "Header": "Surname",
+      "Order": 4,
+      "Css": "",
+      "FormatterType": "Demo.GovUk.Forms.ContactUs.Formatting.GoogleSearchFieldValueFormatter,Demo.GovUk.Forms.ContactUs"
+    },
+    {
+      "Name": "DateOfBirth",
+      "Header": "Date Of Birth",
+      "Order": 5,
+      "CssClass": ""
+    },
+    {
+      "Name": "Phone",
+      "Header": "Phone number",
+      "Order": 1,
+      "CssClass": "",
+      "Category": "Contact details"
+    },
+    {
+      "Name": "Email",
+      "Header": "Email",
+      "Order": 2,
+      "CssClass": "",
+      "Category": "Contact details"
+    },
+    {
+      "Name": "Line1",
+      "Header": "Address line 1",
+      "Order": 1,
+      "CssClass": "",
+      "Category": "Address details"
+    },
+    {
+      "Name": "Postcode",
+      "Header": "Postcode",
+      "Order": 2,
+      "CssClass": "",
+      "Category": "Address details"
+    }
+  ],
+  "Categories": [
+    {
+      "Label": "Contact details",
+      "Css": "govuk-heading-l"
+    },
+    {
+      "Label": "Address details",
+      "Css": "govuk-heading-m"
+    }
+  ]
+}
+
+

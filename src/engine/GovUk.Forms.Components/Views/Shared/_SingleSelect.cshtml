@@ -1,0 +1,10 @@
+﻿@model SingleSelectModel
+
+<h1 class="govuk-heading-l">@(Model.MetaData.Question ?? "What option is correct")</h1>
+<govuk-select name="SelectedItemId">
+    <govuk-select-label>@(Model.MetaData.Description ?? "Select an option")</govuk-select-label>
+    @foreach (SelectItem item in Model.Items)
+    {
+        <govuk-select-item value="@item.Value" selected="@(item.Value == Model.SelectedItemId)">@item.Label</govuk-select-item>
+    }
+</govuk-select>

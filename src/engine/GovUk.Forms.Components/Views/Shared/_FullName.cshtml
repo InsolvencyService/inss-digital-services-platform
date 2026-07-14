@@ -1,0 +1,6 @@
+﻿@model FullNameModel
+
+<govuk-input for="@Model.Value" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.MetaData.Question ?? "What is your full name?")</govuk-input-label>
+    <govuk-input-hint>@(Model.MetaData.Hint ?? "Enter your first name, middle name (if applicable), and last name")</govuk-input-hint>
+</govuk-input>

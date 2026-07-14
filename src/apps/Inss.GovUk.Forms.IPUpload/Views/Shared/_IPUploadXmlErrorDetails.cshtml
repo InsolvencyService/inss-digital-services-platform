@@ -1,0 +1,46 @@
+﻿@using Inss.GovUk.Forms.IPUpload.Domain.Validation
+@model IPUploadXmlErrorDetailsModel
+@inject IPagePropertiesProvider PagePropertiesProvider;
+
+@{
+    PagePropertiesProvider.PageTitle = Model.CurrentErrorDetail.Info.Property;
+}
+
+<h1 class="govuk-heading-l">@(Model.CurrentErrorDetail.Info.Property)</h1>
+
+<p class="govuk-body">
+    @(Model.CurrentErrorDetail.GetFormattedMessage())
+</p>
+
+@if (Model.CurrentErrorDetail.Info.Hint is not null)
+{
+    <h2 class="govuk-heading-m">How to fix it</h2>
+    <p class="govuk-body">@(Model.CurrentErrorDetail.Info.Hint)</p>
+}
+
+@if (Model.CurrentErrorDetail.HasEmployeeErrors)
+{
+    <table class="govuk-table govuk-table--small-text-until-tablet">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Forenames</th>
+            <th scope="col" class="govuk-table__header">Surname</th>
+            <th scope="col" class="govuk-table__header">Date of birth</th>
+            <th scope="col" class="govuk-table__header">NI number</th>
+            <th scope="col" class="govuk-table__header">Cell value</th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+        @foreach (EmployeeError employeeError in Model.CurrentErrorDetail.EmployeeUploadErrors)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@(employeeError.Forenames)</td>
+                <td class="govuk-table__cell">@(employeeError.Surname)</td>
+                <td class="govuk-table__cell">@(employeeError.Dob)</td>
+                <td class="govuk-table__cell">@(employeeError.Nino)</td>
+                <td class="govuk-table__cell">@(!string.IsNullOrWhiteSpace(employeeError.Value) ? employeeError.Value : "Not entered")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

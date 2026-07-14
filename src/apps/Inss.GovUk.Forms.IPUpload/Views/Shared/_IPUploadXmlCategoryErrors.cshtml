@@ -1,0 +1,30 @@
+﻿@model Inss.GovUk.Forms.IPUpload.Domain.Validation.ErrorSummary
+
+@if (Model.Properties.Length > 0)
+{
+  <h2 class="govuk-heading-m">@(Model.Category)</h2>
+  <dl class="govuk-summary-list">
+    @foreach (var error in Model.Properties)
+    {
+      <div class="govuk-summary-list__row">
+
+        <dt class="govuk-summary-list__key">
+          @(error.Info.Property)
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <p class="govuk-body">@(error.GetFormattedMessage())</p>
+          @if (error.Info.Hint is not null)
+          {
+            <p class='govuk-body govuk-hint'>@(error.Info.Hint)</p>
+          }
+        </dd>
+        @if (error.HasEmployeeErrors)
+        {
+          <dd class="govuk-summary-list_actions">
+            <a class="govuk-link" href="/ip-upload/redundancy-payment/upload-error-details/?errorId=@error.Id">View details</a>
+          </dd>
+        }
+      </div>
+    }
+  </dl>
+}

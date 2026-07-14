@@ -1,0 +1,42 @@
+﻿@model ContentModel
+
+@{
+    string? buttonText = Model.GetButtonText();
+    PageModel? page = Model as PageModel;
+}
+
+@using (Html.BeginForm(Model))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id.Value)
+    @Html.HiddenFor(m => m.Path.Value)
+    @Html.HiddenFor(m => m.TypeName)
+    @Html.HiddenFor(m => m.ViewName)
+
+    if (page is not null)
+    {
+        @if (page.LinkedToNode is not null)
+        {
+            @Html.HiddenFor(m => page.LinkedToNode.Value)
+        }
+
+        @Html.HiddenFor(m => page.MetaData.Group.Value)
+    }
+    
+    @await Html.PartialAsync(Model.ViewName, Model)
+    
+    @if (Model is FormModel form)
+    {
+        if (form.SubmitType == SubmitTypes.Form && buttonText is not null)
+        {
+            <govuk-button type="submit" disabled="!@form.CanSubmit">@buttonText</govuk-button>
+        }
+    }
+    else 
+    {
+        @if (buttonText is not null)
+        {
+            <govuk-button type="submit">@buttonText</govuk-button>
+        }
+    }
+}
