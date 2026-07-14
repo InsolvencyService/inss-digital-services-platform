@@ -26,7 +26,7 @@ public sealed class AzureSearchClient : ISearchClient
 
         Response<SearchResults<SearchDocument>> response = 
             await _searchClient.SearchAsync<SearchDocument>(request.SearchText, searchOptions);
-
+        
         int statusCode = response.GetRawResponse().Status;
 
         if (statusCode is < 200 or > 299)
@@ -49,5 +49,25 @@ public sealed class AzureSearchClient : ISearchClient
         }
 
         return new SearchResponse { Results = [.. results], TotalResults = (int)(response.Value.TotalCount ?? 0) };
+    }
+    
+    public async Task<SearchDetailResponse?> SearchDetailAsync(SearchDetailRequest request)
+    {
+        Response<SearchDocument>? response = await _searchClient.GetDocumentAsync<SearchDocument>(request.Key);
+        
+        int statusCode = response?.GetRawResponse().Status ?? 404;
+
+        if (statusCode is < 200 or > 299)
+        {
+            _logger.AzureSearchDetailFailed(statusCode, request.Key);
+            return null;
+        }
+
+        Dictionary<string, string> fields = response!.Value
+            .ToDictionary(
+                field => field.Key,
+                field => field.Value?.ToString() ?? string.Empty);
+
+        return new SearchDetailResponse { Result = new SearchResult { Fields = fields } };
     }
 }

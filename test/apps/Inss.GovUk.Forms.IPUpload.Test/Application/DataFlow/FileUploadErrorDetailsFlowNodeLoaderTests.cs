@@ -19,7 +19,7 @@ public class FileUploadErrorDetailsFlowNodeLoaderTests
     [Fact]
     public async Task EmptyQueryParams_LoadAsync_ThrowsException()
     {
-        FlowNodeContext context = new() { QueryParams = [] };
+        FlowNodeContext context = new() { QueryParams = new Dictionary<string, string?>() };
 
         IPUploadException exception = await Assert.ThrowsAsync<IPUploadException>(() => _loader.LoadAsync(context).AsTask());
         

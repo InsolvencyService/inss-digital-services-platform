@@ -13,9 +13,9 @@ public class SectionModel : ContentModel
     
     public DateTimeOffset? CompletedDate { get; set; }
     
-    public ContentPath? PreviousPagePath { get; set; }
-    
     public ContentPath? ReturnUrl { get; set; }
+    
+    public PageValidationInfo? PageValidation { get; set; }
     
     [JsonIgnore]
     public PageModel FirstPage
@@ -40,4 +40,18 @@ public class SectionModel : ContentModel
     {
         CompletedDate = DateTimeOffset.Now;
     }
+}
+
+public sealed class PageValidationInfo
+{
+    public required PageModel Page { get; init; }
+    
+    public required PageValidationError[] Errors { get; init; }
+}
+
+public sealed class PageValidationError
+{
+    public required string[] Properties { get; init; }
+    
+    public required string Message { get; init; }
 }

@@ -1,3 +1,4 @@
+using Azure.Identity;
 using GovUk.Forms.HostApp.UI.Test.Config.Environments;
 using GovUk.Forms.HostApp.UI.Test.Models.Settings;
 using Microsoft.Azure.Cosmos;
@@ -18,7 +19,13 @@ public sealed class CosmosDbService : ICosmosDbService, IAsyncDisposable
 
         IEnvironmentConfig config = EnvironmentConfigFactory.EnvironmentConfig;
 
-        _client = new CosmosClient(config.CosmosEndpoint, settings.PrimaryKey);
+        _client = new CosmosClient(
+            config.CosmosEndpoint,
+            new DefaultAzureCredential(),
+            new CosmosClientOptions
+            {
+                ConnectionMode = ConnectionMode.Gateway
+            });
 
         _container = _client
             .GetDatabase(settings.DatabaseName)

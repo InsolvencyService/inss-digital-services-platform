@@ -202,7 +202,9 @@ public class EmployerValidationSteps : ValidationStepsBase
             .CreateSet<Error>()
             .Select(error => CreateErrorSummary(
                 error.Type,
-                error.Message,
+                error.Message.Replace(
+                    "{validCaseReference}",
+                    ScenarioConstant.ValidCaseReference),
                 error.Hint))
             .ToList();
 

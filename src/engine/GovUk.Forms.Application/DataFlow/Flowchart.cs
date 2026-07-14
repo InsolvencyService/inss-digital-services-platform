@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Application.DataFlow.Loading;
 using GovUk.Forms.Application.DataFlow.Providing;
@@ -58,7 +59,6 @@ public sealed class Flowchart : IFlowchart
 
         section.SetInProgress();
         
-        await UpdateBackButtonAsync(form, section, page);
         return pageAssociatedToNode.Path;
     }
     
@@ -89,7 +89,17 @@ public sealed class Flowchart : IFlowchart
         PageModel pageBeforeChanges = targetPage.Clone();
         CopyPageData(page, targetPage);
         
-        NodeId? nextNodeId = await GetNextNodeForUpdatedPageAsync(node, page, pageBeforeChanges, form, section);
+        IFlowNodeExecutor executor = _serviceProvider.GetKeyedService<IFlowNodeExecutor>(node.Id) ?? NoopFlowNodeExecutor.Default;
+        FlowNodeContext context = new()
+        {
+            Nodes = Nodes, 
+            CurrentNode = node, 
+            Form = form, 
+            Section = section, 
+            CurrentPage = page, 
+            PageBeforeChanges = pageBeforeChanges
+        };
+        NodeId? nextNodeId =  await executor.ExecuteAsync(context);
 
         // If this is the first visit then we just set the link to the next node, otherwise we need to determine if the data entered
         // has changed the route to go down. If it has then we reset downstream page. If not then we can return to the previous page
@@ -120,7 +130,7 @@ public sealed class Flowchart : IFlowchart
             nextPage.LinkedToNode = nextNodeId;
         }
 
-        return nextPagePath;
+        return FormatRedirectPath(nextPagePath, context.QueryParams);
     }
     
     public void TransitionPageToStart(PageModel page)
@@ -134,7 +144,7 @@ public sealed class Flowchart : IFlowchart
         throw new FlowchartException($"Unable to find a node Id for page with path {page.Path}");
     }
 
-    private async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page)
+    public async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page)
     {
         FlowNode node = GetNode(page.LinkedToNode);
         IFlowNodePreviousPathProvider flowNodePreviousPathProvider =
@@ -175,25 +185,19 @@ public sealed class Flowchart : IFlowchart
         };
         return await loader.LoadAsync(context);
     }
-    
-    private async ValueTask<NodeId?> GetNextNodeForUpdatedPageAsync(
-        FlowNode node, 
-        PageModel updatedPage, 
-        PageModel pageBeforeChanges,
-        FormModel form, 
-        SectionModel section)
+
+    private static ContentPath FormatRedirectPath(ContentPath path, IDictionary<string, string?> queryParams)
     {
-        IFlowNodeExecutor executor = _serviceProvider.GetKeyedService<IFlowNodeExecutor>(node.Id) ?? NoopFlowNodeExecutor.Default;
-        FlowNodeContext context = new()
+        if (queryParams.Count == 0)
         {
-            Nodes = Nodes, 
-            CurrentNode = node, 
-            Form = form, 
-            Section = section, 
-            CurrentPage = updatedPage, 
-            PageBeforeChanges = pageBeforeChanges
-        };
-        return await executor.ExecuteAsync(context);
+            return path;
+        }
+        
+        string query = string.Join("&", queryParams
+            .Where(kvp => !string.IsNullOrEmpty(kvp.Key) && kvp.Value != null)
+            .Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
+        
+        return string.IsNullOrWhiteSpace(query) ? path : $"{path}?{query}";
     }
     
     private static void CopyPageData(PageModel sourcePage, PageModel targetPage)

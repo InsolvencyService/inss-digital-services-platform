@@ -35,4 +35,7 @@ public sealed class ScenarioConstant
 
     // Valid case reference that exists in the Dynamics test environment — update if the test record changes
     public const string ValidCaseReference = "CN70000537";
+
+    // Valid format but not linked to any employer in the Dynamics test environment — update if the test record changes
+    public const string UnlinkedCaseReference = "CN00004551";
 }

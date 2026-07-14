@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
         <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+        <UserSecretsId>d6f2ad9d-35b6-47a6-95b2-c6a7c3fb344f</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="GovUk.Frontend.AspNetCore" />

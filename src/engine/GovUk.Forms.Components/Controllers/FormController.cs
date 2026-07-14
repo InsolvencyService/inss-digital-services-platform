@@ -26,26 +26,29 @@ public class FormController : Controller
     {
         Dictionary<string, string?> queryParams = GetQueryParams();
         ContentPath requestPath = new(Request.Path);
-        (ContentModel? Content, ContentPath? RedirectTo) result = await _formService.LoadAsync(requestPath, queryParams);
+        (ContentModel? Content, ContentPath? RedirectTo, PageValidationError[]? ValidationErrors) result = 
+            await _formService.LoadAsync(requestPath, queryParams);
+
+        if (result.ValidationErrors?.Length > 0)
+        {
+            foreach (PageValidationError error in result.ValidationErrors)
+            {
+                ModelState.AddModelError(error.Properties[0], error.Message);
+            }
+        }
+        
         return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(ContentModel postedContent)
     {
         ValidationResult[] validationResults = await _formService.ValidateAsync(postedContent);
 
         if (validationResults.Length > 0)
         {
-            foreach (ValidationResult error in validationResults)
-            {
-                foreach (string memberName in error.MemberNames)
-                {
-                    ModelState.AddModelError(memberName, error.ErrorMessage ?? string.Empty);
-                }
-            }
-
-            return View(postedContent);
+            return Redirect(postedContent.Path);
         }
 
         ContentPath redirectTo = await _formService.SaveAsync(postedContent);
@@ -69,18 +72,5 @@ public class FormController : Controller
         }
 
         return queryParams;
-    }
-    
-    private ContentPath GetRefererPath()
-    {
-        string referer = Request.Headers.Referer.ToString();
-
-        if (string.IsNullOrEmpty(referer))
-        {
-            return new ContentPath("/");
-        }
-        
-        Uri refererUri = new(referer);
-        return new ContentPath(refererUri.PathAndQuery);
     }
 }

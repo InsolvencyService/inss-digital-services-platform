@@ -2,7 +2,6 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
 using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 using GovUk.Forms.HostApp.UI.Test.Helpers;
-using GovUk.Forms.HostApp.UI.Test.Support;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GovUk.Forms.HostApp.UI.Test.Extensions;

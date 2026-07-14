@@ -20,7 +20,7 @@ public sealed class EmployerDetailsPage(
         Page.GetByRole(AriaRole.Heading, new()
         {
             Name = UploadLocators.Labels.IsThisTheCorrectEmployerNameHeading,
-            Level = 2
+            Level = 1
         });
 
     private ILocator YesRadio =>
@@ -51,14 +51,14 @@ public sealed class EmployerDetailsPage(
         });
 
     private ILocator MainContent =>
-        Page.Locator("#main-content");
+        Page.Locator(UploadLocators.Selectors.MainContent);
 
     private ILocator SummaryRow(string label) =>
-        Page.Locator(".govuk-summary-list__row")
+        Page.Locator(UploadLocators.Selectors.SummaryListRow)
             .Filter(new() { Has = Page.GetByText(label, new() { Exact = true }) });
 
     private ILocator SummaryValue(string label) =>
-        SummaryRow(label).Locator(".govuk-summary-list__value");
+        SummaryRow(label).Locator(UploadLocators.Selectors.SummaryListValue);
 
     protected override async Task PageContentLoadedAsync()
     {
@@ -123,7 +123,7 @@ public sealed class EmployerDetailsPage(
             - paragraph: We have matched to the following employer:
             - term: Case reference number
             - term: Employer name
-            - heading "Is this the correct employer name?" [level=2]
+            - heading "Is this the correct employer name?" [level=1]
             - paragraph: This case reference number you have provided matches with this employer in our system.
             - radio "Yes"
             - radio "No"

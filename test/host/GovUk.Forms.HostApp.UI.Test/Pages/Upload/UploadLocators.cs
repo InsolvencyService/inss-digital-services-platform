@@ -48,5 +48,10 @@ public class UploadLocators
 
         // Case Reference Number Page
         public const string CaseReferenceNumberInput = "#CaseReference_Value";
+        public const string CaseReferenceFieldError = "#CaseReference_Value-error";
+        public const string ErrorSummaryTitle = ".govuk-error-summary__title";
+        public const string SummaryListValue = ".govuk-summary-list__value";
+        public const string SummaryListRow = ".govuk-summary-list__row";
+        public const string MainContent = "#main-content";
     }
 }

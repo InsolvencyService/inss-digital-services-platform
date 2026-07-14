@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Net;
 using GovUk.Forms.Domain;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global - might be used pending back button review
@@ -17,10 +18,15 @@ public sealed class FlowNodeContext
     
     public PageModel CurrentPage { get; init; }
 
-    public Dictionary<string, string?> QueryParams { get; init; } = [];
+    public IDictionary<string, string?> QueryParams { get; init; } = new Dictionary<string, string?>();
     
     public PageModel? PageBeforeChanges { get; init; }
 
+    public void AddQueryParam<T>(string key, T value)
+    {
+        QueryParams[key] = WebUtility.UrlEncode(value?.ToString() ?? string.Empty);
+    }
+    
     public T? GetQueryParam<T>(string key)
     {
         if (!QueryParams.TryGetValue(key, out string? value) || value is null)
@@ -29,7 +35,7 @@ public sealed class FlowNodeContext
         }
 
         Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-        object converted = Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+        object converted = Convert.ChangeType(WebUtility.UrlDecode(value), targetType, CultureInfo.InvariantCulture);
         return (T)converted;
     }
 }
