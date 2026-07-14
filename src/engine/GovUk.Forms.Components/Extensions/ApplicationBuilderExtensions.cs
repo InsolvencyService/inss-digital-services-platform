@@ -15,9 +15,10 @@ public static class ApplicationBuilderExtensions
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.XFrameOptions = "DENY";
-                context.Response.Headers.ContentSecurityPolicy = 
-                    "default-src 'self' https://app.rybbit.io 'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw=' " +
-                    "'sha256-+MPr4O+XRBNAduB7gNJMvYtSAF5bNPiBYOUmvIx/CSA='";
+                context.Response.Headers.ContentSecurityPolicy = "default-src 'self' https://app.rybbit.io";
+                //context.Response.Headers.ContentSecurityPolicy = 
+                //    "default-src 'self' https://app.rybbit.io 'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw=' " +
+                //    "'sha256-+MPr4O+XRBNAduB7gNJMvYtSAF5bNPiBYOUmvIx/CSA='";
                 context.Response.Headers.XContentTypeOptions = "nosniff";
                 context.Response.Headers.XXSSProtection = "1; mode=block";
                 await next();
