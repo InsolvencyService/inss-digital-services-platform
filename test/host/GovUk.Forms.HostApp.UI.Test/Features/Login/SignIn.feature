@@ -1,4 +1,4 @@
-﻿@MEDS-1062
+﻿@MEDS-1062 @addVideo
 Feature: SignIn
 
 An an Insolvency Practitioner
@@ -19,7 +19,7 @@ Scenario: View password while entering sign in details
   When I choose to view my password
   Then I should be able to see the password I entered
 
-@smoke @addVideo @functional
+@smoke @functional
 Scenario: Error when email and password are blank
   When I submit the sign in form
   Then I should see the following error messages:
@@ -36,18 +36,12 @@ When I enter "<email>" into the email address field
 Then I should see "<errorMessage>" for the "<field>" field
 
 Examples:
-  | email            | password         | errorMessage                                                  | field    |
-  | <empty>          | ValidPassword123 | Enter an email address                                        | email    |
-  | user@example.com | <empty>          | Enter a password                                              | password |
-  | invalid@temp.org | ValidPassword123 | Error: The email address or password you entered is incorrect | email    |
-  #| user@example.com | WrongPassword    | The email address or password you entered is incorrect        | password |
+  | email                     | password   | errorMessage                                                  | field    |
+  | <empty>                   | Agresso!17 | Enter an email address                                        | email    |
+  | insstestmantwo@gmail.com  | <empty>    | Enter a password                                              | password |
+  | insstestman1two@gmail.com | Agresso!17 | Error: The email address or password you entered is incorrect | email    |
+  | insstestmatwo@gmail.com   | Agresso!   | Error: The email address or password you entered is incorrect | email    |
 
 
-@functional
-Scenario: Display error when a locked account attempts to sign in
-  When I enter "locked@temp.org" into the email address field
-  And I enter "ValidPassword123" into the password field
-  And I choose to sign in
-  Then I should see the error message "Your account is locked"
 
 

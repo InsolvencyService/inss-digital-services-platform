@@ -85,12 +85,12 @@ public abstract class ValidationStepsBase
                 ScenarioConstant.DOB,
                 "yyyy-MM-dd",
                 CultureInfo.InvariantCulture)
-            .ToString("d/M/yyyy", CultureInfo.InvariantCulture);
+            .ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
     }
 
     protected static string FormatDateRange(string start, string end)
     {
-        return $"{DateTime.Parse(start, CultureInfo.InvariantCulture):M/d/yyyy}, {DateTime.Parse(end, CultureInfo.InvariantCulture):M/d/yyyy}";
+        return $"{DateTime.Parse(start, CultureInfo.InvariantCulture):MM/dd/yyyy}, {DateTime.Parse(end, CultureInfo.InvariantCulture):MM/dd/yyyy}";
     }
 
 
@@ -128,7 +128,7 @@ public abstract class ValidationStepsBase
     protected static string FormatUiDate(DateOnly? date)
     {
         return date?.ToString(
-                   "M/d/yyyy",
+                   "MM/dd/yyyy",
                    CultureInfo.InvariantCulture)
                ?? string.Empty;
     }

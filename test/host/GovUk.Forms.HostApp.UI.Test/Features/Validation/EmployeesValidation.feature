@@ -1,4 +1,4 @@
-﻿@MEDS-1067 @cleanCosmosDb
+﻿@MEDS-1067 @cleanCosmosDb @addVideo
 Feature: Employees Validation
 
               As an Insolvency Practitioner user
@@ -88,7 +88,7 @@ Feature: Employees Validation
              Then I should see the national insurance number validation error "1 National Insurance numbers is missing"
               And I should be able to view national insurance number error details
 
-       @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo
+       @regression @validation @rp14a @allure.subSuite:NationalInsurance 
         Scenario Outline: RP14A Display error for invalid employee national insurance number format
             Given the RP14A contains employee national insurance number "<nationalInsuranceNumber>"
              When I attempt to submit the RP14A
@@ -109,7 +109,7 @@ Feature: Employees Validation
                   | QQ123456A               |
                   | AB123456Z               |
 
-        @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance 
         Scenario Outline: RP14A Display error for multiple invalid employee national insurance number formats
             Given the RP14A contains <employeeCount> employees with national insurance number "<nationalInsuranceNumber>"
              When I attempt to submit the RP14A
@@ -128,7 +128,7 @@ Feature: Employees Validation
                   | 3             | 123456789               |
 
 
-        @regression @validation @rp14a @allure.subSuite:NationalInsurance @addVideo
+        @regression @validation @rp14a @allure.subSuite:NationalInsurance 
         Scenario Outline: RP14A Display error for multiple missing employee national insurance numbers
             Given the RP14A contains <employeeCount> employees with no national insurance number
              When I attempt to submit the RP14A
@@ -184,7 +184,7 @@ Feature: Employees Validation
               And I should be able to view the employee employment dates error details for multiple employees
 
 
-         @regression @validation @rp14a @allure.subSuite:Employee @addVideo
+         @regression @validation @rp14a @allure.subSuite:Employee 
          Scenario: RP14A Display aggregated count for repeated employee surname errors
             Given the RP14A contains 3 employees with no surname
              When I attempt to submit the RP14A

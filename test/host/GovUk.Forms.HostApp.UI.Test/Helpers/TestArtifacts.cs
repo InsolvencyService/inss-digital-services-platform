@@ -18,10 +18,12 @@ public sealed class TestArtifacts
 
     public TestArtifacts(
         string testName,
+        string featureName,
         TestEnvironment environmentType,
         string workDirectory)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(testName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureName);
         ArgumentException.ThrowIfNullOrWhiteSpace(workDirectory);
 
         TestName = Sanitize(testName);
@@ -38,6 +40,7 @@ public sealed class TestArtifacts
             "Reports",
             environmentType.ToString(),
             date,
+            Sanitize(featureName),
             RunId);
 
         // Ensure directories exist (parallel-safe)

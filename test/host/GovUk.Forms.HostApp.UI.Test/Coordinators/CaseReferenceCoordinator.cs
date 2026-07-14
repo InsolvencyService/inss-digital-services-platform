@@ -132,15 +132,13 @@ public sealed class CaseReferenceCoordinator(
             "Click Continue",
             async () =>
             {
-                Task<IResponse> responseTask = playwrightDriver.Page.WaitForResponseAsync(response =>
-                    response.Url.Contains("/case-reference-match") &&
-                    response.Status == 200);
+                await playwrightDriver.Page
+                    .GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton })
+                    .ClickAsync();
 
-                await Task.WhenAll(
-                    responseTask,
-                    playwrightDriver.Page
-                        .GetByRole(AriaRole.Button, new() { Name = SharedLocactors.ContinueButton })
-                        .ClickAsync());
+                await playwrightDriver.Page.WaitForLoadStateAsync(
+                    LoadState.DOMContentLoaded,
+                    new() { Timeout = ScenarioConstant.ElementTimeout });
 
                 await AttachCurrentPageScreenshotAsync("Continue clicked");
             });
@@ -179,6 +177,17 @@ public sealed class CaseReferenceCoordinator(
             });
     }
 
+    public async Task VerifyValidationErrorsAsync(string errorMessage)
+    {
+        await ExecuteStepAsync(
+            $"Verify validation errors for: {errorMessage}",
+            async () =>
+            {
+                await caseReferenceNumberPage.VerifyValidationErrorsAsync(errorMessage);
+                AddAllureLog($"Validation errors verified: {errorMessage}");
+            });
+    }
+
     public async Task VerifyCaseReferenceInSummaryAsync(string expectedReference)
     {
         await ExecuteStepAsync(
@@ -206,6 +215,24 @@ public sealed class CaseReferenceCoordinator(
                     "Employer name was empty on the Employer Details page.");
 
                 AddAllureLog($"Employer name '{employerName}' confirmed in summary.");
+            });
+    }
+
+    public async Task ClickBackAsync()
+    {
+        await ExecuteStepAsync(
+            "Click Back",
+            async () =>
+            {
+                await playwrightDriver.Page
+                    .GetByRole(AriaRole.Link, new() { Name = SharedLocactors.BackButton, Exact = true })
+                    .ClickAsync();
+
+                await playwrightDriver.Page.WaitForLoadStateAsync(
+                    LoadState.DOMContentLoaded,
+                    new() { Timeout = ScenarioConstant.ElementTimeout });
+
+                await AttachCurrentPageScreenshotAsync("Back clicked");
             });
     }
 

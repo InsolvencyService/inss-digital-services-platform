@@ -46,6 +46,6 @@ public static class TestFactory
                 "yyyy-MM-dd",
                 CultureInfo.InvariantCulture)
             .ToString(
-                "d/M/yyyy",
+                "MM/dd/yyyy",
                 CultureInfo.InvariantCulture);
 }

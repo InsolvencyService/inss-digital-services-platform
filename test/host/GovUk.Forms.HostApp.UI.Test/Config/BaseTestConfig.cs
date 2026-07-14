@@ -14,15 +14,17 @@ public abstract class BaseTestConfig
 
     public async Task BrowserSetupAsync(
         ScenarioContext scenarioContext,
+        string featureName,
         IPage page,
         IBrowserContext browserContext)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureName);
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(browserContext);
 
         EnsureArtifactBasePath();
-        EnsureTestArtifactsCreated(scenarioContext);
+        EnsureTestArtifactsCreated(scenarioContext, featureName);
 
         IEnvironmentConfig config = EnvironmentConfigFactory.EnvironmentConfig;
 
@@ -32,12 +34,13 @@ public abstract class BaseTestConfig
         await NavigateToBaseUrlAsync(config.BaseUrl, page);
     }
 
-    public void TestArtifactsSetup(ScenarioContext scenarioContext)
+    public void TestArtifactsSetup(ScenarioContext scenarioContext, string featureName)
     {
         ArgumentNullException.ThrowIfNull(scenarioContext);
+        ArgumentException.ThrowIfNullOrWhiteSpace(featureName);
 
         EnsureArtifactBasePath();
-        EnsureTestArtifactsCreated(scenarioContext);
+        EnsureTestArtifactsCreated(scenarioContext, featureName);
     }
 
     public async Task BrowserTearDownAsync(
@@ -225,7 +228,7 @@ public abstract class BaseTestConfig
             "Screenshots-Report");
     }
 
-    private void EnsureTestArtifactsCreated(ScenarioContext scenarioContext)
+    private void EnsureTestArtifactsCreated(ScenarioContext scenarioContext, string featureName)
     {
         if (TestArtifacts is not null)
         {
@@ -238,6 +241,7 @@ public abstract class BaseTestConfig
 
         TestArtifacts = new TestArtifacts(
             TestName,
+            SanitizeFileName(featureName),
             environment,
             BasePathForArtifacts);
 
