@@ -22,28 +22,18 @@ public sealed class ContactUsFormFactory : IFormFactory
             .EndSection<SummaryModel>("Contact us summary", "summary", submitButtonText: "Continue")
             
             .AddSection("Find People", "find-people")
-            .AddSearchPage<SearchModel>("Search", "search", "Config1",
+            .AddPage<SearchTermModel>("Enter search", "search", 
                 question: "Find people",
                 description: "<p class=\"govuk-body\">Search using one or more of the following:</p>" +
-                    "<ul class=\"govuk-list govuk-list--bullet\">" +
-                    "<li>surname</li>" +
-                    "<li>forename</li>" +
-                    "<li>a combination of these</li>" +
-                    "</ul>", 
-                submitButtonText: null)
+                             "<ul class=\"govuk-list govuk-list--bullet\">" +
+                             "<li>surname</li>" +
+                             "<li>forename</li>" +
+                             "<li>a combination of these</li>" +
+                             "</ul>",
+                submitButtonText: "Search")
+            .AddSearchPage<SearchResultModel>("Search", "search-results", "Config1", question: "Search results", submitButtonText: null)
+            .AddPage<SearchResultDetailModel>("Search", "search-result-detail", question: "Search result detail", submitButtonText: "Find another")
             .EndSection<SummaryModel>("Find people summary", "summary", submitButtonText: "Continue")
-
-            .AddSection("Find Other People", "find-other-people")
-            .AddSearchPage<SearchModel>("Search", "search", "Config2",
-                question: "Find other people",
-                description:"<p class=\"govuk-body\">Search using one or more of the following:</p>" +
-                    "<ul class=\"govuk-list govuk-list--bullet\">" +
-                    "<li>surname</li>" +
-                    "<li>forename</li>" +
-                    "<li>a combination of these</li>" +
-                    "</ul>", 
-                submitButtonText: null)
-            .EndSection<SummaryModel>("Find other people summary", "summary", submitButtonText: "Continue")
 
             .ValidateAndComplete();
     }

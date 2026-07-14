@@ -1,6 +1,12 @@
-﻿@model GovUk.Forms.Domain.Search.SearchModel
+﻿@using GovUk.Forms.Domain.Search.Formatting
+@model GovUk.Forms.Domain.Search.SearchResultModel
 
-<p class="govuk-body">@(Model.GetResultsInfo())<strong>@(Model.SearchText)</strong></p>
+@{
+    ResultDetailLinkFieldValueFormatter detailLinkFormatter = new(Model.ResultDetailPath);
+    string resultOverview = $"Showing {Model.StartPageNumber} to {Model.EndPageNumber} of {Model.TotalResults} results for <strong>{Model.SearchText}</strong>";
+}
+
+<p class="govuk-body">@Html.Raw(resultOverview)</p>
 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 <table class="govuk-table">
     <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
@@ -8,7 +14,7 @@
     </caption>
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-        @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+        @foreach (var column in Model.Definition.Fields.Where(f => f.ResultView).OrderBy(x => x.Order))
         {
             <th scope="col" class="govuk-table__header">
                 @column.Header
@@ -23,26 +29,25 @@
     {
         <tr class="govuk-table__row">
 
-            @foreach (var column in Model.ResultColumns.OrderBy(x => x.Order))
+            @foreach (var column in Model.Definition.Fields.Where(f => f.ResultView).OrderBy(x => x.Order))
             {
                 string value = string.Empty;
                 
                 if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
                 {
-                    value = fieldValue;
+                    value = column.GetFormattedValue(fieldValue);
                 }
 
-                if (Model.ResultColumns.IndexOf(column) == 0)
+                if (Model.Definition.Fields.IndexOf(column) == 0)
                 {
-                    @* TODO: Need to determine the ID and what should be in the details *@
                     <td class="govuk-table__cell">
-                        <a href="#" class="govuk-link">@value</a>
+                        @Html.Raw(detailLinkFormatter.Format(value))
                     </td>
                 }
                 else
                 {
                     <td class="govuk-table__cell @column.Css">
-                        @value
+                        @Html.Raw(value)
                     </td>   
                 }
             }

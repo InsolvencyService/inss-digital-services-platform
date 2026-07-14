@@ -25,4 +25,7 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 106, Level = LogLevel.Error, Message = "Azure Search request sent with invalid current page number: {CurrentPageNumber}")]
     public static partial void InvalidCurrentPageNumber(this ILogger logger, int currentPageNumber);
+    
+    [LoggerMessage(EventId = 107, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key.")]
+    public static partial void MissingSearchKey(this ILogger logger);
 }

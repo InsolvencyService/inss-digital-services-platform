@@ -1,4 +1,5 @@
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Search;
 
 namespace GovUk.Forms.Application.Test;
 
@@ -45,14 +46,17 @@ public static class TestSectionModels
         };
     }
     
-    public static SectionModel CreateStaticSection()
+    public static SectionModel CreateFindPeopleSection()
     {
         return new SectionModel
         {
-            Path = "/form/ip-upload",
-            Title = "IP Upload",
-            Pages = [
-                new StaticHtmlModel { Title = "Declaration", Path = "/form/ip-upload/declaration", Key = "Declaration" },
+            Path = "/form/find-people",
+            Title = "Find people",
+            Pages =
+            [
+                new SearchTermModel { Title = "Search", Path = "/form/find-people/search" },
+                new SearchResultModel { Title = "Search results", Path = "/form/find-people/search-results", ConfigKey = "FindPeople" },
+                new SearchResultDetailModel { Title = "Search result detail", Path = "/form/find-people/search-result-detail" },
                 new SummaryModel { Title = "Summary", Path = "/form/ip-upload/summary" }
             ]
         };

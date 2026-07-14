@@ -41,6 +41,7 @@ public class FormController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(ContentModel postedContent)
     {
         ValidationResult[] validationResults = await _formService.ValidateAsync(postedContent);

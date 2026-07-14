@@ -41,7 +41,7 @@ public sealed record ContentPath
     public ContentPath GetRoot()
     {
         string[] segments = Value.Split(ForwardSlash, StringSplitOptions.RemoveEmptyEntries);
-        return $"{ForwardSlash}{segments.First()}";
+        return segments.Length > 0 ? $"{ForwardSlash}{segments.First()}" : ForwardSlash;
     }
     
     public override string ToString() => Value;

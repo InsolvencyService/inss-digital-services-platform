@@ -1,0 +1,113 @@
+{
+  "PageSize": 5,
+  "DisplayAsTable": true,
+  "Fields": [
+    {
+      "Name": "Name",
+      "Header": "Name",
+      "Order": 1,
+      "Css": "govuk-!-font-weight-bold"
+    },
+    {
+      "Name": "Company",
+      "Header": "Company",
+      "Order": 2,
+      "Css": ""
+    },
+    {
+      "Name": "Location",
+      "Header": "Town or city",
+      "Order": 3,
+      "Css": ""
+    },
+    {
+      "Name": "Postcode",
+      "Header": "Postcode",
+      "Order": 4,
+      "Css": ""
+    },
+    {
+      "Name": "IPName",
+      "Header": "IP name",
+      "Order": 1,
+      "Css": "",
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Name": "CompanyName",
+      "Header": "Company name",
+      "Order": 2,
+      "Css": "",
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Name": "CompanyAddress",
+      "Header": "Company address",
+      "Order": 3,
+      "Css": "",
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Name": "Email",
+      "Header": "Email",
+      "Order": 4,
+      "Css": "",
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Name": "Telephone",
+      "Header": "Telephone",
+      "Order": 5,
+      "Css": "",
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Name": "IPNumber",
+      "Header": "IP number",
+      "Order": 6,
+      "Css": "",
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Name": "BodyName",
+      "Header": "Name",
+      "Order": 1,
+      "Css": "",
+      "Category": "Authorising body"
+    },
+    {
+      "Name": "BodyAddress",
+      "Header": "Address",
+      "Order": 2,
+      "Css": "",
+      "Category": "Authorising body"
+    },
+    {
+      "Name": "BodyWebsite",
+      "Header": "Website",
+      "Order": 3,
+      "Css": "",
+      "Category": "Authorising body",
+      "FormatterType": "Inss.GovUk.Forms.Fip.Formatting.WebsiteSearchFieldValueFormatter,Inss.GovUk.Forms.Fip"
+    },
+    {
+      "Name": "BodyTelephone",
+      "Header": "Telephone",
+      "Order": 4,
+      "Css": "",
+      "Category": "Authorising body"
+    }
+  ],
+  "Categories": [
+    {
+      "Label": "Insolvency practitioner details",
+      "Css": "govuk-heading-l"
+    },
+    {
+      "Label": "Authorising body",
+      "Css": "govuk-heading-m"
+    }
+  ]
+}
+
+

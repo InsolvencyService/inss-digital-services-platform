@@ -4,5 +4,5 @@ namespace GovUk.Forms.Application.Providers;
 
 public interface ISearchConfigProvider
 {
-    SearchModel LoadConfig();
+    SearchDefinition LoadConfig();
 }

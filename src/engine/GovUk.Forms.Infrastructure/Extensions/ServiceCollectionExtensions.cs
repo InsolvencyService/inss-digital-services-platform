@@ -51,28 +51,25 @@ public static class ServiceCollectionExtensions
 
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
 
-            // services.AddSingleton<ISearchConfigProvider, SearchConfigProvider>();
-            // SearchPersonOptions searchOptions = new();
-            // configuration
-            //     .GetSection("EIIRPersonSearch")
-            //     .Bind(searchOptions);
-            // services.AddSingleton(searchOptions);
-            //
-            // services.AddScoped<ISearchService, SearchService>();
-            // services.AddSingleton(serviceProvider =>
-            // {
-            //     SearchPersonOptions options =
-            //         serviceProvider.GetRequiredService<SearchPersonOptions>();
-            //
-            //     return new SearchClient(
-            //         new Uri(options.Endpoint),
-            //         options.IndexName,
-            //         new AzureKeyCredential(options.ApiKey));
-            // });
-
             return services;
         }
 
+        public IServiceCollection AddMockSearchInfrastructure<TMockClient>(
+            IConfiguration configuration, 
+            string configKey) 
+            where TMockClient : class, ISearchClient
+        {
+            AzureSearchOptions searchOptions = configuration.BindAndValidate<AzureSearchOptions>(configKey);
+            
+            services.AddKeyedSingleton<ISearchConfigProvider>(configKey, (provider, _) =>
+            {
+                ILogger<SearchConfigProvider> logger = provider.GetRequiredService<ILogger<SearchConfigProvider>>();
+                return new SearchConfigProvider(searchOptions.ConfigPath, logger);
+            });
+            services.AddKeyedSingleton<ISearchClient, TMockClient>(configKey);
+            return services;
+        }
+        
         public IServiceCollection AddSearchInfrastructure(IConfiguration configuration, string configKey)
         {
             AzureSearchOptions searchOptions = configuration.BindAndValidate<AzureSearchOptions>(configKey);
@@ -86,9 +83,11 @@ public static class ServiceCollectionExtensions
             services.AddKeyedSingleton<ISearchClient>(configKey, (provider, _) =>
             {
                 SearchClient searchClient = new(
-                    new Uri(searchOptions.Endpoint), searchOptions.IndexName, new AzureKeyCredential(searchOptions.ApiKey));
+                    new Uri(searchOptions.Endpoint), 
+                    searchOptions.IndexName, 
+                    new AzureKeyCredential(searchOptions.ApiKey));
                 ILogger<SearchService> logger = provider.GetRequiredService<ILogger<SearchService>>();
-                return new MockSearchClient();// new AzureSearchClient(searchClient, logger);
+                return new AzureSearchClient(searchClient, logger);
             });
             
             return services;
