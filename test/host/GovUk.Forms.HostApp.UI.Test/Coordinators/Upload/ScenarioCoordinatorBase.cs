@@ -77,7 +77,7 @@ public abstract class ScenarioCoordinatorBase
         date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
 
     protected static string FormatUiDate(DateOnly? date) =>
-        date?.ToString("M/d/yyyy", CultureInfo.InvariantCulture) ?? string.Empty;
+        date?.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture) ?? string.Empty;
 
     protected static string FormatUiDateRange(DateOnly? startDate, DateOnly? endDate) =>
         $"{FormatUiDate(startDate)}, {FormatUiDate(endDate)}";

@@ -1,3 +1,4 @@
+@addVideo
 Feature: Associated Company Validation
 
 As an Insolvency Practitioner

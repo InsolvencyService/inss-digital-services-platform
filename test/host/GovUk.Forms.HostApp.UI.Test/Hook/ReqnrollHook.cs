@@ -47,7 +47,7 @@ public sealed class ReqnrollHook : BaseTestConfig
     public void ValidateScenario()
     {
         TestValidator.ValidateScenario(_scenarioContext);
-        TestArtifactsSetup(_scenarioContext);
+        TestArtifactsSetup(_scenarioContext, _featureContext.FeatureInfo.Title);
 
         _shouldRecordVideo = HasTag(AddVideoTag);
         _shouldRecordScreencast = HasTag(AddScreencastTag);
@@ -71,6 +71,7 @@ public sealed class ReqnrollHook : BaseTestConfig
 
         await BrowserSetupAsync(
             _scenarioContext,
+            _featureContext.FeatureInfo.Title,
             _driver.Page,
             _driver.Context);
 
@@ -190,17 +191,19 @@ public sealed class ReqnrollHook : BaseTestConfig
         {
             await _driver.CloseAsync();
 
-            if (_shouldRecordVideo && failed && video is not null && TestArtifacts is not null)
+            if (_shouldRecordVideo && video is not null && TestArtifacts is not null)
             {
+                string suffix = failed ? "_failure" : "_success";
+
                 string? videoPath = await video.SaveRecordedVideoToArtifactsAsync(
                     TestArtifacts,
                     _output,
-                    $"{TestName}_failure");
+                    $"{TestName}{suffix}");
 
                 if (!string.IsNullOrWhiteSpace(videoPath))
                 {
                     _allureReportingHelper.AttachFile(
-                        "Failure Video",
+                        failed ? "Failure Video" : "Video",
                         videoPath,
                         "video/webm");
                 }

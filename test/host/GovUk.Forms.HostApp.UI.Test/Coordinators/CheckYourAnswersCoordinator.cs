@@ -56,7 +56,8 @@ public sealed class CheckYourAnswersCoordinator(
             "Change uploaded document",
             async () =>
             {
-                await summaryPage.ClickChangeAsync();
+                await summaryPage.WaitForPageToLoadAsync();
+                await summaryPage.ClickChangeCaseReferenceAsync();
 
                 AddAllureLog(
                     "ChangeDocument",

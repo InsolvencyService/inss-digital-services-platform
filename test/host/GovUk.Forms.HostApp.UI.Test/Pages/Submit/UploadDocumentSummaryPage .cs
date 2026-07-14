@@ -54,6 +54,9 @@ public sealed class UploadDocumentSummaryPage(
             Name = DocumentSummaryLocators.Labels.Change
         });
 
+    private ILocator AllChangeLinks =>
+        Page.GetByRole(AriaRole.Link, new() { Name = DocumentSummaryLocators.Labels.Change });
+
     private ILocator SummaryRow(string label) =>
         Page.Locator(DocumentSummaryLocators.Selectors.SummaryList)
             .Filter(new() { Has = Page.GetByText(label, new() { Exact = true }) });
@@ -75,6 +78,12 @@ public sealed class UploadDocumentSummaryPage(
         await Expect(InitialValidationMessage).ToBeVisibleAsync();
         await Expect(UploadedDocumentRow).ToBeVisibleAsync();
         await Expect(SubmitButton).ToBeVisibleAsync();
+        await Expect(AllChangeLinks).ToHaveCountAsync(1);
+    }
+
+    public async Task VerifyChangeLinksCountAsync(int expectedCount)
+    {
+        await Expect(AllChangeLinks).ToHaveCountAsync(expectedCount);
     }
 
     public async Task VerifyUploadedDocumentAsync(string expectedFileName)

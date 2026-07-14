@@ -1,4 +1,4 @@
-@cleanCosmosDb
+@cleanCosmosDb @addVideo
 Feature: Employee Holiday Validation
 
 A short summary of the feature

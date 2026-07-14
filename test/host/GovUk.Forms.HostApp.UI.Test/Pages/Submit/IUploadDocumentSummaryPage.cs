@@ -7,6 +7,7 @@ public interface IUploadDocumentSummaryPage
     Task VerifyCaseReferenceNumberAsync(string expectedValue);
     Task VerifyEmployerNameAsync(string expectedValue);
     Task VerifyIsCorrectEmployerNameAsync(string expectedValue);
+    Task VerifyChangeLinksCountAsync(int expectedCount);
     Task ClickChangeAsync();
     Task ClickChangeCaseReferenceAsync();
     Task ClickSubmitAsync();

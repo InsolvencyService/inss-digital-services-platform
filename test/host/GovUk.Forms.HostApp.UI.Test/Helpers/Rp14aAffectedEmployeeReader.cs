@@ -66,6 +66,6 @@ public static class Rp14aAffectedEmployeeReader
 
         return DateTime
             .ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-            .ToString("M/d/yyyy", CultureInfo.InvariantCulture);
+            .ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
     }
 }

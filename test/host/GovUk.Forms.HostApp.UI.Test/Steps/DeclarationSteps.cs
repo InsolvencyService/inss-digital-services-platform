@@ -1,32 +1,36 @@
 using GovUk.Forms.HostApp.UI.Test.Coordinators;
-using GovUk.Forms.HostApp.UI.Test.Coordinators.Upload;
 namespace GovUk.Forms.HostApp.UI.Test.Steps;
 
 [Scope(Feature = "Declaration Page")]
 [Binding]
 public class DeclarationSteps
 {
+    private const string UserTypeKey = "UserType";
+    private const string DeclarationPageUserType = "InssTestManOne";
+
     private readonly DeclarationCoordinator _declarationCoordinator;
-    private readonly UploadDocumentCoordinator _uploadDocumentCoordinator;
     private readonly CommonCoordinator _commonCoordinator;
     private readonly StartPageCoordinator _startPageCoordinator;
     private readonly CaseReferenceCoordinator _caseReferenceCoordinator;
+    private readonly ScenarioContext _scenarioContext;
     public DeclarationSteps(DeclarationCoordinator demoCoordinator,
-        UploadDocumentCoordinator uploadDocumentCoordinator,
         CommonCoordinator commonCoordinator,
         StartPageCoordinator startPageCoordinator,
-        CaseReferenceCoordinator caseReferenceCoordinator)
+        CaseReferenceCoordinator caseReferenceCoordinator,
+        ScenarioContext scenarioContext)
     {
         _declarationCoordinator = demoCoordinator;
-        _uploadDocumentCoordinator = uploadDocumentCoordinator;
         _commonCoordinator = commonCoordinator;
         _startPageCoordinator = startPageCoordinator;
         _caseReferenceCoordinator = caseReferenceCoordinator;
+        _scenarioContext = scenarioContext;
     }
 
     [Given("I am on the declaration page")]
     public async Task GivenIAmOnTheDeclarationPage()
     {
+        _scenarioContext[UserTypeKey] = DeclarationPageUserType;
+
         await _commonCoordinator.VerifyThatDeclarationPageIsDisplayedAsync();
     }
 

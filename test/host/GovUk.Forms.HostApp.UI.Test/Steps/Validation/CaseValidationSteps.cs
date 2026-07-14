@@ -147,7 +147,11 @@ public sealed class CaseValidationSteps : ValidationStepsBase
     {
         Error error = dataTable.CreateInstance<Error>();
 
-        UploadErrorSummary expectedError = BuildCaseErrorSummary(error.Message, error.Hint, false);
+        string resolvedMessage = error.Message.Replace(
+            "{validCaseReference}",
+            ScenarioConstant.ValidCaseReference);
+
+        UploadErrorSummary expectedError = BuildCaseErrorSummary(resolvedMessage, error.Hint, false);
         await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
     }
 
@@ -155,7 +159,12 @@ public sealed class CaseValidationSteps : ValidationStepsBase
     public async Task ThenIShouldSeeTheFollowingCaseReferenceValidationErrors(DataTable dataTable)
     {
         Error error = dataTable.CreateInstance<Error>();
-        UploadErrorSummary expectedError = BuildCaseErrorSummary(error.Message, error.Hint);
+
+        string resolvedMessage = error.Message.Replace(
+            "{validCaseReference}",
+            ScenarioConstant.ValidCaseReference);
+
+        UploadErrorSummary expectedError = BuildCaseErrorSummary(resolvedMessage, error.Hint);
         await UploadErrorDetailsCoordinator.VerifyErrorSummaryIsDisplayedAsync(expectedError);
 
         ScenarioContext.Set(expectedError, ErrorSummaryKey);

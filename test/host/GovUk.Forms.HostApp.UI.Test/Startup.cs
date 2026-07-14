@@ -15,13 +15,14 @@ public static class Startup
     {
         IServiceCollection services = new ServiceCollection();
 
-        services.AddScoped(_ =>
+        services.AddScoped(provider =>
         {
             string testName = TestContext.CurrentContext.Test.Name;
+            string featureName = provider.GetRequiredService<FeatureContext>().FeatureInfo.Title;
             TestEnvironment environment = EnvironmentConfigFactory.CurrentEnvironment;
             string workDirectory = TestContext.CurrentContext.WorkDirectory;
 
-            return new TestArtifacts(testName, environment, workDirectory);
+            return new TestArtifacts(testName, featureName, environment, workDirectory);
         });
 
         services.AddScoped<IPlaywrightDriver, PlaywrightDriver>();

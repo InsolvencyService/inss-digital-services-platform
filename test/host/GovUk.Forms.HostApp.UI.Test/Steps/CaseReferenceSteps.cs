@@ -17,7 +17,6 @@ public class CaseReferenceSteps(
     private const string UserTypeKey = "UserType";
     private const string EnteredCaseReferenceKey = "EnteredCaseReference";
 
-    // ── Background / compound Given steps ──────────────────────────────────
 
     [Given(@"I am on the declaration page as a ""(.*)"" user")]
     public async Task GivenIAmOnTheDeclarationPageAsUser(string userType)
@@ -43,7 +42,13 @@ public class CaseReferenceSteps(
         await caseReferenceCoordinator.VerifyEmployerDetailsPageIsDisplayedAsync();
     }
 
-    // ── When steps ─────────────────────────────────────────────────────────
+    [Given("I have entered a valid case reference")]
+    public async Task GivenIHaveEnteredAValidCaseReference()
+    {
+        await GivenIAmOnTheCaseReferenceNumberPage();
+        scenarioContext[EnteredCaseReferenceKey] = ScenarioConstant.ValidCaseReference;
+        await caseReferenceCoordinator.EnterCaseReferenceNumberAsync(ScenarioConstant.ValidCaseReference);
+    }
 
     [When("I click Agree and continue")]
     public async Task WhenIClickAgreeAndContinue()
@@ -68,13 +73,26 @@ public class CaseReferenceSteps(
     [When("I enter a case reference number that has not been linked to an employer")]
     public async Task WhenIEnterACaseReferenceNotLinkedToAnEmployer()
     {
-        await caseReferenceCoordinator.EnterCaseReferenceNumberAsync(ScenarioConstant.InvalidCaseReference);
+        await caseReferenceCoordinator.EnterCaseReferenceNumberAsync(ScenarioConstant.UnlinkedCaseReference);
     }
 
-    [When("I click Continue")]
-    public async Task WhenIClickContinue()
+    [When("I proceed to the next page")]
+    public async Task WhenIProceedToTheNextPage()
     {
         await caseReferenceCoordinator.ClickContinueAsync();
+    }
+
+    [When("I navigate to the employer details page")]
+    public async Task WhenINavigateToTheEmployerDetailsPage()
+    {
+        await caseReferenceCoordinator.ClickContinueAsync();
+        await caseReferenceCoordinator.VerifyEmployerDetailsPageIsDisplayedAsync();
+    }
+
+    [When("I go to the previous page")]
+    public async Task WhenIGoToThePreviousPage()
+    {
+        await caseReferenceCoordinator.ClickBackAsync();
     }
 
     [When("I confirm that this is the correct employer name")]
@@ -112,7 +130,7 @@ public class CaseReferenceSteps(
     [Then(@"I should see the case reference error ""(.*)""")]
     public async Task ThenIShouldSeeTheCaseReferenceError(string errorMessage)
     {
-        await caseReferenceCoordinator.VerifyValidationErrorAsync(errorMessage);
+        await caseReferenceCoordinator.VerifyValidationErrorsAsync(errorMessage);
     }
 
     [Then("I will see the case reference number I entered")]
@@ -127,6 +145,22 @@ public class CaseReferenceSteps(
 
     [Then("I will see the name of the employer it relates to")]
     public async Task ThenIWillSeeTheNameOfTheEmployerItRelatesTo()
+    {
+        await caseReferenceCoordinator.VerifyEmployerNameIsDisplayedAsync();
+    }
+
+    [Then("I should see the case reference number")]
+    public async Task ThenIShouldSeeTheCaseReferenceNumber()
+    {
+        string expected = scenarioContext.TryGetValue(EnteredCaseReferenceKey, out string? stored)
+            ? stored!
+            : ScenarioConstant.ValidCaseReference;
+
+        await caseReferenceCoordinator.VerifyCaseReferenceInSummaryAsync(expected);
+    }
+
+    [Then("I should see the employer name")]
+    public async Task ThenIShouldSeeTheEmployerName()
     {
         await caseReferenceCoordinator.VerifyEmployerNameIsDisplayedAsync();
     }
