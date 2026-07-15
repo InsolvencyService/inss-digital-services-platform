@@ -1,5 +1,6 @@
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Infrastructure.Extensions;
 using Inss.GovUk.Forms.Fip.Application.Factories;
@@ -36,6 +37,15 @@ public class StartupConfiguration : IHostingStartup
             }
             
             services.AddSingleton<IStartPageResolver, StartPageResolver>();
+
+            services.AddComponents(context.Configuration);
+            services.AddFormEngine(context.Configuration);
+        });
+
+        builder.Configure(app =>
+        {
+            app.UseComponents();
+            app.UseFormEngine();
         });
     }
 }

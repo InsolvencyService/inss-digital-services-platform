@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
@@ -94,10 +95,12 @@ public class StartupConfiguration : IHostingStartup
             services.AddOpenTelemetry().UseAzureMonitor();
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             
+            services.AddComponents(context.Configuration);
         });
         
         builder.Configure(app =>
         {
+            app.UseComponents();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders =
