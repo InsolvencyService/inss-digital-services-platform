@@ -1,9 +1,10 @@
-﻿using System.Security.Cryptography;
-using GovUk.Forms.Application.Factories;
+﻿using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Options;
 using GovUk.Forms.Domain;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace GovUk.Forms.Components.Extensions;
 
@@ -15,12 +16,9 @@ public static class ApplicationBuilderExtensions
         {
             app.Use(async (context, next) =>
             {
-                string nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
+                IOptions<AnalyticsOptions> analyticsOptions = context.RequestServices.GetRequiredService<IOptions<AnalyticsOptions>>();
                 context.Response.Headers.XFrameOptions = "DENY";
-                context.Response.Headers.ContentSecurityPolicy = $"default-src 'self' https://app.rybbit.io 'nonce-{nonce}'";
-                //context.Response.Headers.ContentSecurityPolicy = 
-                //    "default-src 'self' https://app.rybbit.io 'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw=' " +
-                //    "'sha256-+MPr4O+XRBNAduB7gNJMvYtSAF5bNPiBYOUmvIx/CSA='";
+                context.Response.Headers.ContentSecurityPolicy = $"default-src 'self' https://app.rybbit.io {analyticsOptions.Value.SecurityHash}";
                 context.Response.Headers.XContentTypeOptions = "nosniff";
                 context.Response.Headers.XXSSProtection = "1; mode=block";
                 await next();
