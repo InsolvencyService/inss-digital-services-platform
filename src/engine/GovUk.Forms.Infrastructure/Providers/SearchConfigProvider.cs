@@ -20,7 +20,8 @@ public sealed class SearchConfigProvider : ISearchConfigProvider
 
     public SearchDefinition LoadConfig()
     {
-        string json = File.ReadAllText(_configFile);
+        string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _configFile);
+        string json = File.ReadAllText(configFilePath);
 
         SearchDefinition? definition = JsonSerializer.Deserialize<SearchDefinition>(json, _jsonOptions);
 
