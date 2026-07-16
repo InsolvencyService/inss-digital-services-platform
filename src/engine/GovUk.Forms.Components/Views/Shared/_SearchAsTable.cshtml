@@ -33,6 +33,7 @@
             {
                 string value = string.Empty;
                 
+                // TODO: Get all values for fields in row that match the list of column.Names
                 if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
                 {
                     value = column.GetFormattedValue(fieldValue);

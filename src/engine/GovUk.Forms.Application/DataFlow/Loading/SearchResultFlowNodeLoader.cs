@@ -70,14 +70,14 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
         return null;
     }
 
-    private void CheckAndLogConfigurationFiles(SearchResultModel searchResult)
+    private static void CheckAndLogConfigurationFiles(SearchResultModel searchResult)
     {
-        foreach (SearchResult result in searchResult.Results)
-        {
-            foreach (SearchDefinitionField column in searchResult.Definition.Fields.Where(column => !result.Fields.ContainsKey(column.Name)))
-            {
-                _logger.LogWarning("Unable to find column  Azure search field '{FieldName}'.", column.Name);
-            }
-        }
+        // foreach (SearchResult result in searchResult.Results)
+        // {
+        //     foreach (SearchDefinitionField column in searchResult.Definition.Fields.Where(column => !result.Fields.ContainsKey(column.Name)))
+        //     {
+        //         _logger.LogWarning("Unable to find column  Azure search field '{FieldName}'.", column.Name);
+        //     }
+        // }
     }
 }

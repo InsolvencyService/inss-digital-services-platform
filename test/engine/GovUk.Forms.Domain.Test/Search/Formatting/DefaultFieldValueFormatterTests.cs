@@ -10,7 +10,7 @@ public class DefaultFieldValueFormatterTests
     {
         DefaultFieldValueFormatter formatter = new();
 
-        string value = formatter.Format(null);
+        string value = formatter.Format([null]);
         
         Assert.Empty(value);
     }
@@ -20,7 +20,7 @@ public class DefaultFieldValueFormatterTests
     {
         DefaultFieldValueFormatter formatter = new();
 
-        string value = formatter.Format("Hello");
+        string value = formatter.Format(["Hello"]);
         
         Assert.Equal("Hello", value);
     }

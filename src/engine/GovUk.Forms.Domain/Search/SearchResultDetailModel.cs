@@ -16,12 +16,12 @@ public sealed class SearchResultDetailModel : PageModel
             
             foreach (SearchDefinitionField categoryField in Definition.Fields.Where(f => f.Category == category.Label).OrderBy(f => f.Order))
             {
-                KeyValuePair<string, string> field = Result.Fields.FirstOrDefault(f => f.Key == categoryField.Name);
+                KeyValuePair<string, string>[] fields = Result.Fields.Where(f => categoryField.Names.Contains(f.Key)).ToArray();
                 
                 categoryDetailList.Add(new CategorizedSearchResultDetail
                 {
                     Label = categoryField.Header, 
-                    Value = categoryField.GetFormattedValue(field.Value)
+                    Value = categoryField.GetFormattedValue(fields.Select(f => f.Value).ToArray())
                 });
             }
 

@@ -8,7 +8,7 @@ public sealed class SearchDefinitionField
 {
     private static readonly DefaultFieldValueFormatter _defaultFieldValueFormatter = new();
     
-    public required string Name { get; init; }
+    public required string[] Names { get; init; }
     
     public string? Css { get; init; }
 
@@ -22,10 +22,10 @@ public sealed class SearchDefinitionField
 
     public string? FormatterType { get; init; }
 
-    public string GetFormattedValue(string? value)
+    public string GetFormattedValue(string?[] values)
     {
         FieldValueFormatter formatter = CreateFormatter(FormatterType);
-        return formatter.Format(value);
+        return formatter.Format(values);
     }
 
     private static FieldValueFormatter CreateFormatter(string? formatterType)

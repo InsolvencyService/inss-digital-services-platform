@@ -2,5 +2,5 @@
 
 public abstract class FieldValueFormatter
 {
-    public abstract string Format(string? value);
+    public abstract string Format(string?[] values);
 }

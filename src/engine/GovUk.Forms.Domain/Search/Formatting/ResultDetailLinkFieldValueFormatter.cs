@@ -12,8 +12,13 @@ public sealed class ResultDetailLinkFieldValueFormatter : FieldValueFormatter
         _resultDetailPath = resultDetailPath;
     }
     
-    public override string Format(string? value)
+    public override string Format(string?[] values)
     {
-        return $"<a href='{_resultDetailPath}/?key={WebUtility.UrlEncode(value)}' class='govuk-link'>{value}</a>";
+        if (values.Length != 1)
+        {
+            throw new InvalidOperationException("Oops");
+        }
+        
+        return $"<a href='{_resultDetailPath}/?key={WebUtility.UrlEncode(values[0])}' class='govuk-link'>{values[0]}</a>";
     }
 }

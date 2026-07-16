@@ -10,7 +10,7 @@ public class ResultDetailLinkFieldValueFormatterTests
     {
         ResultDetailLinkFieldValueFormatter formatter = new("/form/section/path");
 
-        string value = formatter.Format("Hello");
+        string value = formatter.Format(["Hello"]);
         
         Assert.Equal($"<a href='/form/section/path/?key=Hello' class='govuk-link'>Hello</a>", value);
     }
@@ -20,7 +20,7 @@ public class ResultDetailLinkFieldValueFormatterTests
     {
         ResultDetailLinkFieldValueFormatter formatter = new("/form/section/path");
 
-        string value = formatter.Format("Hello World");
+        string value = formatter.Format(["Hello World"]);
         
         Assert.Equal($"<a href='/form/section/path/?key=Hello+World' class='govuk-link'>Hello World</a>", value);
     }

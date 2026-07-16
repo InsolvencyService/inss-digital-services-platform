@@ -3,87 +3,87 @@
   "DisplayAsTable": true,
   "Fields": [
     {
-      "Name": "Name",
+      "Name": ["Forenames", "Surname"], // Support name
       "Header": "Name",
       "Order": 1,
       "Css": "govuk-!-font-weight-bold"
     },
     {
-      "Name": "Company",
+      "Name": "RegisteredFirmName",
       "Header": "Company",
       "Order": 2,
       "Css": ""
     },
     {
-      "Name": "Location",
+      "Name": "RegisteredAddressLine4",
       "Header": "Town or city",
       "Order": 3,
       "Css": ""
     },
     {
-      "Name": "Postcode",
+      "Name": "RegisteredPostCode",
       "Header": "Postcode",
       "Order": 4,
       "Css": ""
     },
     {
-      "Name": "IPName",
+      "Name": "Forenames", // Support name
       "Header": "IP name",
       "Order": 1,
       "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "CompanyName",
+      "Name": "RegisteredFirmName", // Appears in results too
       "Header": "Company name",
       "Order": 2,
       "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "CompanyAddress",
+      "Name": "RegisteredAddressLine1 + RegisteredAddressLine2 + RegisteredAddressLine3 + etc",
       "Header": "Company address",
       "Order": 3,
       "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "Email",
+      "Name": "IpEmailAddress",
       "Header": "Email",
       "Order": 4,
       "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "Telephone",
+      "Name": "RegisteredPhone",
       "Header": "Telephone",
       "Order": 5,
       "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "IPNumber",
+      "Name": "IpNo",
       "Header": "IP number",
       "Order": 6,
       "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "BodyName",
+      "Name": "LicensingBody",
       "Header": "Name",
       "Order": 1,
       "Css": "",
       "Category": "Authorising body"
     },
     {
-      "Name": "BodyAddress",
+      "Name": "RegisteredAddressLine1 + RegisteredAddressLine2",
       "Header": "Address",
       "Order": 2,
       "Css": "",
       "Category": "Authorising body"
     },
     {
-      "Name": "BodyWebsite",
+      "Name": "BodyWebsite", // Missing
       "Header": "Website",
       "Order": 3,
       "Css": "",
@@ -91,7 +91,7 @@
       "FormatterType": "Inss.GovUk.Forms.Fip.Formatting.WebsiteSearchFieldValueFormatter,Inss.GovUk.Forms.Fip"
     },
     {
-      "Name": "BodyTelephone",
+      "Name": "BodyTelephone", // Missing
       "Header": "Telephone",
       "Order": 4,
       "Css": "",
