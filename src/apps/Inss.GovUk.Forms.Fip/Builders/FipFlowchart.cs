@@ -41,10 +41,6 @@ public sealed class FipFlowchart : DefineFlowchartBuilder
             .Next()
             .AddEndNode(searchDetailId, searchResultDetail.Path, searchTermId)
             .WithLoader<SearchResultDetailFlowNodeLoader>()
-            //.Next()
-            //.AddEndNode(summaryId, summary.Path)
-            //.WithLoader<ContactUsSummaryFlowNodeLoader>()
-            //.WithExecutor<SectionSummaryFlowNodeExecutor>()
             .BuildAndRegister();
     }
 }

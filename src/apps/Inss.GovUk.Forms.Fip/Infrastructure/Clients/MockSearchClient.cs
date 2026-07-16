@@ -213,7 +213,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("IpEmailAddress", "some0909240907@mail.com");
         fields.Add("IncludeOnInternet", "Yes");
         fields.Add("LicensingBody", "IPA");
-        fields.Add("BodyWebsite", "https://www.authorisingbodywebsite.com"); // Added for testing
+        fields.Add("BodyWebsite", "https://www.google.com"); // Added for testing
         fields.Add("RegisteredAddressLine1", "Bristol");
         fields.Add("RegisteredAddressLine2", "AddressLine2");
         searchResult = new() { Fields = fields };
