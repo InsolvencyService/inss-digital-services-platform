@@ -1,10 +1,20 @@
-﻿using Inss.GovUk.Forms.Fip.Formatting;
+﻿using GovUk.Forms.Domain.Search.Formatting;
 using Xunit;
 
-namespace Inss.GovUk.Forms.Fip.Test.Formatting;
+namespace GovUk.Forms.Domain.Test.Search.Formatting;
 
 public class WebsiteSearchFieldValueFormatterTests
 {
+    [Fact]
+    public void NoValues_Format_ReturnsEmptyString()
+    {
+        WebsiteSearchFieldValueFormatter formatter = new();
+
+        string result = formatter.Format([]);
+        
+        Assert.Empty(result);
+    }
+    
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -13,7 +23,7 @@ public class WebsiteSearchFieldValueFormatterTests
     {
         WebsiteSearchFieldValueFormatter formatter = new();
 
-        string result = formatter.Format(value);
+        string result = formatter.Format([value]);
         
         Assert.Empty(result);
     }
@@ -26,7 +36,7 @@ public class WebsiteSearchFieldValueFormatterTests
     {
         WebsiteSearchFieldValueFormatter formatter = new();
 
-        string result = formatter.Format(value);
+        string result = formatter.Format([value]);
         
         Assert.Contains(value!, result);
     }

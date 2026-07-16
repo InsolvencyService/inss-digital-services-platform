@@ -3,12 +3,12 @@ using Xunit;
 
 namespace GovUk.Forms.Domain.Test.Search.Formatting;
 
-public class DefaultFieldValueFormatterTests
+public class DefaultSearchFieldValueFormatterTests
 {
     [Fact]
     public void NullString_Format_ReturnsEmptyValue()
     {
-        DefaultFieldValueFormatter formatter = new();
+        DefaultSearchFieldValueFormatter formatter = new();
 
         string value = formatter.Format([null]);
         
@@ -18,7 +18,7 @@ public class DefaultFieldValueFormatterTests
     [Fact]
     public void NonNullOrEmptyString_Format_ReturnsValue()
     {
-        DefaultFieldValueFormatter formatter = new();
+        DefaultSearchFieldValueFormatter formatter = new();
 
         string value = formatter.Format(["Hello"]);
         

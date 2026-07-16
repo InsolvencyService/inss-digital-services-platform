@@ -1,6 +1,6 @@
 ﻿namespace GovUk.Forms.Domain.Search.Formatting;
 
-public sealed class DefaultFieldValueFormatter : FieldValueFormatter
+public sealed class DefaultSearchFieldValueFormatter : SearchFieldValueFormatter
 {
     public override string Format(string?[] values)
     {

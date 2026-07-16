@@ -1,64 +1,68 @@
 {
   "PageSize": 5,
   "DisplayAsTable": true,
-  "Fields": [
+  "Results": [
     {
-      "Name": "CaseNumber",
+      "Names": ["CaseNumber"],
       "Header": "Case Number",
       "Order": 1,
-      "Css": "govuk-!-font-weight-bold"
+      "Css": "govuk-!-font-weight-bold",
+      "ColumnType": "Key,Display"
     },
     {
-      "Name": "Title",
+      "Names": ["Title"],
       "Header": "Title",
       "Order": 2,
-      "Css": ""
+      "Css": "",
+      "ColumnType": "Display"
     },
     {
-      "Name": "FirstName",
+      "Names": ["FirstName"],
       "Header": "Forename",
       "Order": 3,
-      "Css": ""
+      "Css": "",
+      "ColumnType": "Display"
     },
     {
-      "Name": "FamilyName",
+      "Names": ["FamilyName"],
       "Header": "Surname",
       "Order": 4,
       "Css": "",
-      "FormatterType": "Demo.GovUk.Forms.ContactUs.Formatting.GoogleSearchFieldValueFormatter,Demo.GovUk.Forms.ContactUs"
+      "ColumnType": "Display",
+      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.WebsiteSearchFieldValueFormatter,GovUk.Forms.Domain"
     },
     {
-      "Name": "DateOfBirth",
+      "Names": ["DateOfBirth"],
       "Header": "Date Of Birth",
       "Order": 5,
+      "ColumnType": "Display",
       "CssClass": ""
-    },
+    }
+  ],
+  "Details": [
     {
-      "Name": "Phone",
+      "Names": ["Phone"],
       "Header": "Phone number",
       "Order": 1,
-      "CssClass": "",
       "Category": "Contact details"
     },
     {
-      "Name": "Email",
+      "Names": ["Email"],
       "Header": "Email",
       "Order": 2,
-      "CssClass": "",
-      "Category": "Contact details"
+      "Category": "Contact details",
+      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.EmailSearchFieldValueFormatter,GovUk.Forms.Domain"
     },
     {
-      "Name": "Line1",
+      "Names": ["Line1"],
       "Header": "Address line 1",
       "Order": 1,
-      "CssClass": "",
       "Category": "Address details"
     },
     {
-      "Name": "Postcode",
+      "Names": ["Postcode"],
       "Header": "Postcode",
       "Order": 2,
-      "CssClass": "",
       "Category": "Address details"
     }
   ],

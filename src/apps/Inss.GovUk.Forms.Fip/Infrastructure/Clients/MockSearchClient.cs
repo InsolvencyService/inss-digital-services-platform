@@ -10,7 +10,7 @@ public sealed class MockSearchClient : ISearchClient
     public Task<SearchResponse> SearchAsync(SearchRequest request)
     {
         SearchResult[] searchedResults = _searchResultList
-            .Where(r => r.Fields["Location"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) || 
+            .Where(r => r.Fields["RegisteredFirmName"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) || 
                         r.Fields["RegisteredAddressLine1"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) ||
                         r.Fields["RegisteredAddressLine2"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) ||
                         r.Fields["RegisteredAddressLine3"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) ||
@@ -27,7 +27,7 @@ public sealed class MockSearchClient : ISearchClient
 
     public Task<SearchDetailResponse?> SearchDetailAsync(SearchDetailRequest request)
     {
-        SearchResult? result = _searchResultList.FirstOrDefault(r => r.Fields["Name"] == request.Key);
+        SearchResult? result = _searchResultList.FirstOrDefault(r => r.Fields[request.KeyField] == request.KeyValue);
 
         return Task.FromResult(
             result is not null 
@@ -213,6 +213,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("IpEmailAddress", "some0909240907@mail.com");
         fields.Add("IncludeOnInternet", "Yes");
         fields.Add("LicensingBody", "IPA");
+        fields.Add("BodyWebsite", "https://www.authorisingbodywebsite.com"); // Added for testing
         fields.Add("RegisteredAddressLine1", "Bristol");
         fields.Add("RegisteredAddressLine2", "AddressLine2");
         searchResult = new() { Fields = fields };

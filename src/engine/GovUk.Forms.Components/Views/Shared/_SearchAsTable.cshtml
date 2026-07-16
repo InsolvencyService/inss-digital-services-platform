@@ -1,9 +1,8 @@
-﻿@using GovUk.Forms.Domain.Search.Formatting
-@model GovUk.Forms.Domain.Search.SearchResultModel
+﻿@model GovUk.Forms.Domain.Search.SearchResultModel
 
 @{
-    ResultDetailLinkFieldValueFormatter detailLinkFormatter = new(Model.ResultDetailPath);
-    string resultOverview = $"Showing {Model.StartPageNumber} to {Model.EndPageNumber} of {Model.TotalResults} results for <strong>{Model.SearchText}</strong>";
+    string resultOverview = $"Showing {Model.StartPageNumber} to {Model.EndPageNumber} of " +
+                            $"{Model.TotalResults} results for <strong>{Model.SearchText}</strong>";
 }
 
 <p class="govuk-body">@Html.Raw(resultOverview)</p>
@@ -14,7 +13,7 @@
     </caption>
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-        @foreach (var column in Model.Definition.Fields.Where(f => f.ResultView).OrderBy(x => x.Order))
+        @foreach (SearchResultDefinition column in Model.GetOrderedDisplayResults())
         {
             <th scope="col" class="govuk-table__header">
                 @column.Header
@@ -29,20 +28,14 @@
     {
         <tr class="govuk-table__row">
 
-            @foreach (var column in Model.Definition.Fields.Where(f => f.ResultView).OrderBy(x => x.Order))
+            @foreach (SearchResultDefinition column in Model.GetOrderedDisplayResults())
             {
-                string value = string.Empty;
+                string value = column.GetValueForNames(row.Fields);
                 
-                // TODO: Get all values for fields in row that match the list of column.Names
-                if (row.Fields.TryGetValue(column.Name, out string? fieldValue))
-                {
-                    value = column.GetFormattedValue(fieldValue);
-                }
-
-                if (Model.Definition.Fields.IndexOf(column) == 0)
+                if (Model.IsFirstDisplayableColumn(column))
                 {
                     <td class="govuk-table__cell">
-                        @Html.Raw(detailLinkFormatter.Format(value))
+                        @Html.Raw(Model.GetResultDetailLink(row, value))
                     </td>
                 }
                 else

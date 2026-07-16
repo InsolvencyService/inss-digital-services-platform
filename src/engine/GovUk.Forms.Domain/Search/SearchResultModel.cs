@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net;
+using GovUk.Forms.Domain.Exceptions;
 using GovUk.Forms.Domain.Primitives;
 
 namespace GovUk.Forms.Domain.Search;
@@ -47,5 +49,30 @@ public class SearchResultModel : PageModel
         Results = [];
         TotalPages = 0;
         CurrentPageNumber = 0;
+    }
+
+    public SearchResultDefinition[] GetOrderedDisplayResults()
+    {
+        return Definition.Results.Where(f => f.IsDisplayable).OrderBy(x => x.Order).ToArray();
+    }
+    
+    public bool IsFirstDisplayableColumn(SearchResultDefinition column)
+    {
+        return Definition.Results.OrderBy(r => r.Order).First(r => r.IsDisplayable) == column;
+    }
+    
+    public string GetResultDetailLink(SearchResult result, string displayValue)
+    {
+        SearchResultDefinition? identifierDefinition = Definition.Results.SingleOrDefault(r => r.IsIdentifier);
+
+        if (identifierDefinition is null || identifierDefinition.Names.Length == 0)
+        {
+            throw new ModelException("Unable to find an identifier for result detail links.");
+        }
+
+        string key = identifierDefinition.Names[0];
+        string value = result.Fields[key];
+        return $"<a href='{ResultDetailPath}/?key={WebUtility.UrlEncode(key)}" +
+               $"&value={WebUtility.UrlEncode(value)}' class='govuk-link'>{displayValue}</a>";
     }
 }
