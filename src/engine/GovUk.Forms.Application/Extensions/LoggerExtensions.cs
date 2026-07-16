@@ -28,4 +28,7 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 107, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key and/or value.")]
     public static partial void MissingSearchKeyAndOrValue(this ILogger logger);
+    
+    [LoggerMessage(EventId = 108, Level = LogLevel.Warning, Message = "Unable to find column Azure search field '{FieldName}'.")]
+    public static partial void SearchConfigAndResultMismatch(this ILogger logger, string fieldName);
 }

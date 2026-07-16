@@ -24,4 +24,14 @@ public class DefaultSearchFieldValueFormatterTests
         
         Assert.Equal("Hello", value);
     }
+    
+    [Fact]
+    public void ListOfValues_Format_ReturnsValue()
+    {
+        DefaultSearchFieldValueFormatter formatter = new();
+
+        string value = formatter.Format(["Hello", "World"]);
+        
+        Assert.Equal("Hello World", value);
+    }
 }

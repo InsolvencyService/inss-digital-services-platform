@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.Application.Providers;
+﻿using GovUk.Forms.Application.Extensions;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Domain.Search;
@@ -79,7 +80,7 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
 
                 if (definition is null)
                 {
-                    _logger.LogWarning("Unable to find column Azure search field '{FieldName}'.", column.Key);
+                    _logger.SearchConfigAndResultMismatch(column.Key);
                 }
             }
         }

@@ -21,8 +21,8 @@ public sealed class SearchResultDetailFlowNodeLoader : IFlowNodeLoader
         SearchResultModel searchResult = context.Section.Pages.GetFirstOf<SearchResultModel>();
         searchResultDetail.Definition = searchResult.Definition;
         
-        string key = context.GetQueryParam<string>("key") ?? throw new FlowchartException("No key query param found");
-        string value = context.GetQueryParam<string>("value") ?? throw new FlowchartException("No key query param found");
+        string key = context.GetQueryParam<string>("key") ?? throw new FlowchartException("No key query param found.");
+        string value = context.GetQueryParam<string>("value") ?? throw new FlowchartException("No key query param found.");
         SearchDetailRequest request = new() { KeyField = key, KeyValue = value };
 
         ISearchService searchService = _serviceProvider.GetRequiredKeyedService<ISearchService>(searchResult.ConfigKey);
