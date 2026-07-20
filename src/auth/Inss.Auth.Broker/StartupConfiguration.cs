@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Forms.Application.Providers;
+using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
@@ -68,6 +69,11 @@ public class StartupConfiguration : IHostingStartup
                 .AddOneLogin()
                 .AddRps()
                 .AddEntra();
+
+            if (context.HostingEnvironment.IsProduction())
+            {
+                services.AddAppDataProtection(context.Configuration);
+            }
             
             CosmosDbOptions cosmosDbOptions = new();
             context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
@@ -93,7 +99,6 @@ public class StartupConfiguration : IHostingStartup
             });
             services.AddOpenTelemetry().UseAzureMonitor();
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
-            
         });
         
         builder.Configure(app =>

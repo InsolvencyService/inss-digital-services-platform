@@ -12,6 +12,7 @@ using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
+using GovUk.Forms.Components.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 
 [assembly: HostingStartup(typeof(Inss.Auth.RpsProvider.StartupConfiguration))]
@@ -64,6 +65,8 @@ public class StartupConfiguration : IHostingStartup
             }
             else
             {
+                services.AddAppDataProtection(context.Configuration);
+                
                 CookieContainer cookieContainer = new();
                 services.AddScoped<CookieContainer>(_ => cookieContainer);
                 
