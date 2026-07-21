@@ -100,20 +100,5 @@ public class StartupConfiguration : IHostingStartup
             services.AddOpenTelemetry().UseAzureMonitor();
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
         });
-        
-        builder.Configure(app =>
-        {
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor |
-                    ForwardedHeaders.XForwardedHost |
-                    ForwardedHeaders.XForwardedProto
-            });
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
-        });
     }
 }

@@ -12,8 +12,11 @@ using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
+using Azure.Identity;
 using GovUk.Forms.Components.Extensions;
-using Microsoft.AspNetCore.HttpOverrides;
+using GovUk.Forms.Infrastructure.Options;
+using GovUk.Forms.Infrastructure.Serialization;
+using Microsoft.Azure.Cosmos;
 
 [assembly: HostingStartup(typeof(Inss.Auth.RpsProvider.StartupConfiguration))]
 
@@ -97,31 +100,33 @@ public class StartupConfiguration : IHostingStartup
                         loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds));
             }
 
-            services.AddSingleton<IUserAuthStoreProvider, TestUserAuthStoreProvider>();
+            CosmosDbOptions cosmosDbOptions = new();
+            context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
+            
+            services.AddSingleton<IUserAuthStoreProvider>(_ =>
+            {
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient client = new(cosmosDbOptions.ConnectionString, options);
+                    return new CosmosUserAuthStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
+                }
+
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient client = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
+                    return new CosmosUserAuthStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
+                }
+
+                return new TestUserAuthStoreProvider();
+            });
+            
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
             services.AddGovUkFrontend();
             services.AddControllersWithViews();
             services.AddOpenTelemetry().UseAzureMonitor();
-        });
-        
-        builder.Configure(app =>
-        {
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor |
-                    ForwardedHeaders.XForwardedHost |
-                    ForwardedHeaders.XForwardedProto
-            });
-            app.UseAuthentication();
-            app.UseGovUkFrontend();
-            app.UseHttpsRedirection();
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
         });
     }
 }

@@ -9,6 +9,7 @@ using GovUk.Forms.Infrastructure.Extensions;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,15 +75,14 @@ public class StartupConfiguration : IHostingStartup
         
         builder.Configure(app =>
         {
-            /*
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            */
-            
+                ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedHost |
+                    ForwardedHeaders.XForwardedProto
+            });
+
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.XFrameOptions = "DENY";

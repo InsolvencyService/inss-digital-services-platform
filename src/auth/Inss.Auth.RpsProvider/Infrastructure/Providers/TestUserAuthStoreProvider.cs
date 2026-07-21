@@ -8,9 +8,9 @@ public sealed class TestUserAuthStoreProvider : IUserAuthStoreProvider
 {
     private static readonly ConcurrentDictionary<string, UserAuth> _cache = new();
     
-    public Task StoreAsync(string code, UserAuth user)
+    public Task StoreAsync(UserAuth user)
     {
-        _cache[code] = user;
+        _cache[user.Id] = user;
         return Task.CompletedTask;
     }
 
