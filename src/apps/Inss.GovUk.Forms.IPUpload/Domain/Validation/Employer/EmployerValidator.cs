@@ -163,6 +163,20 @@ public abstract partial class EmployerValidator : BaseValidator
         } 
     }
 
+    protected static void ValidateNumberOfEmployees(ValidatorContext context, string noOfEmployees)
+    {
+        if (!string.IsNullOrWhiteSpace(noOfEmployees) && int.TryParse(noOfEmployees, out int count))
+        {
+            if (count < 0)
+            {
+                context.AddError(EmployeeAffectedValidationInfo.InvalidEmployeeCountLength(), noOfEmployees);
+            }
+            else if (count > 1_000_000_000)
+            {
+                context.AddError(EmployeeAffectedValidationInfo.InvalidEmployeeCountLength(), noOfEmployees);
+            }
+        }
+    }
     protected static void ValidateContinuityEmployerName(ValidatorContext context, string employerName)
     {
         if (employerName.Length > 60)

@@ -82,6 +82,7 @@ internal static class EmployerApiHelper
             },
             Employees = new RP14Employees
             {
+                NoOfEmployees = "1_000",
                 EmployeesClaimingContinuity = new RP14EmployeesEmployeesClaimingContinuity
                 {
                     EmployerName = "Springfield Energy",
