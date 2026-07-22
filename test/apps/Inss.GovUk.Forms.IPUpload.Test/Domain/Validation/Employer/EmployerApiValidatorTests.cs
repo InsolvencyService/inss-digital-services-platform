@@ -77,6 +77,39 @@ public class EmployerApiValidatorTests
     }
     
     [Theory]
+    [InlineData(null, "AB11223")]
+    [InlineData("123", null)]
+    public void InvalidPaye_ValidateAsync_ReturnsError(string? district, string? reference)
+    {
+        _model.PAYE.District = district;
+        _model.PAYE.Reference = reference;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, BusinessValidationInfo.InvalidPayeFormat());
+    }
+    
+    [Fact]
+    public void InvalidPayeDistrictLength_ValidateAsync_ReturnsError()
+    {
+        _model.PAYE.District = "1234";
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, BusinessValidationInfo.InvalidPayeDistrictLength());
+    }
+    
+    [Fact]
+    public void InvalidPayeReferenceLength_ValidateAsync_ReturnsError()
+    {
+        _model.PAYE.Reference = "AB112233";
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, BusinessValidationInfo.InvalidPayeReferenceLength());
+    }
+    
+    [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
@@ -590,6 +623,16 @@ public class EmployerApiValidatorTests
     public void ValidModelNoInsolvencyPractitioner_ValidateAsync_ReturnsNoErrors()
     {
         _model.InsolvencyPractitioner = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoPaye_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.PAYE = null;
         
         ValidatorContext context = _validator.Validate(_employerDetails);
 

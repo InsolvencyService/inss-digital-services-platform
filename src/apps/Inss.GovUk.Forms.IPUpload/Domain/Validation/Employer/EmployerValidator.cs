@@ -40,6 +40,35 @@ public abstract partial class EmployerValidator : BaseValidator
             context.AddError(BusinessValidationInfo.InvalidSICLength(), sicCode);
         } 
     }
+
+    protected static void ValidatePayeReference(ValidatorContext context, string? district, string? reference)
+    {
+        if (district is null && reference is null)
+        {
+            // Neither provided so ignore as its optional
+            return;
+        }
+
+        string value = $"{district} {reference}".Trim();
+        
+        if ((district is null && reference is not null) ||
+            (district is not null && reference is null))
+        {
+            context.AddError(BusinessValidationInfo.InvalidPayeFormat(), value);
+        }
+        else
+        {
+            if (district?.Length > 3)
+            {
+                context.AddError(BusinessValidationInfo.InvalidPayeDistrictLength(), value);
+            }
+            
+            if (reference?.Length > 7)
+            {
+                context.AddError(BusinessValidationInfo.InvalidPayeReferenceLength(), value);
+            }
+        }
+    }
     
     protected static void ValidateAddress(
         ValidatorContext context, 
