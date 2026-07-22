@@ -42,9 +42,10 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
         string reference = ReferenceNumbers.Generate();
 
-        await StoreMessageAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
+        await StoreMessageAsync(jsonMessages, reference, request.SessionId, request.Email, request.IsEmployeeUpload, cancellationToken);
 
-        await SubmitMessagesToDynamicsAsync(jsonMessages, reference, request.UserId, request.IsEmployeeUpload, cancellationToken);
+        await SubmitMessagesToDynamicsAsync(
+            jsonMessages, reference, request.Email, request.IsEmployeeUpload, cancellationToken);
         
         return new SubmitIPUploadResponse { Reference = reference };
     }
@@ -59,7 +60,8 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private async Task StoreMessageAsync(
         JsonMessage[] jsonMessages, 
         string reference, 
-        string userId, 
+        string sessionId, 
+        string email,
         bool isEmployeeUpload, 
         CancellationToken cancellationToken)
     {
@@ -72,7 +74,8 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
                 Json = jsonMessage.Json,
                 PayloadType = isEmployeeUpload ? nameof(PayloadTypes.Employee) : nameof(PayloadTypes.Employer),
                 SubmissionTimestamp = DateTimeOffset.UtcNow,
-                UserId = userId
+                SessionId = sessionId,
+                Email = email
             };
             
             await _dynamicsStoreProvider.StoreAsync(submission, cancellationToken);
@@ -82,7 +85,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private async Task SubmitMessagesToDynamicsAsync(
         JsonMessage[] jsonMessages, 
         string reference, 
-        string userId,
+        string email,
         bool isEmployeeSubmission, 
         CancellationToken cancellationToken)
     {
@@ -106,7 +109,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
             DynamicsSubmission[] submissions = await _dynamicsStoreProvider.GetByReferenceAsync(reference, cancellationToken);
             
             _logger.SendingGovNotifyEmail(reference);
-            await SendEmailAsync(reference, userId, submissionDate, isEmployeeSubmission, submissions);
+            await SendEmailAsync(reference, email, submissionDate, isEmployeeSubmission, submissions);
 
             _logger.UpdateSubmissionEmailReceipts();
             
@@ -152,14 +155,14 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
     private Task SendEmailAsync(
         string reference, 
-        string userId,
+        string email,
         DateTimeOffset submissionDate, 
         bool isEmployeeSubmission, 
         DynamicsSubmission[] submissions)
     {
         bool submissionFailed = submissions.Any(s => s.ErrorInfo is not null);
 
-        _notifyEmailService.SendExternalEmail(userId, reference, submissionDate, isEmployeeSubmission, submissions);
+        _notifyEmailService.SendExternalEmail(email, reference, submissionDate, isEmployeeSubmission, submissions);
 
         if (submissionFailed)
         {

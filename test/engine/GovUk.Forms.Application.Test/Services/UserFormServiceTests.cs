@@ -20,7 +20,8 @@ public class UserFormServiceTests
     private readonly ServiceCollection _services = [];
     private readonly FormModel _form;
     private UserFormService _userFormService;
-    private const string UserId = "UserId";
+    private const string SessionId = "UserId";
+    private const string Email = "UserId";
     
     public UserFormServiceTests()
     {
@@ -28,10 +29,10 @@ public class UserFormServiceTests
         SectionModel section = _form.Sections["Your Details"];
 
         _userSessionProvider = Substitute.For<IUserSessionProvider>();
-        _userSessionProvider.ResolveAsync().Returns(UserId);
+        _userSessionProvider.ResolveAsync().Returns((SessionId, Email));
 
         _formStorageProvider = Substitute.For<IFormStorageProvider>();
-        _formStorageProvider.GetAsync(_form.Path, UserId).Returns(_form);
+        _formStorageProvider.GetAsync(_form.Path, SessionId).Returns(_form);
 
         _sectionFlowchart = Substitute.For<IFlowchart>();
         _services.AddKeyedSingleton(section.Path, _sectionFlowchart);
@@ -45,7 +46,7 @@ public class UserFormServiceTests
     [Fact]
     public async Task FormNotExists_GetAsync_TransitionsStartPagesToFirstNode()
     {
-        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
+        _formStorageProvider.ExistsAsync(_form.Path, SessionId).Returns(false);
         BuildForService();
         FullNameModel fullName = _form.Sections["Your Details"].Pages.GetFirstOf<FullNameModel>();
         
@@ -57,52 +58,52 @@ public class UserFormServiceTests
     [Fact]
     public async Task FormNotExists_GetAsync_AssignsUserSessionIdToForm()
     {
-        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
+        _formStorageProvider.ExistsAsync(_form.Path, SessionId).Returns(false);
         BuildForService();
         
         await _userFormService.GetAsync(_form.Path);
         
-        Assert.Equal(UserId, _form.Id);
+        Assert.Equal(SessionId, _form.Id);
     }
     
     [Fact]
     public async Task FormHasNoId_SaveAsync_NeverCallsSaveFormProvider()
     {
         _form.Id = ContentId.Empty;
-        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
+        _formStorageProvider.ExistsAsync(_form.Path, SessionId).Returns(false);
         BuildForService();
         
         await _userFormService.SaveAsync(_form);
 
-        await _formStorageProvider.Received(0).SaveAsync(UserId, _form);
+        await _formStorageProvider.Received(0).SaveAsync(SessionId, _form);
     }
     
     [Fact]
     public async Task FormHasId_SaveAsync_CallsSavesFormWithProvider()
     {
-        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
+        _formStorageProvider.ExistsAsync(_form.Path, SessionId).Returns(false);
         BuildForService();
         
         await _userFormService.SaveAsync(_form);
 
-        await _formStorageProvider.Received(1).SaveAsync(UserId, _form);
+        await _formStorageProvider.Received(1).SaveAsync(SessionId, _form);
     }
     
     [Fact]
     public async Task ForForm_RemoveAsync_CallsRemoveFormWithProvider()
     {
-        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
+        _formStorageProvider.ExistsAsync(_form.Path, SessionId).Returns(false);
         BuildForService();
         
         await _userFormService.RemoveAsync(_form);
 
-        await _formStorageProvider.Received(1).RemoveAsync(UserId, _form);
+        await _formStorageProvider.Received(1).RemoveAsync(SessionId, _form);
     }
     
     [Fact]
     public async Task ForForm_RemoveAsync_ResetsFormId()
     {
-        _formStorageProvider.ExistsAsync(_form.Path, UserId).Returns(false);
+        _formStorageProvider.ExistsAsync(_form.Path, SessionId).Returns(false);
         BuildForService();
         
         await _userFormService.RemoveAsync(_form);
@@ -117,7 +118,7 @@ public class UserFormServiceTests
 
         await _userFormService.SubmitAsync(_form);
         
-        await _submitFormService.Received(1).SubmitAsync(Arg.Is<FormModel>(f => f.Path == _form.Path), UserId);
+        await _submitFormService.Received(1).SubmitAsync(Arg.Is<FormModel>(f => f.Path == _form.Path), SessionId);
     }
     
     private void BuildForService()

@@ -9,6 +9,7 @@ public static class TestFormModels
         return new FormModel
         {
             Path = "/form",
+            Email = "homer@simpsons.com",
             Sections = [TestSectionModels.CreateIPUploadSection()]
         };
     }

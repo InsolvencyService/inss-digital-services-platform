@@ -2,9 +2,11 @@
 
 public sealed class SubmitIPUploadRequest
 {
-    public string UserId { get; init; }
+    public required string SessionId { get; init; }
     
-    public bool IsEmployeeUpload { get; init; }
+    public required string Email { get; init; }
     
-    public string FileContents { get; init; }
+    public required bool IsEmployeeUpload { get; init; }
+    
+    public required string FileContents { get; init; }
 }

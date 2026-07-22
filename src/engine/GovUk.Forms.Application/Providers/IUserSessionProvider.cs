@@ -2,5 +2,5 @@ namespace GovUk.Forms.Application.Providers;
 
 public interface IUserSessionProvider
 {
-    Task<string> ResolveAsync();
+    Task<(string SessionId, string Email)> ResolveAsync();
 }
