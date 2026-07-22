@@ -6,6 +6,8 @@ namespace GovUk.Forms.Domain;
 
 public class FormModel : ContentModel
 {
+    public string Email { get; set; }
+
     public SectionModelList Sections { get; init; } = [];
 
     public bool CanSubmit => Sections.All(s => s.CompletedDate is not null);

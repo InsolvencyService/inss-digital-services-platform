@@ -15,7 +15,7 @@ public sealed class AnonymousUserSessionProvider : IUserSessionProvider
         _httpContextAccessor = httpContextAccessor;
     }
     
-    public Task<string> ResolveAsync()
+    public Task<(string SessionId, string Email)> ResolveAsync()
     {
         string? userSessionId = _httpContextAccessor.HttpContext!.Items[SessionItemId]?.ToString();
 
@@ -45,6 +45,6 @@ public sealed class AnonymousUserSessionProvider : IUserSessionProvider
             }
         }
         
-        return Task.FromResult(userSessionId);
+        return Task.FromResult((userSessionId, string.Empty));
     }
 }

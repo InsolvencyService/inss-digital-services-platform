@@ -16,13 +16,16 @@ public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
         _submitIPUploadSectionClient = submitIPUploadSectionClient;
     }
 
-    public async Task<string> SubmitAsync(SectionModel section, string userId)
+    public async Task<string> SubmitAsync(SectionModel section, string sessionId, string email)
     {
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
         XDocument document = FileHelper.GetXml(fileUpload.Contents);
         bool isEmployeeUpload = FileHelper.IsEmployeeDocument(document);
         
-        SubmitIPUploadRequest request = new() { UserId = userId, FileContents = fileUpload.Contents, IsEmployeeUpload = isEmployeeUpload };
+        SubmitIPUploadRequest request = new()
+        {
+            SessionId = sessionId, Email = email, FileContents = fileUpload.Contents, IsEmployeeUpload = isEmployeeUpload
+        };
         
         Result<SubmitIPUploadResponse> response = await _submitIPUploadSectionClient.SubmitAsync(request);
 
