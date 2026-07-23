@@ -18,6 +18,7 @@ public sealed class EmployerApiValidator : EmployerValidator
         ValidateCaseReference(context, _model.Header.CaseReference, employerDetails.CaseReference);
         ValidateBusinessName(context, _model.NameOfBusiness);
         ValidateNatureOfBusiness(context, _model.NatureOfBusiness);
+        ValidatePayeReference(context, _model.PAYE?.District, _model.PAYE?.Reference);
         ValidateCompanyNumber(context, _model.CompanyNumber);
         ValidateAddress(context, "Business", _model.Address);
         ValidateSICCode(context, _model.SICCode);

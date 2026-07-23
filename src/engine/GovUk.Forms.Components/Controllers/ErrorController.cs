@@ -31,7 +31,11 @@ public class ErrorController : Controller
     [Route("Error/{statusCode}")]
     public IActionResult HttpStatus(int statusCode)
     {
-        _logger.StatusCodeError(Request.Path, statusCode);
+        string path = Request.Headers.Referer.Count > 0 && !string.IsNullOrWhiteSpace(Request.Headers.Referer[0]) 
+            ? Request.Headers.Referer[0]! 
+            : Request.Path.Value ?? "Unknown path";
+        
+        _logger.StatusCodeError(path, statusCode);
 
         ViewBag.StatusCode = statusCode;
         
