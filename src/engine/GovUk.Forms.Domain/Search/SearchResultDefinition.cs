@@ -1,5 +1,6 @@
 ﻿// ReSharper disable UnusedAutoPropertyAccessor.Global - Json serialization
 
+using System.Linq;
 using GovUk.Forms.Domain.Search.Formatting;
 
 namespace GovUk.Forms.Domain.Search;
@@ -26,7 +27,7 @@ public sealed class SearchResultDefinition
     {
         List<string> values = [];
 
-        foreach (string name in Names)
+        foreach (string name in Names.Where(fields.ContainsKey))
         {
             if (fields.TryGetValue(name, out string? fieldValue))
             {
