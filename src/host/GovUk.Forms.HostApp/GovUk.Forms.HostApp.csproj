@@ -31,6 +31,8 @@
     <_ContentIncludedByDefault Remove="Forms\contact-us.json" />
     <_ContentIncludedByDefault Remove="Forms\fip.json" />
     <_ContentIncludedByDefault Remove="Forms\ip-upload.json" />
+    <_ContentIncludedByDefault Remove="App\Search\FindIP.json" />
+    <_ContentIncludedByDefault Remove="App\Search\FindPersonConfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controllers\FormController.Pages.cs">

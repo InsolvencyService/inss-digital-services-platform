@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain.Search;
 using GovUk.Forms.Infrastructure.Extensions;
@@ -10,7 +11,11 @@ public sealed class SearchConfigProvider : ISearchConfigProvider
 {
     private readonly string _configFile;
     private readonly ILogger<SearchConfigProvider> _logger;
-    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+    private static readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true, 
+        Converters = { new JsonStringEnumConverter() }
+    };
     
     public SearchConfigProvider(string configFile, ILogger<SearchConfigProvider> logger)
     {
@@ -20,14 +25,17 @@ public sealed class SearchConfigProvider : ISearchConfigProvider
 
     public SearchDefinition LoadConfig()
     {
-        string json = File.ReadAllText(_configFile);
+        string configFilePath = Path.IsPathRooted(_configFile)
+            ? _configFile
+            : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _configFile);
+        string json = File.ReadAllText(configFilePath);
 
         SearchDefinition? definition = JsonSerializer.Deserialize<SearchDefinition>(json, _jsonOptions);
 
         if (definition is null)
         {
             _logger.SearchConfigMissing(_configFile);
-            return new SearchDefinition(); // TODO: Throw and also check file?
+            return new SearchDefinition();
         }
 
         return definition;

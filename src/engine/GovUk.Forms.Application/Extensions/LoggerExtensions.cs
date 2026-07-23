@@ -26,6 +26,9 @@ public static partial class LoggerExtensions
     [LoggerMessage(EventId = 106, Level = LogLevel.Error, Message = "Azure Search request sent with invalid current page number: {CurrentPageNumber}")]
     public static partial void InvalidCurrentPageNumber(this ILogger logger, int currentPageNumber);
     
-    [LoggerMessage(EventId = 107, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key.")]
-    public static partial void MissingSearchKey(this ILogger logger);
+    [LoggerMessage(EventId = 107, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key and/or value.")]
+    public static partial void MissingSearchKeyAndOrValue(this ILogger logger);
+    
+    [LoggerMessage(EventId = 108, Level = LogLevel.Warning, Message = "Unable to find column Azure search field '{FieldName}'.")]
+    public static partial void SearchConfigAndResultMismatch(this ILogger logger, string fieldName);
 }

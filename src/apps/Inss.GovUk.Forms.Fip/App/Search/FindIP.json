@@ -1,100 +1,102 @@
 {
-  "PageSize": 5,
+  "PageSize": 10,
   "DisplayAsTable": true,
-  "Fields": [
+  "Results": [
     {
-      "Name": "Name",
-      "Header": "Name",
-      "Order": 1,
-      "Css": "govuk-!-font-weight-bold"
+      "Names": ["IpNo"],
+      "ColumnType": "Key,Hidden"
     },
     {
-      "Name": "Company",
+      "Names": ["Forenames", "Surname"],
+      "Header": "Name",
+      "Order": 1,
+      "Css": "govuk-!-font-weight-bold",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": ["RegisteredFirmName"],
       "Header": "Company",
       "Order": 2,
-      "Css": ""
+      "Css": "",
+      "ColumnType": "Display"
     },
     {
-      "Name": "Location",
+      "Names": ["RegisteredAddressLine4"],
       "Header": "Town or city",
       "Order": 3,
-      "Css": ""
+      "Css": "",
+      "ColumnType": "Display"
     },
     {
-      "Name": "Postcode",
+      "Names": ["RegisteredPostCode"],
       "Header": "Postcode",
       "Order": 4,
-      "Css": ""
-    },
+      "Css": "",
+      "ColumnType": "Display"
+    }
+  ],
+  "Details": [
     {
-      "Name": "IPName",
+      "Names": ["Forenames", "Surname"],
       "Header": "IP name",
       "Order": 1,
-      "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "CompanyName",
+      "Names": ["RegisteredFirmName"],
       "Header": "Company name",
       "Order": 2,
-      "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "CompanyAddress",
+      "Names": ["RegisteredAddressLine1", "RegisteredAddressLine2", "RegisteredAddressLine3"],
       "Header": "Company address",
       "Order": 3,
-      "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "Email",
+      "Names": ["IpEmailAddress"],
       "Header": "Email",
       "Order": 4,
-      "Css": "",
-      "Category": "Insolvency practitioner details"
+      "Category": "Insolvency practitioner details",
+      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.EmailSearchFieldValueFormatter,GovUk.Forms.Domain"
     },
     {
-      "Name": "Telephone",
+      "Names": ["RegisteredPhone"],
       "Header": "Telephone",
       "Order": 5,
-      "Css": "",
       "Category": "Insolvency practitioner details"
     },
     {
-      "Name": "IPNumber",
+      "Names": ["IpNo"],
       "Header": "IP number",
       "Order": 6,
-      "Css": "",
       "Category": "Insolvency practitioner details"
     },
+
     {
-      "Name": "BodyName",
+      "Names": ["LicensingBody"],
       "Header": "Name",
       "Order": 1,
-      "Css": "",
       "Category": "Authorising body"
     },
     {
-      "Name": "BodyAddress",
+      "Names": ["RegisteredAddressLine1", "RegisteredAddressLine2"],
       "Header": "Address",
       "Order": 2,
-      "Css": "",
       "Category": "Authorising body"
     },
     {
-      "Name": "BodyWebsite",
+      "Names": ["BodyWebsite"],
       "Header": "Website",
       "Order": 3,
-      "Css": "",
       "Category": "Authorising body",
-      "FormatterType": "Inss.GovUk.Forms.Fip.Formatting.WebsiteSearchFieldValueFormatter,Inss.GovUk.Forms.Fip"
+      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.WebsiteSearchFieldValueFormatter,GovUk.Forms.Domain"
     },
     {
-      "Name": "BodyTelephone",
+      "Names": ["BodyTelephone"],
       "Header": "Telephone",
       "Order": 4,
-      "Css": "",
       "Category": "Authorising body"
     }
   ],

@@ -7,7 +7,9 @@ public sealed class SearchDefinition
     
     public bool DisplayAsTable { get; init; }
 
-    public SearchDefinitionField[] Fields { get; init; } = [];
-
+    public SearchResultDefinition[] Results { get; init; } = [];
+    
+    public SearchDetailDefinition[] Details { get; init; } = [];
+    
     public SearchCategory[] Categories { get; init; } = [];
 }

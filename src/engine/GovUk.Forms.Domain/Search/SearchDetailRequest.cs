@@ -2,5 +2,7 @@
 
 public sealed class SearchDetailRequest
 {
-    public string Key { get; init; }
+    public required string KeyField { get; init; }
+    
+    public required string KeyValue { get; init; }
 }
