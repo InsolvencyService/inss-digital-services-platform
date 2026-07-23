@@ -168,13 +168,19 @@ public sealed class EmployerSpreadsheetValidator : EmployerValidator
 
     private static void ValidateEmployees(EmployerValidatorContext context, RP14Employees? employees)
     {
-        if (employees?.EmployeesClaimingContinuity is not null)
+        if (employees is not null)
         {
-            RP14EmployeesEmployeesClaimingContinuity employeeContinuity = employees.EmployeesClaimingContinuity;
-            ValidateContinuityEmployerName(context, employeeContinuity.EmployerName);
-            ValidateAddress(context, "Employment continuity", employeeContinuity.EmployerAddrLine1, employeeContinuity.EmployerAddrLine2,
-                employeeContinuity.EmployerAddrLine3, employeeContinuity.EmployerAddrTown, employeeContinuity.EmployerAddrCounty,
-                employeeContinuity.EmployerAddrPostcode, employeeContinuity.EmployerAddrCountry);
+            ValidateNumberOfEmployees(context, employees.NoOfEmployees);
+
+            if (employees.EmployeesClaimingContinuity is not null)
+            {
+                RP14EmployeesEmployeesClaimingContinuity employeeContinuity = employees.EmployeesClaimingContinuity;
+                ValidateContinuityEmployerName(context, employeeContinuity.EmployerName);
+                ValidateAddress(context, "Employment continuity", employeeContinuity.EmployerAddrLine1,
+                    employeeContinuity.EmployerAddrLine2,
+                    employeeContinuity.EmployerAddrLine3, employeeContinuity.EmployerAddrTown, employeeContinuity.EmployerAddrCounty,
+                    employeeContinuity.EmployerAddrPostcode, employeeContinuity.EmployerAddrCountry);
+            }
         }
     }
 

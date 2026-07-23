@@ -269,6 +269,18 @@ public class EmployerApiValidatorTests
         EmployerApiHelper.AssertError(context.Errors, AddressValidationInfo.InvalidAddressCountryLength("Associated company"));
     }
     
+    [Theory]
+    [InlineData("-1")]
+    [InlineData("1000000001")]
+    public void InvalidEmployeeAffected_ValidateAsync_ReturnsError(string noEmployees)
+    {
+        _model.Employees.NoOfEmployees = noEmployees;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, EmployeeAffectedValidationInfo.InvalidEmployeeCountLength());
+    }
+    
     [Fact]
     public void InvalidContinuityEmployerName_ValidateAsync_ReturnsError()
     {
