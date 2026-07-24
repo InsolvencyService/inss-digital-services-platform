@@ -95,7 +95,10 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         {
             await _backgroundDynamicsQueue.QueueAsync(async _ =>
             {
-                _logger.SubmittingDynamicsMessage(jsonMessage.CorrelationId, reference);
+                _logger.SubmittingDynamicsMessage(
+                    jsonMessage.CorrelationId, 
+                    reference, 
+                    isEmployeeSubmission ? nameof(PayloadTypes.Employee) : nameof(PayloadTypes.Employer));
                 SubmitResponse submitResponse = await SubmitMessageToDynamicsAsync(jsonMessage, cancellationToken);
 
                 _logger.UpdatingDynamicsResponseInStore(jsonMessage.CorrelationId, reference);

@@ -41,6 +41,8 @@ public class AuthorizationController : Controller
             return BadRequest("Missing one or more of the required parameters: clientId, redirectUri, codeChallenge");
         }
         
+        _logger.AuthorizeInfo(issuer, clientId, redirectUri, loginHint, codeChallenge, codeChallengeMethod);
+        
         AuthenticationProperties props = new()
         {
             RedirectUri = $"{issuer}/connect/callback?scheme={loginHint}",
@@ -66,11 +68,11 @@ public class AuthorizationController : Controller
         if (!result.Succeeded)
         {
             string[] cookieNames = HttpContext.Request.Cookies.Keys.ToArray();
-            _logger.LogError("Unable to handle the callback. Cookies are {Cookies}", string.Join(',', cookieNames));
+            _logger.ConnectCallbackFailed(string.Join(',', cookieNames));
             return Unauthorized();
         }
         
-        _logger.LogInformation("Callback success");
+        _logger.ConnectCallbackSucceeded();
         AuthenticationProperties? authProps = result.Properties;
         string? clientRedirectUri = authProps?.Items["client_redirect_uri"];
         string? clientState = authProps?.Items["client_state"];
@@ -83,7 +85,7 @@ public class AuthorizationController : Controller
             return BadRequest("Missing stored client redirect URI");
         }
 
-        _logger.LogInformation("Callback client redirect exists");
+        _logger.ConnectCallbackRedirectExists();
         
         AuthCode authCode = new()
         {
@@ -94,9 +96,8 @@ public class AuthorizationController : Controller
         };
         authCode.AddClaimsPrincipal(result.Principal);
         
-        _logger.LogInformation("Callback attempting to store auth code");
         await _authCodeStoreProvider.StoreAsync(authCode);
-        _logger.LogInformation("Callback stored auth code");
+        _logger.ConnectStoreAuthCodeInfo(authCode.Id);
         
         string finalRedirect = $"{clientRedirectUri}?code={authCode.Id}&state={clientState}";
         return Redirect(finalRedirect);
