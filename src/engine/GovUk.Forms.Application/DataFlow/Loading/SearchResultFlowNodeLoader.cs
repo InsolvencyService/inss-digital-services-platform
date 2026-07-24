@@ -96,9 +96,14 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
         string[] words = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         List<string> wildcardWords = new();
+
         foreach (string word in words)
         {
-            wildcardWords.Add($"{word}*");
+            string wildcardWord = word.EndsWith('*') 
+                ? word 
+                : string.Concat(word, "*");
+
+            wildcardWords.Add(wildcardWord);
         }
 
         return string.Join(" ", wildcardWords);
