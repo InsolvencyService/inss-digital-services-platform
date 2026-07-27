@@ -52,8 +52,8 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
         if (!string.IsNullOrWhiteSpace(searchText))
         {
             SearchRequest request = new() 
-            { 
-                SearchText = searchText, 
+            {
+                SearchText = AddingWildCard(searchText),
                 PageSize = searchResult.Definition.PageSize, 
                 CurrentPageNumber = searchResult.CurrentPageNumber
             };
@@ -84,5 +84,28 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
                 }
             }
         }
+    }
+
+    private static string AddingWildCard(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return searchText;
+        }
+
+        string[] words = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        List<string> wildcardWords = new();
+
+        foreach (string word in words)
+        {
+            string wildcardWord = word.EndsWith('*') 
+                ? word 
+                : string.Concat(word, "*");
+
+            wildcardWords.Add(wildcardWord);
+        }
+
+        return string.Join(" ", wildcardWords);
     }
 }
