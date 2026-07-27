@@ -33,7 +33,7 @@ public class SearchResultFlowNodeLoaderTests
         _section = _form.Sections["Find people"];
         _searchService = Substitute.For<ISearchService>();
         _searchService
-            .SearchAsync(Arg.Is<SearchRequest>(r => r.SearchText == "Springfield"))
+            .SearchAsync(Arg.Is<SearchRequest>(r => r.SearchText == "Springfield*"))
             .Returns(new SearchResponse { Results = [new SearchResult()] });
         _searchConfigProvider = Substitute.For<ISearchConfigProvider>();
         _searchConfigProvider.LoadConfig().Returns(new SearchDefinition());
