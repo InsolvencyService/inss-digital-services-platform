@@ -23,6 +23,16 @@ public static class FileHelper
         };
     }
     
+    public static bool IsApiSource(XDocument document)
+    {
+        return document.Root?.Name.NamespaceName.ToLower() switch
+        {
+            RP14ApiNamespace => true,
+            RP14AApiNamespace => true,
+            _ => false
+        };
+    }
+    
     public static object GetRedundancyPaymentObject(string contents)
     {
         XDocument document = GetXml(contents);

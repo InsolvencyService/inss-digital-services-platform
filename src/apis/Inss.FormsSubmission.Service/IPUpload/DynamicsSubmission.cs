@@ -16,6 +16,8 @@ public sealed class DynamicsSubmission
     
     public string PayloadType { get; init; }
     
+    public string Source { get; init; }
+    
     public string? StatusCode { get; set; }
     
     public ErrorInfo? ErrorInfo { get; set; }

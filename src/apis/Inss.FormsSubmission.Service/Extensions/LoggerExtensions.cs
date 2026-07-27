@@ -14,8 +14,8 @@ public static partial class LoggerExtensions
     [LoggerMessage(EventId = 503, Level = LogLevel.Error, Message = "Dynamics background task unexpectedly failed: {Error}.")]
     public static partial void DynamicsBackgroundTaskFailed(this ILogger logger, string error);
     
-    [LoggerMessage(EventId = 504, Level = LogLevel.Information, Message = "Submitting message {Id} and {Reference} of type {Type} to Dynamics.")]
-    public static partial void SubmittingDynamicsMessage(this ILogger logger, string id, string reference, string type);
+    [LoggerMessage(EventId = 504, Level = LogLevel.Information, Message = "Submitting {Source} message {Id} and {Reference} of type {Type} to Dynamics.")]
+    public static partial void SubmittingDynamicsMessage(this ILogger logger, string source, string id, string reference, string type);
     
     [LoggerMessage(EventId = 505, Level = LogLevel.Information, Message = "Updating the Dynamics response for {Id} and {Reference}.")]
     public static partial void UpdatingDynamicsResponseInStore(this ILogger logger, string id, string reference);

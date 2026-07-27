@@ -42,10 +42,11 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
         string reference = ReferenceNumbers.Generate();
 
-        await StoreMessageAsync(jsonMessages, reference, request.SessionId, request.Email, request.IsEmployeeUpload, cancellationToken);
+        await StoreMessageAsync(
+            jsonMessages, reference, request.SessionId, request.Email, request.IsEmployeeUpload, request.IsApiSource, cancellationToken);
 
         await SubmitMessagesToDynamicsAsync(
-            jsonMessages, reference, request.Email, request.IsEmployeeUpload, cancellationToken);
+            jsonMessages, reference, request.Email, request.IsEmployeeUpload, request.IsApiSource, cancellationToken);
         
         return new SubmitIPUploadResponse { Reference = reference };
     }
@@ -62,7 +63,8 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         string reference, 
         string sessionId, 
         string email,
-        bool isEmployeeUpload, 
+        bool isEmployeeUpload,
+        bool isApiSource,
         CancellationToken cancellationToken)
     {
         foreach (JsonMessage jsonMessage in jsonMessages)
@@ -73,6 +75,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
                 Reference = reference,
                 Json = jsonMessage.Json,
                 PayloadType = isEmployeeUpload ? nameof(PayloadTypes.Employee) : nameof(PayloadTypes.Employer),
+                Source = isApiSource ? nameof(SourceTypes.Api) : nameof(SourceTypes.Spreadsheet),
                 SubmissionTimestamp = DateTimeOffset.UtcNow,
                 SessionId = sessionId,
                 Email = email
@@ -87,6 +90,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         string reference, 
         string email,
         bool isEmployeeSubmission, 
+        bool isApiSource,
         CancellationToken cancellationToken)
     {
         DateTimeOffset submissionDate = TimeProvider.System.GetUtcNow();
@@ -97,6 +101,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
             {
                 _logger.SubmittingDynamicsMessage(
                     jsonMessage.CorrelationId, 
+                    isApiSource ? nameof(SourceTypes.Api) : nameof(SourceTypes.Spreadsheet),
                     reference, 
                     isEmployeeSubmission ? nameof(PayloadTypes.Employee) : nameof(PayloadTypes.Employer));
                 SubmitResponse submitResponse = await SubmitMessageToDynamicsAsync(jsonMessage, cancellationToken);

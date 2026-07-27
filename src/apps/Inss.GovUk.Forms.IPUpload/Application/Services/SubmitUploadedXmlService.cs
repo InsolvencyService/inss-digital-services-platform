@@ -21,10 +21,15 @@ public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
         XDocument document = FileHelper.GetXml(fileUpload.Contents);
         bool isEmployeeUpload = FileHelper.IsEmployeeDocument(document);
+        bool isApiSource = FileHelper.IsApiSource(document);
         
         SubmitIPUploadRequest request = new()
         {
-            SessionId = sessionId, Email = email, FileContents = fileUpload.Contents, IsEmployeeUpload = isEmployeeUpload
+            SessionId = sessionId, 
+            Email = email, 
+            FileContents = fileUpload.Contents,
+            IsEmployeeUpload = isEmployeeUpload, 
+            IsApiSource = isApiSource
         };
         
         Result<SubmitIPUploadResponse> response = await _submitIPUploadSectionClient.SubmitAsync(request);
