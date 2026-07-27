@@ -1,4 +1,5 @@
-﻿using GovUk.Forms.Application.Clients;
+﻿using System.Text.RegularExpressions;
+using GovUk.Forms.Application.Clients;
 using GovUk.Forms.Domain.Search;
 
 namespace Inss.GovUk.Forms.Fip.Infrastructure.Clients;
@@ -10,12 +11,13 @@ public sealed class MockSearchClient : ISearchClient
     public Task<SearchResponse> SearchAsync(SearchRequest request)
     {
         SearchResult[] searchedResults = _searchResultList
-            .Where(r => r.Fields["RegisteredFirmName"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) || 
-                        r.Fields["RegisteredAddressLine1"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) ||
-                        r.Fields["RegisteredAddressLine2"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) ||
-                        r.Fields["RegisteredAddressLine3"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) ||
-                        r.Fields["RegisteredAddressLine4"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase) ||
-                        r.Fields["RegisteredAddressLine5"].Contains(request.SearchText, StringComparison.OrdinalIgnoreCase))
+            .Where(r => Regex.IsMatch(r.Fields["RegisteredFirmName"], request.SearchText) ||
+                        Regex.IsMatch(r.Fields["RegisteredAddressLine1"], request.SearchText) ||
+                        Regex.IsMatch(r.Fields["RegisteredAddressLine2"], request.SearchText) ||
+                        Regex.IsMatch(r.Fields["RegisteredAddressLine3"], request.SearchText) ||
+                        Regex.IsMatch(r.Fields["RegisteredAddressLine4"], request.SearchText) ||
+                        Regex.IsMatch(r.Fields["RegisteredAddressLine5"], request.SearchText) ||
+                        Regex.IsMatch(r.Fields["RegisteredPostCode"], request.SearchText))
             .ToArray();
         
         return Task.FromResult(new SearchResponse
