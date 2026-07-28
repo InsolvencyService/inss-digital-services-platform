@@ -8,9 +8,9 @@
       "launchUrl": "",
       "applicationUrl": "https://localhost:5056",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Prod",
         "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=your-key-here",
-        "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;GovUk.Forms.HostApp;Inss.GovUk.Forms.Fip"
+        "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;GovUk.Forms.HostApp;Inss.GovUk.Forms.Eiir"
       }
     }
   }

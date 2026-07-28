@@ -5,7 +5,9 @@
   </Folder>
   <Folder Name="/src/apps/">
     <Project Path="src/apps/Demo.GovUk.Forms.ContactUs/Demo.GovUk.Forms.ContactUs.csproj" />
-    <Project Path="src/apps/Inss.GovUk.Forms.Eiir/Inss.GovUk.Forms.Eiir.csproj" />
+    <Project Path="src/apps/Inss.GovUk.Forms.Eiir/Inss.GovUk.Forms.Eiir.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="src/apps/Inss.GovUk.Forms.Fip/Inss.GovUk.Forms.Fip.csproj" />
     <Project Path="src\apps\Demo.GovUk.Forms.AboutYou\Demo.GovUk.Forms.AboutYou.csproj" />
     <Project Path="src\apps\Demo.GovUk.Forms.Bankruptcy\Demo.GovUk.Forms.Bankruptcy.csproj" />
