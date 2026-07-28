@@ -27,14 +27,14 @@ public class StartupConfiguration : IHostingStartup
 
             services.AddSearch("FIPSearch");
             
-            if (context.HostingEnvironment.IsDevelopment())
-            {
-                services.AddMockSearchInfrastructure<MockSearchClient>(context.Configuration, "FIPSearch");
-            }
-            else
-            {
+            //if (context.HostingEnvironment.IsDevelopment())
+            //{
+            //    services.AddMockSearchInfrastructure<MockSearchClient>(context.Configuration, "FIPSearch");
+            //}
+            //else
+            //{
                 services.AddSearchInfrastructure(context.Configuration, "FIPSearch");
-            }
+            //}
             
             services.AddSingleton<IStartPageResolver, StartPageResolver>();
 
