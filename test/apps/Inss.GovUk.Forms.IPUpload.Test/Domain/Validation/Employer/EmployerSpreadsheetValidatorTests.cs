@@ -564,6 +564,18 @@ public class EmployerSpreadsheetValidatorTests
     }
     
     [Fact]
+    public void ValidModelNoAnswerAssociatedCompanies_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.AssociatedCompanies.LegallyAssociatedCompanies = YesNoType.no;
+        _model.AssociatedCompanies.AssociatedCompany1 = null;
+        _model.AssociatedCompanies.AssociatedCompany2 = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
     public void ValidModelNoAssociatedCompaniesAssociatedCompany_ValidateAsync_ReturnsNoErrors()
     {
         _model.AssociatedCompanies.AssociatedCompany1 = null;
@@ -588,6 +600,18 @@ public class EmployerSpreadsheetValidatorTests
     public void ValidModelNoEmployeesClaimingContinuity_ValidateAsync_ReturnsNoErrors()
     {
         _model.Employees.EmployeesClaimingContinuity = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoAnswerEmployeesClaimingContinuity_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Employees.EmployeesClaimingContinuity.ClaimingContinuity = YesNoType.no;
+        _model.Employees.EmployeesClaimingContinuity.EmployerName = null;
+        _model.Employees.EmployeesClaimingContinuity.EmployerAddrLine1 = null;
         
         ValidatorContext context = _validator.Validate(_employerDetails);
 

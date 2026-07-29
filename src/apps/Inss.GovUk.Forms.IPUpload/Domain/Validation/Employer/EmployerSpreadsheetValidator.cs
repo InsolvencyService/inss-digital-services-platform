@@ -126,12 +126,12 @@ public sealed class EmployerSpreadsheetValidator : EmployerValidator
 
     private static void ValidateAssociatedCompanies(EmployerValidatorContext context, RP14AssociatedCompanies? associatedCompanies)
     {
-        if (associatedCompanies is not null)
+        if (associatedCompanies is not null && associatedCompanies.LegallyAssociatedCompanies == YesNoType.yes)
         {
             if (associatedCompanies.AssociatedCompany1 is not null)
             {
                 RP14AssociatedCompaniesAssociatedCompany1 associatedCompany1 = associatedCompanies.AssociatedCompany1;
-
+                
                 // Only check the associated company details if we have a name - the address line 1 is mandatory! 
                 if (!string.IsNullOrWhiteSpace(associatedCompany1.AssocCompany1Name))
                 {
@@ -175,6 +175,12 @@ public sealed class EmployerSpreadsheetValidator : EmployerValidator
             if (employees.EmployeesClaimingContinuity is not null)
             {
                 RP14EmployeesEmployeesClaimingContinuity employeeContinuity = employees.EmployeesClaimingContinuity;
+
+                if (employeeContinuity.ClaimingContinuity == YesNoType.no)
+                {
+                    return;
+                }
+                
                 ValidateContinuityEmployerName(context, employeeContinuity.EmployerName);
                 ValidateAddress(context, "Employment continuity", employeeContinuity.EmployerAddrLine1,
                     employeeContinuity.EmployerAddrLine2,

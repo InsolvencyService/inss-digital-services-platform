@@ -572,6 +572,17 @@ public class EmployerApiValidatorTests
     }
     
     [Fact]
+    public void ValidModelNoAnswerAssociatedCompanies_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.AssociatedCompanies.LegallyAssociatedCompanies = YesNoType.no;
+        _model.AssociatedCompanies.AssociatedCompany = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
     public void ValidModelNoAssociatedCompaniesAssociatedCompany_ValidateAsync_ReturnsNoErrors()
     {
         _model.AssociatedCompanies.AssociatedCompany = null;
@@ -595,6 +606,18 @@ public class EmployerApiValidatorTests
     public void ValidModelNoEmployeesClaimingContinuity_ValidateAsync_ReturnsNoErrors()
     {
         _model.Employees.EmployeesClaimingContinuity = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoAnswerEmployeesClaimingContinuity_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Employees.EmployeesClaimingContinuity.ClaimingContinuity = YesNoType.no;
+        _model.Employees.EmployeesClaimingContinuity.EmployerName = null;
+        _model.Employees.EmployeesClaimingContinuity.Address.Line[0] = null;
         
         ValidatorContext context = _validator.Validate(_employerDetails);
 

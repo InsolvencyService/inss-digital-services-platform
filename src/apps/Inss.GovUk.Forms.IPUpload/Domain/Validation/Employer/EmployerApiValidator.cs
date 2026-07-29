@@ -78,6 +78,11 @@ public sealed class EmployerApiValidator : EmployerValidator
 
     private static void ValidateAssociatedCompanies(EmployerValidatorContext context, RP14AssociatedCompanies? associatedCompanies)
     {
+        if (associatedCompanies?.LegallyAssociatedCompanies == YesNoType.no)
+        {
+            return;
+        }
+        
         foreach (RP14AssociatedCompaniesAssociatedCompany associatedCompany in associatedCompanies?.AssociatedCompany ?? [])
         {
             ValidateAssociatedCompanyName(context, associatedCompany.CompanyName);
@@ -96,6 +101,12 @@ public sealed class EmployerApiValidator : EmployerValidator
             if (employees.EmployeesClaimingContinuity is not null)
             {
                 RP14EmployeesEmployeesClaimingContinuity employeeContinuity = employees.EmployeesClaimingContinuity;
+                
+                if (employeeContinuity.ClaimingContinuity == YesNoType.no)
+                {
+                    return;
+                }
+                
                 ValidateContinuityEmployerName(context, employeeContinuity.EmployerName);
                 ValidateAddress(context, "Employment continuity", employeeContinuity.Address);
             }
