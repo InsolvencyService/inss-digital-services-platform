@@ -31,4 +31,11 @@ public sealed class UploadContentBlobClient : IUploadContentBlobClient
         BinaryData data = BinaryData.FromString(xml);
         await blobClient.UploadAsync(data, overwrite: true);
     }
+    
+    public async Task RemoveAsync(string sessionId)
+    {
+        BlobContainerClient containerClient = _client.GetBlobContainerClient(ContainerName);
+        BlobClient blobClient = containerClient.GetBlobClient($"{sessionId}.xml");
+        await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+    }
 }

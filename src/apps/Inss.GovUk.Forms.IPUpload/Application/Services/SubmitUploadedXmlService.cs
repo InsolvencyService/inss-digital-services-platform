@@ -3,7 +3,6 @@ using GovUk.Forms.Domain;
 using Inss.Common;
 using Inss.Common.IPUpload;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
-using Inss.GovUk.Forms.IPUpload.Domain;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.Services;
 
@@ -23,7 +22,7 @@ public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
     public async Task<string> SubmitAsync(SectionModel section, string sessionId, string email)
     {
         string xml = await _uploadContentBlobClient.GetAsync(sessionId);
-        XDocument document = FileHelper.GetXml(xml);
+        XDocument document = XDocument.Parse(xml);
         bool isEmployeeUpload = FileHelper.IsEmployeeDocument(document);
         bool isApiSource = FileHelper.IsApiSource(document);
         
@@ -31,7 +30,6 @@ public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
         {
             SessionId = sessionId, 
             Email = email, 
-            FileContents = xml,
             IsEmployeeUpload = isEmployeeUpload, 
             IsApiSource = isApiSource
         };

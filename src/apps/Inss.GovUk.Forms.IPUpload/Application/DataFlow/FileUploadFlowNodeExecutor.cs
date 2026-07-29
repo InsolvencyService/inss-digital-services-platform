@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.DataFlow.Executing;
 using GovUk.Forms.Domain.Primitives;
@@ -38,7 +39,8 @@ public sealed class FileUploadFlowNodeExecutor : IFlowNodeExecutor
             return context.CurrentNode.NextNodes[FileUploadErrorIndex];
         }
 
-        await _uploadContentBlobClient.SaveAsync(fileUpload.Contents, context.Form.Id);
+        XDocument xml = FileHelper.GetXml(fileUpload.Contents);
+        await _uploadContentBlobClient.SaveAsync(xml.ToString(), context.Form.Id);
 
         return context.CurrentNode.NextNodes[SummaryIndex];
     }

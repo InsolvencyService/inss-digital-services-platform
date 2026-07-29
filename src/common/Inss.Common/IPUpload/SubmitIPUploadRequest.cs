@@ -9,6 +9,4 @@ public sealed class SubmitIPUploadRequest
     public required bool IsEmployeeUpload { get; init; }
     
     public required bool IsApiSource { get; init; }
-    
-    public required string FileContents { get; init; }
 }

@@ -16,6 +16,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     private readonly IMapperFactory _mapperFactory;
     private readonly IDynamicsStoreProvider _dynamicsStoreProvider;
     private readonly IBackgroundDynamicsQueue _backgroundDynamicsQueue;
+    private readonly IUploadContentBlobClient _uploadContentBlobClient;
     private readonly IDynamicsClient _dynamicsClient;
     private readonly INotifyEmailService _notifyEmailService;
     private readonly ILogger<SubmitIPUploadHandler> _logger;
@@ -24,6 +25,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         IMapperFactory mapperFactory, 
         IDynamicsStoreProvider dynamicsStoreProvider, 
         IBackgroundDynamicsQueue backgroundDynamicsQueue,
+        IUploadContentBlobClient uploadContentBlobClient,
         IDynamicsClient dynamicsClient,
         INotifyEmailService notifyEmailService,
         ILogger<SubmitIPUploadHandler> logger)
@@ -31,6 +33,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         _mapperFactory = mapperFactory;
         _dynamicsStoreProvider = dynamicsStoreProvider;
         _backgroundDynamicsQueue = backgroundDynamicsQueue;
+        _uploadContentBlobClient = uploadContentBlobClient;
         _dynamicsClient = dynamicsClient;
         _notifyEmailService = notifyEmailService;
         _logger = logger;
@@ -38,7 +41,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
     
     public async Task<SubmitIPUploadResponse> HandleAsync(SubmitIPUploadRequest request, CancellationToken cancellationToken)
     {
-        JsonMessage[] jsonMessages = CreateJsonMessages(request.FileContents);
+        JsonMessage[] jsonMessages = await CreateJsonMessagesAsync(request.SessionId);
 
         string reference = ReferenceNumbers.Generate();
 
@@ -51,9 +54,10 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
         return new SubmitIPUploadResponse { Reference = reference };
     }
 
-    private JsonMessage[] CreateJsonMessages(string fileContents)
+    private async Task<JsonMessage[]> CreateJsonMessagesAsync(string sessionId)
     {
-        object model = FileHelper.GetRedundancyPaymentObject(fileContents);
+        string xml = await _uploadContentBlobClient.GetAsync(sessionId);
+        object model = FileHelper.GetRedundancyPaymentObject(xml);
         IMapper mapper = _mapperFactory.Create(model);
         return mapper.Map();
     }
@@ -84,7 +88,7 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
             await _dynamicsStoreProvider.StoreAsync(submission, cancellationToken);
         }
     }
-
+    
     private async Task SubmitMessagesToDynamicsAsync(
         JsonMessage[] jsonMessages, 
         string reference, 

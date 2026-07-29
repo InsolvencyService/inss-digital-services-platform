@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Xml.Linq;
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
@@ -76,7 +77,8 @@ public class FileUploadFlowNodeExecutorTests
 
         await _fileUploadFlowNodeExecutor.ExecuteAsync(context);
 
-        await _uploadContentBlobClient.Received(1).SaveAsync(fileUpload.Contents, form.Id);
+        XDocument document = XDocument.Parse(RP14AXmlNoErrors);
+        await _uploadContentBlobClient.Received(1).SaveAsync(document.ToString(), form.Id);
     }
 
     [Fact]

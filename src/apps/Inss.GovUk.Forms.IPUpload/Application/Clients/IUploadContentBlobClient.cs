@@ -4,4 +4,5 @@ public interface IUploadContentBlobClient
 {
     Task<string> GetAsync(string sessionId);
     Task SaveAsync(string xml, string sessionId);
+    Task RemoveAsync(string sessionId);
 }
