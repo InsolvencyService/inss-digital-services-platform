@@ -22,7 +22,6 @@ public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
 
     public async Task<string> SubmitAsync(SectionModel section, string sessionId, string email)
     {
-        XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
         string xml = await _uploadContentBlobClient.GetAsync(sessionId);
         XDocument document = FileHelper.GetXml(xml);
         bool isEmployeeUpload = FileHelper.IsEmployeeDocument(document);
@@ -32,7 +31,7 @@ public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
         {
             SessionId = sessionId, 
             Email = email, 
-            FileContents = fileUpload.Contents,
+            FileContents = xml,
             IsEmployeeUpload = isEmployeeUpload, 
             IsApiSource = isApiSource
         };
