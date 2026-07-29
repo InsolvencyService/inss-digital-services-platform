@@ -33,9 +33,9 @@ public static class FileHelper
         };
     }
     
-    public static object GetRedundancyPaymentObject(string contents)
+    public static object GetRedundancyPaymentObject(string contents, bool isXml = false)
     {
-        XDocument document = GetXml(contents);
+        XDocument document = isXml ? XDocument.Parse(contents) : GetXml(contents);
         return document.Root?.Name.NamespaceName.ToLower() switch
         {
             RP14ASpreadsheetNamespace => CreateModel<Employee.Spreadsheet.RP14A>(document),
