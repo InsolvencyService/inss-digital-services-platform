@@ -10,16 +10,21 @@ namespace Inss.GovUk.Forms.IPUpload.Application.Services;
 public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
 {
     private readonly ISubmitIPUploadSectionClient _submitIPUploadSectionClient;
+    private readonly IUploadContentBlobClient _uploadContentBlobClient;
 
-    public SubmitUploadedXmlService(ISubmitIPUploadSectionClient submitIPUploadSectionClient)
+    public SubmitUploadedXmlService(
+        ISubmitIPUploadSectionClient submitIPUploadSectionClient, 
+        IUploadContentBlobClient uploadContentBlobClient)
     {
         _submitIPUploadSectionClient = submitIPUploadSectionClient;
+        _uploadContentBlobClient = uploadContentBlobClient;
     }
 
     public async Task<string> SubmitAsync(SectionModel section, string sessionId, string email)
     {
         XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
-        XDocument document = FileHelper.GetXml(fileUpload.Contents);
+        string xml = await _uploadContentBlobClient.GetAsync(sessionId);
+        XDocument document = FileHelper.GetXml(xml);
         bool isEmployeeUpload = FileHelper.IsEmployeeDocument(document);
         bool isApiSource = FileHelper.IsApiSource(document);
         

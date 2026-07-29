@@ -2,6 +2,7 @@
 using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Domain;
 using GovUk.Forms.Domain.Primitives;
+using Inss.GovUk.Forms.IPUpload.Application.Clients;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
@@ -15,11 +16,13 @@ public class FileUploadFlowNodeExecutorTests
 {
     private readonly FileUploadFlowNodeExecutor _fileUploadFlowNodeExecutor;
     private readonly IValidationFactory _validationFactory;
+    private readonly IUploadContentBlobClient _uploadContentBlobClient;
     
     public FileUploadFlowNodeExecutorTests()
     {
         _validationFactory = Substitute.For<IValidationFactory>();
-        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor(_validationFactory);
+        _uploadContentBlobClient = Substitute.For<IUploadContentBlobClient>();
+        _fileUploadFlowNodeExecutor = new FileUploadFlowNodeExecutor(_validationFactory, _uploadContentBlobClient);
     }
     
     [Fact]
@@ -47,6 +50,33 @@ public class FileUploadFlowNodeExecutorTests
 
         Assert.NotNull(nextNodeId);
         Assert.Equal("NodeId3", nextNodeId);
+    }
+    
+    [Fact]
+    public async Task NoErrors_ExecuteAsync_SavesXml()
+    {
+        FormModel form = TestFormModels.CreateWithIPUploadSection();
+        SectionModel ipUploadSection = form.Sections["IP Upload"];
+        EmployerDetailsModel employerDetails = ipUploadSection.Pages.GetFirstOf<EmployerDetailsModel>();
+        XmlFileUploadModel ipUpload = ipUploadSection.Pages.GetFirstOf<XmlFileUploadModel>();
+        IBaseValidator validator = Substitute.For<IBaseValidator>();
+        validator.Validate(employerDetails).Returns(new EmployeeValidatorContext());
+        _validationFactory.Create(Arg.Any<object>()).Returns(validator);
+
+        XmlFileUploadModel fileUpload = new() { Contents = Convert.ToBase64String(Encoding.UTF8.GetBytes(RP14AXmlNoErrors)) };
+        FlowNode node = new() { Id = "NodeId1", PagePath = ipUpload.Path, NextNodes = ["NodeId2", "NodeId3"] };
+        FlowNodeContext context = new()
+        {
+            Nodes = [node],
+            CurrentNode = node,
+            Form = form,
+            Section = ipUploadSection,
+            CurrentPage = fileUpload
+        };
+
+        await _fileUploadFlowNodeExecutor.ExecuteAsync(context);
+
+        await _uploadContentBlobClient.Received(1).SaveAsync(fileUpload.Contents, form.Id);
     }
 
     [Fact]
