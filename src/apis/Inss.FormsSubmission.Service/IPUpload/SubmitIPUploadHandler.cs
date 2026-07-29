@@ -56,8 +56,9 @@ public sealed class SubmitIPUploadHandler : IHandler<SubmitIPUploadRequest, Subm
 
     private async Task<JsonMessage[]> CreateJsonMessagesAsync(string sessionId)
     {
+        const bool isXmlForm = true;
         string xml = await _uploadContentBlobClient.GetAsync(sessionId);
-        object model = FileHelper.GetRedundancyPaymentObject(xml);
+        object model = FileHelper.GetRedundancyPaymentObject(xml, isXmlForm);
         IMapper mapper = _mapperFactory.Create(model);
         return mapper.Map();
     }
