@@ -12,4 +12,6 @@ public sealed class SearchDefinition
     public SearchDetailDefinition[] Details { get; init; } = [];
     
     public SearchCategory[] Categories { get; init; } = [];
+
+    public AuthorisingBodyLookup[] AuthorisingBodies { get; init; } = [];
 }
