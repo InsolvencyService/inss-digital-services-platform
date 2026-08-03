@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\Inss.Platform.Component\Inss.Platform.Component.csproj" />
+    <ProjectReference Include="..\..\shared\Inss.Platform.Infrastructure\Inss.Platform.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

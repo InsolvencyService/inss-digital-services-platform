@@ -1,0 +1,18 @@
+﻿@model Inss.Platform.Domain.Page
+
+@{
+    string? buttonText = "Continue";
+}
+
+@using (Html.BeginForm(Model))
+{
+    @Html.AntiForgeryToken()
+
+    @foreach (Component component in Model.Components)
+    {
+        <p class="govuk-body">Hello word</p>
+        @await Html.PartialAsync(component.ViewName, component);
+    }
+    
+    <govuk-button type="submit">@buttonText</govuk-button>
+}

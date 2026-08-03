@@ -1,0 +1,55 @@
+﻿@inject IOptions<AnalyticsOptions> Analytics;
+@inject IOptions<HeaderOptions> HeaderOptions;
+
+@{
+    // ReSharper disable once Razor.LayoutNotResolved
+    Layout = "_GovUkPageTemplate";
+    string serviceLabel = HeaderOptions.Value.Service.Label;
+    ViewData["Title"] = serviceLabel; //TODO: !string.IsNullOrWhiteSpace(PagePropertiesProvider.PageTitle) ? $"{PagePropertiesProvider.PageTitle} - {serviceLabel}" : serviceLabel;
+    bool isFullPageLayout = false; // TODO: Fix
+}
+
+@* ReSharper disable once Razor.SectionNotResolved *@
+@section BodyStart {
+    
+}
+
+@* ReSharper disable once Razor.SectionNotResolved *@
+@section Header {
+    @if (Analytics.Value.IsEnabled)
+    {
+        <script src="@(Analytics.Value.Url)" data-site-id="@(Analytics.Value.SiteId)" defer>
+        </script>
+    }
+    @await Html.PartialAsync("_LayoutHeader")
+}
+
+<div class="govuk-width-container">
+    
+    @* ReSharper disable once Razor.SectionNotResolved *@
+    @section ContainerStart {
+        @await Html.PartialAsync("_BackButton")
+    }
+
+    @if (isFullPageLayout)
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @RenderBody()
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                @RenderBody()
+            </div>
+        </div>
+    }
+</div>
+
+@* ReSharper disable once Razor.SectionNotResolved *@
+@section Footer {
+    @await Html.PartialAsync("_LayoutFooter")
+}

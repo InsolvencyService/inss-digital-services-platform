@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/apps/">
+    <Project Path="src/apps/Inss.Platform.Fip/Inss.Platform.Fip.csproj" />
+  </Folder>
+  <Folder Name="/src/shared/">
+    <Project Path="src/shared/Inss.Platform.Application/Inss.Platform.Application.csproj" />
+    <Project Path="src/shared/Inss.Platform.Component/Inss.Platform.Component.csproj" />
+    <Project Path="src/shared/Inss.Platform.Domain/Inss.Platform.Domain.csproj" />
+    <Project Path="src/shared/Inss.Platform.Infrastructure/Inss.Platform.Infrastructure.csproj" />
+  </Folder>
+</Solution>

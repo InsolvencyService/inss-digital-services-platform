@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Inss.Platform.Application\Inss.Platform.Application.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+        <PackageReference Include="GovUk.Frontend.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Api" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="wwwroot\lib\css\" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Inss.Platform.Application\Inss.Platform.Application.csproj" />
+    </ItemGroup>
+</Project>
