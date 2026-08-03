@@ -2,6 +2,7 @@
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Primitives;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -46,6 +47,7 @@ public class PageController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Page page)
     {
+        IFormCollection form = Request.Form;
         /*
         ValidationResult[] validationResults = await _formService.ValidateAsync(postedContent);
 

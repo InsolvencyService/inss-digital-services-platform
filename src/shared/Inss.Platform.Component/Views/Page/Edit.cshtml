@@ -8,10 +8,9 @@
 {
     @Html.AntiForgeryToken()
 
-    @foreach (Component component in Model.Components)
+    @for (int index = 0; index < Model.Components.Count; index++)
     {
-        <p class="govuk-body">Hello word</p>
-        @await Html.PartialAsync(component.ViewName, component);
+        @await Html.RenderPageComponentAsync(Model.Components[index], $"Components[{index}]")
     }
     
     <govuk-button type="submit">@buttonText</govuk-button>
