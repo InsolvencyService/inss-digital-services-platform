@@ -68,40 +68,16 @@ public sealed class SearchEnrichmentService : ISearchService
     private const string Json = """
                                 [
                                   {
-                                    "AuthBodyCode": "ACCA",
-                                    "AuthBodyName": "Association of Chartered Certified Accountants",
-                                    "AuthBodyAddressLine1": "The Adelphi",
-                                    "AuthBodyAddressLine2": "1-11 John Adam Street",
-                                    "AuthBodyAddressLine3": "Adelphi Terrace",
-                                    "AuthBodyAddressLine4": "London",
-                                    "AuthBodyAddressLine5": "",
-                                    "AuthBodyPostcode": "WC2N 6AU",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
-                                  },
-                                  {
-                                    "AuthBodyCode": "CAI",
-                                    "AuthBodyName": "Chartered Accountants Ireland",
-                                    "AuthBodyAddressLine1": "Chartered Accountants House",
-                                    "AuthBodyAddressLine2": "47-49 Pearse Street",
-                                    "AuthBodyAddressLine3": "",
-                                    "AuthBodyAddressLine4": "Dublin 2",
-                                    "AuthBodyAddressLine5": "",
-                                    "AuthBodyPostcode": "D02 YN40",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
-                                  },
-                                  {
                                     "AuthBodyCode": "ICAEW",
                                     "AuthBodyName": "Institute of Chartered Accountants in England and Wales",
                                     "AuthBodyAddressLine1": "Chartered Accountants’ Hall",
-                                    "AuthBodyAddressLine2": "Moorgate Place",
+                                    "AuthBodyAddressLine2": "One Moorgate Place",
                                     "AuthBodyAddressLine3": "",
                                     "AuthBodyAddressLine4": "London",
                                     "AuthBodyAddressLine5": "",
                                     "AuthBodyPostcode": "EC2R 6EA",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
+                                    "Phone": "01908 248 250",
+                                    "Website": "https://www.icaew.com/"
                                   },
                                   {
                                     "AuthBodyCode": "ICAS",
@@ -112,8 +88,8 @@ public sealed class SearchEnrichmentService : ISearchService
                                     "AuthBodyAddressLine4": "Edinburgh",
                                     "AuthBodyAddressLine5": "",
                                     "AuthBodyPostcode": "EH12 5BH",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
+                                    "Phone": "0131 347 0100",
+                                    "Website": "https://www.icas.com/"
                                   },
                                   {
                                     "AuthBodyCode": "IPA",
@@ -124,56 +100,8 @@ public sealed class SearchEnrichmentService : ISearchService
                                     "AuthBodyAddressLine4": "London",
                                     "AuthBodyAddressLine5": "",
                                     "AuthBodyPostcode": "EC2M 1JH",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
-                                  },
-                                  {
-                                    "AuthBodyCode": "LSS",
-                                    "AuthBodyName": "The Law Society Scotland",
-                                    "AuthBodyAddressLine1": "Atria One",
-                                    "AuthBodyAddressLine2": "Morrison Street",
-                                    "AuthBodyAddressLine3": "",
-                                    "AuthBodyAddressLine4": "Edinburgh",
-                                    "AuthBodyAddressLine5": "",
-                                    "AuthBodyPostcode": "EH3 8EX",
-                                    "Phone": "1234567890",
-                                    "Website": ""
-                                  },
-                                  {
-                                    "AuthBodyCode": "SRA",
-                                    "AuthBodyName": "The Law Society",
-                                    "AuthBodyAddressLine1": "113 Chancery Lane",
-                                    "AuthBodyAddressLine2": "",
-                                    "AuthBodyAddressLine3": "",
-                                    "AuthBodyAddressLine4": "London",
-                                    "AuthBodyAddressLine5": "",
-                                    "AuthBodyPostcode": "WC2A 1PL",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
-                                  },
-                                  {
-                                    "AuthBodyCode": "SS",
-                                    "AuthBodyName": "Secretary of State",
-                                    "AuthBodyAddressLine1": "Department for Business, Energy and Industrial Strategy",
-                                    "AuthBodyAddressLine2": "1 Victoria Street",
-                                    "AuthBodyAddressLine3": "",
-                                    "AuthBodyAddressLine4": "London",
-                                    "AuthBodyAddressLine5": "",
-                                    "AuthBodyPostcode": "SW1H 0ET",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
-                                  },
-                                  {
-                                    "AuthBodyCode": "XCAN",
-                                    "AuthBodyName": "Chartered Accountants Regulatory Board",
-                                    "AuthBodyAddressLine1": "Chartered Accountants’ Hall",
-                                    "AuthBodyAddressLine2": "Moorgate Place",
-                                    "AuthBodyAddressLine3": "",
-                                    "AuthBodyAddressLine4": "London",
-                                    "AuthBodyAddressLine5": "",
-                                    "AuthBodyPostcode": "EC2R 6EA",
-                                    "Phone": "1234567890",
-                                    "Website": "https://www.somewebsite.com"
+                                    "Phone": "020 8152 4980",
+                                    "Website": "https://www.ipa.uk.com/"
                                   }
                                 ]
                                 """;
