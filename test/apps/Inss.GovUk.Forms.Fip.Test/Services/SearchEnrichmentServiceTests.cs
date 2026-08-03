@@ -41,7 +41,7 @@ public class SearchEnrichmentServiceTests
     {
         SearchDetailResponse expectedResponse = new()
         {
-            Result = new SearchResult { Fields = new Dictionary<string, string> { ["LicensingBody"] = "ACCA" } }
+            Result = new SearchResult { Fields = new Dictionary<string, string> { ["LicensingBody"] = "ICAEW" } }
         };
         SearchDetailRequest request = new() { KeyField = "IpNo", KeyValue = "12345678" };
         _searchClient.SearchDetailAsync(request).Returns(expectedResponse);
@@ -49,14 +49,14 @@ public class SearchEnrichmentServiceTests
         SearchDetailResponse? actualResponse = await _searchEnrichmentService.SearchDetailAsync(request);
         
         Assert.NotNull(actualResponse);
-        Assert.Equal("Association of Chartered Certified Accountants", actualResponse.Result.Fields["AuthBodyName"]);
-        Assert.Equal("The Adelphi", actualResponse.Result.Fields["AuthBodyAddressLine1"]);
-        Assert.Equal("1-11 John Adam Street", actualResponse.Result.Fields["AuthBodyAddressLine2"]);
-        Assert.Equal("Adelphi Terrace", actualResponse.Result.Fields["AuthBodyAddressLine3"]);
+        Assert.Equal("Institute of Chartered Accountants in England and Wales", actualResponse.Result.Fields["AuthBodyName"]);
+        Assert.Equal("Chartered Accountants’ Hall", actualResponse.Result.Fields["AuthBodyAddressLine1"]);
+        Assert.Equal("One Moorgate Place", actualResponse.Result.Fields["AuthBodyAddressLine2"]);
+        Assert.Equal(string.Empty, actualResponse.Result.Fields["AuthBodyAddressLine3"]);
         Assert.Equal("London", actualResponse.Result.Fields["AuthBodyAddressLine4"]);
         Assert.Equal(string.Empty, actualResponse.Result.Fields["AuthBodyAddressLine5"]);
-        Assert.Equal("WC2N 6AU", actualResponse.Result.Fields["AuthBodyPostcode"]);
-        Assert.Equal("1234567890", actualResponse.Result.Fields["Phone"]);
-        Assert.Equal("www.somewebsite.com", actualResponse.Result.Fields["Website"]);
+        Assert.Equal("EC2R 6EA", actualResponse.Result.Fields["AuthBodyPostcode"]);
+        Assert.Equal("01908 248 250", actualResponse.Result.Fields["Phone"]);
+        Assert.Equal("https://www.icaew.com/", actualResponse.Result.Fields["Website"]);
     }
 }
