@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
             // - IServiceProvider
             // and your decorated instance then creates the underlying search service
             services.AddKeyedTransient<ISearchService>(configKey, (provider, _) 
-                => (TSearchDecorator)Activator.CreateInstance(typeof(TSearchDecorator), configKey, provider)!);
+                => ActivatorUtilities.CreateInstance<TSearchDecorator>(provider, configKey, provider));
             
             return services;
         }

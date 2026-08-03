@@ -11,6 +11,9 @@ public sealed class SearchEnrichmentService : ISearchService
 {
     private readonly SearchService _searchService;
 
+    private static readonly List<AuthorisingBodyLookup> _authorisingBodyLookups
+        = JsonSerializer.Deserialize<List<AuthorisingBodyLookup>>(Json) ?? [];
+
     public SearchEnrichmentService(string configKey, IServiceProvider serviceProvider)
     {
         ISearchClient searchClient = serviceProvider.GetRequiredKeyedService<ISearchClient>(configKey);
@@ -44,25 +47,23 @@ public sealed class SearchEnrichmentService : ISearchService
         {
             return;
         }
-
-        List<AuthorisingBodyLookup> list = JsonSerializer.Deserialize<List<AuthorisingBodyLookup>>(Json) ?? [];
-
-        AuthorisingBodyLookup? authorisingBodyLookup = list.FirstOrDefault(abc => abc.AuthBodyCode == licensingBody);
+        
+        AuthorisingBodyLookup? authorisingBodyLookup = _authorisingBodyLookups.FirstOrDefault(abc => abc.AuthBodyCode == licensingBody);
 
         if (authorisingBodyLookup is null)
         {
             return;
         }
         
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyName), authorisingBodyLookup.AuthBodyName);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine1), authorisingBodyLookup.AuthBodyAddressLine1);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine2), authorisingBodyLookup.AuthBodyAddressLine2);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine3), authorisingBodyLookup.AuthBodyAddressLine3);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine4), authorisingBodyLookup.AuthBodyAddressLine4);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine5), authorisingBodyLookup.AuthBodyAddressLine5);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyPostcode), authorisingBodyLookup.AuthBodyPostcode);
-        result.Fields.Add(nameof(authorisingBodyLookup.Phone), authorisingBodyLookup.Phone);
-        result.Fields.Add(nameof(authorisingBodyLookup.Website), authorisingBodyLookup.Website);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyName), authorisingBodyLookup.AuthBodyName);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine1), authorisingBodyLookup.AuthBodyAddressLine1);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine2), authorisingBodyLookup.AuthBodyAddressLine2);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine3), authorisingBodyLookup.AuthBodyAddressLine3);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine4), authorisingBodyLookup.AuthBodyAddressLine4);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine5), authorisingBodyLookup.AuthBodyAddressLine5);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyPostcode), authorisingBodyLookup.AuthBodyPostcode);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.Phone), authorisingBodyLookup.Phone);
+        result.Fields.TryAdd(nameof(authorisingBodyLookup.Website), authorisingBodyLookup.Website);
     }
 
     private const string Json = """
