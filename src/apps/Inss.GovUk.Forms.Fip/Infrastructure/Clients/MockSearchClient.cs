@@ -52,7 +52,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "0105 531 1032");
         fields.Add("IpEmailAddress", "Wit.Russ@myspace.com");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "ACCA");
+        fields.Add("LicensingBody", "ICAEW");
         fields.Add("RegisteredAddressLine1", "1 Test Street");
         fields.Add("RegisteredAddressLine2", "");
         SearchResult searchResult = new() { Fields = fields };
@@ -70,7 +70,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "07855 983 540");
         fields.Add("IpEmailAddress", "");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "CAI");
+        fields.Add("LicensingBody", "IPA");
         fields.Add("RegisteredAddressLine1", "177 Queens Road");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -88,7 +88,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "");
         fields.Add("IpEmailAddress", "");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "XCAN");
+        fields.Add("LicensingBody", "ICAS");
         fields.Add("RegisteredAddressLine1", "697 Bashford Parkway");
         fields.Add("RegisteredAddressLine2", "Bultman");
         searchResult = new() { Fields = fields };
@@ -124,7 +124,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "");
         fields.Add("IpEmailAddress", "Stafani.Dennis@meetup.com");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "XCAN");
+        fields.Add("LicensingBody", "ICAS");
         fields.Add("RegisteredAddressLine1", "1 Test Street");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -142,7 +142,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "02921602908");
         fields.Add("IpEmailAddress", "shaun.walker@mbicoakley.co.uk");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "ACCA");
+        fields.Add("LicensingBody", "ICAEW");
         fields.Add("RegisteredAddressLine1", "42 Sipes Street");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -160,7 +160,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "");
         fields.Add("IpEmailAddress", "");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "ACCA");
+        fields.Add("LicensingBody", "ICAEW");
         fields.Add("RegisteredAddressLine1", "100 Carioca Park");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -251,7 +251,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "");
         fields.Add("IpEmailAddress", "");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "ACCA");
+        fields.Add("LicensingBody", "ICAEW");
         fields.Add("RegisteredAddressLine1", "IP firm location test");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -269,7 +269,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "");
         fields.Add("IpEmailAddress", "");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "XCAN");
+        fields.Add("LicensingBody", "ICAS");
         fields.Add("RegisteredAddressLine1", "100 Carioca Park");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -449,7 +449,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "");
         fields.Add("IpEmailAddress", "Hollie.Buckell@com.com");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "SS");
+        fields.Add("LicensingBody", "IPA");
         fields.Add("RegisteredAddressLine1", "IP firm location test");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -467,7 +467,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "0167 958 7201");
         fields.Add("IpEmailAddress", "Lorrie.Thumim@google.com.au");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "SRA");
+        fields.Add("LicensingBody", "IPA");
         fields.Add("RegisteredAddressLine1", "100 Carioca Park");
         fields.Add("RegisteredAddressLine2", "");
         searchResult = new() { Fields = fields };
@@ -503,7 +503,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "");
         fields.Add("IpEmailAddress", "Meghan.Dubble@cmu.edu");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "SS");
+        fields.Add("LicensingBody", "ICAS");
         fields.Add("RegisteredAddressLine1", "37 Withers Close");
         fields.Add("RegisteredAddressLine2", "Withers Enclave");
         searchResult = new() { Fields = fields };
@@ -521,7 +521,7 @@ public sealed class MockSearchClient : ISearchClient
         fields.Add("RegisteredPhone", "0111 234 7454");
         fields.Add("IpEmailAddress", "Dalston.Ferebee@jiathis.com");
         fields.Add("IncludeOnInternet", "Yes");
-        fields.Add("LicensingBody", "SRA");
+        fields.Add("LicensingBody", "IPA");
         fields.Add("RegisteredAddressLine1", "5 Declaration Pass");
         fields.Add("RegisteredAddressLine2", "Carioca");
         searchResult = new() { Fields = fields };

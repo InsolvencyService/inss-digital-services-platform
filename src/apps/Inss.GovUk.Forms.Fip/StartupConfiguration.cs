@@ -4,6 +4,7 @@ using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Infrastructure.Extensions;
 using Inss.GovUk.Forms.Fip.Application.Factories;
+using Inss.GovUk.Forms.Fip.Application.Services;
 using Inss.GovUk.Forms.Fip.Builders;
 using Inss.GovUk.Forms.Fip.Infrastructure.Clients;
 using Microsoft.AspNetCore.Hosting;
@@ -24,8 +25,8 @@ public class StartupConfiguration : IHostingStartup
             
             FipFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
-
-            services.AddSearch("FIPSearch");
+            
+            services.AddSearch<SearchEnrichmentService>("FIPSearch");
             
             if (context.HostingEnvironment.IsDevelopment())
             {

@@ -37,64 +37,70 @@
   ],
   "Details": [
     {
-      "Names": ["Forenames", "Surname"],
+      "Names": [ "Forenames", "Surname" ],
       "Header": "IP name",
       "Order": 1,
       "Category": "Insolvency practitioner details"
     },
     {
-      "Names": ["RegisteredFirmName"],
+      "Names": [ "RegisteredFirmName" ],
       "Header": "Company name",
       "Order": 2,
       "Category": "Insolvency practitioner details"
     },
     {
-      "Names": ["RegisteredAddressLine1", "RegisteredAddressLine2", "RegisteredAddressLine3"],
+      "Names": [ "RegisteredAddressLine1", "RegisteredAddressLine2", "RegisteredAddressLine3" ],
       "Header": "Company address",
       "Order": 3,
       "Category": "Insolvency practitioner details"
     },
     {
-      "Names": ["IpEmailAddress"],
+      "Names": [ "IpEmailAddress" ],
       "Header": "Email",
       "Order": 4,
       "Category": "Insolvency practitioner details",
       "FormatterType": "GovUk.Forms.Domain.Search.Formatting.EmailSearchFieldValueFormatter,GovUk.Forms.Domain"
     },
     {
-      "Names": ["RegisteredPhone"],
+      "Names": [ "RegisteredPhone" ],
       "Header": "Telephone",
       "Order": 5,
       "Category": "Insolvency practitioner details"
     },
     {
-      "Names": ["IpNo"],
+      "Names": [ "IpNo" ],
       "Header": "IP number",
       "Order": 6,
       "Category": "Insolvency practitioner details"
     },
+    {
+      "Names": [ "LicensingBody" ],
+      "Header": "Licensing Body",
+      "Order": 7,
+      "Category": "Insolvency practitioner details"
+    },
 
     {
-      "Names": ["LicensingBody"],
+      "Names": [ "AuthBodyName" ],
       "Header": "Name",
       "Order": 1,
       "Category": "Authorising body"
     },
     {
-      "Names": ["RegisteredAddressLine1", "RegisteredAddressLine2"],
+      "Names": [ "AuthBodyAddressLine1", "AuthBodyAddressLine2", "AuthBodyAddressLine3", "AuthBodyAddressLine4", "AuthBodyAddressLine5", "AuthBodyPostcode" ],
       "Header": "Address",
       "Order": 2,
       "Category": "Authorising body"
     },
     {
-      "Names": ["BodyWebsite"],
+      "Names": [ "Website" ],
       "Header": "Website",
       "Order": 3,
       "Category": "Authorising body",
       "FormatterType": "GovUk.Forms.Domain.Search.Formatting.WebsiteSearchFieldValueFormatter,GovUk.Forms.Domain"
     },
     {
-      "Names": ["BodyTelephone"],
+      "Names": [ "Phone" ],
       "Header": "Telephone",
       "Order": 4,
       "Category": "Authorising body"
@@ -111,5 +117,3 @@
     }
   ]
 }
-
-
