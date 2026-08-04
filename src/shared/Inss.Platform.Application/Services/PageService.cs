@@ -1,4 +1,5 @@
-﻿using Inss.Platform.Application.Factories;
+﻿using System.ComponentModel.DataAnnotations;
+using Inss.Platform.Application.Factories;
 using Inss.Platform.Application.Loaders;
 using Inss.Platform.Application.Navigators;
 using Inss.Platform.Application.Providers;
@@ -52,19 +53,42 @@ public sealed class PageService : IPageService
         return page;
     }
 
-    public async ValueTask ValidateAsync(Page page)
+    public async ValueTask<Page?> ValidateAsync(Page page)
     {
-        // TODO: Hook into the ValidationResult
+        App app = await _appProvider.GetAsync("Test");
+        Page currentPage = app.Pages.Get(page.Path);
+
+        foreach (Component currentComponent in currentPage.Components)
+        {
+            Component component = page.Components.Get(currentComponent.Id);
+            component.CopyTo(currentComponent);
+        }
+
+        List<PageValidationError> pageValidationErrorList = [];
         
-        foreach (Component component in page.Components)
+        foreach (Component component in currentPage.Components)
         {
             IEnumerable<IComponentValidator> validators = _serviceProvider.GetKeyedServices<IComponentValidator>(component.Id.Value);
             
             foreach (IComponentValidator validator in validators)
             {
-                await validator.ValidateAsync(component);
+                ValidationResult[] componentValidations = await validator.ValidateAsync(component);
+                
+                pageValidationErrorList.AddRange(componentValidations.Select(vr => new PageValidationError
+                {
+                    Properties = vr.MemberNames.ToArray(),
+                    Message = vr.ErrorMessage ?? string.Empty
+                }));
             }
         }
+
+        if (pageValidationErrorList.Count > 0)
+        {
+            currentPage.PageValidationInfo = new PageValidationInfo { Errors = pageValidationErrorList.ToArray() };
+            return currentPage;
+        }
+
+        return null;
     }
     
     public async ValueTask<PagePath?> SaveAsync(Page page)

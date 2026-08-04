@@ -11,4 +11,10 @@ public sealed class SingleLineText : Component, IValueComponent
     public Content? Hint { get; init; }
     
     public string? Value { get; set; }
+    
+    public override void CopyTo(Component targetComponent)
+    {
+        SingleLineText singleLineText = targetComponent.As<SingleLineText>();
+        singleLineText.Value = Value;
+    }
 }

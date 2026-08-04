@@ -1,8 +1,8 @@
-﻿using Inss.Platform.Application.Services;
+﻿using System.ComponentModel.DataAnnotations;
+using Inss.Platform.Application.Services;
 using Inss.Platform.Domain;
-using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Primitives;
-using Microsoft.AspNetCore.Http;
+using Inss.Platform.Domain.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
@@ -21,22 +21,23 @@ public class PageController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit()
     {
-        /*
-        
-        ContentPath requestPath = new(Request.Path);
-        (ContentModel? Content, ContentPath? RedirectTo, PageValidationError[]? ValidationErrors) result = 
-            await _formService.LoadAsync(requestPath, queryParams);
-
-        if (result.ValidationErrors?.Length > 0)
+        // TODO: Handle the validate error PRG call
+        if (TempData["ErrorModel"] is string pageErrorJson)
         {
-            foreach (PageValidationError error in result.ValidationErrors)
+            Page errorPage = AppSerialization.DeserializePage(pageErrorJson);
+
+            if (errorPage.PageValidationInfo is not null)
             {
-                ModelState.AddModelError(error.Properties[0], error.Message);
+                foreach (var error in errorPage.PageValidationInfo.Errors)
+                {
+                    ModelState.AddModelError(error.Properties[0], error.Message);
+                }
+
+                TempData.Clear();
+                return View(errorPage);
             }
         }
         
-        return result.RedirectTo is not null ? Redirect(result.RedirectTo) : View(result.Content);
-        */
         Dictionary<string, string?> queryParams = GetQueryParams();
         PagePath requestPath = new(Request.Path);
         Page page = await _pageService.LoadAsync(requestPath, queryParams);
@@ -47,19 +48,22 @@ public class PageController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Page page)
     {
-        IFormCollection form = Request.Form;
-        /*
-        ValidationResult[] validationResults = await _formService.ValidateAsync(postedContent);
+        // Hydrate the actual page and components
+        // Copy the values to it
+        // Validate it
+        // If invalid, add the page errors to page and set as temp data
+        // If valid, save and determine next page
+        
+        Page? validatedPage = await _pageService.ValidateAsync(page);
 
-        if (validationResults.Length > 0)
+        if (validatedPage is not null)
         {
-            return Redirect(postedContent.Path);
+            TempData["ErrorModel"] = AppSerialization.SerializePage(validatedPage);
+            return Redirect(validatedPage.Path);
         }
 
-        ContentPath redirectTo = await _formService.SaveAsync(postedContent);
-        return Redirect(redirectTo);
-        */
-        return await Task.FromResult(Redirect("/"));
+        PagePath? redirectTo = await _pageService.SaveAsync(page);
+        return Redirect(redirectTo ?? "/");
     }
     
     private Dictionary<string, string?> GetQueryParams()

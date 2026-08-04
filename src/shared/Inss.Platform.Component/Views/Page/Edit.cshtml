@@ -1,17 +1,24 @@
 ﻿@model Inss.Platform.Domain.Page
 
 @{
-    string? buttonText = "Continue";
+    string buttonText = Model.SubmitButton.Value;
 }
 
 @using (Html.BeginForm(Model))
 {
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Title)
+    @Html.HiddenFor(m => m.Path.Value)
 
     @for (int index = 0; index < Model.Components.Count; index++)
     {
+        @Html.Hidden($"Components[{index}].Id.Value", Model.Components[index].Id.Value)
+        @Html.Hidden($"Components[{index}].TypeName", Model.Components[index].TypeName)
         @await Html.RenderPageComponentAsync(Model.Components[index], $"Components[{index}]")
     }
-    
-    <govuk-button type="submit">@buttonText</govuk-button>
+
+    if (!string.IsNullOrWhiteSpace(buttonText))
+    {
+        <govuk-button type="submit">@buttonText</govuk-button>
+    }
 }

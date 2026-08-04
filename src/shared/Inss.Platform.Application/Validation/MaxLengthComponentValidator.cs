@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Extensions;
 
@@ -11,8 +12,9 @@ public sealed class MaxLengthComponentValidator : IComponentValidator
     {
         _maxLength = maxLength;
     }
-    public ValueTask ValidateAsync(Component component)
+    public ValueTask<ValidationResult[]> ValidateAsync(Component component)
     {
+        // TODO: Implement with custom error messages etc
         IValueComponent valueComponent = component.As<IValueComponent>();
 
         if (valueComponent.Value?.Length > _maxLength)
@@ -20,6 +22,6 @@ public sealed class MaxLengthComponentValidator : IComponentValidator
             Console.WriteLine("Value too long!");
         }
 
-        return ValueTask.CompletedTask;
+        return ValueTask.FromResult<ValidationResult[]>([]);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Inss.Platform.Application.Factories;
+﻿using System.ComponentModel.DataAnnotations;
+using Inss.Platform.Application.Factories;
 using Inss.Platform.Application.Loaders;
 using Inss.Platform.Application.Navigators;
 using Inss.Platform.Application.Validation;
@@ -16,7 +17,7 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
 {
     public override PagePath[] Build(IServiceCollection services)
     {
-        Page page1 = new Page
+        Page page1 = new()
         {
             Title = "Page 1",
             Path = "/firstname",
@@ -38,11 +39,12 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
                 }
             ],
             NextPages = ["/lastname"],
-            NextPageNavigator = typeof(DefaultNextPageNavigator)
+            NextPageNavigator = typeof(DefaultNextPageNavigator),
+            SubmitButton = new Content("Continue")
         };
         page1.Register(services);
 
-        Page page2 = new Page
+        Page page2 = new()
         {
             Title = "Page 1",
             Path = "/lastname",
@@ -59,7 +61,8 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
                     ]
                 }
             ],
-            PreviousPage = page1.Path
+            PreviousPage = page1.Path,
+            SubmitButton = new Content("Continue")
         };
         page2.Register(services);
 
@@ -71,10 +74,10 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
 
 public sealed class MyCustomValidator : IComponentValidator
 {
-    public ValueTask ValidateAsync(Inss.Platform.Domain.Components.Component component)
+    public ValueTask<ValidationResult[]> ValidateAsync(Inss.Platform.Domain.Components.Component component)
     {
         Console.WriteLine("Custom validator");
-        return ValueTask.CompletedTask;
+        return ValueTask.FromResult<ValidationResult[]>([]);
     }
 }
 

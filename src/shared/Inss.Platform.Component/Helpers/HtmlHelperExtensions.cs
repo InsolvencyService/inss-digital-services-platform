@@ -6,9 +6,12 @@ namespace Inss.Platform.Component.Helpers;
 
 public static class HtmlHelperExtensions
 {
-    public static Task<IHtmlContent> RenderPageComponentAsync<T>(this IHtmlHelper<T> helper, Domain.Components.Component model, string prefix)
+    public static Task<IHtmlContent> RenderPageComponentAsync<T>(
+        this IHtmlHelper<T> helper, 
+        Domain.Components.Component component, 
+        string prefix)
     {
         ViewDataDictionary viewData = new(helper.ViewData) { TemplateInfo = { HtmlFieldPrefix = prefix } };
-        return helper.PartialAsync(model.ViewName, model, viewData);
+        return helper.PartialAsync(component.ViewName, component, viewData);
     }
 }

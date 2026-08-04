@@ -29,6 +29,16 @@ public static class AppSerialization
         return JsonSerializer.Deserialize<App>(json, _options)!;
     }
     
+    public static string SerializePage(Page page)
+    {
+        return JsonSerializer.Serialize(page, _options);
+    }
+    
+    public static Page DeserializePage(string json)
+    {
+        return JsonSerializer.Deserialize<Page>(json, _options)!;
+    }
+    
     private static JsonSerializerOptions CreateOptions(params Assembly[] assemblies)
     {
         List<Type> componentTypes = [];
