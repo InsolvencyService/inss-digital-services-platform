@@ -14,6 +14,7 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Views\Login\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Start\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,6 +24,10 @@
     <ItemGroup>
       <ProjectReference Include="..\..\common\Inss.Common\Inss.Common.csproj" />
       <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Start\Index.cshtml" />
     </ItemGroup>
     
 </Project>

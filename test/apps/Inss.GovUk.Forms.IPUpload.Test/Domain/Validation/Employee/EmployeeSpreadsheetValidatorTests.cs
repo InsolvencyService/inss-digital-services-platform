@@ -370,4 +370,48 @@ public class EmployeeSpreadsheetValidatorTests
 
         Assert.NotNull(context.Errors);
     }
+    
+    [Fact]
+    public void ValidModelNoHoliday_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.Holiday = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.NotNull(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoHolidayNotPaid_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.Holiday.HolidayNotPaid = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.NotNull(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoPayDetails_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.PayDetails = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.NotNull(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoArrearsOfPay_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.PayDetails.ArrearsOfPay = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.NotNull(context.Errors);
+    }
 }

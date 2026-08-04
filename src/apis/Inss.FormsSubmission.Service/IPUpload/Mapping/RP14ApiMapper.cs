@@ -62,17 +62,22 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
 
-    private static Insolvency MapInsolvency(RP14InsolvencyDetails insolvencyDetails)
+    private static Insolvency MapInsolvency(RP14InsolvencyDetails? insolvencyDetails)
     {
         return new Insolvency
         {
-            InsolvencyDate = insolvencyDetails.InsolvencyDateSpecified ? insolvencyDetails.InsolvencyDate : null,
-            InsolvencyType = insolvencyDetails.InsolvencyType
+            InsolvencyDate = insolvencyDetails?.InsolvencyDateSpecified == true ? insolvencyDetails.InsolvencyDate : null,
+            InsolvencyType = insolvencyDetails?.InsolvencyType
         };
     }
 
-    private static Paye MapPaye(PayeType paye)
+    private static Paye? MapPaye(PayeType? paye)
     {
+        if (paye is null)
+        {
+            return null;
+        }
+        
         return new Paye
         {
             District = paye.District,
@@ -80,8 +85,13 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
 
-    private static Employees MapEmployees(RP14Employees employees)
+    private static Employees? MapEmployees(RP14Employees? employees)
     {
+        if (employees is null)
+        {
+            return null;
+        }
+        
         return new Employees
         {
             NumberOfEmployees = int.TryParse(employees.NoOfEmployees, out int noEmployees) ? noEmployees : null,
@@ -92,8 +102,13 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
 
-    private static PayRecordsContact MapPayRecordsContact(RP14PayRecordsContact recordsContact)
+    private static PayRecordsContact? MapPayRecordsContact(RP14PayRecordsContact? recordsContact)
     {
+        if (recordsContact is null)
+        {
+            return null;
+        }
+        
         return new PayRecordsContact
         {
             Name = recordsContact.Name,
@@ -103,8 +118,13 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
 
-    private static InsolvencyPractitioner MapInsolvencyPractitioner(RP14InsolvencyPractitioner insolvencyPractitioner)
+    private static InsolvencyPractitioner? MapInsolvencyPractitioner(RP14InsolvencyPractitioner? insolvencyPractitioner)
     {
+        if (insolvencyPractitioner is null)
+        {
+            return null;
+        }
+        
         return new InsolvencyPractitioner
         {
             IpRegistrationNumber = insolvencyPractitioner.RegistrationNumber,
@@ -117,8 +137,13 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
     
-    private static Transfer MapTransferDetails(RP14TransferDetails transferDetails)
+    private static Transfer? MapTransferDetails(RP14TransferDetails? transferDetails)
     {
+        if (transferDetails is null)
+        {
+            return null;
+        }
+        
         return new Transfer
         {
             Type = transferDetails.TransferTypeSpecified ? MapTransferType(transferDetails.TransferType) : null!,
@@ -132,9 +157,9 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
     
-    private static List<Director> MapDirectors(RP14Directors directors)
+    private static List<Director> MapDirectors(RP14Directors? directors)
     {
-        if (directors.Director is null || directors.Director.Length == 0)
+        if (directors?.Director is null || directors.Director.Length == 0)
         {
             return [];
         }
@@ -185,8 +210,13 @@ public sealed class RP14ApiMapper : IMapper
             .ToList();
     }
 
-    private static PreviousEmployer MapPreviousEmployer(RP14Employees employees)
+    private static PreviousEmployer? MapPreviousEmployer(RP14Employees? employees)
     {
+        if (employees is null)
+        {
+            return null;
+        }
+        
         RP14EmployeesEmployeesClaimingContinuity? employeesClaimingContinuity = employees.EmployeesClaimingContinuity;
         
         return new PreviousEmployer
@@ -199,8 +229,8 @@ public sealed class RP14ApiMapper : IMapper
             ShouldClaimsBeAccepted = employeesClaimingContinuity is not null && 
                                      employeesClaimingContinuity.ShouldClaimsBeAcceptedSpecified 
                 ? MapYesNo(employeesClaimingContinuity.ShouldClaimsBeAccepted) : null,
-            Strikes = employees.StrikesSpecified ? MapYesNo(employees.Strikes) : null,
-            EntitledToCarryOverHoliday = employees.CarryOverHolidayEntitlementSpecified 
+            Strikes = employees?.StrikesSpecified == true ? MapYesNo(employees.Strikes) : null,
+            EntitledToCarryOverHoliday = employees?.CarryOverHolidayEntitlementSpecified == true 
                 ? MapYesNo(employees.CarryOverHolidayEntitlement) : null
         };
     }

@@ -32,9 +32,9 @@ public sealed class UserFormService : IUserFormService
     public async Task<FormModel> GetAsync(ContentPath path)
     {
         ContentPath formPath = path.GetRoot();
-        string userSessionId = await _userSessionProvider.ResolveAsync();
-        await AddIfNotExistsAsync(formPath, userSessionId);
-        return await _formStorageProvider.GetAsync(formPath, userSessionId);
+        (string SessionId, string Email) userSession = await _userSessionProvider.ResolveAsync();
+        await AddIfNotExistsAsync(formPath, userSession.SessionId, userSession.Email);
+        return await _formStorageProvider.GetAsync(formPath, userSession.SessionId);
     }
 
     public async Task SaveAsync(FormModel form)
@@ -42,32 +42,33 @@ public sealed class UserFormService : IUserFormService
         // Only save the form if the Id exists
         if (form.Id != ContentId.Empty)
         {
-            string userSessionId = await _userSessionProvider.ResolveAsync();
-            await _formStorageProvider.SaveAsync(userSessionId, form);
+            (string SessionId, string Email) userSession = await _userSessionProvider.ResolveAsync();
+            await _formStorageProvider.SaveAsync(userSession.SessionId, form);
         }
     }
 
     public async Task SubmitAsync(FormModel form)
     {
         FormModel submittableForm = form.GetSubmittable();
-        string userSessionId = await _userSessionProvider.ResolveAsync();
-        await _submitFormService.SubmitAsync(submittableForm, userSessionId);
+        (string SessionId, string Email) userSession = await _userSessionProvider.ResolveAsync();
+        await _submitFormService.SubmitAsync(submittableForm, userSession.SessionId);
     }
 
     public async Task RemoveAsync(FormModel form)
     {
         // Reset the form Id to empty as the form service auto saves and once this from has been removed
-        string userSessionId = await _userSessionProvider.ResolveAsync();
-        await _formStorageProvider.RemoveAsync(userSessionId, form);
+        (string SessionId, string Email) userSession = await _userSessionProvider.ResolveAsync();
+        await _formStorageProvider.RemoveAsync(userSession.SessionId, form);
         form.Id = ContentId.Empty;
     }
 
-    private async Task AddIfNotExistsAsync(ContentPath formPath, string userSessionId)
+    private async Task AddIfNotExistsAsync(ContentPath formPath, string userSessionId, string email)
     {
         if (!await _formStorageProvider.ExistsAsync(formPath, userSessionId))
         {
             FormModel form = _formFactory.Create();
             form.Id = userSessionId;
+            form.Email = email;
             
             foreach (SectionModel section in form.Sections)
             {

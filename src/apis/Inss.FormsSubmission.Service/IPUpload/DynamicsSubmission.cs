@@ -10,9 +10,13 @@ public sealed class DynamicsSubmission
     
     public string Json { get; init; }
     
-    public string UserId { get; init; } 
+    public string SessionId { get; init; } 
+    
+    public string Email { get; init; }
     
     public string PayloadType { get; init; }
+    
+    public string Source { get; init; }
     
     public string? StatusCode { get; set; }
     

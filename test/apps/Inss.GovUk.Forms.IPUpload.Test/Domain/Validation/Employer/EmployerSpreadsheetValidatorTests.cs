@@ -78,6 +78,39 @@ public class EmployerSpreadsheetValidatorTests
     }
     
     [Theory]
+    [InlineData(null, "AB11223")]
+    [InlineData("123", null)]
+    public void InvalidPaye_ValidateAsync_ReturnsError(string? district, string? reference)
+    {
+        _model.PAYE.District = district;
+        _model.PAYE.Reference = reference;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, BusinessValidationInfo.InvalidPayeFormat());
+    }
+    
+    [Fact]
+    public void InvalidPayeDistrictLength_ValidateAsync_ReturnsError()
+    {
+        _model.PAYE.District = "1234";
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, BusinessValidationInfo.InvalidPayeDistrictLength());
+    }
+    
+    [Fact]
+    public void InvalidPayeReferenceLength_ValidateAsync_ReturnsError()
+    {
+        _model.PAYE.Reference = "AB112233";
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, BusinessValidationInfo.InvalidPayeReferenceLength());
+    }
+    
+    [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
@@ -235,6 +268,18 @@ public class EmployerSpreadsheetValidatorTests
         EmployerSpreadsheetHelper.AssertError(context.Errors, AddressValidationInfo.InvalidAddressCountyLength("Associated company"));
         EmployerSpreadsheetHelper.AssertError(context.Errors, AddressValidationInfo.InvalidAddressPostcodeLength("Associated company"));
         EmployerSpreadsheetHelper.AssertError(context.Errors, AddressValidationInfo.InvalidAddressCountryLength("Associated company"));
+    }
+    
+    [Theory]
+    [InlineData("-1")]
+    [InlineData("1000000001")]
+    public void InvalidEmployeeAffected_ValidateAsync_ReturnsError(string noEmployees)
+    {
+        _model.Employees.NoOfEmployees = noEmployees;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        EmployerApiHelper.AssertError(context.Errors, EmployeeAffectedValidationInfo.InvalidEmployeeCountLength());
     }
     
     [Fact]
@@ -472,6 +517,152 @@ public class EmployerSpreadsheetValidatorTests
     [Fact]
     public void ValidModel_ValidateAsync_ReturnsNoErrors()
     {
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoDirectors_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Directors = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoDirectorsDirector_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Directors.Director1 = null;
+        _model.Directors.Director2 = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoShareholders_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Shareholders = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoAssociatedCompanies_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.AssociatedCompanies = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoAnswerAssociatedCompanies_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.AssociatedCompanies.LegallyAssociatedCompanies = YesNoType.no;
+        _model.AssociatedCompanies.AssociatedCompany1 = null;
+        _model.AssociatedCompanies.AssociatedCompany2 = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoAssociatedCompaniesAssociatedCompany_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.AssociatedCompanies.AssociatedCompany1 = null;
+        _model.AssociatedCompanies.AssociatedCompany2 = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoEmployees_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Employees = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoEmployeesClaimingContinuity_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Employees.EmployeesClaimingContinuity = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoAnswerEmployeesClaimingContinuity_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.Employees.EmployeesClaimingContinuity.ClaimingContinuity = YesNoType.no;
+        _model.Employees.EmployeesClaimingContinuity.EmployerName = null;
+        _model.Employees.EmployeesClaimingContinuity.EmployerAddrLine1 = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoTransferDetails_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.TransferDetails = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoTransferDetailsTransferTo_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.TransferDetails.TransferTo = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoPayRecordsContact_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.PayRecordsContact = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoInsolvencyPractitioner_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.InsolvencyPractitioner = null;
+        
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Empty(context.Errors);
+    }
+    
+    [Fact]
+    public void ValidModelNoPaye_ValidateAsync_ReturnsNoErrors()
+    {
+        _model.PAYE = null;
+        
         ValidatorContext context = _validator.Validate(_employerDetails);
 
         Assert.Empty(context.Errors);

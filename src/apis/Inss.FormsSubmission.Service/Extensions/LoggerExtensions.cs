@@ -11,11 +11,11 @@ public static partial class LoggerExtensions
     [LoggerMessage(EventId = 502, Level = LogLevel.Information, Message = "Submitting IP upload to Dynamics.")]
     public static partial void SubmittingIPUpload(this ILogger logger);
     
-    [LoggerMessage(EventId = 503, Level = LogLevel.Error, Message = "Dynamics backgrond task unexpectedly failed: {Error}.")]
+    [LoggerMessage(EventId = 503, Level = LogLevel.Error, Message = "Dynamics background task unexpectedly failed: {Error}.")]
     public static partial void DynamicsBackgroundTaskFailed(this ILogger logger, string error);
     
-    [LoggerMessage(EventId = 504, Level = LogLevel.Information, Message = "Submitting message {Id} and {Reference} to Dynamics.")]
-    public static partial void SubmittingDynamicsMessage(this ILogger logger, string id, string reference);
+    [LoggerMessage(EventId = 504, Level = LogLevel.Information, Message = "Submitting {Source} {Type} message with correlation of {Id} and reference {Reference} to Dynamics.")]
+    public static partial void SubmittingDynamicsMessage(this ILogger logger, string source, string id, string reference, string type);
     
     [LoggerMessage(EventId = 505, Level = LogLevel.Information, Message = "Updating the Dynamics response for {Id} and {Reference}.")]
     public static partial void UpdatingDynamicsResponseInStore(this ILogger logger, string id, string reference);

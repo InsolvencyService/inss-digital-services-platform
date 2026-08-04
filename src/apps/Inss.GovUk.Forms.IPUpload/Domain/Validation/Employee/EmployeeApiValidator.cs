@@ -18,8 +18,8 @@ public sealed class EmployeeApiValidator : EmployeeValidator
         
         foreach (RP14AEmployee employee in _model.Employee)
         {
-            context.Forenames = employee.EmployeeName.Forenames;
-            context.Surname = employee.EmployeeName.Surname;
+            context.Forenames = employee.EmployeeName?.Forenames ?? null!;
+            context.Surname = employee.EmployeeName?.Surname ?? null!;
             context.Dob = DateOnly.FromDateTime(employee.DateOfBirth);
             context.Nino = employee.NINO;
 
@@ -32,27 +32,33 @@ public sealed class EmployeeApiValidator : EmployeeValidator
 
             ValidateAverageHoursWorked(context, employee.AverageHoursWorked);
             ValidateEmployerName(context, _model.EmployerName);
-            ValidateEmployeeSurname(context, employee.EmployeeName.Surname);
+            ValidateEmployeeSurname(context, employee.EmployeeName?.Surname ?? null!);
             ValidateEmployeeNino(context, employee.NINO);
             ValidateMoneyOwedToEmployer(context, employee.MoneyOwedToEmployer);
             ValidateEmploymentDates(context, employee.StartDate, employee.EndDate);
 
-            ValidateBasicPay(context, employee.PayDetails.BasicPayPerWeek);
-
-            foreach (var arrearsOfPay in employee.PayDetails.ArrearsOfPay)
+            if (employee.PayDetails is not null)
             {
-                ValidateArrearsOfPayOwed(context, arrearsOfPay.AOPOwed);
-                ValidateArrearsOfPayDates(context, arrearsOfPay.Period.StartDate, arrearsOfPay.Period.EndDate);
+                ValidateBasicPay(context, employee.PayDetails.BasicPayPerWeek);
+
+                foreach (var arrearsOfPay in employee.PayDetails.ArrearsOfPay ?? [])
+                {
+                    ValidateArrearsOfPayOwed(context, arrearsOfPay.AOPOwed);
+                    ValidateArrearsOfPayDates(context, arrearsOfPay.Period.StartDate, arrearsOfPay.Period.EndDate);
+                }
             }
 
-            ValidateHolidayEntitlement(context, employee.Holiday.HolidayContractedEntitlementDays);
-            ValidateHolidayCarriedForward(context, employee.Holiday.HolidayDaysCarriedForward);
-            ValidateHolidayDaysTaken(context, employee.Holiday.HolidayDaysTaken);
-            ValidateHolidayDaysOwed(context, employee.Holiday.NoDaysHolidayOwed);
-
-            foreach (var holidayNotPaid in employee.Holiday.HolidayNotPaid)
+            if (employee.Holiday is not null)
             {
-                ValidateHolidayNotPaidDates(context, holidayNotPaid.StartDate, holidayNotPaid.EndDate);
+                ValidateHolidayEntitlement(context, employee.Holiday.HolidayContractedEntitlementDays);
+                ValidateHolidayCarriedForward(context, employee.Holiday.HolidayDaysCarriedForward);
+                ValidateHolidayDaysTaken(context, employee.Holiday.HolidayDaysTaken);
+                ValidateHolidayDaysOwed(context, employee.Holiday.NoDaysHolidayOwed);
+
+                foreach (var holidayNotPaid in employee.Holiday.HolidayNotPaid ?? [])
+                {
+                    ValidateHolidayNotPaidDates(context, holidayNotPaid.StartDate, holidayNotPaid.EndDate);
+                }
             }
         }
         

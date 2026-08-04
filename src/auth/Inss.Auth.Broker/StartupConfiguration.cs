@@ -69,6 +69,11 @@ public class StartupConfiguration : IHostingStartup
                 .AddOneLogin()
                 .AddRps()
                 .AddEntra();
+
+            if (context.HostingEnvironment.IsProduction())
+            {
+                services.AddAppDataProtection(context.Configuration);
+            }
             
             CosmosDbOptions cosmosDbOptions = new();
             context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);

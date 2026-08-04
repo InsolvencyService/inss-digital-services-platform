@@ -1,0 +1,25 @@
+﻿using Azure;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+
+namespace Inss.FormsSubmission.Service.IPUpload.Clients;
+
+public sealed class UploadContentBlobClient : IUploadContentBlobClient
+{
+    private readonly BlobServiceClient _client;
+    private const string ContainerName = "ipus";
+
+    public UploadContentBlobClient(BlobServiceClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<string> GetAsync(string sessionId)
+    {
+        BlobContainerClient containerClient = _client.GetBlobContainerClient(ContainerName);
+        BlobClient blobClient = containerClient.GetBlobClient($"{sessionId}.xml");
+        Response<BlobDownloadResult> response = await blobClient.DownloadContentAsync();
+        BinaryData data = response.Value.Content;
+        return data.ToString();
+    }
+}

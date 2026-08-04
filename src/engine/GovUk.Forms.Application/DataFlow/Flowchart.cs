@@ -45,7 +45,7 @@ public sealed class Flowchart : IFlowchart
     {
         _logger.LoadingPage(page.Path, section.Title);
         
-        FlowNode node = GetNode(page.LinkedToNode);
+        FlowNode node = GetNode(page.LinkedToNode, form, section, page);
         NodeId? nextNodeId = await LoadAndGetOptionalAltNodeAsync(node, form, section, page, queryParams);
         PageModel pageAssociatedToNode = page;
 
@@ -66,7 +66,7 @@ public sealed class Flowchart : IFlowchart
     {
         _logger.ValidatingPage(page.Path);
         
-        FlowNode node = GetNode(page.LinkedToNode);
+        FlowNode node = GetNode(page.LinkedToNode, form, section, page);
         IFlowNodeValidator validator = _serviceProvider.GetKeyedService<IFlowNodeValidator>(node.Id) ?? DefaultFlowNodeValidator.Default;
         FlowNodeContext context = new()
         {
@@ -83,7 +83,7 @@ public sealed class Flowchart : IFlowchart
     {
         _logger.ProcessingPage(page.Path, section.Title);
         
-        FlowNode node = GetNode(page.LinkedToNode);
+        FlowNode node = GetNode(page.LinkedToNode, form, section, page);
         
         PageModel targetPage = section.Pages.GetPage(page.Path);
         PageModel pageBeforeChanges = targetPage.Clone();
@@ -146,7 +146,7 @@ public sealed class Flowchart : IFlowchart
 
     public async ValueTask UpdateBackButtonAsync(FormModel form, SectionModel section, PageModel page)
     {
-        FlowNode node = GetNode(page.LinkedToNode);
+        FlowNode node = GetNode(page.LinkedToNode, form, section, page);
         IFlowNodePreviousPathProvider flowNodePreviousPathProvider =
             _serviceProvider.GetKeyedService<IFlowNodePreviousPathProvider>(section.Path)
             ?? _serviceProvider.GetRequiredService<IFlowNodePreviousPathProvider>();
@@ -154,11 +154,13 @@ public sealed class Flowchart : IFlowchart
         await flowNodePreviousPathProvider.UpdateAsync(context);
     }
     
-    private FlowNode GetNode(NodeId? nodeId)
+    private FlowNode GetNode(NodeId? nodeId, FormModel form, SectionModel section, PageModel page)
     {
         if (nodeId is null || !_nodes.TryGetValue(nodeId, out FlowNode? node))
         {
-            throw new FlowchartException($"Start node '{nodeId}' not found.");
+            _logger.UnableToFindNode(nodeId?.Value ?? "Missing");
+            _logger.UnableToFindNodeDumpInfo(nodeId?.Value ?? "Missing", form.Id.Value, section.Path.Value, page.Path.Value);
+            throw new FlowchartException($"Node '{nodeId}' not found.");
         }
 
         return node;

@@ -53,7 +53,7 @@ public sealed class RP14AApiMapper : IMapper
             .ToArray();
     }
 
-    private static Pay? MapPay(RP14AEmployeePayDetails? payDetails, RP14AEmployeeHoliday holiday)
+    private static Pay? MapPay(RP14AEmployeePayDetails? payDetails, RP14AEmployeeHoliday? holiday)
     {
         if (payDetails is null)
         {
@@ -66,7 +66,7 @@ public sealed class RP14AApiMapper : IMapper
             WeeklyPayDay = payDetails.WeeklyPayDaySpecified ? payDetails.WeeklyPayDay.ToString() : null!,
             ComponentPayPerWeek = MapComponentPayPerWeekList(payDetails),
             ArrearsOfPay = MapArrearsOfPayList(payDetails),
-            Holiday = MapHoliday(holiday)
+            Holiday = holiday is not null ? MapHoliday(holiday) : null!
         };
     }
     private static Holiday MapHoliday(RP14AEmployeeHoliday holiday)
