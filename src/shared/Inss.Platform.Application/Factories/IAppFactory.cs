@@ -5,5 +5,5 @@ namespace Inss.Platform.Application.Factories;
 
 public interface IAppFactory
 {
-    ValueTask<App> CreateAsync(SessionId session);
+    ValueTask<AppModel> CreateAsync(SessionId session);
 }

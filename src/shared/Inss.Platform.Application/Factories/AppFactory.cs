@@ -13,10 +13,10 @@ public sealed class AppFactory : IAppFactory
         _pages = pages;
     }
 
-    public ValueTask<App> CreateAsync(SessionId session)
+    public ValueTask<AppModel> CreateAsync(SessionId session)
     {
-        App appPages = new() { Session = session, Pages = [.._pages] };
-        string json = AppSerialization.Serialize(appPages);
+        AppModel app = new() { Session = session, Pages = [.._pages] };
+        string json = AppSerialization.Serialize(app);
         return ValueTask.FromResult(AppSerialization.Deserialize(json));
     }
 }

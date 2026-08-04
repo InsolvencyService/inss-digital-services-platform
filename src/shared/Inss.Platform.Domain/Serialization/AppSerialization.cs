@@ -17,14 +17,14 @@ public static class AppSerialization
         _options = CreateOptions(assemblies);
     }
     
-    public static string Serialize(App appPages)
+    public static string Serialize(AppModel app)
     {
-        return JsonSerializer.Serialize(appPages, _options);
+        return JsonSerializer.Serialize(app, _options);
     }
     
-    public static App Deserialize(string json)
+    public static AppModel Deserialize(string json)
     {
-        return JsonSerializer.Deserialize<App>(json, _options)!;
+        return JsonSerializer.Deserialize<AppModel>(json, _options)!;
     }
     
     public static string SerializePage(PageModel page)

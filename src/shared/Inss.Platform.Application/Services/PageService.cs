@@ -27,7 +27,7 @@ public sealed class PageService : IPageService
     
     public async ValueTask<PageModel> LoadAsync(PagePath path, Dictionary<string, string?> queryParams)
     {
-        App app;
+        AppModel app;
         
         if (!await _appProvider.ExistsAsync("Test"))
         {
@@ -56,7 +56,7 @@ public sealed class PageService : IPageService
 
     public async ValueTask<PageModel?> ValidateAsync(PageModel page)
     {
-        App app = await _appProvider.GetAsync("Test");
+        AppModel app = await _appProvider.GetAsync("Test");
         PageModel currentPage = app.Pages.Get(page.Path);
 
         foreach (ComponentModel currentComponent in currentPage.Components)
@@ -94,7 +94,7 @@ public sealed class PageService : IPageService
     
     public async ValueTask<PagePath?> SaveAsync(PageModel page)
     {
-        App app = await _appProvider.GetAsync("Test");
+        AppModel app = await _appProvider.GetAsync("Test");
         
         try
         {

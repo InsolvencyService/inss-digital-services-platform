@@ -10,7 +10,7 @@ using Inss.Platform.Domain.Primitives;
 
 namespace Inss.Platform.Fip;
 
-public sealed class FipAppPagesBuilder : AppPagesBuilder
+public sealed class FipAppBuilder : AppBuilder
 {
     public override PagePath[] Build(IServiceCollection services)
     {

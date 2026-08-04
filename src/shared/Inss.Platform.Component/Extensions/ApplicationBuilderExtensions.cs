@@ -1,6 +1,6 @@
 ﻿using GovUk.Frontend.AspNetCore;
-using Inss.Platform.Application.Factories;
 using Inss.Platform.Component.Options;
+using Inss.Platform.Domain;
 using Inss.Platform.Domain.Primitives;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +36,7 @@ public static class ApplicationBuilderExtensions
             return app;
         }
         
-        public IApplicationBuilder UsePageEngine(PagePath[] pagePaths)
+        public IApplicationBuilder UsePageEngine(PagePathList pagePaths)
         {
             app.UseEndpoints(endpoints =>
             {

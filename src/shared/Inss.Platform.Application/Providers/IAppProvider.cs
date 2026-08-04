@@ -6,7 +6,7 @@ namespace Inss.Platform.Application.Providers;
 public interface IAppProvider
 {
     ValueTask<bool> ExistsAsync(SessionId session);
-    ValueTask<App> GetAsync(SessionId session);
-    ValueTask SaveAsync(SessionId session, App appPages);
-    ValueTask RemoveAsync(SessionId session, App appPages);
+    ValueTask<AppModel> GetAsync(SessionId session);
+    ValueTask SaveAsync(SessionId session, AppModel app);
+    ValueTask RemoveAsync(SessionId session, AppModel app);
 }

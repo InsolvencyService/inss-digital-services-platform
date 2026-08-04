@@ -2,7 +2,7 @@ using Inss.Platform.Domain.Primitives;
 
 namespace Inss.Platform.Domain;
 
-public sealed class App
+public sealed class AppModel
 {
     public required SessionId Session { get; init; }
     
