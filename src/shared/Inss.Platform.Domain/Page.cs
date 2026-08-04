@@ -1,5 +1,6 @@
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Primitives;
+using Inss.Platform.Domain.Validation;
 
 namespace Inss.Platform.Domain;
 
@@ -11,7 +12,7 @@ public sealed class Page
     
     public ComponentList Components { get; set; } = [];
 
-    public PagePath? PreviousPage { get; init; }
+    public PagePath? PreviousPage { get; set; }
     
     public PagePathList NextPages { get; init; } = [];
     
@@ -20,16 +21,4 @@ public sealed class Page
     public Content SubmitButton { get; init; }
     
     public PageValidationInfo? PageValidationInfo { get; set; }
-}
-
-public sealed class PageValidationInfo
-{
-    public required PageValidationError[] Errors { get; init; }
-}
-
-public sealed class PageValidationError
-{
-    public required string[] Properties { get; init; }
-    
-    public required string Message { get; init; }
 }

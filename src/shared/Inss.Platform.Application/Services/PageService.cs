@@ -7,6 +7,7 @@ using Inss.Platform.Application.Validation;
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Primitives;
+using Inss.Platform.Domain.Validation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Inss.Platform.Application.Services;
@@ -93,20 +94,36 @@ public sealed class PageService : IPageService
     
     public async ValueTask<PagePath?> SaveAsync(Page page)
     {
-        App appPages = await _appProvider.GetAsync("Test");
+        App app = await _appProvider.GetAsync("Test");
         
-        // Switch page out for updated one?
-        
-        // Save the page
-        await _appProvider.SaveAsync("Test", appPages);
-        
-        // Determine next page
+        try
+        {
+            Page currentPage = app.Pages.Get(page.Path);
 
-        // Work out which page to go to next using a decider
+            foreach (Component currentComponent in currentPage.Components)
+            {
+                Component component = page.Components.Get(currentComponent.Id);
+                component.CopyTo(currentComponent);
+            }
         
-        // If we have a page, set the previous page path on it to the parameter page path
+            INextPageNavigator nextPageNavigator = _serviceProvider.GetKeyedService<INextPageNavigator>(currentPage.Path.Value)!;
+            PagePath? nextPagePath = await nextPageNavigator.NavigateNextAsync(currentPage);
+
+            if (nextPagePath is not null)
+            {
+                Page nextPage = app.Pages.Get(nextPagePath);
+
+                if (nextPage.PreviousPage is not null)
+                {
+                    nextPage.PreviousPage = currentPage.Path;
+                }
+            }
         
-        INextPageNavigator nextPageNavigator = _serviceProvider.GetKeyedService<INextPageNavigator>(page.Path.Value)!;// ?? _serviceProvider.GetRequiredService<INextPageNavigator>();
-        return await nextPageNavigator.NavigateNextAsync(page);
+            return nextPagePath;
+        }
+        finally
+        {
+            await _appProvider.SaveAsync("Test", app);
+        }
     }
 }

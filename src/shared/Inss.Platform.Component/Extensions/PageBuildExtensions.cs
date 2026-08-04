@@ -46,15 +46,12 @@ public static class PageBuildExtensions
         {
             foreach (Inss.Platform.Domain.Components.Component component in page.Components)
             {
-                foreach (ValidationBase validation in component.Validations)
+                foreach (ValidationRule validation in component.Validations)
                 {
-                    _ = validation switch
-                    {
-                        Required _ => services.AddKeyedSingleton<IComponentValidator>(component.Id.Value, new RequiredValueComponentValidator()),
-                        MaxLength maxLength => services.AddKeyedSingleton<IComponentValidator>(component.Id.Value, new MaxLengthComponentValidator(maxLength.Value)),
-                        Custom custom => services.AddKeyedSingleton(typeof(IComponentValidator), component.Id.Value, custom.ValidatorType),
-                        _ => throw new NotSupportedException("Current not supported.")
-                    };
+                    services.AddKeyedSingleton(
+                        typeof(IComponentValidator), 
+                        component.Id.Value, 
+                        (provider, _) => ActivatorUtilities.CreateInstance(provider, validation.ValidatorType, validation));
                 }
             }
 

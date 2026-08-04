@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Inss.Platform.Application.Services;
+﻿using Inss.Platform.Application.Services;
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Primitives;
 using Inss.Platform.Domain.Serialization;
@@ -12,6 +11,7 @@ namespace Inss.Platform.Component.Controllers;
 public class PageController : Controller
 {
     private readonly IPageService _pageService;
+    private const string TempDataKey = "ErrorModel";
 
     public PageController(IPageService pageService)
     {
@@ -21,8 +21,7 @@ public class PageController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit()
     {
-        // TODO: Handle the validate error PRG call
-        if (TempData["ErrorModel"] is string pageErrorJson)
+        if (TempData[TempDataKey] is string pageErrorJson)
         {
             Page errorPage = AppSerialization.DeserializePage(pageErrorJson);
 
@@ -48,17 +47,11 @@ public class PageController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Page page)
     {
-        // Hydrate the actual page and components
-        // Copy the values to it
-        // Validate it
-        // If invalid, add the page errors to page and set as temp data
-        // If valid, save and determine next page
-        
         Page? validatedPage = await _pageService.ValidateAsync(page);
 
         if (validatedPage is not null)
         {
-            TempData["ErrorModel"] = AppSerialization.SerializePage(validatedPage);
+            TempData[TempDataKey] = AppSerialization.SerializePage(validatedPage);
             return Redirect(validatedPage.Path);
         }
 

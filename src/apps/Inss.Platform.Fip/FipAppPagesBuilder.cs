@@ -30,11 +30,26 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
                     Loaders = [
                         new Loader { LoaderType = typeof(MyComponentLoader) }
                     ],
-                    Validations =
-                    [
-                        new Required(),
-                        new MaxLength { Value = 100 },
-                        new Custom { ValidatorType = typeof(MyCustomValidator) }
+                    Validations = [
+                        new ValidationRule
+                        {
+                            ValidatorType = typeof(RequiredValueComponentValidator),
+                            Items = new ValidationRuleItemList
+                            {
+                                [RequiredValueComponentValidator.ErrorMessageKey] = "You must supply a first name",
+                                [RequiredValueComponentValidator.PropertyKey] = "Components[0].Value"
+                            }
+                        },
+                        new ValidationRule
+                        {
+                            ValidatorType = typeof(MaxLengthComponentValidator),
+                            Items = new ValidationRuleItemList
+                            {
+                                [MaxLengthComponentValidator.ErrorMessageKey] = "Your first name is too long",
+                                [MaxLengthComponentValidator.PropertyKey] = "Components[0].Value",
+                                [MaxLengthComponentValidator.MaxLengthKey] = "100"
+                            }
+                        }
                     ]
                 }
             ],
@@ -54,10 +69,26 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
                 {
                     Id = "Lastname",
                     Label = new Content(Value: "What is your last name?"),
-                    Validations =
-                    [
-                        new Required(),
-                        new MaxLength { Value = 150 }
+                    Validations = [
+                        new ValidationRule
+                        {
+                            ValidatorType = typeof(RequiredValueComponentValidator),
+                            Items = new ValidationRuleItemList
+                            {
+                                [RequiredValueComponentValidator.ErrorMessageKey] = "You must supply a last name",
+                                [RequiredValueComponentValidator.PropertyKey] = "Components[0].Value"
+                            }
+                        },
+                        new ValidationRule
+                        {
+                            ValidatorType = typeof(MaxLengthComponentValidator),
+                            Items = new ValidationRuleItemList
+                            {
+                                [MaxLengthComponentValidator.ErrorMessageKey] = "Your last name is too long",
+                                [MaxLengthComponentValidator.PropertyKey] = "Components[0].Value",
+                                [MaxLengthComponentValidator.MaxLengthKey] = "150"
+                            }
+                        }
                     ]
                 }
             ],

@@ -12,7 +12,7 @@ public sealed class DefaultNextPageNavigator : INextPageNavigator
         {
             0 => ValueTask.FromResult<PagePath?>(null),
             1 => ValueTask.FromResult<PagePath?>(page.NextPages[0]),
-            _ => throw new NextPageException($"Cannot handle multiple next pages from the default next navigator.")
+            _ => throw new NextPageException("Cannot handle multiple next pages from the default next navigator.")
         };
     }
 }

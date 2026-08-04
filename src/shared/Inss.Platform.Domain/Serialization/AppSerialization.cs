@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Serialization.Converters;
-using Inss.Platform.Domain.Validation;
 
 namespace Inss.Platform.Domain.Serialization;
 
@@ -11,11 +10,10 @@ public static class AppSerialization
 {
     private static readonly JsonSerializerOptions? _options;
     private static readonly Type _componentType = typeof(Component);
-    private static readonly Type _validationType = typeof(ValidationBase);
     
     static AppSerialization()
     {
-        Assembly[] assemblies = ModelAssemblies.GetAll();
+        Assembly[] assemblies = GetAllTargetAssemblies();
         _options = CreateOptions(assemblies);
     }
     
@@ -51,21 +49,11 @@ public static class AppSerialization
             }
         }
         
-        List<Type> validationTypes = [];
-        
-        foreach (Type type in assemblies.SelectMany(a => a.GetTypes()))
-        {
-            if (!validationTypes.Contains(type) && type != _validationType && !type.IsAbstract && _validationType.IsAssignableFrom(type))
-            {
-                validationTypes.Add(type);
-            }
-        }
-        
         JsonSerializerOptions options = new()
         {
             TypeInfoResolver = new DefaultJsonTypeInfoResolver
             {
-                Modifiers = { typeInfo => AddPolymorphicTypeDiscriminators(componentTypes, validationTypes, typeInfo) }
+                Modifiers = { typeInfo => AddPolymorphicTypeDiscriminators(componentTypes, typeInfo) }
             },
             WriteIndented = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -80,22 +68,13 @@ public static class AppSerialization
         return options;
     }
     
-    private static void AddPolymorphicTypeDiscriminators(List<Type> componentTypes, List<Type> validationTypes, JsonTypeInfo typeInfo)
+    private static void AddPolymorphicTypeDiscriminators(List<Type> componentTypes, JsonTypeInfo typeInfo)
     {
         if (typeInfo.Type == _componentType)
         {
             typeInfo.PolymorphismOptions = new JsonPolymorphismOptions { TypeDiscriminatorPropertyName = "$type" };
 
             foreach (JsonDerivedType type in GetJsonDerivedTypes(componentTypes))
-            {
-                typeInfo.PolymorphismOptions.DerivedTypes.Add(type);
-            }
-        }
-        else if (typeInfo.Type == _validationType)
-        {
-            typeInfo.PolymorphismOptions = new JsonPolymorphismOptions { TypeDiscriminatorPropertyName = "$type" };
-
-            foreach (JsonDerivedType type in GetJsonDerivedTypes(validationTypes))
             {
                 typeInfo.PolymorphismOptions.DerivedTypes.Add(type);
             }
@@ -108,11 +87,8 @@ public static class AppSerialization
         derivedPageModelTypes.AddRange(modelTypes.Select(type => new JsonDerivedType(type, type.Name)));
         return derivedPageModelTypes;
     }
-}
-
-public static class ModelAssemblies
-{
-    public static Assembly[] GetAll()
+    
+    private static Assembly[] GetAllTargetAssemblies()
     {
         List<Assembly> modelAssemblies = [typeof(Page).Assembly];
                 
