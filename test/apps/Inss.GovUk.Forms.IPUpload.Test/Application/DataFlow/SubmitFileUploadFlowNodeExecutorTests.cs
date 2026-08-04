@@ -48,7 +48,7 @@ public class SubmitFileUploadFlowNodeExecutorTests
     public async Task SubmittingSection_ExecuteAsync_UpdatesPostSubmitReferenceNumber()
     {
         const string referenceNumber = "J880ZFKY";
-        _submitUploadedXmlService.SubmitAsync(_section, _form.Id).Returns(referenceNumber);
+        _submitUploadedXmlService.SubmitAsync(_section, _form.Id, _form.Email).Returns(referenceNumber);
         
         await _submitFileUploadFlowNodeExecutor.ExecuteAsync(_context);
 

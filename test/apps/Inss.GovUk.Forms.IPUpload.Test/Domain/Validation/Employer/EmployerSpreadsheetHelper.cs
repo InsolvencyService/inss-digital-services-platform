@@ -17,6 +17,11 @@ internal static class EmployerSpreadsheetHelper
             NameOfBusiness = "Springfield Nuclear",
             CompanyNumber = "11223344",
             NatureOfBusiness = "Energy production",
+            PAYE = new PayeType
+            {
+                District = "123",
+                Reference = "AB11223"
+            },
             CompanyAddrLine1 = "Springfield Nuclear House",
             CompanyAddrLine2 = "Nuclear Avenue",
             CompanyAddrTown = "Springfield",
@@ -71,6 +76,7 @@ internal static class EmployerSpreadsheetHelper
             },
             Employees = new RP14Employees
             {
+                NoOfEmployees = "1_000",
                 EmployeesClaimingContinuity = new RP14EmployeesEmployeesClaimingContinuity
                 {
                     EmployerName = "Springfield Energy",

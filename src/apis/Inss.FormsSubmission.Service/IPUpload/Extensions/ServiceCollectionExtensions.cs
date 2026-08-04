@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Mime;
 using Azure.Identity;
+using Azure.Storage.Blobs;
 using Inss.Common.Infrastructure;
 using Inss.Common.IPUpload;
 using Inss.FormsSubmission.Service.Handlers;
@@ -29,6 +30,7 @@ internal static class ServiceCollectionExtensions
             {
                 services.AddSingleton<IDynamicsStoreProvider, MockDynamicsStoreProvider>();
                 services.AddHttpClient<IDynamicsClient, MockDynamicsClient>();
+                services.AddSingleton<IUploadContentBlobClient, MockUploadContentBlobClient>();
             }
             else
             {
@@ -68,6 +70,12 @@ internal static class ServiceCollectionExtensions
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, dynamicsOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
                         sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
+                
+                UploadBlobOptions uploadBlobOptions = new();
+                context.Configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
+                
+                services.AddTransient<IUploadContentBlobClient>(
+                    _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
             }
 
             services.AddTransient<INotifyEmailService, NotifyEmailService>();

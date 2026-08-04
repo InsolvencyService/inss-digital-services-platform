@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using GovUk.Forms.Domain;
 
 namespace Inss.GovUk.Forms.IPUpload.Domain;
@@ -11,6 +12,7 @@ public sealed class XmlFileUploadModel : PageModel
     
     public string Filename { get; set; }
     
+    [JsonIgnore]
     public string Contents { get; set; }
     
     public int Length { get; set; }

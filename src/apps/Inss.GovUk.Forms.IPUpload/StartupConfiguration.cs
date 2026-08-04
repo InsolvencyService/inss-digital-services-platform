@@ -12,8 +12,10 @@ using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Net.Mime;
+using Azure.Storage.Blobs;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Binding;
+using GovUk.Forms.Infrastructure.Options;
 using Inss.GovUk.Forms.IPUpload.Application.Factories;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
@@ -42,6 +44,7 @@ public class StartupConfiguration : IHostingStartup
             {
                 services.AddSingleton<ICaseReferenceClient, MockCaseReferenceClient>();
                 services.AddSingleton<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>();
+                services.AddSingleton<IUploadContentBlobClient, MockUploadContentBlobClient>();
             }
             else
             {
@@ -66,6 +69,12 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, submissionOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
+                
+                UploadBlobOptions uploadBlobOptions = new();
+                context.Configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
+                
+                services.AddTransient<IUploadContentBlobClient>(
+                    _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
             }
 
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();

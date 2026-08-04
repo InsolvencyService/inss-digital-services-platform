@@ -3,26 +3,36 @@ using GovUk.Forms.Domain;
 using Inss.Common;
 using Inss.Common.IPUpload;
 using Inss.GovUk.Forms.IPUpload.Application.Clients;
-using Inss.GovUk.Forms.IPUpload.Domain;
 
 namespace Inss.GovUk.Forms.IPUpload.Application.Services;
 
 public sealed class SubmitUploadedXmlService : ISubmitUploadedXmlService
 {
     private readonly ISubmitIPUploadSectionClient _submitIPUploadSectionClient;
+    private readonly IUploadContentBlobClient _uploadContentBlobClient;
 
-    public SubmitUploadedXmlService(ISubmitIPUploadSectionClient submitIPUploadSectionClient)
+    public SubmitUploadedXmlService(
+        ISubmitIPUploadSectionClient submitIPUploadSectionClient, 
+        IUploadContentBlobClient uploadContentBlobClient)
     {
         _submitIPUploadSectionClient = submitIPUploadSectionClient;
+        _uploadContentBlobClient = uploadContentBlobClient;
     }
 
-    public async Task<string> SubmitAsync(SectionModel section, string userId)
+    public async Task<string> SubmitAsync(SectionModel section, string sessionId, string email)
     {
-        XmlFileUploadModel fileUpload = section.Pages.GetFirstOf<XmlFileUploadModel>();
-        XDocument document = FileHelper.GetXml(fileUpload.Contents);
+        string xml = await _uploadContentBlobClient.GetAsync(sessionId);
+        XDocument document = XDocument.Parse(xml);
         bool isEmployeeUpload = FileHelper.IsEmployeeDocument(document);
+        bool isApiSource = FileHelper.IsApiSource(document);
         
-        SubmitIPUploadRequest request = new() { UserId = userId, FileContents = fileUpload.Contents, IsEmployeeUpload = isEmployeeUpload };
+        SubmitIPUploadRequest request = new()
+        {
+            SessionId = sessionId, 
+            Email = email, 
+            IsEmployeeUpload = isEmployeeUpload, 
+            IsApiSource = isApiSource
+        };
         
         Result<SubmitIPUploadResponse> response = await _submitIPUploadSectionClient.SubmitAsync(request);
 

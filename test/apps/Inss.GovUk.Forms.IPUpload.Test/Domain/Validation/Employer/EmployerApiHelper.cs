@@ -17,6 +17,11 @@ internal static class EmployerApiHelper
             NameOfBusiness = "Springfield Nuclear",
             CompanyNumber = "11223344",
             NatureOfBusiness = "Energy production",
+            PAYE = new PayeType
+            {
+                District = "123",
+                Reference = "AB11223"
+            },
             Address = new AddressType
             {
                 Line = ["Springfield Nuclear House", "Nuclear Avenue"],
@@ -77,6 +82,7 @@ internal static class EmployerApiHelper
             },
             Employees = new RP14Employees
             {
+                NoOfEmployees = "1_000",
                 EmployeesClaimingContinuity = new RP14EmployeesEmployeesClaimingContinuity
                 {
                     EmployerName = "Springfield Energy",

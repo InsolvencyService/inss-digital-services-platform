@@ -28,4 +28,10 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 107, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key.")]
     public static partial void MissingSearchKey(this ILogger logger);
+    
+    [LoggerMessage(EventId = 108, Level = LogLevel.Error, Message = "Unable to locate the node from its Id {NodeId}.")]
+    public static partial void UnableToFindNode(this ILogger logger, string nodeId);
+    
+    [LoggerMessage(EventId = 109, Level = LogLevel.Warning, Message = "Unable to locate the node {NodeId} dump: Session {SessionId}; Section {SectionPath}; Page {PagePath}")]
+    public static partial void UnableToFindNodeDumpInfo(this ILogger logger, string nodeId, string sessionId, string sectionPath, string pagePath);
 }

@@ -40,6 +40,35 @@ public abstract partial class EmployerValidator : BaseValidator
             context.AddError(BusinessValidationInfo.InvalidSICLength(), sicCode);
         } 
     }
+
+    protected static void ValidatePayeReference(ValidatorContext context, string? district, string? reference)
+    {
+        if (district is null && reference is null)
+        {
+            // Neither provided so ignore as its optional
+            return;
+        }
+
+        string value = $"{district} {reference}".Trim();
+        
+        if ((district is null && reference is not null) ||
+            (district is not null && reference is null))
+        {
+            context.AddError(BusinessValidationInfo.InvalidPayeFormat(), value);
+        }
+        else
+        {
+            if (district?.Length > 3)
+            {
+                context.AddError(BusinessValidationInfo.InvalidPayeDistrictLength(), value);
+            }
+            
+            if (reference?.Length > 7)
+            {
+                context.AddError(BusinessValidationInfo.InvalidPayeReferenceLength(), value);
+            }
+        }
+    }
     
     protected static void ValidateAddress(
         ValidatorContext context, 
@@ -134,6 +163,20 @@ public abstract partial class EmployerValidator : BaseValidator
         } 
     }
 
+    protected static void ValidateNumberOfEmployees(ValidatorContext context, string noOfEmployees)
+    {
+        if (!string.IsNullOrWhiteSpace(noOfEmployees) && int.TryParse(noOfEmployees, out int count))
+        {
+            if (count < 0)
+            {
+                context.AddError(EmployeeAffectedValidationInfo.InvalidEmployeeCountLength(), noOfEmployees);
+            }
+            else if (count > 1_000_000_000)
+            {
+                context.AddError(EmployeeAffectedValidationInfo.InvalidEmployeeCountLength(), noOfEmployees);
+            }
+        }
+    }
     protected static void ValidateContinuityEmployerName(ValidatorContext context, string employerName)
     {
         if (employerName.Length > 60)

@@ -5,8 +5,11 @@
         <UserSecretsId>d6f2ad9d-35b6-47a6-95b2-c6a7c3fb344f</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" />
+        <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" />
         <PackageReference Include="GovUk.Frontend.AspNetCore" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+        <PackageReference Include="System.Security.Cryptography.Xml" />
     </ItemGroup>
     <ItemGroup>
         <UpToDateCheckInput Remove="Views\Form\Index.cshtml" />

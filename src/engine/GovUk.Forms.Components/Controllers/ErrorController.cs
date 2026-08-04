@@ -31,7 +31,12 @@ public class ErrorController : Controller
     [Route("Error/{statusCode}")]
     public IActionResult HttpStatus(int statusCode)
     {
-        _logger.StatusCodeError(Request.Path, statusCode);
+        IStatusCodeReExecuteFeature? feature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+        string originalPath = feature?.OriginalPath ?? "Unknown path";
+        string originalQueryString = feature?.OriginalQueryString ?? string.Empty;
+        string path = $"{originalPath}{originalQueryString}";
+        
+        _logger.StatusCodeError(path, statusCode);
 
         ViewBag.StatusCode = statusCode;
         
