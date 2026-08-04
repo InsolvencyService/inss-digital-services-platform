@@ -1,4 +1,6 @@
-﻿namespace Inss.Platform.Component.Options;
+﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global - Options
+// ReSharper disable UnusedAutoPropertyAccessor.Global - Options
+namespace Inss.Platform.Component.Options;
 
 public sealed class HeaderOptions
 {

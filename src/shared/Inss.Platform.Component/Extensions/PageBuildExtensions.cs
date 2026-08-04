@@ -1,6 +1,7 @@
 ﻿using Inss.Platform.Application.Loaders;
 using Inss.Platform.Application.Navigators;
 using Inss.Platform.Application.Validation;
+using Inss.Platform.Domain;
 using Inss.Platform.Domain.Loading;
 using Inss.Platform.Domain.Validation;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,9 +10,9 @@ namespace Inss.Platform.Component.Extensions;
 
 public static class PageBuildExtensions
 {
-    extension(Inss.Platform.Domain.Page page)
+    extension(PageModel page)
     {
-        public Inss.Platform.Domain.Page Register(IServiceCollection services)
+        public PageModel Register(IServiceCollection services)
         {
             page.RegisterNextPageNavigator(services);
             page.RegisterLoaders(services);
@@ -19,17 +20,15 @@ public static class PageBuildExtensions
             return page;
         }
 
-        private Inss.Platform.Domain.Page RegisterNextPageNavigator(IServiceCollection services)
+        private void RegisterNextPageNavigator(IServiceCollection services)
         {
             if (page.NextPageNavigator is not null)
             {
                 services.AddKeyedSingleton(typeof(INextPageNavigator), page.Path.Value, page.NextPageNavigator);
             }
-
-            return page;
         }
         
-        private Inss.Platform.Domain.Page RegisterLoaders(IServiceCollection services)
+        private Inss.Platform.Domain.PageModel RegisterLoaders(IServiceCollection services)
         {
             foreach (Inss.Platform.Domain.Components.Component component in page.Components)
             {
@@ -42,7 +41,7 @@ public static class PageBuildExtensions
             return page;
         }
         
-        private Inss.Platform.Domain.Page RegisterValidations(IServiceCollection services)
+        private Inss.Platform.Domain.PageModel RegisterValidations(IServiceCollection services)
         {
             foreach (Inss.Platform.Domain.Components.Component component in page.Components)
             {

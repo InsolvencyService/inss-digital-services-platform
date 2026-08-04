@@ -8,5 +8,5 @@ public sealed class App
     
     public Email? Email { get; init; }
 
-    public PageList Pages { get; init; } = [];
+    public PageModelList Pages { get; init; } = [];
 }

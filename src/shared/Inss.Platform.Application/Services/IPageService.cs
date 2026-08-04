@@ -5,7 +5,7 @@ namespace Inss.Platform.Application.Services;
 
 public interface IPageService
 {
-    ValueTask<Page> LoadAsync(PagePath path, Dictionary<string, string?> queryParams);
-    ValueTask<Page?> ValidateAsync(Page page);
-    ValueTask<PagePath?> SaveAsync(Page page);
+    ValueTask<PageModel> LoadAsync(PagePath path, Dictionary<string, string?> queryParams);
+    ValueTask<PageModel?> ValidateAsync(PageModel page);
+    ValueTask<PagePath?> SaveAsync(PageModel page);
 }

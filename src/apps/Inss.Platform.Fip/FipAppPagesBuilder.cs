@@ -17,7 +17,7 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
 {
     public override PagePath[] Build(IServiceCollection services)
     {
-        Page page1 = new()
+        PageModel page1 = new()
         {
             Title = "Page 1",
             Path = "/firstname",
@@ -59,7 +59,7 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
         };
         page1.Register(services);
 
-        Page page2 = new()
+        PageModel page2 = new()
         {
             Title = "Page 1",
             Path = "/lastname",

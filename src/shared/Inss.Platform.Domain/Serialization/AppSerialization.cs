@@ -27,14 +27,14 @@ public static class AppSerialization
         return JsonSerializer.Deserialize<App>(json, _options)!;
     }
     
-    public static string SerializePage(Page page)
+    public static string SerializePage(PageModel page)
     {
         return JsonSerializer.Serialize(page, _options);
     }
     
-    public static Page DeserializePage(string json)
+    public static PageModel DeserializePage(string json)
     {
-        return JsonSerializer.Deserialize<Page>(json, _options)!;
+        return JsonSerializer.Deserialize<PageModel>(json, _options)!;
     }
     
     private static JsonSerializerOptions CreateOptions(params Assembly[] assemblies)
@@ -90,7 +90,7 @@ public static class AppSerialization
     
     private static Assembly[] GetAllTargetAssemblies()
     {
-        List<Assembly> modelAssemblies = [typeof(Page).Assembly];
+        List<Assembly> modelAssemblies = [typeof(PageModel).Assembly];
                 
         foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a =>
                      a.FullName?.StartsWith("Inss.", StringComparison.OrdinalIgnoreCase) == true))

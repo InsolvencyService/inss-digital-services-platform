@@ -5,5 +5,5 @@ namespace Inss.Platform.Application.Navigators;
 
 public interface INextPageNavigator
 {
-    ValueTask<PagePath?> NavigateNextAsync(Page page);
+    ValueTask<PagePath?> NavigateNextAsync(PageModel page);
 }

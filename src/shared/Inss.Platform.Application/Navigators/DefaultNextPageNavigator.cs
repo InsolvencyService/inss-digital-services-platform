@@ -6,7 +6,7 @@ namespace Inss.Platform.Application.Navigators;
 
 public sealed class DefaultNextPageNavigator : INextPageNavigator
 {
-    public ValueTask<PagePath?> NavigateNextAsync(Page page)
+    public ValueTask<PagePath?> NavigateNextAsync(PageModel page)
     {
         return page.NextPages.Count switch
         {

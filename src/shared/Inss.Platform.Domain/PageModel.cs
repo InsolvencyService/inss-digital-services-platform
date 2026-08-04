@@ -4,7 +4,7 @@ using Inss.Platform.Domain.Validation;
 
 namespace Inss.Platform.Domain;
 
-public sealed class Page
+public sealed class PageModel
 {
     public required PagePath Path { get; init; }
     

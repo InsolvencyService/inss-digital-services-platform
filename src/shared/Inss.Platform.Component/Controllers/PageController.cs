@@ -23,7 +23,7 @@ public class PageController : Controller
     {
         if (TempData[TempDataKey] is string pageErrorJson)
         {
-            Page errorPage = AppSerialization.DeserializePage(pageErrorJson);
+            PageModel errorPage = AppSerialization.DeserializePage(pageErrorJson);
 
             if (errorPage.PageValidationInfo is not null)
             {
@@ -39,15 +39,15 @@ public class PageController : Controller
         
         Dictionary<string, string?> queryParams = GetQueryParams();
         PagePath requestPath = new(Request.Path);
-        Page page = await _pageService.LoadAsync(requestPath, queryParams);
+        PageModel page = await _pageService.LoadAsync(requestPath, queryParams);
         return View(page);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Page page)
+    public async Task<IActionResult> Edit(PageModel page)
     {
-        Page? validatedPage = await _pageService.ValidateAsync(page);
+        PageModel? validatedPage = await _pageService.ValidateAsync(page);
 
         if (validatedPage is not null)
         {

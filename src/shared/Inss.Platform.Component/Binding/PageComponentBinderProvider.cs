@@ -8,7 +8,7 @@ public sealed class PageComponentBinderProvider : IModelBinderProvider
 {
     public IModelBinder GetBinder(ModelBinderProviderContext context)
     {
-        if (context.Metadata.ModelType == typeof(Page))
+        if (context.Metadata.ModelType == typeof(PageModel))
         {
             return new BinderTypeModelBinder(typeof(PageComponentBinder));
         }

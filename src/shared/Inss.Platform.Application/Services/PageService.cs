@@ -25,7 +25,7 @@ public sealed class PageService : IPageService
         _serviceProvider = serviceProvider;
     }
     
-    public async ValueTask<Page> LoadAsync(PagePath path, Dictionary<string, string?> queryParams)
+    public async ValueTask<PageModel> LoadAsync(PagePath path, Dictionary<string, string?> queryParams)
     {
         App app;
         
@@ -39,7 +39,7 @@ public sealed class PageService : IPageService
             app = await _appProvider.GetAsync("Test");
         }
 
-        Page page = app.Pages.Get(path);
+        PageModel page = app.Pages.Get(path);
         
         foreach (Component component in page.Components)
         {
@@ -54,10 +54,10 @@ public sealed class PageService : IPageService
         return page;
     }
 
-    public async ValueTask<Page?> ValidateAsync(Page page)
+    public async ValueTask<PageModel?> ValidateAsync(PageModel page)
     {
         App app = await _appProvider.GetAsync("Test");
-        Page currentPage = app.Pages.Get(page.Path);
+        PageModel currentPage = app.Pages.Get(page.Path);
 
         foreach (Component currentComponent in currentPage.Components)
         {
@@ -92,13 +92,13 @@ public sealed class PageService : IPageService
         return null;
     }
     
-    public async ValueTask<PagePath?> SaveAsync(Page page)
+    public async ValueTask<PagePath?> SaveAsync(PageModel page)
     {
         App app = await _appProvider.GetAsync("Test");
         
         try
         {
-            Page currentPage = app.Pages.Get(page.Path);
+            PageModel currentPage = app.Pages.Get(page.Path);
 
             foreach (Component currentComponent in currentPage.Components)
             {
@@ -111,7 +111,7 @@ public sealed class PageService : IPageService
 
             if (nextPagePath is not null)
             {
-                Page nextPage = app.Pages.Get(nextPagePath);
+                PageModel nextPage = app.Pages.Get(nextPagePath);
 
                 if (nextPage.PreviousPage is not null)
                 {

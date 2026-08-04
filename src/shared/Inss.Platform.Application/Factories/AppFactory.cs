@@ -6,9 +6,9 @@ namespace Inss.Platform.Application.Factories;
 
 public sealed class AppFactory : IAppFactory
 {
-    private readonly Page[] _pages;
+    private readonly PageModel[] _pages;
 
-    public AppFactory(Page[] pages)
+    public AppFactory(PageModel[] pages)
     {
         _pages = pages;
     }
