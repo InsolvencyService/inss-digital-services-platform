@@ -11,9 +11,9 @@ public abstract class ComponentModel
 
     public abstract string ViewName { get; }
     
-    public LoaderList Loaders { get; init; } = [];
+    public LoaderList Loaders { get; set; } = [];
     
-    public ValidationList Validations { get; init; } = [];
+    public ValidationList Validations { get; set; } = [];
     
     public string TypeName => GetType().FullName!;
 

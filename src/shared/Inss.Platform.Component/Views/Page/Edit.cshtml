@@ -1,7 +1,7 @@
 ﻿@model PageModel
 
 @{
-    string buttonText = Model.SubmitButton.Value;
+    string? buttonText = Model.SubmitButton?.Value;
 }
 
 @using (Html.BeginForm(Model))

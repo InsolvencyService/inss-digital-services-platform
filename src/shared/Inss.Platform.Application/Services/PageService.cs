@@ -105,8 +105,9 @@ public sealed class PageService : IPageService
                 ComponentModel component = page.Components.Get(currentComponent.Id);
                 component.CopyTo(currentComponent);
             }
-        
-            INextPageNavigator nextPageNavigator = _serviceProvider.GetKeyedService<INextPageNavigator>(currentPage.Path.Value)!;
+
+            INextPageNavigator nextPageNavigator = _serviceProvider.GetKeyedService<INextPageNavigator>(currentPage.Path.Value)
+                                                   ?? _serviceProvider.GetRequiredService<INextPageNavigator>();
             PagePath? nextPagePath = await nextPageNavigator.NavigateNextAsync(currentPage);
 
             if (nextPagePath is not null)

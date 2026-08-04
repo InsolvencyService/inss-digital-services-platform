@@ -1,18 +1,19 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Extensions;
 using Inss.Platform.Domain.Validation;
 
 namespace Inss.Platform.Application.Validation;
 
-public sealed class MaxLengthComponentValidator : IComponentValidator
+public sealed class RegexComponentValidator : IComponentValidator
 {
     private readonly ValidationRule _validationRule;
     public const string ErrorMessageKey = "ErrorMessage";
     public const string PropertyKey = "Property";
-    public const string MaxLengthKey = "MaxLength";
+    public const string PatternKey = "Pattern";
     
-    public MaxLengthComponentValidator(ValidationRule validationRule)
+    public RegexComponentValidator(ValidationRule validationRule)
     {
         _validationRule = validationRule;
     }
@@ -20,9 +21,9 @@ public sealed class MaxLengthComponentValidator : IComponentValidator
     public ValueTask<ValidationResult[]> ValidateAsync(ComponentModel component)
     {
         IValueComponent valueComponent = component.As<IValueComponent>();
-        int maxLength = _validationRule.Items.GetValue<int>(MaxLengthKey);
+        string pattern = _validationRule.Items.GetValue<string>(PatternKey);
         
-        if (valueComponent.Value?.Length > maxLength)
+        if (!Regex.IsMatch(valueComponent.Value ?? string.Empty, pattern))
         {
             string errorMessage = _validationRule.Items.GetValue<string>(ErrorMessageKey);
             string property = _validationRule.Items.GetValue<string>(PropertyKey);

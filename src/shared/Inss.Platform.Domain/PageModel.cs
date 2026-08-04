@@ -14,11 +14,11 @@ public sealed class PageModel
 
     public PagePath? PreviousPage { get; set; }
     
-    public PagePathList NextPages { get; init; } = [];
+    public PagePathList NextPages { get; set; } = [];
     
-    public Type? NextPageNavigator { get; init; }
+    public Type? NextPageNavigator { get; set; }
     
-    public Content SubmitButton { get; init; }
+    public Content? SubmitButton { get; init; }
     
     public PageValidationInfo? PageValidationInfo { get; set; }
 }
