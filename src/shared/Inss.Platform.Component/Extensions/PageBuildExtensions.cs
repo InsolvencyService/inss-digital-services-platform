@@ -2,6 +2,7 @@
 using Inss.Platform.Application.Navigators;
 using Inss.Platform.Application.Validation;
 using Inss.Platform.Domain;
+using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Loading;
 using Inss.Platform.Domain.Validation;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,9 +29,9 @@ public static class PageBuildExtensions
             }
         }
         
-        private Inss.Platform.Domain.PageModel RegisterLoaders(IServiceCollection services)
+        private PageModel RegisterLoaders(IServiceCollection services)
         {
-            foreach (Inss.Platform.Domain.Components.Component component in page.Components)
+            foreach (ComponentModel component in page.Components)
             {
                 foreach (Loader loader in component.Loaders)
                 {
@@ -41,9 +42,9 @@ public static class PageBuildExtensions
             return page;
         }
         
-        private Inss.Platform.Domain.PageModel RegisterValidations(IServiceCollection services)
+        private PageModel RegisterValidations(IServiceCollection services)
         {
-            foreach (Inss.Platform.Domain.Components.Component component in page.Components)
+            foreach (ComponentModel component in page.Components)
             {
                 foreach (ValidationRule validation in component.Validations)
                 {

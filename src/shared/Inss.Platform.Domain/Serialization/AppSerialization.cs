@@ -9,7 +9,7 @@ namespace Inss.Platform.Domain.Serialization;
 public static class AppSerialization
 {
     private static readonly JsonSerializerOptions? _options;
-    private static readonly Type _componentType = typeof(Component);
+    private static readonly Type _componentType = typeof(ComponentModel);
     
     static AppSerialization()
     {

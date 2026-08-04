@@ -5,7 +5,7 @@ namespace Inss.Platform.Domain.Extensions;
 
 public static class ComponentExtensions
 {
-    extension(Component component)
+    extension(ComponentModel component)
     {
         public T As<T>()
         {

@@ -17,7 +17,7 @@ public sealed class MaxLengthComponentValidator : IComponentValidator
     {
         _validationRule = validationRule;
     }
-    public ValueTask<ValidationResult[]> ValidateAsync(Component component)
+    public ValueTask<ValidationResult[]> ValidateAsync(ComponentModel component)
     {
         IValueComponent valueComponent = component.As<IValueComponent>();
         int maxLength = int.Parse(_validationRule.Items[MaxLengthKey], NumberStyles.Integer, CultureInfo.CurrentCulture);

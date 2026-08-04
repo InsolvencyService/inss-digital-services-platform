@@ -5,7 +5,7 @@ using Inss.Platform.Domain.Validation;
 
 namespace Inss.Platform.Domain.Components;
 
-public abstract class Component
+public abstract class ComponentModel
 {
     public required ComponentId Id { get; init; }
 
@@ -17,11 +17,11 @@ public abstract class Component
     
     public string TypeName => GetType().FullName!;
 
-    public virtual void CopyTo(Component targetComponent)
+    public virtual void CopyTo(ComponentModel targetComponent)
     {
     }
     
-    public T As<T>() where T : Component
+    public T As<T>() where T : ComponentModel
     {
         if (this is T result)
         {

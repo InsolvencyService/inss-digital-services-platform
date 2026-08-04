@@ -41,7 +41,7 @@ public sealed class PageService : IPageService
 
         PageModel page = app.Pages.Get(path);
         
-        foreach (Component component in page.Components)
+        foreach (ComponentModel component in page.Components)
         {
             IEnumerable<IComponentLoader> loaders = _serviceProvider.GetKeyedServices<IComponentLoader>(component.Id.Value);
             
@@ -59,15 +59,15 @@ public sealed class PageService : IPageService
         App app = await _appProvider.GetAsync("Test");
         PageModel currentPage = app.Pages.Get(page.Path);
 
-        foreach (Component currentComponent in currentPage.Components)
+        foreach (ComponentModel currentComponent in currentPage.Components)
         {
-            Component component = page.Components.Get(currentComponent.Id);
+            ComponentModel component = page.Components.Get(currentComponent.Id);
             component.CopyTo(currentComponent);
         }
 
         List<PageValidationError> pageValidationErrorList = [];
         
-        foreach (Component component in currentPage.Components)
+        foreach (ComponentModel component in currentPage.Components)
         {
             IEnumerable<IComponentValidator> validators = _serviceProvider.GetKeyedServices<IComponentValidator>(component.Id.Value);
             
@@ -100,9 +100,9 @@ public sealed class PageService : IPageService
         {
             PageModel currentPage = app.Pages.Get(page.Path);
 
-            foreach (Component currentComponent in currentPage.Components)
+            foreach (ComponentModel currentComponent in currentPage.Components)
             {
-                Component component = page.Components.Get(currentComponent.Id);
+                ComponentModel component = page.Components.Get(currentComponent.Id);
                 component.CopyTo(currentComponent);
             }
         

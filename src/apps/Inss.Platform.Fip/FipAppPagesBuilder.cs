@@ -105,7 +105,7 @@ public sealed class FipAppPagesBuilder : AppPagesBuilder
 
 public sealed class MyCustomValidator : IComponentValidator
 {
-    public ValueTask<ValidationResult[]> ValidateAsync(Inss.Platform.Domain.Components.Component component)
+    public ValueTask<ValidationResult[]> ValidateAsync(ComponentModel component)
     {
         Console.WriteLine("Custom validator");
         return ValueTask.FromResult<ValidationResult[]>([]);
@@ -114,7 +114,7 @@ public sealed class MyCustomValidator : IComponentValidator
 
 public sealed class MyComponentLoader : IComponentLoader
 {
-    public ValueTask LoadAsync(Inss.Platform.Domain.Components.Component component)
+    public ValueTask LoadAsync(ComponentModel component)
     {
         Console.WriteLine("Custom loader");
         return ValueTask.CompletedTask;

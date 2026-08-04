@@ -10,7 +10,7 @@ public sealed class PageModel
     
     public required string Title { get; init; }
     
-    public ComponentList Components { get; set; } = [];
+    public ComponentModelList Components { get; set; } = [];
 
     public PagePath? PreviousPage { get; set; }
     

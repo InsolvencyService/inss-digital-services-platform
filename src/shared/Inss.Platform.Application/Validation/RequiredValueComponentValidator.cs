@@ -16,7 +16,7 @@ public sealed class RequiredValueComponentValidator : IComponentValidator
         _validationRule = validationRule;
     }
     
-    public ValueTask<ValidationResult[]> ValidateAsync(Component component)
+    public ValueTask<ValidationResult[]> ValidateAsync(ComponentModel component)
     {
         IValueComponent valueComponent = component.As<IValueComponent>();
 

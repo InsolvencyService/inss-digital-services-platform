@@ -3,11 +3,11 @@ using Inss.Platform.Domain.Primitives;
 
 namespace Inss.Platform.Domain.Components;
 
-public sealed class ComponentList : List<Component>
+public sealed class ComponentModelList : List<ComponentModel>
 {
-    public Component Get(ComponentId id)
+    public ComponentModel Get(ComponentId id)
     {
-        Component? component = this.FirstOrDefault(p => p.Id == id);
+        ComponentModel? component = this.FirstOrDefault(p => p.Id == id);
         return component ?? throw new ComponentException($"Cannot get component for Id {id}.");
     }
 }

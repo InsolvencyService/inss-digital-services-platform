@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using Inss.Platform.Domain;
+using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Exceptions;
 using Inss.Platform.Domain.Primitives;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,7 @@ public sealed class PageComponentBinder : IModelBinder
             // TODO: Make more robust
             string componentTypeName = form[$"Components[{index}].TypeName"]!;
             Type componentType = ResolveComponentType(componentTypeName);
-            Domain.Components.Component componentInstance = (Domain.Components.Component)Activator.CreateInstance(componentType)!;
+            ComponentModel componentInstance = (ComponentModel)Activator.CreateInstance(componentType)!;
 
             const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
             
@@ -104,7 +105,7 @@ public sealed class PageComponentBinder : IModelBinder
     
     private static Assembly[] GetAll()
     {
-        List<Assembly> modelAssemblies = [typeof(Domain.Components.Component).Assembly];
+        List<Assembly> modelAssemblies = [typeof(ComponentModel).Assembly];
                 
         foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a =>
                      a.FullName?.StartsWith("Inss.", StringComparison.OrdinalIgnoreCase) == true))
@@ -118,7 +119,7 @@ public sealed class PageComponentBinder : IModelBinder
     private static Dictionary<string, Type> GetComponentTypes()
     {
         Assembly[] assemblies = GetAll();
-        Type contentModelType = typeof(Domain.Components.Component);
+        Type contentModelType = typeof(ComponentModel);
         Dictionary<string, Type> componentTypeList = [];
         
         foreach (Type type in GetAllTypes(assemblies))

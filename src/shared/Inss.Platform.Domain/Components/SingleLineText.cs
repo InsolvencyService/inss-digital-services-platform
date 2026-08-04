@@ -2,7 +2,7 @@
 
 namespace Inss.Platform.Domain.Components;
 
-public sealed class SingleLineText : Component, IValueComponent
+public sealed class SingleLineText : ComponentModel, IValueComponent
 {
     public override string ViewName => $"_{nameof(SingleLineText)}";
     
@@ -12,7 +12,7 @@ public sealed class SingleLineText : Component, IValueComponent
     
     public string? Value { get; set; }
     
-    public override void CopyTo(Component targetComponent)
+    public override void CopyTo(ComponentModel targetComponent)
     {
         SingleLineText singleLineText = targetComponent.As<SingleLineText>();
         singleLineText.Value = Value;

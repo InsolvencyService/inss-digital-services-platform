@@ -5,5 +5,5 @@ namespace Inss.Platform.Application.Validation;
 
 public interface IComponentValidator
 {
-    ValueTask<ValidationResult[]> ValidateAsync(Component component);
+    ValueTask<ValidationResult[]> ValidateAsync(ComponentModel component);
 }
