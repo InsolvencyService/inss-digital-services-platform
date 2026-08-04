@@ -1,7 +1,0 @@
-[
-  {
-    "name": "Validation Errors",
-    "matchedStatuses": ["failed"],
-    "messageRegex": ".*invalid.*|.*missing.*"
-  }
-]

@@ -5,7 +5,6 @@ using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Infrastructure.Options;
 using GovUk.Forms.Infrastructure.Providers;
 using GovUk.Forms.Infrastructure.Serialization;
-using GovUk.Frontend.AspNetCore;
 using Inss.Auth.Broker;
 using Inss.Auth.Broker.Application.Providers;
 using Inss.Auth.Broker.Extensions;
@@ -13,6 +12,7 @@ using Inss.Auth.Broker.Infrastructure.Providers;
 using Inss.Auth.Broker.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Azure.Cosmos;
 using BrokerOptions = Inss.Auth.Broker.Options.BrokerOptions;
 
@@ -97,11 +97,26 @@ public class StartupConfiguration : IHostingStartup
 
                 return new TestAuthCodeStoreProvider();
             });
-            
-            services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
-            services.AddGovUkFrontend();
-            services.AddControllersWithViews();
             services.AddOpenTelemetry().UseAzureMonitor();
+            services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();
+            
+            services.AddComponents(context.Configuration);
+        });
+        
+        builder.Configure(app =>
+        {
+            app.UseComponents();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedHost |
+                    ForwardedHeaders.XForwardedProto
+            });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         });
     }
 }

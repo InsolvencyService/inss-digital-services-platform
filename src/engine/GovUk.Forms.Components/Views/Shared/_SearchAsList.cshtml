@@ -30,14 +30,10 @@
 
                     <dl class="govuk-summary-list">
 
-                        @foreach (var column in Model.Definition.Fields.Where(f => f.ResultView).OrderBy(x => x.Order))
+                        @foreach (var column in Model.Definition.Results.Where(f => f.IsDisplayable).OrderBy(x => x.Order))
                         {
-                            string value = string.Empty;
-
-                            row.Fields.TryGetValue(column.Name, out string? fieldValue);
-
-                            value = fieldValue ?? string.Empty;
-
+                            string value = column.GetValueForNames(row.Fields);
+                            
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
                                     @column.Header

@@ -12,10 +12,9 @@ using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Net.Mime;
-using Azure.Storage.Blobs;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Binding;
-using GovUk.Forms.Infrastructure.Options;
+using GovUk.Forms.Components.Extensions;
 using Inss.GovUk.Forms.IPUpload.Application.Factories;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
@@ -82,6 +81,15 @@ public class StartupConfiguration : IHostingStartup
             
             IPUploadFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
+            
+            services.AddComponents(context.Configuration);
+            services.AddFormEngine(context.Configuration);
+        });
+        
+        builder.Configure(app =>
+        {
+            app.UseComponents();
+            app.UseFormEngine();
         });
     }
 }

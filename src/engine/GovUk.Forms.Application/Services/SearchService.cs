@@ -41,9 +41,10 @@ public sealed class SearchService : ISearchService
 
     public async Task<SearchDetailResponse?> SearchDetailAsync(SearchDetailRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.Key))
+        if (string.IsNullOrWhiteSpace(request.KeyField) ||
+            string.IsNullOrWhiteSpace(request.KeyValue))
         {
-            _logger.MissingSearchKey();
+            _logger.MissingSearchKeyAndOrValue();
             return null;
         }
 

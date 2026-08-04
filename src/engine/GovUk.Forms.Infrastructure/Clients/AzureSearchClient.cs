@@ -13,6 +13,9 @@ public sealed class AzureSearchClient : ISearchClient
 {
     private readonly ILogger<SearchService> _logger;
     private readonly SearchClient _searchClient;
+    private const int LowerSuccessStatusCode = 200;
+    private const int UpperSuccessStatusCode = 299;
+    private const int NotFoundStatusCode = 404;
 
     public AzureSearchClient(SearchClient searchClient, ILogger<SearchService> logger)
     {
@@ -29,7 +32,7 @@ public sealed class AzureSearchClient : ISearchClient
         
         int statusCode = response.GetRawResponse().Status;
 
-        if (statusCode is < 200 or > 299)
+        if (statusCode is < LowerSuccessStatusCode or > UpperSuccessStatusCode)
         {
             _logger.AzureSearchFailed(statusCode, request.SearchText);
 
@@ -53,13 +56,13 @@ public sealed class AzureSearchClient : ISearchClient
     
     public async Task<SearchDetailResponse?> SearchDetailAsync(SearchDetailRequest request)
     {
-        Response<SearchDocument>? response = await _searchClient.GetDocumentAsync<SearchDocument>(request.Key);
+        Response<SearchDocument>? response = await _searchClient.GetDocumentAsync<SearchDocument>(request.KeyValue);
         
-        int statusCode = response?.GetRawResponse().Status ?? 404;
+        int statusCode = response?.GetRawResponse().Status ?? NotFoundStatusCode;
 
-        if (statusCode is < 200 or > 299)
+        if (statusCode is < LowerSuccessStatusCode or > UpperSuccessStatusCode)
         {
-            _logger.AzureSearchDetailFailed(statusCode, request.Key);
+            _logger.AzureSearchDetailFailed(statusCode, request.KeyValue);
             return null;
         }
 

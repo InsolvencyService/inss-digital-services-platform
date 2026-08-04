@@ -1,10 +1,10 @@
-﻿using GovUk.Forms.Application.Providers;
+﻿using GovUk.Forms.Application.Extensions;
+using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Application.Services;
 using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Domain.Search;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace GovUk.Forms.Application.DataFlow.Loading;
 
@@ -52,8 +52,8 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
         if (!string.IsNullOrWhiteSpace(searchText))
         {
             SearchRequest request = new() 
-            { 
-                SearchText = searchText, 
+            {
+                SearchText = AddingWildCard(searchText),
                 PageSize = searchResult.Definition.PageSize, 
                 CurrentPageNumber = searchResult.CurrentPageNumber
             };
@@ -74,10 +74,38 @@ public sealed class SearchResultFlowNodeLoader : IFlowNodeLoader
     {
         foreach (SearchResult result in searchResult.Results)
         {
-            foreach (SearchDefinitionField column in searchResult.Definition.Fields.Where(column => !result.Fields.ContainsKey(column.Name)))
+            foreach (KeyValuePair<string, string> column in result.Fields)
             {
-                _logger.LogWarning("Unable to find column  Azure search field '{FieldName}'.", column.Name);
+                SearchResultDefinition? definition = searchResult.Definition.Results.FirstOrDefault(dr => dr.Names.Contains(column.Key));
+
+                if (definition is null)
+                {
+                    _logger.SearchConfigAndResultMismatch(column.Key);
+                }
             }
         }
+    }
+
+    private static string AddingWildCard(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return searchText;
+        }
+
+        string[] words = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        List<string> wildcardWords = new();
+
+        foreach (string word in words)
+        {
+            string wildcardWord = word.EndsWith('*') 
+                ? word 
+                : string.Concat(word, "*");
+
+            wildcardWords.Add(wildcardWord);
+        }
+
+        return string.Join(" ", wildcardWords);
     }
 }

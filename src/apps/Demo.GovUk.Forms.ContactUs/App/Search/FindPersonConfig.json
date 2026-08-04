@@ -1,0 +1,81 @@
+{
+  "PageSize": 5,
+  "DisplayAsTable": true,
+  "Results": [
+    {
+      "Names": ["CaseNumber"],
+      "Header": "Case Number",
+      "Order": 1,
+      "Css": "govuk-!-font-weight-bold",
+      "ColumnType": "Key,Display"
+    },
+    {
+      "Names": ["Title"],
+      "Header": "Title",
+      "Order": 2,
+      "Css": "",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": ["FirstName"],
+      "Header": "Forename",
+      "Order": 3,
+      "Css": "",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": ["FamilyName"],
+      "Header": "Surname",
+      "Order": 4,
+      "Css": "",
+      "ColumnType": "Display",
+      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.WebsiteSearchFieldValueFormatter,GovUk.Forms.Domain"
+    },
+    {
+      "Names": ["DateOfBirth"],
+      "Header": "Date Of Birth",
+      "Order": 5,
+      "ColumnType": "Display",
+      "CssClass": ""
+    }
+  ],
+  "Details": [
+    {
+      "Names": ["Phone"],
+      "Header": "Phone number",
+      "Order": 1,
+      "Category": "Contact details"
+    },
+    {
+      "Names": ["Email"],
+      "Header": "Email",
+      "Order": 2,
+      "Category": "Contact details",
+      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.EmailSearchFieldValueFormatter,GovUk.Forms.Domain"
+    },
+    {
+      "Names": ["Line1"],
+      "Header": "Address line 1",
+      "Order": 1,
+      "Category": "Address details"
+    },
+    {
+      "Names": ["Postcode"],
+      "Header": "Postcode",
+      "Order": 2,
+      "Category": "Address details"
+    }
+  ],
+  "Categories": [
+    {
+      "Label": "Contact details",
+      "Css": "govuk-heading-l"
+    },
+    {
+      "Label": "Address details",
+      "Css": "govuk-heading-m"
+    }
+  ]
+}
+
+

@@ -26,12 +26,17 @@ public static partial class LoggerExtensions
     [LoggerMessage(EventId = 106, Level = LogLevel.Error, Message = "Azure Search request sent with invalid current page number: {CurrentPageNumber}")]
     public static partial void InvalidCurrentPageNumber(this ILogger logger, int currentPageNumber);
     
-    [LoggerMessage(EventId = 107, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key.")]
+    [LoggerMessage(EventId = 107, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key and/or value.")]
+    public static partial void MissingSearchKeyAndOrValue(this ILogger logger);
+    
+    [LoggerMessage(EventId = 108, Level = LogLevel.Warning, Message = "Unable to find column Azure search field '{FieldName}'.")]
+    public static partial void SearchConfigAndResultMismatch(this ILogger logger, string fieldName);
+    [LoggerMessage(EventId = 109, Level = LogLevel.Warning, Message = "Azure Search request sent with an empty search key.")]
     public static partial void MissingSearchKey(this ILogger logger);
     
-    [LoggerMessage(EventId = 108, Level = LogLevel.Error, Message = "Unable to locate the node from its Id {NodeId}.")]
+    [LoggerMessage(EventId = 110, Level = LogLevel.Error, Message = "Unable to locate the node from its Id {NodeId}.")]
     public static partial void UnableToFindNode(this ILogger logger, string nodeId);
     
-    [LoggerMessage(EventId = 109, Level = LogLevel.Warning, Message = "Unable to locate the node {NodeId} dump: Session {SessionId}; Section {SectionPath}; Page {PagePath}")]
+    [LoggerMessage(EventId = 111, Level = LogLevel.Warning, Message = "Unable to locate the node {NodeId} dump: Session {SessionId}; Section {SectionPath}; Page {PagePath}")]
     public static partial void UnableToFindNodeDumpInfo(this ILogger logger, string nodeId, string sessionId, string sectionPath, string pagePath);
 }
