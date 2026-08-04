@@ -18,15 +18,18 @@ public class TokenController : Controller
     private readonly IAuthCodeStoreProvider _authCodeStoreProvider;
     private readonly ITokenSecurityProvider _tokenSecurityProvider;
     private readonly IOptions<BrokerOptions> _brokerOptions;
+    private readonly ILogger<TokenController> _logger;
 
     public TokenController(
         IAuthCodeStoreProvider authCodeStoreProvider, 
         ITokenSecurityProvider tokenSecurityProvider, 
-        IOptions<BrokerOptions> brokerOptions)
+        IOptions<BrokerOptions> brokerOptions,
+        ILogger<TokenController> logger)
     {
         _authCodeStoreProvider = authCodeStoreProvider;
         _tokenSecurityProvider = tokenSecurityProvider;
         _brokerOptions = brokerOptions;
+        _logger = logger;
     }
     
     [HttpPost("/connect/token")]
@@ -36,6 +39,8 @@ public class TokenController : Controller
         string code = form["code"].ToString();
         string codeVerifier = form["code_verifier"].ToString();
 
+        _logger.RetrieveAuthCodeInfo(code);
+        
         AuthCode? authCode = await _authCodeStoreProvider.GetAsync(code);
         
         if (authCode is null)

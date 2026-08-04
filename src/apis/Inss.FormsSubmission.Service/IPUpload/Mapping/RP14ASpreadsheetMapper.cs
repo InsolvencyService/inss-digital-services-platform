@@ -54,7 +54,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             .ToArray();
     }
 
-    private static Pay MapPay(RP14AEmployeePayDetails payDetails, RP14AEmployeeHoliday holiday)
+    private static Pay MapPay(RP14AEmployeePayDetails payDetails, RP14AEmployeeHoliday? holiday)
     {
         return new Pay
         {
@@ -62,7 +62,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             WeeklyPayDay = payDetails.WeeklyPayDaySpecified ? payDetails.WeeklyPayDay.ToString() : null!,
             ComponentPayPerWeek = MapComponentPayPerWeekList(payDetails),
             ArrearsOfPay = MapArrearsOfPayList(payDetails.ArrearsOfPay),
-            Holiday = MapHoliday(holiday)
+            Holiday = holiday is not null ? MapHoliday(holiday) : null!
         };
     }
     private static Holiday MapHoliday(RP14AEmployeeHoliday holiday)
@@ -173,11 +173,11 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         return componentPayPerWeekList;
     }
     
-    private static List<ArrearsOfPay> MapArrearsOfPayList(RP14AEmployeePayDetailsArrearsOfPay arrearsOfPay)
+    private static List<ArrearsOfPay> MapArrearsOfPayList(RP14AEmployeePayDetailsArrearsOfPay? arrearsOfPay)
     {
         List<ArrearsOfPay> arrearsOfPayList = [];
 
-        if (arrearsOfPay.ArrearsOfPayPeriod1 is not null &&
+        if (arrearsOfPay?.ArrearsOfPayPeriod1 is not null &&
             arrearsOfPay.ArrearsOfPayPeriod1.AOP1StartDateSpecified &&
             arrearsOfPay.ArrearsOfPayPeriod1.AOP1EndDateSpecified)
         {
@@ -192,7 +192,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
 
-        if (arrearsOfPay.ArrearsOfPayPeriod2 is not null &&
+        if (arrearsOfPay?.ArrearsOfPayPeriod2 is not null &&
             arrearsOfPay.ArrearsOfPayPeriod2.AOP2StartDateSpecified &&
             arrearsOfPay.ArrearsOfPayPeriod2.AOP2EndDateSpecified)
         {
@@ -207,7 +207,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
 
-        if (arrearsOfPay.ArrearsOfPayPeriod3 is not null &&
+        if (arrearsOfPay?.ArrearsOfPayPeriod3 is not null &&
             arrearsOfPay.ArrearsOfPayPeriod3.AOP3StartDateSpecified &&
             arrearsOfPay.ArrearsOfPayPeriod3.AOP3EndDateSpecified)
         {
@@ -222,7 +222,7 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             });
         }
 
-        if (arrearsOfPay.ArrearsOfPayPeriod4 is not null &&
+        if (arrearsOfPay?.ArrearsOfPayPeriod4 is not null &&
             arrearsOfPay.ArrearsOfPayPeriod4.AOP4StartDateSpecified &&
             arrearsOfPay.ArrearsOfPayPeriod4.AOP4EndDateSpecified)
         {

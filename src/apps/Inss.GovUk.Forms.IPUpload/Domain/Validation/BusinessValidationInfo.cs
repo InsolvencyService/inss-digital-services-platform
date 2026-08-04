@@ -50,4 +50,34 @@ public static class BusinessValidationInfo
         PluralErrorPattern = "[COUNT] standard industrial classifications are the wrong length",
         Hint = "Enter up to 255 characters"
     };
+    
+    public static ValidationInfo InvalidPayeFormat() => new()
+    {
+        Key = nameof(InvalidPayeFormat),
+        Category = "Business",
+        Property = "PAYE reference",
+        SingularErrorPattern = "1 PAYE reference is in the wrong format",
+        PluralErrorPattern = "[COUNT] PAYE reference are in the wrong format",
+        Hint = "Enter district/reference e.g. 123/AA45678"
+    };
+    
+    public static ValidationInfo InvalidPayeDistrictLength() => new()
+    {
+        Key = nameof(InvalidPayeDistrictLength),
+        Category = "Business",
+        Property = "PAYE reference",
+        SingularErrorPattern = "1 PAYE reference district is the wrong length",
+        PluralErrorPattern = "[COUNT] PAYE reference district are the wrong length",
+        Hint = "Enter up to 3 characters"
+    };
+    
+    public static ValidationInfo InvalidPayeReferenceLength() => new()
+    {
+        Key = nameof(InvalidPayeReferenceLength),
+        Category = "Business",
+        Property = "PAYE reference",
+        SingularErrorPattern = "1 PAYE reference is the wrong length",
+        PluralErrorPattern = "[COUNT] PAYE reference are the wrong length",
+        Hint = "Enter up to 7 characters"
+    };
 }

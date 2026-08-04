@@ -53,7 +53,8 @@ public class UserInfoController : Controller
                 
                 ClaimsPrincipal? principal = tokenHandler.ValidateToken(token, validationParams, out _);
                 Claim subject = new(JwtRegisteredClaimNames.Sub, principal.FindFirst("name")!.Value);
-                List<Claim> claims = [subject];
+                Claim session = new("session_id", Guid.NewGuid().ToString("N"));
+                List<Claim> claims = [subject, session];
                 return Json(claims.ToDictionary(c => c.Type, c => c.Value));
             }
             catch (Exception error)

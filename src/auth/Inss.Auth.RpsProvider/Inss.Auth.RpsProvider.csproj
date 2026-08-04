@@ -22,6 +22,11 @@
       <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Shared\_LayoutFooter.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Shared\_LayoutHeader.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Start\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Start\Index.cshtml" />
     </ItemGroup>
 	
 </Project>
