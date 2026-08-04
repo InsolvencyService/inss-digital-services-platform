@@ -22,7 +22,7 @@ public sealed class SearchTermComponentModel : ComponentModel, IValueComponent, 
         searchTerm.Value = Value;
     }
     
-    public void Append(QueryParams queryParams)
+    public void Append(QueryParamList queryParams)
     {
         queryParams.AddQueryParam("keyword", Value);
     }

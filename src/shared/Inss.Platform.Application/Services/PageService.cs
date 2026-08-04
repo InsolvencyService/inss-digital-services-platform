@@ -100,7 +100,7 @@ public sealed class PageService : IPageService
         try
         {
             PageModel currentPage = app.Pages.Get(page.Path);
-            QueryParams queryParams = [];
+            QueryParamList queryParams = [];
             
             foreach (ComponentModel currentComponent in currentPage.Components)
             {
@@ -131,7 +131,7 @@ public sealed class PageService : IPageService
         }
     }
     
-    private static PagePath? FormatRedirectPath(PagePath? path, QueryParams queryParams)
+    private static PagePath? FormatRedirectPath(PagePath? path, QueryParamList queryParams)
     {
         if (path is null || queryParams.Count == 0)
         {
