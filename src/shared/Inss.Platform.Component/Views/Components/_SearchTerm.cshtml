@@ -1,0 +1,13 @@
+﻿@model SearchTermComponentModel
+
+<h1 class="govuk-heading-l">@(Model.Heading.Value)</h1>
+
+@Html.Raw(Model.Description.Value)
+
+<govuk-input for="@Model.Value" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--m">Search</govuk-input-label>
+    @if (Model.Hint is not null)
+    {
+        <govuk-input-hint>@(Model.Hint.Value)</govuk-input-hint>
+    }
+</govuk-input>

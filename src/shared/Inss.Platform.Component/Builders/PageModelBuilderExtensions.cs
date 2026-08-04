@@ -1,4 +1,5 @@
-﻿using Inss.Platform.Domain.Components;
+﻿using Inss.Platform.Domain.Components.Common;
+using Inss.Platform.Domain.Components.Searching;
 using Inss.Platform.Domain.Primitives;
 
 namespace Inss.Platform.Component.Builders;
@@ -9,7 +10,14 @@ public static class PageModelBuilderExtensions
     {
         public ComponentModelBuilder AddSingleLineTextComponent(ComponentId id, Content label)
         {
-            SingleLineText component = new() { Id = id, Label = label };
+            SingleLineTextComponentModel component = new() { Id = id, Label = label };
+            pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
+            return new ComponentModelBuilder(pageModelBuilder, component);
+        }
+
+        public ComponentModelBuilder AddSearchTermComponent(ComponentId id, Content heading, Content label, Content description)
+        {
+            SearchTermComponentModel component = new() { Id = id, Heading = heading, Label = label, Description = description };
             pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
             return new ComponentModelBuilder(pageModelBuilder, component);
         }

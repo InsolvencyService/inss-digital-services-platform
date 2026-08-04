@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 using Inss.Platform.Application.Factories;
 using Inss.Platform.Application.Loaders;
 using Inss.Platform.Application.Navigators;
@@ -99,11 +100,17 @@ public sealed class PageService : IPageService
         try
         {
             PageModel currentPage = app.Pages.Get(page.Path);
-
+            QueryParams queryParams = [];
+            
             foreach (ComponentModel currentComponent in currentPage.Components)
             {
                 ComponentModel component = page.Components.Get(currentComponent.Id);
                 component.CopyTo(currentComponent);
+
+                if (component is IQueryParamComponent queryParamComponent)
+                {
+                    queryParamComponent.Append(queryParams);
+                }
             }
 
             INextPageNavigator nextPageNavigator = _serviceProvider.GetKeyedService<INextPageNavigator>(currentPage.Path.Value)
@@ -113,18 +120,28 @@ public sealed class PageService : IPageService
             if (nextPagePath is not null)
             {
                 PageModel nextPage = app.Pages.Get(nextPagePath);
-
-                if (nextPage.PreviousPage is not null)
-                {
-                    nextPage.PreviousPage = currentPage.Path;
-                }
+                nextPage.PreviousPage ??= currentPage.Path;
             }
         
-            return nextPagePath;
+            return FormatRedirectPath(nextPagePath, queryParams);
         }
         finally
         {
             await _appProvider.SaveAsync("Test", app);
         }
+    }
+    
+    private static PagePath? FormatRedirectPath(PagePath? path, QueryParams queryParams)
+    {
+        if (path is null || queryParams.Count == 0)
+        {
+            return path;
+        }
+        
+        string query = string.Join("&", queryParams
+            .Where(kvp => !string.IsNullOrEmpty(kvp.Key) && kvp.Value != null)
+            .Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
+        
+        return string.IsNullOrWhiteSpace(query) ? path : $"{path}?{query}";
     }
 }

@@ -15,17 +15,23 @@ public sealed class FipAppBuilder : AppBuilder
     public override PagePath[] Build(IServiceCollection services)
     {
         PageModel page1 = PageModelBuilder
-            .For("First name", "/firstname", new Content("Continue"))
-            .NextPagesAre("/lastname")
-            .AddSingleLineTextComponent("FirstName", new Content("What is your first name?"))
-            .WithLoader<MyComponentLoader>()
-            .WithRequiredValidator("You must supply a first name")
-            .WithMaxLengthValidator(10, "Your first name is too long")
+            .For("Search", "/search", new Content("Search"))
+            .NextPagesAre("/search-results")
+            .AddSearchTermComponent("SearchTerm", new Content("Find an insolvency practitioner"), new Content("Search"), new Content(
+                "<p class=\"govuk-body\">Search using one or more of the following:</p>" +
+                "<ul class=\"govuk-list govuk-list--bullet\">" +
+                "<li>name</li>" +
+                "<li>company</li>" +
+                "<li>town or city</li>" +
+                "<li>full or partial postcode</li>" +
+                "<li>a combination of these</li>" +
+                "</ul>"))
+            .WithRequiredValidator("You must enter a search text")
             .ComponentAdded()
             .Build(services);
         
         PageModel page2 = PageModelBuilder
-            .For("Last name", "/lastname", new Content("Continue"))
+            .For("Last name", "/search-results", new Content("Continue"))
             .AddSingleLineTextComponent("LastName", new Content("What is your last name?"))
             .WithLoader<MyComponentLoader>()
             .WithRequiredValidator("You must supply a last name")
