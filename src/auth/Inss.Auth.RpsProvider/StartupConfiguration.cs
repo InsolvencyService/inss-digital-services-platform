@@ -12,8 +12,12 @@ using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
+using Azure.Identity;
 using GovUk.Forms.Components.Extensions;
+using GovUk.Forms.Infrastructure.Options;
+using GovUk.Forms.Infrastructure.Serialization;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Azure.Cosmos;
 
 [assembly: HostingStartup(typeof(Inss.Auth.RpsProvider.StartupConfiguration))]
 
@@ -95,29 +99,29 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, loginOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         loginOptions.CountBeforeBreaking, loginOptions.BreakDurationSeconds));
-                
-                CosmosDbOptions cosmosDbOptions = new();
-                context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
-            
-                services.AddSingleton<IUserAuthStoreProvider>(_ =>
-                {
-                    if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
-                    {
-                        CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
-                        CosmosClient client = new(cosmosDbOptions.ConnectionString, options);
-                        return new CosmosUserAuthStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
-                    {
-                        CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
-                        CosmosClient client = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
-                        return new CosmosUserAuthStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
-                    }
-
-                    return new TestUserAuthStoreProvider();
-                });
             }
+            
+            CosmosDbOptions cosmosDbOptions = new();
+            context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
+            
+            services.AddSingleton<IUserAuthStoreProvider>(_ =>
+            {
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient client = new(cosmosDbOptions.ConnectionString, options);
+                    return new CosmosUserAuthStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
+                }
+
+                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+                {
+                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                    CosmosClient client = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
+                    return new CosmosUserAuthStoreProvider(client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName);
+                }
+
+                return new TestUserAuthStoreProvider();
+            });
             
             services.AddSingleton<ITokenSecurityProvider, TokenSecurityProvider>();
             services.AddScoped<IPagePropertiesProvider, PagePropertiesProvider>();

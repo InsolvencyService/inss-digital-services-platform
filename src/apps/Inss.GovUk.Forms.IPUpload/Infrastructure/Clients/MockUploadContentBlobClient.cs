@@ -12,7 +12,14 @@ public sealed class MockUploadContentBlobClient : IUploadContentBlobClient
     
     public Task SaveAsync(string xml, string sessionId)
     {
-        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Ipus", $"{sessionId}.xml");
+        string ipusDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Ipus");
+
+        if (!Directory.Exists(ipusDir))
+        {
+            Directory.CreateDirectory(ipusDir);
+        }
+        
+        string path = Path.Combine(ipusDir, $"{sessionId}.xml");
         File.WriteAllText(path, xml);
         return Task.CompletedTask;
     }
