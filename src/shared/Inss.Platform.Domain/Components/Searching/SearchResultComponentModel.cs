@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Inss.Platform.Domain.Components.Searching.Support;
 using Inss.Platform.Domain.Exceptions;
 using Inss.Platform.Domain.Primitives;
 
@@ -18,9 +19,9 @@ public class SearchResultComponentModel : ComponentModel, IValueComponent, IQuer
 
     public bool HasNextPage { get; init; }
     
-    public required Content Label { get; init; }
+    public required string Label { get; init; }
     
-    public Content? Hint { get; init; }
+    public string? Hint { get; init; }
     
     public string? Value { get; set; }
     

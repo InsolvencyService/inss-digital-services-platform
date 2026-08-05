@@ -40,7 +40,7 @@ public sealed class PageService : IPageService
             app = await _appProvider.GetAsync("Test");
         }
 
-        PageModel page = app.Pages.Get(path);
+        PageModel page = app.Pages.GetPage(path);
         
         foreach (ComponentModel component in page.Components)
         {
@@ -59,11 +59,11 @@ public sealed class PageService : IPageService
     public async ValueTask<PageModel?> ValidateAsync(PageModel page)
     {
         AppModel app = await _appProvider.GetAsync("Test");
-        PageModel currentPage = app.Pages.Get(page.Path);
+        PageModel currentPage = app.Pages.GetPage(page.Path);
 
         foreach (ComponentModel currentComponent in currentPage.Components)
         {
-            ComponentModel component = page.Components.Get(currentComponent.Id);
+            ComponentModel component = page.Components.GetComponent(currentComponent.Id);
             component.CopyTo(currentComponent);
         }
 
@@ -100,12 +100,12 @@ public sealed class PageService : IPageService
         
         try
         {
-            PageModel currentPage = app.Pages.Get(page.Path);
+            PageModel currentPage = app.Pages.GetPage(page.Path);
             QueryParamList queryParams = [];
             
             foreach (ComponentModel currentComponent in currentPage.Components)
             {
-                ComponentModel component = page.Components.Get(currentComponent.Id);
+                ComponentModel component = page.Components.GetComponent(currentComponent.Id);
                 component.CopyTo(currentComponent);
 
                 if (component is IQueryParamComponent queryParamComponent)
@@ -120,7 +120,7 @@ public sealed class PageService : IPageService
 
             if (nextPagePath is not null)
             {
-                PageModel nextPage = app.Pages.Get(nextPagePath);
+                PageModel nextPage = app.Pages.GetPage(nextPagePath);
                 nextPage.PreviousPage ??= currentPage.Path;
             }
         

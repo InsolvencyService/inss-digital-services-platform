@@ -6,10 +6,10 @@ namespace Inss.Platform.Domain;
 
 public sealed class PageModelList : List<PageModel>
 {
-    public PageModel Get(PagePath path)
+    public PageModel GetPage(PagePath path)
     {
         PageModel? page = this.FirstOrDefault(p => p.Path == path);
-        return page ?? throw new ComponentException($"Cannot get page for path {page}.");
+        return page ?? throw new ComponentException($"Cannot get page for path {path}.");
     }
 
     public PageModel GetFirstPageAssociatedTo<TComponent>() where TComponent : ComponentModel

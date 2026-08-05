@@ -1,4 +1,5 @@
-﻿@model SearchResultDetailComponentModel
+﻿@using Inss.Platform.Domain.Components.Searching.Support
+@model SearchResultDetailComponentModel
 
 @{
     (SearchCategory Category, CategorizedSearchResultDetail[] Info)[] results = Model.GetCategorizedResults();

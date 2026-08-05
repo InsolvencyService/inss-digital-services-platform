@@ -1,8 +1,9 @@
 ﻿using Inss.Platform.Domain.Components.Searching.Formatting;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global - binding from JSON
 // ReSharper disable MemberCanBePrivate.Global - binding from JSON
 
-namespace Inss.Platform.Domain.Components.Searching;
+namespace Inss.Platform.Domain.Components.Searching.Support;
 
 public sealed class SearchResultDefinition
 {

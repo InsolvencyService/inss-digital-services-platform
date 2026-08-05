@@ -12,9 +12,10 @@ public sealed class FipAppBuilder : AppBuilder
     public override PagePath[] Build(IServiceCollection services)
     {
         PageModel searchTermPage = PageModelBuilder
-            .For("Search", "/search", new Content("Search"))
-            .NextPagesIs("/search-results")
-            .AddSearchTermComponent("SearchTerm", new Content("Find an insolvency practitioner"), new Content("Search"), new Content(
+            .For("Search", "/search", "Search")
+            .NextPageIs("/search-results")
+            .AddSearchTermComponent(
+                "SearchTerm", "Find an insolvency practitioner", "Search",
                 "<p class=\"govuk-body\">Search using one or more of the following:</p>" +
                 "<ul class=\"govuk-list govuk-list--bullet\">" +
                 "<li>name</li>" +
@@ -22,7 +23,7 @@ public sealed class FipAppBuilder : AppBuilder
                 "<li>town or city</li>" +
                 "<li>full or partial postcode</li>" +
                 "<li>a combination of these</li>" +
-                "</ul>"))
+                "</ul>")
             .WithLoader<SearchTermComponentLoader>()
             .WithRequiredValidator("You must enter a search text")
             .ComponentAdded()
@@ -30,16 +31,16 @@ public sealed class FipAppBuilder : AppBuilder
         
         PageModel searchResultPage = PageModelBuilder
             .For("Search results", "/search-results", displayFullWidth: true)
-            .NextPagesIs("/search-results") // Reload ourselves with the new search
-            .AddSearchResultComponent("SearchResult", new Content("Search results"), "FIPSearch", "/search-result-detail")
+            .NextPageIs("/search-results") // Reload ourselves with the new search
+            .AddSearchResultComponent("SearchResult", "Search results", "FIPSearch", "/search-result-detail")
             .WithLoader<SearchResultComponentLoader>()
             .WithRequiredValidator("You must enter a search text")
             .ComponentAdded()
             .Build(services);
         
         PageModel searchResultDetailPage = PageModelBuilder
-            .For("Search result detail", "/search-result-detail", new Content("Find another insolvency practitioner"), displayFullWidth: true)
-            .NextPagesIs("/search") // Return to the search term page for a fresh search
+            .For("Search result detail", "/search-result-detail", "Find another insolvency practitioner", displayFullWidth: true)
+            .NextPageIs("/search") // Return to the search term page for a fresh search
             .AddSearchResultDetailComponent("SearchResultDetail", "FIPSearch")
             .WithLoader<SearchResultDetailComponentLoader>()
             .ComponentAdded()

@@ -2,13 +2,13 @@
 
 @Html.HiddenFor(m => m.ConfigKey)
 
-<h1 class="govuk-heading-l">@(Model.Label.Value)</h1>
+<h1 class="govuk-heading-l">@(Model.Label)</h1>
 
 <govuk-input for="@Model.Value" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
     <govuk-input-label is-page-heading="true" class="govuk-label--m">Search</govuk-input-label>
     @if (Model.Hint is not null)
     {
-        <govuk-input-hint>@(Model.Hint.Value)</govuk-input-hint>
+        <govuk-input-hint>@(Model.Hint)</govuk-input-hint>
     }
 </govuk-input>
 
@@ -19,16 +19,16 @@
 {
     if (Model.Definition.DisplayAsTable)
     {
-        @await Html.PartialAsync("_SearchAsTable", Model)
+        @await Html.PartialAsync("Parts/_SearchAsTable", Model)
     }
     else
     {
-        @await Html.PartialAsync("_SearchAsList", Model)
+        @await Html.PartialAsync("Parts/_SearchAsList", Model)
     }
 
     @if (Model.TotalPages > 1)
     {       
-        @await Html.PartialAsync("_SearchPagination", Model)
+        @await Html.PartialAsync("Parts/_SearchPagination", Model)
     }
 }
 else

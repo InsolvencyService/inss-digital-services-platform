@@ -61,7 +61,6 @@ public static class AppSerialization
 
         options.Converters.Add(new PagePathConverter());
         options.Converters.Add(new ComponentIdConverter());
-        options.Converters.Add(new ContentConverter());
         options.Converters.Add(new SessionIdConverter());
         options.Converters.Add(new TypeConverter());
         

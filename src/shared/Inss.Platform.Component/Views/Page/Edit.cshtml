@@ -1,7 +1,6 @@
 ﻿@model PageModel
 
 @{
-    string? buttonText = Model.SubmitButton?.Value;
     ViewData["PageTitle"] = Model.Title;
     ViewData["DisplayFullWidth"] = Model.DisplayFullWidth;
     ViewData["PreviousPage"] = Model.PreviousPage?.Value;
@@ -20,8 +19,8 @@
         @await Html.RenderPageComponentAsync(Model.Components[index], $"Components[{index}]")
     }
 
-    if (!string.IsNullOrWhiteSpace(buttonText))
+    if (!string.IsNullOrWhiteSpace(Model.SubmitButton))
     {
-        <govuk-button type="submit">@buttonText</govuk-button>
+        <govuk-button type="submit">@Model.SubmitButton</govuk-button>
     }
 }

@@ -18,7 +18,7 @@ public sealed class PageModel
     
     public Type? NextPageNavigator { get; set; }
     
-    public Content? SubmitButton { get; init; }
+    public string? SubmitButton { get; init; }
     
     public PageValidationInfo? PageValidationInfo { get; set; }
     

@@ -6,13 +6,13 @@ public sealed class SearchTermComponentModel : ComponentModel, IValueComponent, 
 {
     public override string ViewName => "_SearchTerm";
     
-    public required Content Heading { get; init; }
+    public required string Heading { get; init; }
 
-    public required Content Label { get; init; }
+    public required string Label { get; init; }
     
-    public required Content Description { get; init; }
+    public required string Description { get; init; }
     
-    public Content? Hint { get; init; }
+    public string? Hint { get; init; }
     
     public string? Value { get; set; }
     

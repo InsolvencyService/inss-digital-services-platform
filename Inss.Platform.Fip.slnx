@@ -13,8 +13,4 @@
   <Folder Name="/test/apps/">
     <Project Path="test/apps/Inss.Platform.Fip.Test/Inss.Platform.Fip.Test.csproj" />
   </Folder>
-  <Folder Name="/test/shared/">
-    <Project Path="test/shared/Inss.Platform.Application.Tests/Inss.Platform.Application.Tests.csproj" />
-    <Project Path="test/shared/Inss.Platform.Domain.Tests/Inss.Platform.Domain.Tests.csproj" />
-  </Folder>
 </Solution>

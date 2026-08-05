@@ -11,19 +11,19 @@ public sealed class PageModelBuilder
 {
     private readonly PageModel _page;
 
-    private PageModelBuilder(string title, PagePath path, Content? submitButton, bool displayFullWidth)
+    private PageModelBuilder(string title, PagePath path, string? submitButton, bool displayFullWidth)
     {
         _page = new PageModel { Title = title, Path = path, SubmitButton = submitButton, DisplayFullWidth = displayFullWidth };
     }
 
     public PageModel CurrentPage => _page;
     
-    public static PageModelBuilder For(string title, PagePath path, Content? submitButton = null, bool displayFullWidth = false)
+    public static PageModelBuilder For(string title, PagePath path, string? submitButton = null, bool displayFullWidth = false)
     {
         return new PageModelBuilder(title, path, submitButton, displayFullWidth);
     }
 
-    public PageModelBuilder NextPagesIs(PagePath nextPage)
+    public PageModelBuilder NextPageIs(PagePath nextPage)
     {
         _page.NextPages.Add(nextPage);
         return this;

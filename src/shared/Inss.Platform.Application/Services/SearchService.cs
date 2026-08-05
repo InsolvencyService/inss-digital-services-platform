@@ -2,6 +2,7 @@
 using Inss.Platform.Application.Clients;
 using Inss.Platform.Application.Extensions;
 using Inss.Platform.Domain.Components.Searching;
+using Inss.Platform.Domain.Components.Searching.Support;
 using Microsoft.Extensions.Logging;
 
 namespace Inss.Platform.Application.Services;

@@ -1,9 +1,9 @@
 ﻿@model SingleLineTextComponentModel
 
 <govuk-input for="@Model.Value" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
-    <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.Label.Value)</govuk-input-label>
+    <govuk-input-label is-page-heading="true" class="govuk-label--l">@(Model.Question)</govuk-input-label>
     @if (Model.Hint is not null)
     {
-        <govuk-input-hint>@(Model.Hint.Value)</govuk-input-hint>    
+        <govuk-input-hint>@(Model.Hint)</govuk-input-hint>    
     }
 </govuk-input>

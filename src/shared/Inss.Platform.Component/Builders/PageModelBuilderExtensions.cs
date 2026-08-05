@@ -8,17 +8,17 @@ public static class PageModelBuilderExtensions
 {
     extension(PageModelBuilder pageModelBuilder)
     {
-        public ComponentModelBuilder AddSingleLineTextComponent(ComponentId id, Content label)
+        public ComponentModelBuilder AddSingleLineTextComponent(ComponentId id, string question)
         {
             SingleLineTextComponentModel component = new()
             {
-                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, Label = label
+                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, Question = question
             };
             pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
             return new ComponentModelBuilder(pageModelBuilder, component);
         }
 
-        public ComponentModelBuilder AddSearchTermComponent(ComponentId id, Content heading, Content label, Content description)
+        public ComponentModelBuilder AddSearchTermComponent(ComponentId id, string heading, string label, string description)
         {
             SearchTermComponentModel component = new()
             {
@@ -28,7 +28,7 @@ public static class PageModelBuilderExtensions
             return new ComponentModelBuilder(pageModelBuilder, component);
         }
         
-        public ComponentModelBuilder AddSearchResultComponent(ComponentId id, Content label, string configKey, PagePath resultDetailPath)
+        public ComponentModelBuilder AddSearchResultComponent(ComponentId id, string label, string configKey, PagePath resultDetailPath)
         {
             SearchResultComponentModel component = new()
             {

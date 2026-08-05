@@ -6,9 +6,9 @@ public sealed class SingleLineTextComponentModel : ComponentModel, IValueCompone
 {
     public override string ViewName => "_SingleLineText";
     
-    public required Content Label { get; init; }
+    public required string Question { get; init; }
     
-    public Content? Hint { get; init; }
+    public string? Hint { get; init; }
     
     public string? Value { get; set; }
     

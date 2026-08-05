@@ -2,6 +2,7 @@
 using Inss.Platform.Application.Providers;
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Components.Searching;
+using Inss.Platform.Domain.Components.Searching.Support;
 using Inss.Platform.Domain.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
             services.Configure<RazorViewEngineOptions>(options =>
             {
                 options.ViewLocationFormats.Add("/Views/Components/{0}.cshtml");
+                options.ViewLocationFormats.Add("/Views/Components/Parts/{0}.cshtml");
             });
             services.AddHttpClient();
             services.AddGovUkFrontend();

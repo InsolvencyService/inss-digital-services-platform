@@ -5,7 +5,7 @@ namespace Inss.Platform.Domain.Components;
 
 public sealed class ComponentModelList : List<ComponentModel>
 {
-    public ComponentModel Get(ComponentId id)
+    public ComponentModel GetComponent(ComponentId id)
     {
         ComponentModel? component = this.FirstOrDefault(p => p.Id == id);
         return component ?? throw new ComponentException($"Cannot get component for Id {id}.");
@@ -21,7 +21,7 @@ public sealed class ComponentModelList : List<ComponentModel>
             }
         }
         
-        throw new ComponentException($"Unable to find component of type {typeof(TComponent)}.");
+        throw new ComponentException($"Unable to find component of type {typeof(TComponent).Name}.");
     }
     
     public bool HasComponent<TComponent>() where TComponent : ComponentModel

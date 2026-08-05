@@ -1,5 +1,5 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global - binding from JSON
-namespace Inss.Platform.Domain.Components.Searching;
+namespace Inss.Platform.Domain.Components.Searching.Support;
 
 public sealed class SearchCategory
 {

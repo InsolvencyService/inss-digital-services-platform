@@ -1,12 +1,12 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Inss.Platform.Domain.Primitives;
 
 namespace Inss.Platform.Domain.Serialization.Converters;
 
-internal sealed class PagePathConverter : JsonConverter<PagePath>
+internal sealed class SessionIdConverter : JsonConverter<SessionId>
 {
-    public override PagePath Read(
+    public override SessionId Read(
         ref Utf8JsonReader reader, 
         Type typeToConvert, 
         JsonSerializerOptions options) =>
@@ -14,7 +14,7 @@ internal sealed class PagePathConverter : JsonConverter<PagePath>
 
     public override void Write(
         Utf8JsonWriter writer,
-        PagePath value,
+        SessionId value,
         JsonSerializerOptions options) =>
         writer.WriteStringValue(value.ToString());
 }

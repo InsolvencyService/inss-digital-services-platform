@@ -59,7 +59,7 @@
       "Header": "Email",
       "Order": 4,
       "Category": "Insolvency practitioner details",
-      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.EmailSearchFieldValueFormatter,GovUk.Forms.Domain"
+      "FormatterType": "Inss.Platform.Domain.Components.Searching.Formatting.EmailSearchFieldValueFormatter,Inss.Platform.Domain"
     },
     {
       "Names": [ "RegisteredPhone" ],
@@ -97,7 +97,7 @@
       "Header": "Website",
       "Order": 3,
       "Category": "Authorising body",
-      "FormatterType": "GovUk.Forms.Domain.Search.Formatting.WebsiteSearchFieldValueFormatter,GovUk.Forms.Domain"
+      "FormatterType": "Inss.Platform.Domain.Components.Searching.Formatting.WebsiteSearchFieldValueFormatter,Inss.Platform.Domain"
     },
     {
       "Names": [ "Phone" ],
