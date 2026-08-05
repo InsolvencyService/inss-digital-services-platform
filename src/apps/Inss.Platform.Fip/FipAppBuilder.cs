@@ -39,7 +39,7 @@ public sealed class FipAppBuilder : AppBuilder
         
         PageModel searchResultDetailPage = PageModelBuilder
             .For("Search result detail", "/search-result-detail", new Content("Find another insolvency practitioner"), displayFullWidth: true)
-            .NextPagesIs("/search") // Reload ourselves with the new search
+            .NextPagesIs("/search") // Return to the search term page for a fresh search
             .AddSearchResultDetailComponent("SearchResultDetail", "FIPSearch")
             .WithLoader<SearchResultDetailComponentLoader>()
             .ComponentAdded()

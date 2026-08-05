@@ -7,16 +7,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Inss.Platform.Application.Loaders;
 
-public sealed class SearchTermComponentLoader : IComponentLoader
-{
-    public ValueTask LoadAsync(LoaderContext context)
-    {
-        SearchTermComponentModel searchTerm = context.Component.As<SearchTermComponentModel>();
-        searchTerm.Value = null;
-        return ValueTask.CompletedTask;
-    }
-}
-
 public sealed class SearchResultComponentLoader : IComponentLoader
 {
     private readonly IServiceProvider _serviceProvider;
