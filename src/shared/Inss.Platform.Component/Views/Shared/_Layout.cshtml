@@ -5,8 +5,8 @@
     // ReSharper disable once Razor.LayoutNotResolved
     Layout = "_GovUkPageTemplate";
     string serviceLabel = HeaderOptions.Value.Service.Label;
-    ViewData["Title"] = serviceLabel; //TODO: !string.IsNullOrWhiteSpace(PagePropertiesProvider.PageTitle) ? $"{PagePropertiesProvider.PageTitle} - {serviceLabel}" : serviceLabel;
-    bool isFullPageLayout = false; // TODO: Fix
+    ViewData["Title"] = !string.IsNullOrWhiteSpace((string?)ViewData["PageTitle"]) ? $"{ViewData["PageTitle"]} - {serviceLabel}" : serviceLabel;
+    bool isFullPageLayout = (bool?)ViewData["DisplayFullWidth"] ?? false; // TODO: Fix
 }
 
 @* ReSharper disable once Razor.SectionNotResolved *@

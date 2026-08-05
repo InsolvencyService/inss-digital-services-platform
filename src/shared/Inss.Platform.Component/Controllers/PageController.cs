@@ -1,5 +1,6 @@
 ﻿using Inss.Platform.Application.Services;
 using Inss.Platform.Domain;
+using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Primitives;
 using Inss.Platform.Domain.Serialization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ public class PageController : Controller
             }
         }
         
-        Dictionary<string, string?> queryParams = GetQueryParams();
+        QueryParamList queryParams = GetQueryParams();
         PagePath requestPath = new(Request.Path);
         PageModel page = await _pageService.LoadAsync(requestPath, queryParams);
         return View(page);
@@ -59,9 +60,9 @@ public class PageController : Controller
         return Redirect(redirectTo ?? "/");
     }
     
-    private Dictionary<string, string?> GetQueryParams()
+    private QueryParamList GetQueryParams()
     {
-        Dictionary<string, string?> queryParams = [];
+        QueryParamList queryParams = [];
 
         foreach (KeyValuePair<string, StringValues> queryParam in Request.Query)
         {

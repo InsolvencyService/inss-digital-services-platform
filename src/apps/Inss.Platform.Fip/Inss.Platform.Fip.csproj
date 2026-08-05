@@ -1,6 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <UserSecretsId>bd0f0f47-736f-480d-9fae-5d10a05bf6c2</UserSecretsId>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\shared\Inss.Platform.Component\Inss.Platform.Component.csproj" />
     <ProjectReference Include="..\..\shared\Inss.Platform.Infrastructure\Inss.Platform.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\" />
   </ItemGroup>
 </Project>

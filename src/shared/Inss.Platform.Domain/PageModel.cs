@@ -21,4 +21,6 @@ public sealed class PageModel
     public Content? SubmitButton { get; init; }
     
     public PageValidationInfo? PageValidationInfo { get; set; }
+    
+    public bool DisplayFullWidth { get; init; } 
 }

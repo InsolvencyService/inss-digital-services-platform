@@ -2,6 +2,8 @@
 
 @{
     string? buttonText = Model.SubmitButton?.Value;
+    ViewData["PageTitle"] = Model.Title;
+    ViewData["DisplayFullWidth"] = Model.DisplayFullWidth;
 }
 
 @using (Html.BeginForm(Model))

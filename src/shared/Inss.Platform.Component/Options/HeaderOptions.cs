@@ -6,6 +6,8 @@ public sealed class HeaderOptions
 {
     public string HomeLink { get; init; }
     
+    public string FeedbackLink { get; init; }
+    
     public HeaderService Service { get; init; }
     
     public sealed class HeaderService

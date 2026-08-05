@@ -8,6 +8,8 @@ namespace Inss.Platform.Domain.Components;
 public abstract class ComponentModel
 {
     public required ComponentId Id { get; init; }
+    
+    public required PagePath AssociatedPagePath { get; init; }
 
     public abstract string ViewName { get; }
     
@@ -16,7 +18,7 @@ public abstract class ComponentModel
     public ValidationList Validations { get; set; } = [];
     
     public string TypeName => GetType().FullName!;
-
+    
     public virtual void CopyTo(ComponentModel targetComponent)
     {
     }

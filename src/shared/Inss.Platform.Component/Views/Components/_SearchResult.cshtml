@@ -1,0 +1,40 @@
+﻿@model SearchResultComponentModel
+
+@Html.HiddenFor(m => m.ConfigKey)
+
+<h1 class="govuk-heading-l">@(Model.Label.Value)</h1>
+
+<govuk-input for="@Model.Value" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+    <govuk-input-label is-page-heading="true" class="govuk-label--m">Search</govuk-input-label>
+    @if (Model.Hint is not null)
+    {
+        <govuk-input-hint>@(Model.Hint.Value)</govuk-input-hint>
+    }
+</govuk-input>
+
+@* We switch off the form button so we have control where we place it *@
+<govuk-button type="submit">Search</govuk-button>
+
+@if (Model.Results.Length > 0)
+{
+    if (Model.Definition.DisplayAsTable)
+    {
+        @await Html.PartialAsync("_SearchAsTable", Model)
+    }
+    else
+    {
+        @await Html.PartialAsync("_SearchAsList", Model)
+    }
+
+    @if (Model.TotalPages > 1)
+    {       
+        @await Html.PartialAsync("_SearchPagination", Model)
+    }
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(Model.Value))
+    {
+        <p class="govuk-body">No results found for @(Model.Value)</p>
+    }
+}

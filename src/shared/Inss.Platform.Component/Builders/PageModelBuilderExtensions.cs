@@ -10,14 +10,30 @@ public static class PageModelBuilderExtensions
     {
         public ComponentModelBuilder AddSingleLineTextComponent(ComponentId id, Content label)
         {
-            SingleLineTextComponentModel component = new() { Id = id, Label = label };
+            SingleLineTextComponentModel component = new()
+            {
+                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, Label = label
+            };
             pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
             return new ComponentModelBuilder(pageModelBuilder, component);
         }
 
         public ComponentModelBuilder AddSearchTermComponent(ComponentId id, Content heading, Content label, Content description)
         {
-            SearchTermComponentModel component = new() { Id = id, Heading = heading, Label = label, Description = description };
+            SearchTermComponentModel component = new()
+            {
+                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, Heading = heading, Label = label, Description = description
+            };
+            pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
+            return new ComponentModelBuilder(pageModelBuilder, component);
+        }
+        
+        public ComponentModelBuilder AddSearchResultComponent(ComponentId id, Content label, string configKey)
+        {
+            SearchResultComponentModel component = new()
+            {
+                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, Label = label, ConfigKey = configKey
+            };
             pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
             return new ComponentModelBuilder(pageModelBuilder, component);
         }

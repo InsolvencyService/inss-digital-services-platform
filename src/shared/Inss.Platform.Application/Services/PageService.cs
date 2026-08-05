@@ -26,7 +26,7 @@ public sealed class PageService : IPageService
         _serviceProvider = serviceProvider;
     }
     
-    public async ValueTask<PageModel> LoadAsync(PagePath path, Dictionary<string, string?> queryParams)
+    public async ValueTask<PageModel> LoadAsync(PagePath path, QueryParamList queryParams)
     {
         AppModel app;
         
@@ -48,7 +48,7 @@ public sealed class PageService : IPageService
             
             foreach (IComponentLoader loader in loaders)
             {
-                await loader.LoadAsync(component);
+                await loader.LoadAsync(component, queryParams);
             }
         }
 

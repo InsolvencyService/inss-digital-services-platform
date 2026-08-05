@@ -4,5 +4,5 @@ namespace Inss.Platform.Application.Loaders;
 
 public interface IComponentLoader
 {
-    ValueTask LoadAsync(ComponentModel component);
+    ValueTask LoadAsync(ComponentModel component, QueryParamList queryParams);
 }
