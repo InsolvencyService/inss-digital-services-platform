@@ -1,4 +1,5 @@
 ﻿using Inss.Platform.Application.Extensions;
+using Inss.Platform.Component.Resolvers;
 using Inss.Platform.Domain;
 using Inss.Platform.Fip.Application.Services;
 using Inss.Platform.Fip.Infrastructure.Clients;
@@ -13,7 +14,8 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddAppServices(IWebHostEnvironment environment, IConfiguration configuration)
         {
             const string configKey = "FIPSearch";
-            
+
+            services.AddSingleton<IStartPageResolver, StartPageResolver>();
             services.AddSearch<SearchEnrichmentService>(configKey);
             
             if (environment.IsDevelopment())

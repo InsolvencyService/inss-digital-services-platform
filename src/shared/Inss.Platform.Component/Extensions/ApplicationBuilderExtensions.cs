@@ -51,6 +51,10 @@ public static class ApplicationBuilderExtensions
                         .WithStaticAssets();    
                 }
                 
+                endpoints.MapControllerRoute(
+                        name: "default",
+                        pattern: "{controller=Start}/{action=Index}/{id?}")
+                    .WithStaticAssets();
                 /*
                 IServiceProvider serviceProvider = endpoints.ServiceProvider;
                 IFormFactory formProvider = serviceProvider.GetRequiredService<IFormFactory>();
