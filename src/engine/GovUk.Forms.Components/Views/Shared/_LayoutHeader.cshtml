@@ -45,14 +45,11 @@
                     @if (isSignedIn)
                     {
                         <li class="rebranded-one-login-header__nav__list-item">
-                            <form asp-controller="Account" asp-action="Logout" method="post">
-                                <input type="hidden" name="authProvider" value="Provider" />
-                                <a href="/sign-out" class="rebranded-one-login-header__nav__link">
-                                    <span class="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">
-                                        Sign out
-                                    </span>
-                                </a>
-                            </form>
+                            <a href="/sign-out" class="rebranded-one-login-header__nav__link">
+                                <span class="rebranded-one-login-header__nav__link-content rebranded-one-login-header__nav__link-content--sign-out">
+                                    Sign out
+                                </span>
+                            </a>
                         </li>
                     }
                 </ul>
