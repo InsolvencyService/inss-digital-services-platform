@@ -48,7 +48,8 @@ public sealed class PageService : IPageService
             
             foreach (IComponentLoader loader in loaders)
             {
-                await loader.LoadAsync(component, queryParams);
+                LoaderContext context = new(app, page, component, queryParams);
+                await loader.LoadAsync(context);
             }
         }
 

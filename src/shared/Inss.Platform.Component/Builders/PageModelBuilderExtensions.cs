@@ -28,11 +28,21 @@ public static class PageModelBuilderExtensions
             return new ComponentModelBuilder(pageModelBuilder, component);
         }
         
-        public ComponentModelBuilder AddSearchResultComponent(ComponentId id, Content label, string configKey)
+        public ComponentModelBuilder AddSearchResultComponent(ComponentId id, Content label, string configKey, PagePath resultDetailPath)
         {
             SearchResultComponentModel component = new()
             {
-                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, Label = label, ConfigKey = configKey
+                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, Label = label, ConfigKey = configKey, ResultDetailPath = resultDetailPath
+            };
+            pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
+            return new ComponentModelBuilder(pageModelBuilder, component);
+        }
+        
+        public ComponentModelBuilder AddSearchResultDetailComponent(ComponentId id, string configKey)
+        {
+            SearchResultDetailComponentModel component = new()
+            {
+                Id = id, AssociatedPagePath = pageModelBuilder.CurrentPage.Path, ConfigKey = configKey
             };
             pageModelBuilder.CurrentPage.Components = [..pageModelBuilder.CurrentPage.Components, component];
             return new ComponentModelBuilder(pageModelBuilder, component);

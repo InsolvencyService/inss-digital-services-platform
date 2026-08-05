@@ -1,0 +1,24 @@
+﻿@model SearchResultDetailComponentModel
+
+@{
+    (SearchCategory Category, CategorizedSearchResultDetail[] Info)[] results = Model.GetCategorizedResults();
+}
+
+@foreach ((SearchCategory Category, CategorizedSearchResultDetail[] Info) result in results)
+{
+    <h1 class="@(result.Category.Css ?? "govuk-heading-m")">@(result.Category.Label)</h1>
+
+    <govuk-summary-list>
+        @foreach (var info in result.Info)
+        {
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>
+                    @(info.Label)
+                </govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                    @Html.Raw(info.Value)
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+        }
+    </govuk-summary-list>
+}

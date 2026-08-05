@@ -1,0 +1,37 @@
+﻿namespace Inss.Platform.Domain.Components.Searching;
+
+public sealed class SearchResultDetailComponentModel : ComponentModel
+{
+    public override string ViewName => "_SearchResultDetail";
+    
+    public required string ConfigKey { get; init; }
+    
+    public SearchResult Result { get; set; }
+    
+    public SearchDefinition Definition { get; set; }
+
+    public (SearchCategory Category, CategorizedSearchResultDetail[] Info)[] GetCategorizedResults()
+    {
+        List<(SearchCategory Category, CategorizedSearchResultDetail[] Info)> categoryInfoList = [];
+        
+        foreach (SearchCategory category in Definition.Categories)
+        {
+            List<CategorizedSearchResultDetail> categoryDetailList = [];
+            
+            foreach (SearchDetailDefinition categoryField in Definition.Details.Where(d => d.Category == category.Label).OrderBy(f => f.Order))
+            {
+                KeyValuePair<string, string>[] fields = Result.Fields.Where(f => categoryField.Names.Contains(f.Key)).ToArray();
+                
+                categoryDetailList.Add(new CategorizedSearchResultDetail
+                {
+                    Label = categoryField.GetLabel(), 
+                    Value = categoryField.GetValue(fields.Select(f => f.Value).ToArray())
+                });
+            }
+
+            categoryInfoList.Add((category, categoryDetailList.ToArray()));
+        }
+
+        return categoryInfoList.ToArray();
+    }
+}

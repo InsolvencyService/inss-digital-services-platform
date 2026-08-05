@@ -1,1 +1,4 @@
-﻿<govuk-back-link href="/"/>
+﻿@{
+    string previousPageLink = (string?)ViewData["PreviousPage"] ?? "/";
+}
+<govuk-back-link href="@previousPageLink"/>

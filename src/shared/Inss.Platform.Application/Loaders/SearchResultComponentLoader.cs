@@ -1,12 +1,21 @@
 ﻿using GovUk.Forms.Application.Services;
 using Inss.Platform.Application.Extensions;
 using Inss.Platform.Application.Providers;
-using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Components.Searching;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Inss.Platform.Application.Loaders;
+
+public sealed class SearchTermComponentLoader : IComponentLoader
+{
+    public ValueTask LoadAsync(LoaderContext context)
+    {
+        SearchTermComponentModel searchTerm = context.Component.As<SearchTermComponentModel>();
+        searchTerm.Value = null;
+        return ValueTask.CompletedTask;
+    }
+}
 
 public sealed class SearchResultComponentLoader : IComponentLoader
 {
@@ -19,22 +28,22 @@ public sealed class SearchResultComponentLoader : IComponentLoader
         _logger = logger;
     }
     
-    public async ValueTask LoadAsync(ComponentModel component, QueryParamList queryParams)
+    public async ValueTask LoadAsync(LoaderContext context)
     {
-        SearchResultComponentModel searchResult = component.As<SearchResultComponentModel>();
+        SearchResultComponentModel searchResult = context.Component.As<SearchResultComponentModel>();
+        
+        // Clear data
+        searchResult.Value = null;
+        searchResult.Results = [];
         
         // Load and check if columns in config
         ISearchConfigProvider searchConfigProvider = _serviceProvider.GetRequiredKeyedService<ISearchConfigProvider>(searchResult.ConfigKey);
         searchResult.Definition = searchConfigProvider.LoadConfig();
         CheckAndLogConfigurationFiles(searchResult);
         
-        // Update the result detail path so the row links for each result can be built 
-        //SearchResultDetailModel searchResultDetail = context.Section.Pages.GetFirstOf<SearchResultDetailModel>();
-        //searchResult.ResultDetailPath = searchResultDetail.Path;
-        
         // Get the requested search query params
-        string? searchText = queryParams.GetQueryParam<string>("keyword");
-        int currentPageNumber = queryParams.GetQueryParam<int>("currentPageNumber");
+        string? searchText = context.QueryParams.GetQueryParam<string>("keyword");
+        int currentPageNumber = context.QueryParams.GetQueryParam<int>("currentPageNumber");
         
         if (currentPageNumber < 1)
         {
@@ -88,14 +97,11 @@ public sealed class SearchResultComponentLoader : IComponentLoader
 
         string[] words = searchText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        List<string> wildcardWords = new();
+        List<string> wildcardWords = [];
 
         foreach (string word in words)
         {
-            string wildcardWord = word.EndsWith('*') 
-                ? word 
-                : string.Concat(word, "*");
-
+            string wildcardWord = word.EndsWith('*') ? word : string.Concat(word, "*");
             wildcardWords.Add(wildcardWord);
         }
 

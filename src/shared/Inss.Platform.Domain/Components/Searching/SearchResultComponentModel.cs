@@ -66,7 +66,7 @@ public class SearchResultComponentModel : ComponentModel, IValueComponent, IQuer
 
         string key = identifierDefinition.Names[0];
         string value = result.Fields[key];
-        return $"<a href='{ResultDetailPath}/?key={WebUtility.UrlEncode(key)}" +
+        return $"<a href='{ResultDetailPath}?key={WebUtility.UrlEncode(key)}" +
                $"&value={WebUtility.UrlEncode(value)}' class='govuk-link'>{displayValue}</a>";
     }
     

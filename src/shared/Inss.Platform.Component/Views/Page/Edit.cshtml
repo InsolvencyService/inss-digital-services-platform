@@ -4,6 +4,7 @@
     string? buttonText = Model.SubmitButton?.Value;
     ViewData["PageTitle"] = Model.Title;
     ViewData["DisplayFullWidth"] = Model.DisplayFullWidth;
+    ViewData["PreviousPage"] = Model.PreviousPage?.Value;
 }
 
 @using (Html.BeginForm(Model))

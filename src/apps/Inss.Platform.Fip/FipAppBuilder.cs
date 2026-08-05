@@ -23,6 +23,7 @@ public sealed class FipAppBuilder : AppBuilder
                 "<li>full or partial postcode</li>" +
                 "<li>a combination of these</li>" +
                 "</ul>"))
+            .WithLoader<SearchTermComponentLoader>()
             .WithRequiredValidator("You must enter a search text")
             .ComponentAdded()
             .Build(services);
@@ -30,14 +31,22 @@ public sealed class FipAppBuilder : AppBuilder
         PageModel searchResultPage = PageModelBuilder
             .For("Search results", "/search-results", displayFullWidth: true)
             .NextPagesIs("/search-results") // Reload ourselves with the new search
-            .AddSearchResultComponent("LastName", new Content("Search results"), "FIPSearch")
+            .AddSearchResultComponent("SearchResult", new Content("Search results"), "FIPSearch", "/search-result-detail")
             .WithLoader<SearchResultComponentLoader>()
             .WithRequiredValidator("You must enter a search text")
             .ComponentAdded()
             .Build(services);
         
-        services.AddSingleton<IAppFactory>(_ => new AppFactory([searchTermPage, searchResultPage]));
+        PageModel searchResultDetailPage = PageModelBuilder
+            .For("Search result detail", "/search-result-detail", new Content("Find another insolvency practitioner"), displayFullWidth: true)
+            .NextPagesIs("/search") // Reload ourselves with the new search
+            .AddSearchResultDetailComponent("SearchResultDetail", "FIPSearch")
+            .WithLoader<SearchResultDetailComponentLoader>()
+            .ComponentAdded()
+            .Build(services);
+        
+        services.AddSingleton<IAppFactory>(_ => new AppFactory([searchTermPage, searchResultPage, searchResultDetailPage]));
 
-        return [searchTermPage.Path, searchResultPage.Path];
+        return [searchTermPage.Path, searchResultPage.Path, searchResultDetailPage.Path];
     }
 }
