@@ -1,7 +1,7 @@
 ﻿@inject IOptions<FooterOptions> Footer
 
 <govuk-footer>
-    <govuk-footer-meta>
+    <govuk-footer-meta visually-hidden-title="Support links">
         <govuk-footer-meta-items>
             @foreach (FooterOptions.FooterLink item in Footer.Value.Links)
             {
