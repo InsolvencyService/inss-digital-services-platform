@@ -8,4 +8,7 @@
         </PackageReference>
         <PackageReference Include="xunit" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\shared\Inss.Platform.Application\Inss.Platform.Application.csproj" />
+    </ItemGroup>
 </Project>

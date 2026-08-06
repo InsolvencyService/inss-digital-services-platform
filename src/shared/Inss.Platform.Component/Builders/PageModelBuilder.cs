@@ -46,6 +46,11 @@ public sealed class PageModelBuilder
         _page.NextPages.AddRange(nextPages);
         return this;
     }
+
+    public ComponentId GetNextComponentId()
+    {
+        return $"{_page.Path}/component/{_page.Components.Count}"; 
+    }
     
     public PageModel Build(IServiceCollection services)
     {

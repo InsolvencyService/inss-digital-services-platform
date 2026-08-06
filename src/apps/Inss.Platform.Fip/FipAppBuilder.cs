@@ -15,7 +15,7 @@ public sealed class FipAppBuilder : AppBuilder
             .For("Search", "/search", "Search")
             .NextPageIs("/search-results")
             .AddSearchTermComponent(
-                "SearchTerm", "Find an insolvency practitioner", "Search",
+                "Find an insolvency practitioner", "Search",
                 "<p class=\"govuk-body\">Search using one or more of the following:</p>" +
                 "<ul class=\"govuk-list govuk-list--bullet\">" +
                 "<li>name</li>" +
@@ -33,7 +33,7 @@ public sealed class FipAppBuilder : AppBuilder
             .For("Search results", "/search-results", displayFullWidth: true)
             .NextPageIs("/search-results") // Reload ourselves with the new search
             .PreviousPageIs("/search") // We know it will always be the search page
-            .AddSearchResultComponent("SearchResult", "Search results", "FIPSearch", "/search-result-detail")
+            .AddSearchResultComponent("Search results", "FIPSearch", "/search-result-detail")
             .WithLoader<SearchResultComponentLoader>()
             .WithRequiredValidator("You must enter a search text")
             .ComponentAdded()
@@ -42,7 +42,7 @@ public sealed class FipAppBuilder : AppBuilder
         PageModel searchResultDetailPage = PageModelBuilder
             .For("Search result detail", "/search-result-detail", "Find another insolvency practitioner", displayFullWidth: true)
             .NextPageIs("/search") // Return to the search term page for a fresh search
-            .AddSearchResultDetailComponent("SearchResultDetail", "FIPSearch")
+            .AddSearchResultDetailComponent("FIPSearch")
             .WithLoader<SearchResultDetailComponentLoader>()
             .ComponentAdded()
             .Build(services);
