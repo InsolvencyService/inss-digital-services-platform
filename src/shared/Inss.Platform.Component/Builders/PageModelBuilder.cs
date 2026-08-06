@@ -29,6 +29,12 @@ public sealed class PageModelBuilder
         return this;
     }
     
+    public PageModelBuilder PreviousPageIs(PagePath previousPage)
+    {
+        _page.PreviousPage = previousPage;
+        return this;
+    }
+    
     public PageModelBuilder NextPagesAre<TNextPageNavigator>(params PagePath[] nextPages) where TNextPageNavigator : INextPageNavigator
     {
         if (nextPages.Length < 2)

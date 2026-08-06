@@ -1,4 +1,8 @@
 ﻿@{
-    string previousPageLink = (string?)ViewData["PreviousPage"] ?? "/";
+    string? previousPageLink = (string?)ViewData["PreviousPage"];
 }
-<govuk-back-link href="@previousPageLink"/>
+
+@if (!string.IsNullOrWhiteSpace(previousPageLink))
+{
+    <govuk-back-link href="@previousPageLink"/>
+}

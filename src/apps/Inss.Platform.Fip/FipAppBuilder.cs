@@ -32,6 +32,7 @@ public sealed class FipAppBuilder : AppBuilder
         PageModel searchResultPage = PageModelBuilder
             .For("Search results", "/search-results", displayFullWidth: true)
             .NextPageIs("/search-results") // Reload ourselves with the new search
+            .PreviousPageIs("/search") // We know it will always be the search page
             .AddSearchResultComponent("SearchResult", "Search results", "FIPSearch", "/search-result-detail")
             .WithLoader<SearchResultComponentLoader>()
             .WithRequiredValidator("You must enter a search text")
