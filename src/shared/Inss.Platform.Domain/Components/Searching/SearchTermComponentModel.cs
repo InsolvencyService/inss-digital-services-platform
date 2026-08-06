@@ -1,6 +1,4 @@
-﻿using Inss.Platform.Domain.Primitives;
-
-namespace Inss.Platform.Domain.Components.Searching;
+﻿namespace Inss.Platform.Domain.Components.Searching;
 
 public sealed class SearchTermComponentModel : ComponentModel, IValueComponent, IQueryParamComponent
 {

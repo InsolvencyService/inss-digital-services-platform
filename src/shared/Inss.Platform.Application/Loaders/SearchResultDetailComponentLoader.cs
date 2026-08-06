@@ -19,22 +19,24 @@ public sealed class SearchResultDetailComponentLoader : IComponentLoader
     
     public async ValueTask LoadAsync(LoaderContext context)
     {
+        ConfigureSearchResultDetailDefinition(context);
+        ConfigurePreviousPage(context);
+        await PerformSearchAsync(context);
+    }
+
+    private void ConfigureSearchResultDetailDefinition(LoaderContext context)
+    {
         SearchResultDetailComponentModel searchResultDetail = context.Component.As<SearchResultDetailComponentModel>();
-        
         ISearchConfigProvider searchConfigProvider = _serviceProvider.GetRequiredKeyedService<ISearchConfigProvider>(searchResultDetail.ConfigKey);
         searchResultDetail.Definition = searchConfigProvider.LoadConfig();
-        
-        // Update the result detail previous path so we can link back to the correct paged results
-        PageModel searchResultPage = context.App.Pages.GetFirstPageAssociatedTo<SearchResultComponentModel>();
-        SearchResultComponentModel searchResult = searchResultPage.Components.GetFirstOf<SearchResultComponentModel>();
-        context.Page.PreviousPage = searchResult.CurrentPageNumber > 1
-            ? $"{searchResult.AssociatedPagePath.Value}?keyword={searchResult.Value}&currentPageNumber={searchResult.CurrentPageNumber}"
-            : $"{searchResult.AssociatedPagePath.Value}?keyword={searchResult.Value}";
-        
-        string key = context.QueryParams.GetQueryParam<string>("key") ?? throw new ComponentException("No key query param found.");
-        string value = context.QueryParams.GetQueryParam<string>("value") ?? throw new ComponentException("No value query param found.");
+    }
+    
+    private async ValueTask PerformSearchAsync(LoaderContext context)
+    {
+        SearchResultDetailComponentModel searchResultDetail = context.Component.As<SearchResultDetailComponentModel>();
+        string key = context.QueryParams.GetQueryParam<string>("key");
+        string value = context.QueryParams.GetQueryParam<string>("value");
         SearchDetailRequest request = new() { KeyField = key, KeyValue = value };
-
         ISearchService searchService = _serviceProvider.GetRequiredKeyedService<ISearchService>(searchResultDetail.ConfigKey);
         SearchDetailResponse? response = await searchService.SearchDetailAsync(request);
 
@@ -44,5 +46,14 @@ public sealed class SearchResultDetailComponentLoader : IComponentLoader
         }
 
         searchResultDetail.Result = response.Result;
+    }
+    
+    private static void ConfigurePreviousPage(LoaderContext context)
+    {
+        PageModel searchResultPage = context.App.Pages.GetFirstPageAssociatedTo<SearchResultComponentModel>();
+        SearchResultComponentModel searchResult = searchResultPage.Components.GetFirstOf<SearchResultComponentModel>();
+        string keyword = context.QueryParams.GetQueryParam<string>("keyword");
+        int currentPageNumber = context.QueryParams.GetQueryParam<int>("currentPageNumber");
+        context.Page.PreviousPage =  $"{searchResult.AssociatedPagePath.Value}?keyword={keyword}&currentPageNumber={currentPageNumber}";
     }
 }

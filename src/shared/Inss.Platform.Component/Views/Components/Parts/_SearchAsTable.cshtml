@@ -36,7 +36,7 @@
                 if (Model.IsFirstDisplayableColumn(column))
                 {
                     <td class="govuk-table__cell">
-                        @Html.Raw(Model.GetResultDetailLink(row, value))
+                        <a href="@(Model.GetResultDetailLink(row).Value)" class="govuk-link">@value</a>
                     </td>
                 }
                 else

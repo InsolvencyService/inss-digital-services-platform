@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Inss.Platform.Domain.Components.Searching.Support;
+﻿using Inss.Platform.Domain.Components.Searching.Support;
 using Inss.Platform.Domain.Exceptions;
 using Inss.Platform.Domain.Primitives;
 
@@ -52,7 +51,7 @@ public class SearchResultComponentModel : ComponentModel, IValueComponent, IQuer
         return Definition.Results.OrderBy(r => r.Order).First(r => r.IsDisplayable) == column;
     }
     
-    public string GetResultDetailLink(SearchResult result, string displayValue)
+    public PagePath GetResultDetailLink(SearchResult result)
     {
         SearchResultDefinition? identifierDefinition = Definition.Results.SingleOrDefault(r => r.IsIdentifier);
 
@@ -61,10 +60,14 @@ public class SearchResultComponentModel : ComponentModel, IValueComponent, IQuer
             throw new ComponentException("Unable to find an identifier for result detail links.");
         }
 
+        QueryParamList queryParams = [];
         string key = identifierDefinition.Names[0];
-        string value = result.Fields[key];
-        return $"<a href='{ResultDetailPath}?key={WebUtility.UrlEncode(key)}" +
-               $"&value={WebUtility.UrlEncode(value)}' class='govuk-link'>{displayValue}</a>";
+        queryParams.AddQueryParam("key", identifierDefinition.Names[0]);
+        queryParams.AddQueryParam("value", result.Fields[key]);
+        queryParams.AddQueryParam("keyword", Value);
+        queryParams.AddQueryParam("currentPageNumber", CurrentPageNumber);
+        string searchQueryParams = queryParams.BuildQueryParams()!;
+        return $"{ResultDetailPath}{searchQueryParams}";
     }
     
     public void Append(QueryParamList queryParams)

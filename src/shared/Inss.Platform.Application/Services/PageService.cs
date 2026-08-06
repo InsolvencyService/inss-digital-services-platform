@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Net;
-using Inss.Platform.Application.Factories;
 using Inss.Platform.Application.Loaders;
 using Inss.Platform.Application.Navigators;
 using Inss.Platform.Application.Providers;
@@ -16,30 +14,18 @@ namespace Inss.Platform.Application.Services;
 public sealed class PageService : IPageService
 {
     private readonly IAppProvider _appProvider;
-    private readonly IAppFactory _appFactory;
     private readonly IServiceProvider _serviceProvider;
 
-    public PageService(IAppProvider appProvider, IAppFactory appFactory, IServiceProvider serviceProvider)
+    public PageService(IAppProvider appProvider, IServiceProvider serviceProvider)
     {
         _appProvider = appProvider;
-        _appFactory = appFactory;
         _serviceProvider = serviceProvider;
     }
     
     public async ValueTask<PageModel> LoadAsync(PagePath path, QueryParamList queryParams)
     {
-        AppModel app;
+        AppModel app = await _appProvider.GetAsync();
         
-        if (!await _appProvider.ExistsAsync("Test"))
-        {
-            app = await _appFactory.CreateAsync("Test");
-            await _appProvider.SaveAsync("Test", app);
-        }
-        else
-        {
-            app = await _appProvider.GetAsync("Test");
-        }
-
         PageModel page = app.Pages.GetPage(path);
         
         foreach (ComponentModel component in page.Components)
@@ -58,7 +44,7 @@ public sealed class PageService : IPageService
 
     public async ValueTask<PageModel?> ValidateAsync(PageModel page)
     {
-        AppModel app = await _appProvider.GetAsync("Test");
+        AppModel app = await _appProvider.GetAsync();
         PageModel currentPage = app.Pages.GetPage(page.Path);
 
         foreach (ComponentModel currentComponent in currentPage.Components)
@@ -96,7 +82,7 @@ public sealed class PageService : IPageService
     
     public async ValueTask<PagePath?> SaveAsync(PageModel page)
     {
-        AppModel app = await _appProvider.GetAsync("Test");
+        AppModel app = await _appProvider.GetAsync();
         
         try
         {
@@ -128,7 +114,7 @@ public sealed class PageService : IPageService
         }
         finally
         {
-            await _appProvider.SaveAsync("Test", app);
+            await _appProvider.SaveAsync(app);
         }
     }
     
@@ -138,11 +124,8 @@ public sealed class PageService : IPageService
         {
             return path;
         }
-        
-        string query = string.Join("&", queryParams
-            .Where(kvp => !string.IsNullOrEmpty(kvp.Key) && kvp.Value != null)
-            .Select(kvp => $"{WebUtility.UrlEncode(kvp.Key)}={WebUtility.UrlEncode(kvp.Value)}"));
-        
-        return string.IsNullOrWhiteSpace(query) ? path : $"{path}?{query}";
+
+        string? query = queryParams.BuildQueryParams();
+        return string.IsNullOrWhiteSpace(query) ? path : $"{path}{query}";
     }
 }

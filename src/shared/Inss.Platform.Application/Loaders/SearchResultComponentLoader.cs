@@ -33,8 +33,8 @@ public sealed class SearchResultComponentLoader : IComponentLoader
         CheckAndLogConfigurationFiles(searchResult);
         
         // Get the requested search query params
-        string? searchText = context.QueryParams.GetQueryParam<string>("keyword");
-        int currentPageNumber = context.QueryParams.GetQueryParam<int>("currentPageNumber");
+        string searchText = context.QueryParams.GetQueryParam<string>("keyword");
+        int currentPageNumber = context.QueryParams.FindQueryParam<int>("currentPageNumber");
         
         if (currentPageNumber < 1)
         {

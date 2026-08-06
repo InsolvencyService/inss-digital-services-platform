@@ -1,6 +1,5 @@
 ﻿using Azure;
 using Azure.Search.Documents;
-using GovUk.Forms.Application.Services;
 using Inss.Platform.Application.Clients;
 using Inss.Platform.Application.Providers;
 using Inss.Platform.Application.Services;
@@ -19,7 +18,9 @@ public static class ServiceCollectionExtensions
     {
         public IServiceCollection AddInfrastructure()
         {
-            services.AddSingleton<IAppProvider, TempAppProvider>();
+            // TODO: Allow for multiple options!
+            services.AddSingleton<IAppProvider, NoSessionAppProvider>();
+            services.AddSingleton<IUserSessionProvider, NoopUserSessionProvider>();
             return services;
         }
         

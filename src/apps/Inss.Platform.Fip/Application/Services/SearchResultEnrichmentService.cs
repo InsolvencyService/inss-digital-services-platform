@@ -2,7 +2,6 @@
 using GovUk.Forms.Application.Services;
 using Inss.Platform.Application.Clients;
 using Inss.Platform.Application.Services;
-using Inss.Platform.Domain.Components.Searching;
 using Inss.Platform.Domain.Components.Searching.Support;
 
 namespace Inss.Platform.Fip.Application.Services;
@@ -54,15 +53,15 @@ public sealed class SearchEnrichmentService : ISearchService
             return;
         }
         
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyName), authorisingBodyLookup.AuthBodyName);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine1), authorisingBodyLookup.AuthBodyAddressLine1);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine2), authorisingBodyLookup.AuthBodyAddressLine2);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine3), authorisingBodyLookup.AuthBodyAddressLine3);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine4), authorisingBodyLookup.AuthBodyAddressLine4);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyAddressLine5), authorisingBodyLookup.AuthBodyAddressLine5);
-        result.Fields.Add(nameof(authorisingBodyLookup.AuthBodyPostcode), authorisingBodyLookup.AuthBodyPostcode);
-        result.Fields.Add(nameof(authorisingBodyLookup.Phone), authorisingBodyLookup.Phone);
-        result.Fields.Add(nameof(authorisingBodyLookup.Website), authorisingBodyLookup.Website);
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyName)] = authorisingBodyLookup.AuthBodyName;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine1)] = authorisingBodyLookup.AuthBodyAddressLine1;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine2)] = authorisingBodyLookup.AuthBodyAddressLine2;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine3)] = authorisingBodyLookup.AuthBodyAddressLine3;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine4)] = authorisingBodyLookup.AuthBodyAddressLine4;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine5)] = authorisingBodyLookup.AuthBodyAddressLine5;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyPostcode)] = authorisingBodyLookup.AuthBodyPostcode;
+        result.Fields[nameof(authorisingBodyLookup.Phone)] = authorisingBodyLookup.Phone;
+        result.Fields[nameof(authorisingBodyLookup.Website)] = authorisingBodyLookup.Website;
     }
 
     private const string Json = """
