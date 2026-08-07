@@ -12,6 +12,7 @@
         <ProjectReference Include="..\..\..\src\apps\Inss.Platform.Ipus\Inss.Platform.Ipus.csproj" />
     </ItemGroup>
     <ItemGroup>
+      <Folder Include="Application\" />
       <Folder Include="Domain\" />
     </ItemGroup>
 </Project>

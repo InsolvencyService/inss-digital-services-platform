@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\common\Inss.Common.Infrastructure\Inss.Common.Infrastructure.csproj" />
         <ProjectReference Include="..\..\common\Inss.Common\Inss.Common.csproj" />
         <ProjectReference Include="..\..\shared\Inss.Platform.Component\Inss.Platform.Component.csproj" />
         <ProjectReference Include="..\..\shared\Inss.Platform.Infrastructure\Inss.Platform.Infrastructure.csproj" />
