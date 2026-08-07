@@ -5,6 +5,7 @@ using Inss.Platform.Infrastructure.Extensions;
 using Inss.Platform.Ipus.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.AddConfigOverrideIfExists();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 builder.Services.AddComponents(builder.Configuration);

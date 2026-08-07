@@ -3,6 +3,7 @@ using Inss.Platform.Component.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.AddConfigOverrideIfExists();
 builder.Services.AddComponents(builder.Configuration);
 builder.Services.AddBrokerAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddAuthCodeStore(builder.Configuration);

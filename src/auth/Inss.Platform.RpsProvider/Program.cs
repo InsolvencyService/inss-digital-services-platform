@@ -3,6 +3,7 @@ using Inss.Platform.RpsProvider.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.AddConfigOverrideIfExists();
 builder.Services.AddComponents(builder.Configuration);
 builder.Services.AddRpsAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddAuthCodeStore(builder.Configuration);
