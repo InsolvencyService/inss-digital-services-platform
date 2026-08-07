@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+      <UserSecretsId>4d6be5d9-b8a8-415f-95b2-250b42166039</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\common\Inss.Common.Infrastructure\Inss.Common.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\shared\Inss.Platform.Component\Inss.Platform.Component.csproj" />
+        <ProjectReference Include="..\..\shared\Inss.Platform.Infrastructure\Inss.Platform.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Start\Index.cshtml" />
+    </ItemGroup>
+
+</Project>
