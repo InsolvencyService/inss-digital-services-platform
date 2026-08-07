@@ -29,13 +29,13 @@ stages:
       displayName: NuGet Restore
       inputs:
         command: 'restore'
-        projects: '**/GovUk.Forms.slnx'
+        projects: '**/Inss.Platform.slnx'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build Solution'
       inputs:
         command: 'build'
-        projects: '**/GovUk.Forms.slnx'
+        projects: '**/Inss.Platform.slnx'
         arguments: '--configuration $(BuildConfiguration)'
           
     - task: DotNetCoreCLI@2
@@ -46,21 +46,30 @@ stages:
         arguments: '--configuration $(BuildConfiguration)'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Publish HostApp'
+      displayName: 'Publish Fip'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'publish'
         publishWebProjects: false
-        projects: '**/GovUk.Forms.HostApp.csproj'
+        projects: '**/Inss.Platform.Fip.csproj'
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Ipus'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: '**/Inss.Platform.Ipus.csproj'
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        
     - task: DotNetCoreCLI@2
       displayName: 'Publish Broker'
       condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'publish'
         publishWebProjects: false
-        projects: '**/Inss.Auth.Broker.csproj'
+        projects: '**/Inss.Platform.Broker.csproj'
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
     - task: DotNetCoreCLI@2
@@ -69,7 +78,7 @@ stages:
       inputs:
         command: 'publish'
         publishWebProjects: false
-        projects: '**/Inss.Auth.RpsProvider.csproj'
+        projects: '**/Inss.Platform.RpsProvider.csproj'
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
     - task: DotNetCoreCLI@2
