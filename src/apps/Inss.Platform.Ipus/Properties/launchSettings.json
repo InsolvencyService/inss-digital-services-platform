@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "https": {
@@ -6,11 +6,10 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "",
-      "applicationUrl": "https://localhost:5056",
+      "applicationUrl": "https://localhost:5051",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=your-key-here",
-        "DOTNET_HOSTINGSTARTUPASSEMBLIES": "GovUk.Forms.Components;GovUk.Forms.HostApp;Inss.GovUk.Forms.IPUpload"
+        "APPLICATIONINSIGHTS_CONNECTION_STRING": "InstrumentationKey=your-key-here"
       }
     }
   }

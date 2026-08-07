@@ -4,15 +4,19 @@
         <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" />
+        <PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" />
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
         <PackageReference Include="GovUk.Frontend.AspNetCore" />
         <PackageReference Include="OpenTelemetry.Api" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+        <PackageReference Include="System.Security.Cryptography.Xml" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="wwwroot\lib\css\" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Inss.Platform.Application\Inss.Platform.Application.csproj" />
+      <ProjectReference Include="..\Inss.Platform.Infrastructure\Inss.Platform.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

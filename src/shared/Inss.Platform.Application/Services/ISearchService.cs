@@ -1,7 +1,6 @@
-﻿using Inss.Platform.Domain.Components.Searching;
-using Inss.Platform.Domain.Components.Searching.Support;
+﻿using Inss.Platform.Domain.Components.Searching.Support;
 
-namespace GovUk.Forms.Application.Services;
+namespace Inss.Platform.Application.Services;
 
 public interface ISearchService
 {

@@ -1,7 +1,9 @@
-﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
+﻿using Azure.Identity;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using GovUk.Frontend.AspNetCore;
 using Inss.Platform.Component.Binding;
 using Inss.Platform.Component.Options;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +30,7 @@ public static class ServiceCollectionExtensions
                 .Bind(configuration.GetSection("Analytics"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
-            
+
             services.AddControllersWithViews(o => o.ModelBinderProviders.Insert(0, new PageComponentBinderProvider()));
             services.Configure<RazorViewEngineOptions>(options =>
             {
@@ -39,6 +41,26 @@ public static class ServiceCollectionExtensions
             services.AddGovUkFrontend();
             services.AddHealthChecks();
             services.AddOpenTelemetry().UseAzureMonitor();
+            return services;
+        }
+        
+        public IServiceCollection AddAppDataProtection(IConfiguration configuration)
+        {
+            // Below manages the shared data protection mechanism which is used by auth correlation cookies among other functions.
+            // The important part is the app name (SetApplicationName) as this ensures that the cross app cookies can be decrypted.
+            // It uses managed identities which means the app must have the appropriate perms on blob (data storage contributor) and
+            // encrypt/unwrap etc perms on key vault. These perms are granted and managed in the IaC.
+            
+            AppDataProtectionOptions options = configuration.BindAndValidate<AppDataProtectionOptions>("DataProtection");
+            Uri blobKeyPath = new($"https://{options.StorageAccountName}.blob.core.windows.net/{options.StorageAccountBlobName}/keys.xml");
+            Uri keyVaultKeyPath = new($"https://{options.KeyVaultName}.vault.azure.net/keys/{options.KeyVaultKeyName}");
+            DefaultAzureCredential credential = new();
+            services
+                .AddDataProtection()
+                .SetApplicationName(options.AppName)
+                .PersistKeysToAzureBlobStorage(blobKeyPath, credential)
+                .ProtectKeysWithAzureKeyVault(keyVaultKeyPath, credential);
+
             return services;
         }
     }
