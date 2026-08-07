@@ -1,7 +1,6 @@
 ﻿using GovUk.Forms.Application.Services;
 using Inss.Platform.Application.Clients;
 using Inss.Platform.Application.Extensions;
-using Inss.Platform.Domain.Components.Searching;
 using Inss.Platform.Domain.Components.Searching.Support;
 using Microsoft.Extensions.Logging;
 
@@ -38,6 +37,7 @@ public sealed class SearchService : ISearchService
             return new SearchResponse();
         }
 
+        _logger.PerformSearch(request.SearchText, request.Skip, request.PageSize);
         return await _searchClient.SearchAsync(request);
     }
 
@@ -50,6 +50,7 @@ public sealed class SearchService : ISearchService
             return null;
         }
 
+        _logger.PerformDetailSearch(request.KeyField, request.KeyValue);
         return await _searchClient.SearchDetailAsync(request);
     }
 }

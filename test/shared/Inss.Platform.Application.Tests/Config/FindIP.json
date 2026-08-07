@@ -1,0 +1,119 @@
+{
+  "PageSize": 10,
+  "DisplayAsTable": true,
+  "Results": [
+    {
+      "Names": ["IpNo"],
+      "ColumnType": "Key,Hidden"
+    },
+    {
+      "Names": ["Forenames", "Surname"],
+      "Header": "Name",
+      "Order": 1,
+      "Css": "govuk-!-font-weight-bold",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": ["RegisteredFirmName"],
+      "Header": "Company",
+      "Order": 2,
+      "Css": "",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": ["RegisteredAddressLine4"],
+      "Header": "Town or city",
+      "Order": 3,
+      "Css": "",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": ["RegisteredPostCode"],
+      "Header": "Postcode",
+      "Order": 4,
+      "Css": "",
+      "ColumnType": "Display"
+    }
+  ],
+  "Details": [
+    {
+      "Names": [ "Forenames", "Surname" ],
+      "Header": "IP name",
+      "Order": 1,
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Names": [ "RegisteredFirmName" ],
+      "Header": "Company name",
+      "Order": 2,
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Names": [ "RegisteredAddressLine1", "RegisteredAddressLine2", "RegisteredAddressLine3" ],
+      "Header": "Company address",
+      "Order": 3,
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Names": [ "IpEmailAddress" ],
+      "Header": "Email",
+      "Order": 4,
+      "Category": "Insolvency practitioner details",
+      "FormatterType": "Inss.Platform.Domain.Components.Searching.Formatting.EmailSearchFieldValueFormatter,Inss.Platform.Domain"
+    },
+    {
+      "Names": [ "RegisteredPhone" ],
+      "Header": "Telephone",
+      "Order": 5,
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Names": [ "IpNo" ],
+      "Header": "IP number",
+      "Order": 6,
+      "Category": "Insolvency practitioner details"
+    },
+    {
+      "Names": [ "LicensingBody" ],
+      "Header": "Licensing Body",
+      "Order": 7,
+      "Category": "Insolvency practitioner details"
+    },
+
+    {
+      "Names": [ "AuthBodyName" ],
+      "Header": "Name",
+      "Order": 1,
+      "Category": "Authorising body"
+    },
+    {
+      "Names": [ "AuthBodyAddressLine1", "AuthBodyAddressLine2", "AuthBodyAddressLine3", "AuthBodyAddressLine4", "AuthBodyAddressLine5", "AuthBodyPostcode" ],
+      "Header": "Address",
+      "Order": 2,
+      "Category": "Authorising body"
+    },
+    {
+      "Names": [ "Website" ],
+      "Header": "Website",
+      "Order": 3,
+      "Category": "Authorising body",
+      "FormatterType": "Inss.Platform.Domain.Components.Searching.Formatting.WebsiteSearchFieldValueFormatter,Inss.Platform.Domain"
+    },
+    {
+      "Names": [ "Phone" ],
+      "Header": "Telephone",
+      "Order": 4,
+      "Category": "Authorising body"
+    }
+  ],
+  "Categories": [
+    {
+      "Label": "Insolvency practitioner details",
+      "Css": "govuk-heading-l"
+    },
+    {
+      "Label": "Authorising body",
+      "Css": "govuk-heading-m"
+    }
+  ]
+}

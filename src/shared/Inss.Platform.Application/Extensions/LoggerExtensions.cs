@@ -18,4 +18,10 @@ public static partial class LoggerExtensions
 
     [LoggerMessage(EventId = 104, Level = LogLevel.Warning, Message = "Unable to find column Azure search field '{FieldName}'.")]
     public static partial void SearchConfigAndResultMismatch(this ILogger logger, string fieldName);
+    
+    [LoggerMessage(EventId = 105, Level = LogLevel.Information, Message = "Performing a search for {SearchText} with skip {Skip} and page size {PageSize}.")]
+    public static partial void PerformSearch(this ILogger logger, string searchText, int skip, int pageSize);
+    
+    [LoggerMessage(EventId = 106, Level = LogLevel.Information, Message = "Performing a search for detail for {Key} with value {Value}.")]
+    public static partial void PerformDetailSearch(this ILogger logger, string key, string value);
 }

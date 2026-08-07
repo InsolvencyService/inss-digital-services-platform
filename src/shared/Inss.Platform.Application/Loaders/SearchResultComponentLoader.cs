@@ -27,10 +27,8 @@ public sealed class SearchResultComponentLoader : IComponentLoader
         searchResult.Value = null;
         searchResult.Results = [];
         
-        // Load and check if columns in config
         ISearchConfigProvider searchConfigProvider = _serviceProvider.GetRequiredKeyedService<ISearchConfigProvider>(searchResult.ConfigKey);
         searchResult.Definition = searchConfigProvider.LoadConfig();
-        CheckAndLogConfigurationFiles(searchResult);
         
         // Get the requested search query params
         string searchText = context.QueryParams.GetQueryParam<string>("keyword");
@@ -60,6 +58,8 @@ public sealed class SearchResultComponentLoader : IComponentLoader
             searchResult.Results = response.Results;
             searchResult.TotalResults = response.TotalResults;
             searchResult.TotalPages = (int)Math.Ceiling((double)searchResult.TotalResults / searchResult.Definition.PageSize);
+
+            CheckAndLogConfigurationFiles(searchResult);
         }
     }
     

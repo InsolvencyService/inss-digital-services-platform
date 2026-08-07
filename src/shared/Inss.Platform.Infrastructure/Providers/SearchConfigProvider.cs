@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Inss.Platform.Application.Providers;
-using Inss.Platform.Domain.Components.Searching;
 using Inss.Platform.Domain.Components.Searching.Support;
 using Inss.Platform.Infrastructure.Extensions;
 using Microsoft.Extensions.Logging;

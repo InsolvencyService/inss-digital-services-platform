@@ -11,4 +11,9 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\shared\Inss.Platform.Application\Inss.Platform.Application.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <None Update="Config\FindIP.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

@@ -1,10 +1,8 @@
 ﻿using Azure;
 using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
-using GovUk.Forms.Application.Services;
 using Inss.Platform.Application.Clients;
 using Inss.Platform.Application.Services;
-using Inss.Platform.Domain.Components.Searching;
 using Inss.Platform.Domain.Components.Searching.Support;
 using Inss.Platform.Infrastructure.Extensions;
 using Microsoft.Extensions.Logging;
