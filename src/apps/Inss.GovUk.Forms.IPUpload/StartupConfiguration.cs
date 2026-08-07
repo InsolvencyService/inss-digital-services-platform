@@ -72,8 +72,6 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
                 
-                
-                
                 services.AddTransient<IUploadContentBlobClient>(
                     _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
             }

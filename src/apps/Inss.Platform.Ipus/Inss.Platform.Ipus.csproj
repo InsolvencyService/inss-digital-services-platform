@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\common\Inss.Common\Inss.Common.csproj" />
         <ProjectReference Include="..\..\shared\Inss.Platform.Component\Inss.Platform.Component.csproj" />
         <ProjectReference Include="..\..\shared\Inss.Platform.Infrastructure\Inss.Platform.Infrastructure.csproj" />
     </ItemGroup>
@@ -15,6 +16,10 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Domain\" />
     </ItemGroup>
 
 </Project>
