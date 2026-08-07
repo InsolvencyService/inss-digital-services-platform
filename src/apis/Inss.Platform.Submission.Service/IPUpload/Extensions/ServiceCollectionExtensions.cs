@@ -12,11 +12,7 @@ using Inss.Platform.Submission.Service.IPUpload.Persistence;
 using Inss.Platform.Submission.Service.IPUpload.Processing;
 using Inss.Platform.Submission.Service.IPUpload.Services;
 using Inss.Platform.Submission.Service.Options;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 
 namespace Inss.Platform.Submission.Service.IPUpload.Extensions;
@@ -25,12 +21,12 @@ internal static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        internal IServiceCollection AddIPUploadServices(WebHostBuilderContext context)
+        internal IServiceCollection AddIPUploadServices(IConfiguration configuration, IWebHostEnvironment environment)
         {
             services.AddSingleton<IMapperFactory, MapperFactory>();
             services.AddTransient<IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse>, SubmitIPUploadHandler>();
 
-            if (context.HostingEnvironment.IsDevelopment())
+            if (environment.IsDevelopment())
             {
                 services.AddSingleton<IDynamicsStoreProvider, MockDynamicsStoreProvider>();
                 services.AddHttpClient<IDynamicsClient, MockDynamicsClient>();
@@ -39,7 +35,7 @@ internal static class ServiceCollectionExtensions
             else
             {
                 CosmosDbOptions cosmosDbOptions = new();
-                context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
+                configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
                 
                 if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
                 {
@@ -60,7 +56,7 @@ internal static class ServiceCollectionExtensions
                     throw new InvalidOperationException("No connection string or account endpoint for CosmosDb has been provided.");
                 }
                 
-                DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
+                DynamicsOptions dynamicsOptions = configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
             
                 services.AddHttpClient<IDynamicsClient, DynamicsClient>(client =>
                     {
@@ -76,7 +72,7 @@ internal static class ServiceCollectionExtensions
                         sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
                 
                 UploadBlobOptions uploadBlobOptions = new();
-                context.Configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
+                configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
                 
                 services.AddTransient<IUploadContentBlobClient>(
                     _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
