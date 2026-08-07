@@ -40,12 +40,13 @@ public class StartupConfiguration : IHostingStartup
 
             DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
             ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
-
+            UploadBlobOptions uploadBlobOptions = context.Configuration.GetSection("UploadBlob").Get<UploadBlobOptions>()!;
+            
             if (context.HostingEnvironment.IsDevelopment())
             {
                 services.AddSingleton<ICaseReferenceClient, MockCaseReferenceClient>();
                 services.AddSingleton<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>();
-                services.AddSingleton<IUploadContentBlobClient, MockUploadContentBlobClient>();
+                services.AddSingleton<IUploadContentBlobClient>(_ => new MockUploadContentBlobClient(uploadBlobOptions.ConnectionString));
             }
             else
             {
@@ -71,8 +72,7 @@ public class StartupConfiguration : IHostingStartup
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
                         submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
                 
-                UploadBlobOptions uploadBlobOptions = new();
-                context.Configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
+                
                 
                 services.AddTransient<IUploadContentBlobClient>(
                     _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));

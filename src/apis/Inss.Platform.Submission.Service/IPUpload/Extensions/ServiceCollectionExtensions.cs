@@ -26,11 +26,14 @@ internal static class ServiceCollectionExtensions
             services.AddSingleton<IMapperFactory, MapperFactory>();
             services.AddTransient<IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse>, SubmitIPUploadHandler>();
 
+            UploadBlobOptions uploadBlobOptions = new();
+            configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
+            
             if (environment.IsDevelopment())
             {
                 services.AddSingleton<IDynamicsStoreProvider, MockDynamicsStoreProvider>();
                 services.AddHttpClient<IDynamicsClient, MockDynamicsClient>();
-                services.AddSingleton<IUploadContentBlobClient, MockUploadContentBlobClient>();
+                services.AddSingleton<IUploadContentBlobClient>(_ => new MockUploadContentBlobClient(uploadBlobOptions.ConnectionString));
             }
             else
             {
@@ -70,10 +73,7 @@ internal static class ServiceCollectionExtensions
                     .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, dynamicsOptions.RetryCount))
                     .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
                         sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
-                
-                UploadBlobOptions uploadBlobOptions = new();
-                configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
-                
+
                 services.AddTransient<IUploadContentBlobClient>(
                     _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
             }

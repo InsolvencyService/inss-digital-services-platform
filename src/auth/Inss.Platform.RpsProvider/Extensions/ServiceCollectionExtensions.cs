@@ -53,8 +53,11 @@ public static class ServiceCollectionExtensions
             }
             else
             {
-                services.AddAppDataProtection(configuration);
-                
+                if (environment.IsProduction())
+                {
+                    services.AddAppDataProtection(configuration);
+                }
+
                 CookieContainer cookieContainer = new();
                 services.AddScoped<CookieContainer>(_ => cookieContainer);
                 
