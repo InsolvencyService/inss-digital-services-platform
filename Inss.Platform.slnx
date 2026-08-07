@@ -1,6 +1,10 @@
 <Solution>
+  <Folder Name="/apis/">
+    <Project Path="src/apis/Inss.Platform.Submission.Service/Inss.Platform.Submission.Service.csproj" />
+  </Folder>
   <Folder Name="/common/">
     <Project Path="src/common/Inss.Common.Infrastructure/Inss.Common.Infrastructure.csproj" />
+    <Project Path="src/common/Inss.Common/Inss.Common.csproj" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/apps/">
