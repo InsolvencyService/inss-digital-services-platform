@@ -87,7 +87,7 @@ stages:
       inputs:
         command: 'publish'
         publishWebProjects: false
-        projects: '**/Inss.FormsSubmission.Service.csproj'
+        projects: '**/Inss.Platform.Submission.Service.csproj'
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         
     - task: PublishPipelineArtifact@1
