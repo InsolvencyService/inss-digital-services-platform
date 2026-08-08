@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-
-namespace Inss.Platform.Submission.Service.Endpoints;
+﻿namespace Inss.Platform.Submission.Service.Endpoints;
 
 public static class HealthEndpoint
 {

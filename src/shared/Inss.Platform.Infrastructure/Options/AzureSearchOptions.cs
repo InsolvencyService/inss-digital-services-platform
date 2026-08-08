@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+// ReSharper disable UnusedAutoPropertyAccessor.Global - options
 
 namespace Inss.Platform.Infrastructure.Options;
 

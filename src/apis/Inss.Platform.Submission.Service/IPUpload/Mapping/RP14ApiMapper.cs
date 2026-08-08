@@ -229,8 +229,8 @@ public sealed class RP14ApiMapper : IMapper
             ShouldClaimsBeAccepted = employeesClaimingContinuity is not null && 
                                      employeesClaimingContinuity.ShouldClaimsBeAcceptedSpecified 
                 ? MapYesNo(employeesClaimingContinuity.ShouldClaimsBeAccepted) : null,
-            Strikes = employees?.StrikesSpecified == true ? MapYesNo(employees.Strikes) : null,
-            EntitledToCarryOverHoliday = employees?.CarryOverHolidayEntitlementSpecified == true 
+            Strikes = employees.StrikesSpecified ? MapYesNo(employees.Strikes) : null,
+            EntitledToCarryOverHoliday = employees.CarryOverHolidayEntitlementSpecified 
                 ? MapYesNo(employees.CarryOverHolidayEntitlement) : null
         };
     }

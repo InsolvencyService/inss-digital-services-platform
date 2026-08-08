@@ -2,10 +2,6 @@
 using Inss.Platform.Submission.Service.Endpoints.Security;
 using Inss.Platform.Submission.Service.Extensions;
 using Inss.Platform.Submission.Service.Handlers;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
 
 namespace Inss.Platform.Submission.Service.Endpoints;
 

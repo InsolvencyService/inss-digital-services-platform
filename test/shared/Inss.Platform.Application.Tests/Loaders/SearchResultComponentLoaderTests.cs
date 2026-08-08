@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
+// ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
 
 namespace Inss.Platform.Application.Tests.Loaders;
 

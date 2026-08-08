@@ -1,4 +1,5 @@
 ﻿using Inss.Common.Infrastructure.Options;
+// ReSharper disable UnusedAutoPropertyAccessor.Global - options
 
 namespace Inss.Platform.Ipus.Options;
 

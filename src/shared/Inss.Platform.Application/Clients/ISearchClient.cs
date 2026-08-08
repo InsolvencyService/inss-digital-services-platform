@@ -1,5 +1,4 @@
-﻿using Inss.Platform.Domain.Components.Searching;
-using Inss.Platform.Domain.Components.Searching.Support;
+﻿using Inss.Platform.Domain.Components.Searching.Support;
 
 namespace Inss.Platform.Application.Clients;
 

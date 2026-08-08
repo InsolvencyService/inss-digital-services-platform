@@ -1,5 +1,6 @@
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Components;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Inss.Platform.Application.Validators;
 

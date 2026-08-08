@@ -1,6 +1,4 @@
 ﻿using Inss.Platform.Submission.Service.Extensions;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Inss.Platform.Submission.Service.IPUpload.Processing;
 

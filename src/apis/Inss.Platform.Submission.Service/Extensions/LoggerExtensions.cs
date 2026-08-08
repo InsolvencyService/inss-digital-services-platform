@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 namespace Inss.Platform.Submission.Service.Extensions;
 
 public static partial class LoggerExtensions

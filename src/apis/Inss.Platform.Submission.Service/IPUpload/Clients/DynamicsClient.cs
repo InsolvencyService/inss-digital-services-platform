@@ -1,7 +1,5 @@
 ﻿using System.Net;
-using System.Net.Http.Json;
 using Inss.Platform.Submission.Service.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace Inss.Platform.Submission.Service.IPUpload.Clients;
 

@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using Inss.Platform.Application.Clients;
-using Inss.Platform.Domain.Components.Searching;
 using Inss.Platform.Domain.Components.Searching.Support;
 
 namespace Inss.Platform.Fip.Infrastructure.Clients;

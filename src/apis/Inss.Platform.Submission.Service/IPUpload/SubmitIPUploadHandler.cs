@@ -8,7 +8,6 @@ using Inss.Platform.Submission.Service.IPUpload.Mapping;
 using Inss.Platform.Submission.Service.IPUpload.Persistence;
 using Inss.Platform.Submission.Service.IPUpload.Processing;
 using Inss.Platform.Submission.Service.IPUpload.Services;
-using Microsoft.Extensions.Logging;
 
 namespace Inss.Platform.Submission.Service.IPUpload;
 

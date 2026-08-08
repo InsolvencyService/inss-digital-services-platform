@@ -1,4 +1,5 @@
-﻿namespace Inss.Common.IPUpload;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global - request
+namespace Inss.Common.IPUpload;
 
 public sealed class SubmitIPUploadRequest
 {
