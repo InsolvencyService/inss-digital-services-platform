@@ -18,6 +18,8 @@ public abstract class ComponentModel
     public ValidationList Validations { get; set; } = [];
     
     public string TypeName => GetType().FullName!;
+
+    public ComponentTypes ComponentType { get; init; } = ComponentTypes.Bindable;
     
     public virtual void CopyTo(ComponentModel targetComponent)
     {

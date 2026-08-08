@@ -1,6 +1,6 @@
-﻿using Inss.Platform.Domain.Primitives;
+﻿namespace Inss.Platform.Domain.Components.Common;
 
-namespace Inss.Platform.Domain.Components.Common;
+// TODO: Label size, is heading 
 
 public sealed class SingleLineTextComponentModel : ComponentModel, IValueComponent
 {

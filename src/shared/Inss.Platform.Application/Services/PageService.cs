@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Inss.Platform.Application.Loaders;
+﻿using Inss.Platform.Application.Extensions;
 using Inss.Platform.Application.Navigators;
-using Inss.Platform.Application.Providers;
-using Inss.Platform.Application.Validation;
+using Inss.Platform.Application.Providers; 
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Primitives;
-using Inss.Platform.Domain.Validation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Inss.Platform.Application.Services;
@@ -25,20 +22,8 @@ public sealed class PageService : IPageService
     public async ValueTask<PageModel> LoadAsync(PagePath path, QueryParamList queryParams)
     {
         AppModel app = await _appProvider.GetAsync();
-        
         PageModel page = app.Pages.GetPage(path);
-        
-        foreach (ComponentModel component in page.Components)
-        {
-            IEnumerable<IComponentLoader> loaders = _serviceProvider.GetKeyedServices<IComponentLoader>(component.Id.Value);
-            
-            foreach (IComponentLoader loader in loaders)
-            {
-                LoaderContext context = new(app, page, component, queryParams);
-                await loader.LoadAsync(context);
-            }
-        }
-
+        await page.LoadAsync(app, queryParams, _serviceProvider);
         return page;
     }
 
@@ -46,50 +31,22 @@ public sealed class PageService : IPageService
     {
         AppModel app = await _appProvider.GetAsync();
         PageModel currentPage = app.Pages.GetPage(page.Path);
-
-        foreach (ComponentModel currentComponent in currentPage.Components)
-        {
-            ComponentModel component = page.Components.GetComponent(currentComponent.Id);
-            component.CopyTo(currentComponent);
-        }
-
-        List<PageValidationError> pageValidationErrorList = [];
-        
-        foreach (ComponentModel component in currentPage.Components)
-        {
-            IEnumerable<IComponentValidator> validators = _serviceProvider.GetKeyedServices<IComponentValidator>(component.Id.Value);
-            
-            foreach (IComponentValidator validator in validators)
-            {
-                ValidationResult[] componentValidations = await validator.ValidateAsync(component);
-                
-                pageValidationErrorList.AddRange(componentValidations.Select(vr => new PageValidationError
-                {
-                    Properties = vr.MemberNames.ToArray(),
-                    Message = vr.ErrorMessage ?? string.Empty
-                }));
-            }
-        }
-
-        if (pageValidationErrorList.Count > 0)
-        {
-            currentPage.PageValidationInfo = new PageValidationInfo { Errors = pageValidationErrorList.ToArray() };
-            return currentPage;
-        }
-
-        return null;
+        page.CopyComponentValuesTo(currentPage);
+        await currentPage.ValidateAsync(_serviceProvider);
+        return currentPage.PageValidationInfo is not null ? currentPage : null;
     }
     
     public async ValueTask<PagePath?> SaveAsync(PageModel page)
     {
         AppModel app = await _appProvider.GetAsync();
         
+        // TODO: Refactor as above
         try
         {
             PageModel currentPage = app.Pages.GetPage(page.Path);
             QueryParamList queryParams = [];
             
-            foreach (ComponentModel currentComponent in currentPage.Components)
+            foreach (ComponentModel currentComponent in currentPage.Components.Where(c => c.ComponentType == ComponentTypes.Bindable))
             {
                 ComponentModel component = page.Components.GetComponent(currentComponent.Id);
                 component.CopyTo(currentComponent);
@@ -99,7 +56,7 @@ public sealed class PageService : IPageService
                     queryParamComponent.Append(queryParams);
                 }
             }
-
+            
             INextPageNavigator nextPageNavigator = _serviceProvider.GetKeyedService<INextPageNavigator>(currentPage.Path.Value)
                                                    ?? _serviceProvider.GetRequiredService<INextPageNavigator>();
             PagePath? nextPagePath = await nextPageNavigator.NavigateNextAsync(currentPage);

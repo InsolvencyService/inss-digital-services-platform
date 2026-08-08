@@ -28,4 +28,11 @@ public sealed class ComponentModelList : List<ComponentModel>
     {
         return this.Any(t => t is TComponent);
     }
+    
+    public ComponentModelList GetComponentTypeOf(ComponentTypes componentType)
+    {
+        ComponentModelList componentList = [];
+        componentList.AddRange(this.Where(t => t.ComponentType == componentType));
+        return componentList;
+    }
 }

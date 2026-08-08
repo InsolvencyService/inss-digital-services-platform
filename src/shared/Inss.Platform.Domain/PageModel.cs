@@ -22,5 +22,7 @@ public sealed class PageModel
     
     public PageValidationInfo? PageValidationInfo { get; set; }
     
-    public bool DisplayFullWidth { get; init; } 
+    public bool DisplayFullWidth { get; init; }
+    
+    public Type? PageValidator { get; set; }
 }

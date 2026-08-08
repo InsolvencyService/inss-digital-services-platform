@@ -1,4 +1,5 @@
 ﻿using Inss.Platform.Application.Navigators;
+using Inss.Platform.Application.Validation;
 using Inss.Platform.Component.Extensions;
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Exceptions;
@@ -47,6 +48,12 @@ public sealed class PageModelBuilder
         return this;
     }
 
+    public PageModelBuilder WithPageValidator<TValidator>() where TValidator : IPageValidator
+    {
+        _page.PageValidator = typeof(TValidator);
+        return this;
+    }
+    
     public ComponentId GetNextComponentId()
     {
         return $"{_page.Path}/component/{_page.Components.Count}"; 

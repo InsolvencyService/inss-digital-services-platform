@@ -13,14 +13,22 @@ public static class PageBuildExtensions
 {
     extension(PageModel page)
     {
-        public PageModel Register(IServiceCollection services)
+        public void Register(IServiceCollection services)
         {
+            page.RegisterPageValidator(services);
             page.RegisterNextPageNavigator(services);
             page.RegisterLoaders(services);
             page.RegisterValidations(services);
-            return page;
         }
 
+        private void RegisterPageValidator(IServiceCollection services)
+        {
+            if (page.PageValidator is not null)
+            {
+                services.AddKeyedSingleton(typeof(IPageValidator), page.Path.Value, page.PageValidator);
+            }
+        }
+        
         private void RegisterNextPageNavigator(IServiceCollection services)
         {
             if (page.NextPageNavigator is not null)
@@ -29,7 +37,7 @@ public static class PageBuildExtensions
             }
         }
         
-        private PageModel RegisterLoaders(IServiceCollection services)
+        private void RegisterLoaders(IServiceCollection services)
         {
             foreach (ComponentModel component in page.Components)
             {
@@ -38,11 +46,9 @@ public static class PageBuildExtensions
                     services.AddKeyedSingleton(typeof(IComponentLoader), component.Id.Value, loader.LoaderType);
                 }
             }
-
-            return page;
         }
         
-        private PageModel RegisterValidations(IServiceCollection services)
+        private void RegisterValidations(IServiceCollection services)
         {
             foreach (ComponentModel component in page.Components)
             {
@@ -54,8 +60,6 @@ public static class PageBuildExtensions
                         (provider, _) => ActivatorUtilities.CreateInstance(provider, validation.ValidatorType, validation));
                 }
             }
-
-            return page;
         }
     }
 }

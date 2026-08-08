@@ -11,11 +11,11 @@ public static class ServiceCollectionExtensions
             return services;
         }
         
-        public PagePathList BuildApp()
+        public PagePathList BuildApp(IConfiguration configuration)
         {
             IpusAppBuilder appBuilder = new();
             PagePathList pagePaths = [];
-            pagePaths.AddRange(appBuilder.Build(services));
+            pagePaths.AddRange(appBuilder.Build(services, configuration));
             return pagePaths;
         }
     }

@@ -16,7 +16,7 @@ public class FipAppBuilderTests
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         FipAppBuilder fipAppBuilder = new();
 
-        PagePath[] pagePaths = fipAppBuilder.Build(builder.Services);
+        PagePath[] pagePaths = fipAppBuilder.Build(builder.Services, builder.Configuration);
         
         Assert.Equal(3, pagePaths.Length);
         Assert.Equal("/search", pagePaths[0]);
@@ -30,7 +30,7 @@ public class FipAppBuilderTests
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         FipAppBuilder fipAppBuilder = new();
 
-        fipAppBuilder.Build(builder.Services);
+        fipAppBuilder.Build(builder.Services, builder.Configuration);
 
         WebApplication webApp = builder.Build();
         IAppFactory? appFactory = webApp.Services.GetService<IAppFactory>();
@@ -43,7 +43,7 @@ public class FipAppBuilderTests
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         FipAppBuilder fipAppBuilder = new();
 
-        fipAppBuilder.Build(builder.Services);
+        fipAppBuilder.Build(builder.Services, builder.Configuration);
 
         WebApplication webApp = builder.Build();
         IAppFactory appFactory = webApp.Services.GetRequiredService<IAppFactory>();
@@ -59,7 +59,7 @@ public class FipAppBuilderTests
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         FipAppBuilder fipAppBuilder = new();
 
-        fipAppBuilder.Build(builder.Services);
+        fipAppBuilder.Build(builder.Services, builder.Configuration);
 
         WebApplication webApp = builder.Build();
         IAppFactory appFactory = webApp.Services.GetRequiredService<IAppFactory>();
@@ -74,7 +74,7 @@ public class FipAppBuilderTests
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         FipAppBuilder fipAppBuilder = new();
 
-        fipAppBuilder.Build(builder.Services);
+        fipAppBuilder.Build(builder.Services, builder.Configuration);
 
         WebApplication webApp = builder.Build();
         IAppFactory appFactory = webApp.Services.GetRequiredService<IAppFactory>();
@@ -89,7 +89,7 @@ public class FipAppBuilderTests
         WebApplicationBuilder builder = WebApplication.CreateBuilder();
         FipAppBuilder fipAppBuilder = new();
 
-        fipAppBuilder.Build(builder.Services);
+        fipAppBuilder.Build(builder.Services, builder.Configuration);
 
         WebApplication webApp = builder.Build();
         IAppFactory appFactory = webApp.Services.GetRequiredService<IAppFactory>();

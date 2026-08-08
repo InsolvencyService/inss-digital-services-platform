@@ -9,7 +9,7 @@ namespace Inss.Platform.Ipus;
 
 public sealed class IpusAppBuilder : AppBuilder
 {
-    public override PagePath[] Build(IServiceCollection services)
+    public override PagePath[] Build(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IAppFactory>(_ => new AppFactory([]));//[searchTermPage, searchResultPage, searchResultDetailPage]));
 

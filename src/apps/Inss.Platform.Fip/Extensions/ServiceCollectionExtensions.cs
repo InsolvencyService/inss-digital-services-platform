@@ -30,11 +30,11 @@ public static class ServiceCollectionExtensions
             return services;
         }
         
-        public PagePathList BuildApp()
+        public PagePathList BuildApp(IConfiguration configuration)
         {
             FipAppBuilder appBuilder = new();
             PagePathList pagePaths = [];
-            pagePaths.AddRange(appBuilder.Build(services));
+            pagePaths.AddRange(appBuilder.Build(services, configuration));
             return pagePaths;
         }
     }

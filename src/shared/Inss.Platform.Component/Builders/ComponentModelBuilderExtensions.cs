@@ -53,5 +53,20 @@ public static class ComponentModelBuilderExtensions
             componentModelBuilder.CurrentComponent.Validations = [..componentModelBuilder.CurrentComponent.Validations, rule];
             return componentModelBuilder;
         }
+        
+        public ComponentModelBuilder WithEmailValidator(string errorMessage)
+        {
+            ValidationRule rule = new()
+            {
+                ValidatorType = typeof(EmailComponentValidator),
+                Items = new ValidationRuleItemList
+                {
+                    [EmailComponentValidator.ErrorMessageKey] = errorMessage,
+                    [EmailComponentValidator.PropertyKey] = $"Components[{componentModelBuilder.ComponentIndex}].Value"
+                }
+            };
+            componentModelBuilder.CurrentComponent.Validations = [..componentModelBuilder.CurrentComponent.Validations, rule];
+            return componentModelBuilder;
+        }
     }
 }

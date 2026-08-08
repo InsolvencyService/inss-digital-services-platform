@@ -9,7 +9,7 @@ namespace Inss.Platform.Fip;
 
 public sealed class FipAppBuilder : AppBuilder
 {
-    public override PagePath[] Build(IServiceCollection services)
+    public override PagePath[] Build(IServiceCollection services, IConfiguration configuration)
     {
         PageModel searchTermPage = PageModelBuilder
             .For("Search", "/search", "Search")

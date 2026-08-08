@@ -18,8 +18,14 @@ public sealed class PageComponentBinder : IModelBinder
     {
         IFormCollection form = bindingContext.HttpContext.Request.Form;
         PageModel page = new() { Title = form["Title"]!, Path = new PagePath(form["Path.Value"]!) };
+        int startIndex = FindStartIndex(form);
 
-        for (int index = 0; index < 100; index++)
+        if (startIndex == -1)
+        {
+            return Task.CompletedTask;
+        }
+        
+        for (int index = startIndex; index < 100; index++)
         {
             KeyValuePair<string, StringValues>[] entries = form.Where(f => f.Key.StartsWith($"Components[{index}].", StringComparison.OrdinalIgnoreCase)).ToArray();
 
@@ -73,6 +79,22 @@ public sealed class PageComponentBinder : IModelBinder
         
         bindingContext.Result = ModelBindingResult.Success(page);
         return Task.CompletedTask;
+    }
+
+    private static int FindStartIndex(IFormCollection form)
+    {
+        for (int index = 0; index < 100; index++)
+        {
+            KeyValuePair<string, StringValues>[] entries = 
+                form.Where(f => f.Key.StartsWith($"Components[{index}].", StringComparison.OrdinalIgnoreCase)).ToArray();
+
+            if (entries.Length > 0)
+            {
+                return index;
+            }
+        }
+
+        return -1;
     }
     
     private static object? ConvertValue(string value, Type targetType)

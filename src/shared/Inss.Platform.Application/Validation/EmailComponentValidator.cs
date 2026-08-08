@@ -5,14 +5,13 @@ using Inss.Platform.Domain.Validation;
 
 namespace Inss.Platform.Application.Validation;
 
-public sealed class MaxLengthComponentValidator : IComponentValidator
+public sealed class EmailComponentValidator : IComponentValidator
 {
     private readonly ValidationRule _validationRule;
     public const string ErrorMessageKey = "ErrorMessage";
     public const string PropertyKey = "Property";
-    public const string MaxLengthKey = "MaxLength";
     
-    public MaxLengthComponentValidator(ValidationRule validationRule)
+    public EmailComponentValidator(ValidationRule validationRule)
     {
         _validationRule = validationRule;
     }
@@ -20,9 +19,9 @@ public sealed class MaxLengthComponentValidator : IComponentValidator
     public ValueTask<ValidationResult[]> ValidateAsync(ComponentContext context)
     {
         IValueComponent valueComponent = context.Component.As<IValueComponent>();
-        int maxLength = _validationRule.Items.GetValue<int>(MaxLengthKey);
+        EmailAddressAttribute emailAddressAttribute = new();
         
-        if (valueComponent.Value?.Length > maxLength)
+        if (!emailAddressAttribute.IsValid(valueComponent.Value))
         {
             string errorMessage = _validationRule.Items.GetValue<string>(ErrorMessageKey);
             string property = _validationRule.Items.GetValue<string>(PropertyKey);

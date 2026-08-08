@@ -10,7 +10,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 builder.Services.AddComponents(builder.Configuration);
 builder.Services.AddAppServices(builder.Environment, builder.Configuration);
-PagePathList pagePaths = builder.Services.BuildApp();
+PagePathList pagePaths = builder.Services.BuildApp(builder.Configuration);
 
 WebApplication app = builder.Build();
 app.UseComponents();

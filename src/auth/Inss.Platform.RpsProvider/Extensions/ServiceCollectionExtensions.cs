@@ -3,10 +3,10 @@ using Azure.Identity;
 using Inss.Common.Infrastructure;
 using Inss.Common.Infrastructure.Options;
 using Inss.Platform.Component.Extensions;
+using Inss.Platform.Domain;
 using Inss.Platform.Infrastructure.Options;
 using Inss.Platform.RpsProvider.Application.Clients;
 using Inss.Platform.RpsProvider.Application.Providers;
-using Inss.Platform.RpsProvider.Application.Services;
 using Inss.Platform.RpsProvider.Infrastructure.Clients;
 using Inss.Platform.RpsProvider.Infrastructure.Providers;
 using Inss.Platform.RpsProvider.Infrastructure.Serialization;
@@ -22,7 +22,6 @@ public static class ServiceCollectionExtensions
     {
         public IServiceCollection AddRpsAuthentication(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            services.AddScoped<ILoginService, LoginService>();
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -36,13 +35,6 @@ public static class ServiceCollectionExtensions
                 .Bind(configuration.GetSection("Provider"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
-            
-            services.AddOptions<LoginOptions>()
-                .Bind(configuration.GetSection("Login"))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-
-            services.AddScoped<ILoginService, LoginService>();
             
             ExternalApiOptions loginOptions = configuration.GetSection("RpsLogin").Get<ExternalApiOptions>()!;
 
@@ -118,6 +110,14 @@ public static class ServiceCollectionExtensions
             });
             
             return services;
+        }
+        
+        public PagePathList BuildApp(IConfiguration configuration)
+        {
+            RpsAppBuilder appBuilder = new();
+            PagePathList pagePaths = [];
+            pagePaths.AddRange(appBuilder.Build(services, configuration));
+            return pagePaths;
         }
     }
 }

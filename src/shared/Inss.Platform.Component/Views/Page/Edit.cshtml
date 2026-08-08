@@ -4,6 +4,14 @@
     ViewData["PageTitle"] = Model.Title;
     ViewData["DisplayFullWidth"] = Model.DisplayFullWidth;
     ViewData["PreviousPage"] = Model.PreviousPage?.Value;
+    ComponentModelList beforeFormComponents = Model.Components.GetComponentTypeOf(ComponentTypes.BeforeForm);
+    ComponentModelList bindableComponents = Model.Components.GetComponentTypeOf(ComponentTypes.Bindable);
+    ComponentModelList afterFormComponents = Model.Components.GetComponentTypeOf(ComponentTypes.AfterForm);
+}
+
+@foreach (ComponentModel component in beforeFormComponents)
+{
+    @await Html.RenderPageComponentAsync(component)
 }
 
 @using (Html.BeginForm(Model))
@@ -12,8 +20,9 @@
     @Html.HiddenFor(m => m.Title)
     @Html.HiddenFor(m => m.Path.Value)
 
-    @for (int index = 0; index < Model.Components.Count; index++)
+    @foreach (ComponentModel component in bindableComponents)
     {
+        int index = Model.Components.IndexOf(component);
         @Html.Hidden($"Components[{index}].Id.Value", Model.Components[index].Id.Value)
         @Html.Hidden($"Components[{index}].TypeName", Model.Components[index].TypeName)
         @await Html.RenderPageComponentAsync(Model.Components[index], $"Components[{index}]")
@@ -23,4 +32,9 @@
     {
         <govuk-button type="submit">@Model.SubmitButton</govuk-button>
     }
+}
+
+@foreach (ComponentModel component in afterFormComponents)
+{
+    @await Html.RenderPageComponentAsync(component)
 }

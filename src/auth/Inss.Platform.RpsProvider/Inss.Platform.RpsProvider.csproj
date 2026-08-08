@@ -18,4 +18,9 @@
       <AdditionalFiles Include="Views\Start\Index.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Login\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Login\IndexOld.cshtml" />
+    </ItemGroup>
+
 </Project>

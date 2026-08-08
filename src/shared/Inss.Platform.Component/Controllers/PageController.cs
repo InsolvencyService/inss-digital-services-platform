@@ -48,12 +48,13 @@ public class PageController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(PageModel page)
     {
+        QueryParamList queryParams = GetQueryParams();
         PageModel? validatedPage = await _pageService.ValidateAsync(page);
 
         if (validatedPage is not null)
         {
             TempData[TempDataKey] = AppSerialization.SerializePage(validatedPage);
-            return Redirect(validatedPage.Path);
+            return Redirect(validatedPage.Path + queryParams.BuildQueryParams());
         }
 
         PagePath? redirectTo = await _pageService.SaveAsync(page);

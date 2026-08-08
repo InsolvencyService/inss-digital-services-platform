@@ -1,0 +1,9 @@
+﻿@model EmailComponentModel
+
+<govuk-input for="@Model.Value" input-class="govuk-input govuk-!-width-two-thirds" spellcheck="false" autocomplete="email">
+    <govuk-input-label is-page-heading="true" class="govuk-label--s">@(Model.Question)</govuk-input-label>
+    @if (Model.Hint is not null)
+    {
+        <govuk-input-hint>@(Model.Hint)</govuk-input-hint>    
+    }
+</govuk-input>

@@ -1,8 +1,6 @@
-using Inss.Platform.Domain;
-
 namespace Inss.Platform.Application.Validation;
 
 public interface IPageValidator
 {
-    ValueTask ValidateAsync(PageModel page);
+    ValueTask ValidateAsync(PageContext context);
 }
