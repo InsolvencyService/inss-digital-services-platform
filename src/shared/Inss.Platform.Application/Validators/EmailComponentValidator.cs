@@ -3,15 +3,15 @@ using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Extensions;
 using Inss.Platform.Domain.Validation;
 
-namespace Inss.Platform.Application.Validation;
+namespace Inss.Platform.Application.Validators;
 
-public sealed class RequiredValueComponentValidator : IComponentValidator
+public sealed class EmailComponentValidator : IComponentValidator
 {
     private readonly ValidationRule _validationRule;
     public const string ErrorMessageKey = "ErrorMessage";
     public const string PropertyKey = "Property";
     
-    public RequiredValueComponentValidator(ValidationRule validationRule)
+    public EmailComponentValidator(ValidationRule validationRule)
     {
         _validationRule = validationRule;
     }
@@ -19,8 +19,9 @@ public sealed class RequiredValueComponentValidator : IComponentValidator
     public ValueTask<ValidationResult[]> ValidateAsync(ComponentContext context)
     {
         IValueComponent valueComponent = context.Component.As<IValueComponent>();
-
-        if (string.IsNullOrWhiteSpace(valueComponent.Value))
+        EmailAddressAttribute emailAddressAttribute = new();
+        
+        if (!emailAddressAttribute.IsValid(valueComponent.Value))
         {
             string errorMessage = _validationRule.Items.GetValue<string>(ErrorMessageKey);
             string property = _validationRule.Items.GetValue<string>(PropertyKey);

@@ -6,8 +6,6 @@ namespace Inss.Platform.Domain.Components.Searching;
 
 public class SearchResultComponentModel : ComponentModel, IValueComponent, IQueryParamComponent
 {
-    public override string ViewName => "_SearchResult";
-    
     public required string ConfigKey { get; init; }
 
     public int CurrentPageNumber { get; set; }

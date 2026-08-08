@@ -11,7 +11,7 @@ public abstract class ComponentModel
     
     public required PagePath AssociatedPagePath { get; init; }
 
-    public abstract string ViewName { get; }
+    public virtual string ViewName => $"_{GetType().Name.Replace("ComponentModel", string.Empty)}";
     
     public LoaderList Loaders { get; set; } = [];
     

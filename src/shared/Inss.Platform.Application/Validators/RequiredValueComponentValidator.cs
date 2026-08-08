@@ -3,16 +3,15 @@ using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Extensions;
 using Inss.Platform.Domain.Validation;
 
-namespace Inss.Platform.Application.Validation;
+namespace Inss.Platform.Application.Validators;
 
-public sealed class MaxLengthComponentValidator : IComponentValidator
+public sealed class RequiredValueComponentValidator : IComponentValidator
 {
     private readonly ValidationRule _validationRule;
     public const string ErrorMessageKey = "ErrorMessage";
     public const string PropertyKey = "Property";
-    public const string MaxLengthKey = "MaxLength";
     
-    public MaxLengthComponentValidator(ValidationRule validationRule)
+    public RequiredValueComponentValidator(ValidationRule validationRule)
     {
         _validationRule = validationRule;
     }
@@ -20,9 +19,8 @@ public sealed class MaxLengthComponentValidator : IComponentValidator
     public ValueTask<ValidationResult[]> ValidateAsync(ComponentContext context)
     {
         IValueComponent valueComponent = context.Component.As<IValueComponent>();
-        int maxLength = _validationRule.Items.GetValue<int>(MaxLengthKey);
-        
-        if (valueComponent.Value?.Length > maxLength)
+
+        if (string.IsNullOrWhiteSpace(valueComponent.Value))
         {
             string errorMessage = _validationRule.Items.GetValue<string>(ErrorMessageKey);
             string property = _validationRule.Items.GetValue<string>(PropertyKey);

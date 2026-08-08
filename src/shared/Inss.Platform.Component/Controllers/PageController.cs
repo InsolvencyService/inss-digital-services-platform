@@ -41,6 +41,7 @@ public class PageController : Controller
         QueryParamList queryParams = GetQueryParams();
         PagePath requestPath = new(Request.Path);
         PageModel page = await _pageService.LoadAsync(requestPath, queryParams);
+        page.QueryParams = queryParams.Count > 0 ? queryParams.BuildQueryParams() : null;
         return View(page);
     }
 
@@ -48,13 +49,19 @@ public class PageController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(PageModel page)
     {
-        QueryParamList queryParams = GetQueryParams();
         PageModel? validatedPage = await _pageService.ValidateAsync(page);
 
         if (validatedPage is not null)
         {
+            if (page.QueryParams is not null)
+            {
+                validatedPage.QueryParams = page.QueryParams;
+            }
+            
             TempData[TempDataKey] = AppSerialization.SerializePage(validatedPage);
-            return Redirect(validatedPage.Path + queryParams.BuildQueryParams());
+            string redirectUrl = validatedPage.QueryParams is not null 
+                ? $"{validatedPage.Path}{validatedPage.QueryParams}" : validatedPage.Path;
+            return Redirect(redirectUrl);
         }
 
         PagePath? redirectTo = await _pageService.SaveAsync(page);

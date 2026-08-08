@@ -1,7 +1,7 @@
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Components;
 
-namespace Inss.Platform.Application.Validation;
+namespace Inss.Platform.Application.Validators;
 
 public sealed class ComponentContext
 {

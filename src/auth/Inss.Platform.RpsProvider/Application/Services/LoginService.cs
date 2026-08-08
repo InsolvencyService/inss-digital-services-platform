@@ -1,4 +1,4 @@
-﻿using Inss.Platform.Application.Validation;
+﻿using Inss.Platform.Application.Validators;
 using Inss.Platform.Domain.Components.Common;
 using Inss.Platform.Domain.Validation;
 using Inss.Platform.RpsProvider.Application.Clients;

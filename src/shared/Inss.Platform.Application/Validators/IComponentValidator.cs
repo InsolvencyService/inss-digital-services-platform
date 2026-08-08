@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Inss.Platform.Application.Validation;
+namespace Inss.Platform.Application.Validators;
 
 public interface IComponentValidator
 {

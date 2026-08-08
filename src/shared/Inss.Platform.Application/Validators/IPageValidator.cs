@@ -1,4 +1,4 @@
-namespace Inss.Platform.Application.Validation;
+namespace Inss.Platform.Application.Validators;
 
 public interface IPageValidator
 {

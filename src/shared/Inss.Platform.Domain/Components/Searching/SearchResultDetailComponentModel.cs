@@ -4,8 +4,6 @@ namespace Inss.Platform.Domain.Components.Searching;
 
 public sealed class SearchResultDetailComponentModel : ComponentModel
 {
-    public override string ViewName => "_SearchResultDetail";
-    
     public required string ConfigKey { get; init; }
     
     public SearchResult Result { get; set; }

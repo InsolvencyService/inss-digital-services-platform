@@ -4,8 +4,6 @@
 
 public sealed class SingleLineTextComponentModel : ComponentModel, IValueComponent
 {
-    public override string ViewName => "_SingleLineText";
-    
     public required string Question { get; init; }
     
     public string? Hint { get; init; }

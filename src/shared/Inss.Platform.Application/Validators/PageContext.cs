@@ -1,6 +1,6 @@
 using Inss.Platform.Domain;
 
-namespace Inss.Platform.Application.Validation;
+namespace Inss.Platform.Application.Validators;
 
 public sealed class PageContext
 {

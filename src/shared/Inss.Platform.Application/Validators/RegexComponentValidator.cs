@@ -4,7 +4,7 @@ using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Extensions;
 using Inss.Platform.Domain.Validation;
 
-namespace Inss.Platform.Application.Validation;
+namespace Inss.Platform.Application.Validators;
 
 public sealed class RegexComponentValidator : IComponentValidator
 {

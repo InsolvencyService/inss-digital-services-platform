@@ -17,7 +17,7 @@ public sealed class PageComponentBinder : IModelBinder
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         IFormCollection form = bindingContext.HttpContext.Request.Form;
-        PageModel page = new() { Title = form["Title"]!, Path = new PagePath(form["Path.Value"]!) };
+        PageModel page = new() { Title = form["Title"]!, Path = new PagePath(form["Path.Value"]!), QueryParams = form["QueryParams"] };
         int startIndex = FindStartIndex(form);
 
         if (startIndex == -1)

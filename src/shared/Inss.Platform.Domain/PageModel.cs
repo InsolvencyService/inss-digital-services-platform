@@ -25,4 +25,6 @@ public sealed class PageModel
     public bool DisplayFullWidth { get; init; }
     
     public Type? PageValidator { get; set; }
+    
+    public string? QueryParams { get; set; }
 }

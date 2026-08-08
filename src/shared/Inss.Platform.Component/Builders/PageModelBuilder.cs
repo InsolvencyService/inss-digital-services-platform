@@ -1,5 +1,5 @@
 ﻿using Inss.Platform.Application.Navigators;
-using Inss.Platform.Application.Validation;
+using Inss.Platform.Application.Validators;
 using Inss.Platform.Component.Extensions;
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Exceptions;

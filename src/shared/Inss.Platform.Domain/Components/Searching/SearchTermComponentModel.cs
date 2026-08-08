@@ -2,8 +2,6 @@
 
 public sealed class SearchTermComponentModel : ComponentModel, IValueComponent, IQueryParamComponent
 {
-    public override string ViewName => "_SearchTerm";
-    
     public required string Heading { get; init; }
 
     public required string Label { get; init; }

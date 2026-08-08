@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Inss.Platform.Application.Loaders;
-using Inss.Platform.Application.Validation;
+using Inss.Platform.Application.Validators;
 using Inss.Platform.Domain;
 using Inss.Platform.Domain.Components;
 using Inss.Platform.Domain.Validation;

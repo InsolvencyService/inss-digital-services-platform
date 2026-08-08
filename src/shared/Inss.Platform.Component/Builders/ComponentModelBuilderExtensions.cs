@@ -1,4 +1,4 @@
-﻿using Inss.Platform.Application.Validation;
+﻿using Inss.Platform.Application.Validators;
 using Inss.Platform.Domain.Validation;
 
 namespace Inss.Platform.Component.Builders;

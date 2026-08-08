@@ -20,6 +20,11 @@
     @Html.HiddenFor(m => m.Title)
     @Html.HiddenFor(m => m.Path.Value)
 
+    @if (Model.QueryParams is not null)
+    {
+        @Html.HiddenFor(m => m.QueryParams)
+    }
+
     @foreach (ComponentModel component in bindableComponents)
     {
         int index = Model.Components.IndexOf(component);
