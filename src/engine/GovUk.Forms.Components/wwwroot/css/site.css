@@ -32,7 +32,7 @@ a.rebranded-one-login-header__nav__link:active:after {
     }
 }
 
-td.govuk-table__cell {
+td.govuk-table__cell__override {
     word-break: break-all;
     white-space: normal;
 }
