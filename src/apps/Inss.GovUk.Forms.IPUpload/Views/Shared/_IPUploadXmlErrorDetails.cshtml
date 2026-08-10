@@ -34,11 +34,11 @@
         @foreach (EmployeeError employeeError in Model.CurrentErrorDetail.EmployeeUploadErrors)
         {
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@(employeeError.Forenames)</td>
-                <td class="govuk-table__cell">@(employeeError.Surname)</td>
-                <td class="govuk-table__cell">@(employeeError.Dob)</td>
-                <td class="govuk-table__cell">@(employeeError.Nino)</td>
-                <td class="govuk-table__cell">@(!string.IsNullOrWhiteSpace(employeeError.Value) ? employeeError.Value : "Not entered")</td>
+                <td class="govuk-table__cell govuk-table__cell__override">@(employeeError.Forenames)</td>
+                <td class="govuk-table__cell govuk-table__cell__override">@(employeeError.Surname)</td>
+                <td class="govuk-table__cell govuk-table__cell__override">@(employeeError.Dob)</td>
+                <td class="govuk-table__cell govuk-table__cell__override">@(employeeError.Nino)</td>
+                <td class="govuk-table__cell govuk-table__cell__override">@(!string.IsNullOrWhiteSpace(employeeError.Value) ? employeeError.Value : "Not entered")</td>
             </tr>
         }
         </tbody>

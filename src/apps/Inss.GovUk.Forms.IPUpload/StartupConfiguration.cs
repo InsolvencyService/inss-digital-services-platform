@@ -15,6 +15,7 @@ using System.Net.Mime;
 using Azure.Storage.Blobs;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Components.Binding;
+using GovUk.Forms.Components.Cookies;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Infrastructure.Options;
 using Inss.GovUk.Forms.IPUpload.Application.Factories;
@@ -35,7 +36,7 @@ public class StartupConfiguration : IHostingStartup
         {
             services.AddSingleton<IFormFactory, IPUploadFormFactory>();
             services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(XmlFileUploadModel).FullName);
-            
+            services.AddSingleton<ICookieListResolver, CookieListResolver>();
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
 
             DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
