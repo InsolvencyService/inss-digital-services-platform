@@ -1,5 +1,6 @@
 using GovUk.Forms.Application.Extensions;
 using GovUk.Forms.Application.Factories;
+using GovUk.Forms.Components.Cookies;
 using GovUk.Forms.Components.Extensions;
 using GovUk.Forms.Components.Resolvers;
 using GovUk.Forms.Infrastructure.Extensions;
@@ -22,6 +23,7 @@ public class StartupConfiguration : IHostingStartup
         builder.ConfigureServices((context, services) =>
         {
             services.AddSingleton<IFormFactory, FipFormFactory>();
+            services.AddSingleton<ICookieListResolver, CookieListResolver>();
             
             FipFlowchart flowchartBuilder = new();
             flowchartBuilder.Construct(services);
