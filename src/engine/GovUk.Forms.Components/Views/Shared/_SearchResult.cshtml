@@ -10,7 +10,7 @@
 
 <h1 class="govuk-heading-l">@heading</h1>
 
-<govuk-input for="@Model.SearchText" input-attributes="@InputAttributes.AutoFocus" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
+<govuk-input for="@Model.SearchText" input-class="govuk-input--width-30" inputmode="text" spellcheck="false">
     <govuk-input-label is-page-heading="true" class="govuk-label--m">Search</govuk-input-label>
     @if (!string.IsNullOrWhiteSpace(Model.MetaData.Hint))
     {
