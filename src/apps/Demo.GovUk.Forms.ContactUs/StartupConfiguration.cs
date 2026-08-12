@@ -18,6 +18,8 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
+        builder.AddDeveloperConfig<StartupConfiguration>();
+        
         builder.ConfigureServices((context, services) =>
         {
             services.AddSingleton<IFormFactory, ContactUsFormFactory>();
@@ -25,15 +27,15 @@ public class StartupConfiguration : IHostingStartup
             ContactUsFlowchart contactUsBuilder = new();
             contactUsBuilder.Construct(services);
 
-            services.AddSearch("Config1");
+            services.AddSearch("FindPerson");
             
             if (context.HostingEnvironment.IsDevelopment())
             {
-                services.AddMockSearchInfrastructure<MockSearchClient>(context.Configuration, "Config1");
+                services.AddMockSearchInfrastructure<MockSearchClient>(context.Configuration, "FindPerson");
             }
             else
             {
-                services.AddSearchInfrastructure(context.Configuration, "Config1");
+                services.AddSearchInfrastructure(context.Configuration, "FindPerson");
             }
             
             FindPeopleFlowchart findPeopleFlowchart = new();

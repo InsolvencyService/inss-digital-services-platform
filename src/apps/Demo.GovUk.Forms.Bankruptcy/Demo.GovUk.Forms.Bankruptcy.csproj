@@ -2,6 +2,7 @@
     <PropertyGroup>
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
         <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+        <UserSecretsId>5a33287f-f6c3-4c97-8c63-13d92681be04</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

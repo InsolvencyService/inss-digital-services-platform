@@ -20,6 +20,8 @@ public class StartupConfiguration : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)
     {
+        builder.AddDeveloperConfig<StartupConfiguration>();
+        
         builder.ConfigureServices((context, services) =>
         {
             services.AddSingleton<IFormFactory, FipFormFactory>();
