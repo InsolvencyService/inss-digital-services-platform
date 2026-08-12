@@ -72,7 +72,7 @@ rejecting pushes with sensitive data but, as a principal, we avoid defining valu
 
 ### Mocks
 
-There is a covention-based approach to switching on _mocks_ of services for development only. Any app settins section that 
+There is a covention-based approach to switching on _mocks_ of services for development only. Any app settings section that 
 may have a mock, will allow you to add _UseMock_ in the app settings/user secrets and will look for it when bootstrapping 
 the app.
 
