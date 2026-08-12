@@ -41,45 +41,9 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<ICookieListResolver, CookieListResolver>();
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
 
-            DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
-            ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
-
-            if (context.HostingEnvironment.IsDevelopment())
-            {
-                services.AddSingleton<ICaseReferenceClient, MockCaseReferenceClient>();
-                services.AddSingleton<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>();
-                services.AddSingleton<IUploadContentBlobClient, MockUploadContentBlobClient>();
-            }
-            else
-            {
-                services.AddHttpClient<ICaseReferenceClient, CaseReferenceClient>(client =>
-                    {
-                        client.BaseAddress = new Uri($"{dynamicsOptions.Url}/");
-                        client.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
-                        client.DefaultRequestHeaders.Add("OData-Version", "4.0");
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                    })
-                    .ConfigurePrimaryHttpMessageHandler(() => new DynamicsAuthDelegatingHandler(dynamicsOptions))
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(dynamicsOptions.LifetimeMinutes))
-                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, dynamicsOptions.RetryCount))
-                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
-                        sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
-
-                services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
-                    {
-                        client.BaseAddress = new Uri(submissionOptions.Url);
-                    })
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(submissionOptions.LifetimeMinutes))
-                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, submissionOptions.RetryCount))
-                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
-                        submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
-                
-                UploadBlobOptions uploadBlobOptions = new();
-                context.Configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
-                
-                services.AddTransient<IUploadContentBlobClient>(
-                    _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
-            }
+            RegisterCaseReferenceClient(context, services);
+            RegisterSubmitIPUploadSectionClient(context, services);
+            RegisterUploadContentBlobClient(context, services);
 
             services.AddTransient<ISubmitUploadedXmlService, SubmitUploadedXmlService>();
             services.AddTransient<IValidationFactory, ValidationFactory>();
@@ -96,5 +60,66 @@ public class StartupConfiguration : IHostingStartup
             app.UseComponents();
             app.UseFormEngine();
         });
+    }
+
+    private static void RegisterCaseReferenceClient(WebHostBuilderContext context, IServiceCollection services)
+    {
+        if (context.UseMock("Dynamics"))
+        {
+            services.AddSingleton<ICaseReferenceClient, MockCaseReferenceClient>();
+        }
+        else
+        {
+            DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
+            
+            services.AddHttpClient<ICaseReferenceClient, CaseReferenceClient>(client =>
+                {
+                    client.BaseAddress = new Uri($"{dynamicsOptions.Url}/");
+                    client.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
+                    client.DefaultRequestHeaders.Add("OData-Version", "4.0");
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => new DynamicsAuthDelegatingHandler(dynamicsOptions))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(dynamicsOptions.LifetimeMinutes))
+                .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, dynamicsOptions.RetryCount))
+                .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
+                    sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
+        }
+    }
+    
+    private static void RegisterSubmitIPUploadSectionClient(WebHostBuilderContext context, IServiceCollection services)
+    {
+        if (context.UseMock("Submission"))
+        {
+            services.AddSingleton<ISubmitIPUploadSectionClient, MockSubmitIPUploadSectionClient>();
+        }
+        else
+        {
+            ExternalApiOptions submissionOptions = context.Configuration.GetSection("Submission").Get<ExternalApiOptions>()!;
+            
+            services.AddHttpClient<ISubmitIPUploadSectionClient, SubmitIPUploadSectionClient>(client =>
+                {
+                    client.BaseAddress = new Uri(submissionOptions.Url);
+                })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(submissionOptions.LifetimeMinutes))
+                .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, submissionOptions.RetryCount))
+                .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(sp,
+                    submissionOptions.CountBeforeBreaking, submissionOptions.BreakDurationSeconds));
+        }
+    }
+    
+    private static void RegisterUploadContentBlobClient(WebHostBuilderContext context, IServiceCollection services)
+    {
+        UploadBlobOptions uploadBlobOptions = context.Configuration.GetSection("UploadBlob").Get<UploadBlobOptions>()!;
+        
+        if (context.UseMock("UploadBlob"))
+        {
+            services.AddSingleton<IUploadContentBlobClient>(_ => new MockUploadContentBlobClient(uploadBlobOptions.ConnectionString));
+        }
+        else
+        {
+            services.AddTransient<IUploadContentBlobClient>(
+                _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
+        }
     }
 }

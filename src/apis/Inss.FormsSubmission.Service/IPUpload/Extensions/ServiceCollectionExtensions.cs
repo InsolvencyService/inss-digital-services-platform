@@ -4,6 +4,7 @@ using Azure.Identity;
 using Azure.Storage.Blobs;
 using Inss.Common.Infrastructure;
 using Inss.Common.IPUpload;
+using Inss.FormsSubmission.Service.Extensions;
 using Inss.FormsSubmission.Service.Handlers;
 using Inss.FormsSubmission.Service.Infrastructure.Serialization;
 using Inss.FormsSubmission.Service.IPUpload.Clients;
@@ -26,58 +27,10 @@ internal static class ServiceCollectionExtensions
             services.AddSingleton<IMapperFactory, MapperFactory>();
             services.AddTransient<IHandler<SubmitIPUploadRequest, SubmitIPUploadResponse>, SubmitIPUploadHandler>();
 
-            if (context.HostingEnvironment.IsDevelopment())
-            {
-                services.AddSingleton<IDynamicsStoreProvider, MockDynamicsStoreProvider>();
-                services.AddHttpClient<IDynamicsClient, MockDynamicsClient>();
-                services.AddSingleton<IUploadContentBlobClient, MockUploadContentBlobClient>();
-            }
-            else
-            {
-                CosmosDbOptions cosmosDbOptions = new();
-                context.Configuration.GetSection("CosmosDb").Bind(cosmosDbOptions);
-                
-                if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
-                {
-                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
-                    CosmosClient cosmosClient = new(cosmosDbOptions.ConnectionString, options);
-                    services.AddTransient<IDynamicsStoreProvider>(
-                    _ => new DynamicsStoreProvider(cosmosClient, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName));
-                }
-                else if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
-                {
-                    CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
-                    CosmosClient cosmosClient = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
-                    services.AddTransient<IDynamicsStoreProvider>(
-                    _ => new DynamicsStoreProvider(cosmosClient, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName));
-                }
-                else
-                {
-                    throw new InvalidOperationException("No connection string or account endpoint for CosmosDb has been provided.");
-                }
-                
-                DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
+            RegisterDynamicsStoreProvider(context, services);
+            RegisterDynamicsClient(context, services);
+            RegisterUploadContentBlobClient(context, services);
             
-                services.AddHttpClient<IDynamicsClient, DynamicsClient>(client =>
-                    {
-                        client.BaseAddress = new Uri($"{dynamicsOptions.Url}/");
-                        client.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
-                        client.DefaultRequestHeaders.Add("OData-Version", "4.0");
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                    })
-                    .ConfigurePrimaryHttpMessageHandler(() => new DynamicsAuthDelegatingHandler(dynamicsOptions))
-                    .SetHandlerLifetime(TimeSpan.FromMinutes(dynamicsOptions.LifetimeMinutes))
-                    .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, dynamicsOptions.RetryCount))
-                    .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
-                        sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
-                
-                UploadBlobOptions uploadBlobOptions = new();
-                context.Configuration.GetSection("UploadBlob").Bind(uploadBlobOptions);
-                
-                services.AddTransient<IUploadContentBlobClient>(
-                    _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
-            }
-
             services.AddTransient<INotifyEmailService, NotifyEmailService>();
             services.AddSingleton<IBackgroundDynamicsQueue, BackgroundDynamicsQueue>();
             services.AddHostedService<QueuedDynamicsHostedService>();
@@ -85,6 +38,77 @@ internal static class ServiceCollectionExtensions
             services.AddInMemoryTokenCaches();
 
             return services;
+        }
+    }
+
+    private static void RegisterDynamicsStoreProvider(WebHostBuilderContext context, IServiceCollection services)
+    {
+        if (context.UseMock("CosmosDb"))
+        {
+            services.AddSingleton<IDynamicsStoreProvider, MockDynamicsStoreProvider>();
+        }
+        else
+        {
+            CosmosDbOptions cosmosDbOptions = context.Configuration.GetSection("CosmosDb").Get<CosmosDbOptions>()!;
+                
+            if (!string.IsNullOrWhiteSpace(cosmosDbOptions.ConnectionString))
+            {
+                CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                CosmosClient cosmosClient = new(cosmosDbOptions.ConnectionString, options);
+                services.AddTransient<IDynamicsStoreProvider>(
+                    _ => new DynamicsStoreProvider(cosmosClient, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName));
+            }
+            else if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
+            {
+                CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
+                CosmosClient cosmosClient = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
+                services.AddTransient<IDynamicsStoreProvider>(
+                    _ => new DynamicsStoreProvider(cosmosClient, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName));
+            }
+            else
+            {
+                throw new InvalidOperationException("No connection string or account endpoint for CosmosDb has been provided.");
+            }
+        }
+    }
+
+    private static void RegisterDynamicsClient(WebHostBuilderContext context, IServiceCollection services)
+    {
+        if (context.UseMock("Dynamics"))
+        {
+            services.AddHttpClient<IDynamicsClient, MockDynamicsClient>();
+        }
+        else
+        {
+            DynamicsOptions dynamicsOptions = context.Configuration.GetSection("Dynamics").Get<DynamicsOptions>()!;
+            
+            services.AddHttpClient<IDynamicsClient, DynamicsClient>(client =>
+                {
+                    client.BaseAddress = new Uri($"{dynamicsOptions.Url}/");
+                    client.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
+                    client.DefaultRequestHeaders.Add("OData-Version", "4.0");
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => new DynamicsAuthDelegatingHandler(dynamicsOptions))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(dynamicsOptions.LifetimeMinutes))
+                .AddPolicyHandler((sp, _) => Resilience.GetRetryPolicy(sp, dynamicsOptions.RetryCount))
+                .AddPolicyHandler((sp, _) => Resilience.GetCircuitBreaker(
+                    sp, dynamicsOptions.CountBeforeBreaking, dynamicsOptions.BreakDurationSeconds));
+        }
+    }
+    
+    private static void RegisterUploadContentBlobClient(WebHostBuilderContext context, IServiceCollection services)
+    {
+        UploadBlobOptions uploadBlobOptions = context.Configuration.GetSection("UploadBlob").Get<UploadBlobOptions>()!;
+        
+        if (context.UseMock("UploadBlob"))
+        {
+            services.AddSingleton<IUploadContentBlobClient>(_ => new MockUploadContentBlobClient(uploadBlobOptions.ConnectionString));
+        }
+        else
+        {
+            services.AddTransient<IUploadContentBlobClient>(
+                _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
         }
     }
 }

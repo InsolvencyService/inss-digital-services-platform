@@ -10,7 +10,6 @@ using Inss.GovUk.Forms.Fip.Builders;
 using Inss.GovUk.Forms.Fip.Infrastructure.Clients;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 [assembly: HostingStartup(typeof(Inss.GovUk.Forms.Fip.StartupConfiguration))]
 
@@ -32,7 +31,7 @@ public class StartupConfiguration : IHostingStartup
             
             services.AddSearch<SearchEnrichmentService>("FIPSearch");
             
-            if (context.HostingEnvironment.IsDevelopment())
+            if (context.UseMock("FIPSearch"))
             {
                 services.AddMockSearchInfrastructure<MockSearchClient>(context.Configuration, "FIPSearch");
             }

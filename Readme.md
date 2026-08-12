@@ -47,24 +47,76 @@ routing for the whole form, validate the form and also the flowchart for each se
 
 ### Host App
 
-This is a host project which _hosts_ an app and is a thing layer. The principal is based upon a plug-in architecture where
+This is a host project which _hosts_ an app and is a thin layer. The principal is based upon a plug-in architecture where
 the host app is configured to run a specific app and bootstrap it through dependency injection, of known interfaces and abstractions.
 
-## Running as Production
+### App Settings & User Secrets
 
-To get this to run as production e.g. connected to services, you need to switch each project that you require, into _Production_
-via its _launchsettings.json_ file.
+Each app has its own _appsettings.app.json_ file. This uses a convention-based approach where if your app is _Inss.GovUk.Forms.Fip_ 
+then the json file will be _appsettings.fip.json_.
 
-As _user secrets_ **do not load** in production mode, you can add the following line into the _launchsettings.json_ file:
+There is a line included in the _StartupConfiguration_ for each app:
 
-```json
-"commandLineArgs": "--config C:\\Users\\YOUR NAME\\AppData\\Roaming\\Microsoft\\UserSecrets\\GUID\\secrets.json"
+```c#
+builder.AddDeveloperConfig<StartupConfiguration>();
 ```
 
-and replace the **YOUR NAME** and **GUID** as required, or alternatively point it at a local config you wish to use.
+which will bootstrap the config for the app within the host app and also include the project user secrets.
+
+This means that the host app _appsettings.json_ is largely empty and there are no _user secrets_ either in the host app.
+
+This allows each app to define its configuration, isolated from other apps.
 
 The use of _user secrets_ is to avoid accidental check in of sensitive keys, secrets and IDs. GitHub will do a good job of
 rejecting pushes with sensitive data but, as a principal, we avoid defining values in the _appsettings.json_ in ther first place.
+
+### Mocks
+
+There is a covention-based approach to switching on _mocks_ of services for development only. Any app settins section that 
+may have a mock, will allow you to add _UseMock_ in the app settings/user secrets and will look for it when bootstrapping 
+the app.
+
+For example, in IPUS, we need to store the uploaded XML to blob but locally that may not be possible due to firewall restrictions.
+
+A mock exists to support this which uses a local folder. You can configure the _UploadBlob_ section in your user secrets like:
+
+```json
+"UploadBlob": {
+    "ConnectionString": "c:/dev/ipus-blobs",
+    "UseMock": true
+  },
+```
+
+**The UseMock** is an extra property that does not belong to the options but will be checked for such that the start-up code:
+
+```c#
+private static void RegisterUploadContentBlobClient(WebHostBuilderContext context, IServiceCollection services)
+{
+    UploadBlobOptions uploadBlobOptions = context.Configuration.GetSection("UploadBlob").Get<UploadBlobOptions>()!;
+    
+    if (context.UseMock("UploadBlob"))
+    {
+        services.AddSingleton<IUploadContentBlobClient>(_ => new MockUploadContentBlobClient(uploadBlobOptions.ConnectionString));
+    }
+    else
+    {
+        services.AddTransient<IUploadContentBlobClient>(
+            _ => new UploadContentBlobClient(new BlobServiceClient(uploadBlobOptions.ConnectionString)));
+    }
+}
+```
+
+will use a helper extension called _UseMock_ with the section, to determine whether to use a mock implementation of the interface.
+
+**Note that** this **only** applies to development as the the following logic is enforced:
+
+```c#
+public bool UseMock(string key)
+{
+    return context.HostingEnvironment.IsDevelopment() &&
+           bool.TryParse(context.Configuration[$"{key}:UseMock"], out bool useMock) && useMock;
+}
+```
 
 ## Links
 
