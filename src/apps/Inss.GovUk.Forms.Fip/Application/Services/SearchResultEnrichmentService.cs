@@ -54,15 +54,15 @@ public sealed class SearchEnrichmentService : ISearchService
             return;
         }
         
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyName), authorisingBodyLookup.AuthBodyName);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine1), authorisingBodyLookup.AuthBodyAddressLine1);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine2), authorisingBodyLookup.AuthBodyAddressLine2);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine3), authorisingBodyLookup.AuthBodyAddressLine3);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine4), authorisingBodyLookup.AuthBodyAddressLine4);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyAddressLine5), authorisingBodyLookup.AuthBodyAddressLine5);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.AuthBodyPostcode), authorisingBodyLookup.AuthBodyPostcode);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.Phone), authorisingBodyLookup.Phone);
-        result.Fields.TryAdd(nameof(authorisingBodyLookup.Website), authorisingBodyLookup.Website);
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyName)] = authorisingBodyLookup.AuthBodyName;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine1)] = authorisingBodyLookup.AuthBodyAddressLine1;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine2)] = authorisingBodyLookup.AuthBodyAddressLine2;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine3)] = authorisingBodyLookup.AuthBodyAddressLine3;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine4)] = authorisingBodyLookup.AuthBodyAddressLine4;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyAddressLine5)] = authorisingBodyLookup.AuthBodyAddressLine5;
+        result.Fields[nameof(authorisingBodyLookup.AuthBodyPostcode)] = authorisingBodyLookup.AuthBodyPostcode;
+        result.Fields[nameof(authorisingBodyLookup.Phone)] = authorisingBodyLookup.Phone;
+        result.Fields[nameof(authorisingBodyLookup.Website)] = authorisingBodyLookup.Website;
     }
 
     private const string Json = """
