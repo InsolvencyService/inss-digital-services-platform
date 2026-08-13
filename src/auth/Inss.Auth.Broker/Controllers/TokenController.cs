@@ -66,6 +66,7 @@ public class TokenController : Controller
         ClaimsIdentity identity = (ClaimsIdentity)principal.Identity!;
         AppendSubjectClaim(identity);
         AppendNameClaim(identity);
+        AppendEmailClaim(identity);
         AppendNonceClaim(identity, authCode.Nonce);
         AppendSubmissionClaim(identity);
     
@@ -105,7 +106,8 @@ public class TokenController : Controller
         if (!identity.HasClaim(c => c.Type == JwtRegisteredClaimNames.Sub))
         {
             Claim claim = identity.FindFirst("name") 
-                          ?? identity.FindFirst("email") 
+                          ?? identity.FindFirst("email")
+                          ?? identity.FindFirst(ClaimTypes.Email) // Entra
                           ?? throw new InvalidOperationException("Missing name or email claim.");
             identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, claim.Value));
         }
@@ -117,8 +119,21 @@ public class TokenController : Controller
         {
             Claim claim = identity.FindFirst("name") 
                           ?? identity.FindFirst("email")
+                          ?? identity.FindFirst(ClaimTypes.Email) // Entra
                           ?? throw new InvalidOperationException("Missing name or email claim.");
             identity.AddClaim(new Claim(ClaimTypes.Name, claim.Value));
+        }
+    }
+    
+    private static void AppendEmailClaim(ClaimsIdentity identity)
+    {
+        if (!identity.HasClaim(c => c.Type == ClaimTypes.Email))
+        {
+            Claim claim = identity.FindFirst("name") 
+                          ?? identity.FindFirst("email")
+                          ?? identity.FindFirst(ClaimTypes.Email) // Entra
+                          ?? throw new InvalidOperationException("Missing name or email claim.");
+            identity.AddClaim(new Claim(ClaimTypes.Email, claim.Value));
         }
     }
     

@@ -52,7 +52,7 @@ public class UserInfoController : Controller
                 // user in our system, pulling extra information to enrich the claims.
                 
                 ClaimsPrincipal? principal = tokenHandler.ValidateToken(token, validationParams, out _);
-                Claim subject = new(JwtRegisteredClaimNames.Sub, principal.FindFirst("name")!.Value);
+                Claim subject = new(JwtRegisteredClaimNames.Sub, principal.FindFirst(ClaimTypes.Email)!.Value);
                 Claim session = new("session_id", Guid.NewGuid().ToString("N"));
                 List<Claim> claims = [subject, session];
                 return Json(claims.ToDictionary(c => c.Type, c => c.Value));

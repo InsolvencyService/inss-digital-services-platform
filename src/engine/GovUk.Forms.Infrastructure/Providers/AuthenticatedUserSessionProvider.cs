@@ -18,7 +18,14 @@ public sealed class AuthenticatedUserSessionProvider : IUserSessionProvider
     {
         if (_httpContextAccessor.HttpContext?.User.Identity is ClaimsIdentity { IsAuthenticated: true, Name: not null })
         {
-            string email = _httpContextAccessor.HttpContext?.User.Identity.Name!;
+            Claim? emailClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email);
+
+            if (emailClaim is null)
+            {
+                throw new UnauthenticatedUserException("The authenticated user has no email claim provided.");
+            }
+            
+            string email = emailClaim.Value;
             string sessionId = _httpContextAccessor.HttpContext?.User.FindFirst("session_id")!.Value!;
             return Task.FromResult((sessionId, email));
         }

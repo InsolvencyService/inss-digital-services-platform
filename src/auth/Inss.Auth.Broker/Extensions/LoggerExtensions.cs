@@ -31,4 +31,7 @@ public static partial class LoggerExtensions
     
     [LoggerMessage(EventId = 308, Level = LogLevel.Information, Message = "Attempting to retrieve the auth code with {Code}.")]
     public static partial void RetrieveAuthCodeInfo(this ILogger logger, string code);
+    
+    [LoggerMessage(EventId = 309, Level = LogLevel.Information, Message = "Logging out of broker for {Scheme} with post logout redirect {Redirect} is being skipped.")]
+    public static partial void SkippingSchemeLogout(this ILogger logger, string scheme, string redirect);
 }
