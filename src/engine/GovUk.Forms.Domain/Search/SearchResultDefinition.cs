@@ -1,6 +1,5 @@
 ﻿// ReSharper disable UnusedAutoPropertyAccessor.Global - Json serialization
 
-using System.Linq;
 using GovUk.Forms.Domain.Search.Formatting;
 
 namespace GovUk.Forms.Domain.Search;

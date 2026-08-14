@@ -1,6 +1,7 @@
 ﻿using GovUk.Forms.Application.DataFlow;
 using GovUk.Forms.Application.Factories;
 using GovUk.Forms.Domain;
+using GovUk.Forms.Domain.Primitives;
 using Inss.GovUk.Forms.IPUpload.Application.DataFlow;
 using Inss.GovUk.Forms.IPUpload.Application.Factories;
 using Inss.GovUk.Forms.IPUpload.Builders;
@@ -14,7 +15,6 @@ namespace Inss.GovUk.Forms.IPUpload.Test.Application.DataFlow;
 
 public class CaseReferenceFlowNodeExecutorTests
 {
-    /*
     private readonly CaseReferenceFlowNodeExecutor _caseReferenceFlowNodeExecutor;
     private readonly FormModel _form;
     private readonly SectionModel _section;
@@ -38,88 +38,53 @@ public class CaseReferenceFlowNodeExecutorTests
         
         _caseReferenceFlowNodeExecutor = new CaseReferenceFlowNodeExecutor();
     }
-    
+
     [Fact]
-    public async Task NoCaseRefChangeAndPreviousPageWasSummary_ExecuteAsync_DoesNotResetReturn()
+    public async Task CaseRefMatchesExisting_ExecuteAsync_ReturnsEmployerCheckNode()
     {
-        SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
         CheckCaseReferenceModel checkCaseReference = _section.Pages.GetFirstOf<CheckCaseReferenceModel>();
         checkCaseReference.CaseReference.Value = "CN12345678";
-        checkCaseReference.ReturnUrl = summary.Path;
-        checkCaseReference.LinkedToNode = _nodes.First(n => n.PagePath == checkCaseReference.Path).Id;
-        EmployerDetailsModel employerDetails = _section.Pages.GetFirstOf<EmployerDetailsModel>();
-        employerDetails.CaseReference = "CN12345678";
-        employerDetails.EmployerName = "Springfield Nuclear";
-        employerDetails.ReturnUrl = summary.Path;
-        employerDetails.LinkedToNode = _nodes.First(n => n.PagePath == employerDetails.Path).Id;
-        XmlFileUploadModel fileUpload = _section.Pages.GetFirstOf<XmlFileUploadModel>();
-        fileUpload.Filename = "Test.xml";
-        fileUpload.Contents = "<xml.>";
-        fileUpload.ReturnUrl = summary.Path;
-        fileUpload.LinkedToNode = _nodes.First(n => n.PagePath == fileUpload.Path).Id;
-        FlowNode currentNode = _nodes.First(n => n.PagePath == checkCaseReference.Path);
-        _section.Track(checkCaseReference.LinkedToNode);
-        _section.Track(employerDetails.LinkedToNode);
-        _section.Track(fileUpload.LinkedToNode);
         CheckCaseReferenceModel currentPage = new() { Path = checkCaseReference.Path, CaseReference = { Value = "CN12345678" } };
+        FlowNode currentNode = _nodes.First(n => n.PagePath == checkCaseReference.Path);
         FlowNodeContext context = CreateFlowNodeContext(currentPage, currentNode);
         
-        await _caseReferenceFlowNodeExecutor.ExecuteAsync(context);
-        
-        Assert.Equal(summary.Path, checkCaseReference.ReturnUrl);
-        Assert.Equal(summary.Path, employerDetails.ReturnUrl);
-        Assert.Equal(summary.Path, fileUpload.ReturnUrl);
-    }
-    
-    [Fact]
-    public async Task HasCaseRefChangeAndPreviousPageWasSummary_ExecuteAsync_ResetsDetails()
-    {
-        SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
-        CheckCaseReferenceModel checkCaseReference = _section.Pages.GetFirstOf<CheckCaseReferenceModel>();
-        checkCaseReference.CaseReference.Value = "CN12345678";
-        checkCaseReference.ReturnUrl = summary.Path;
-        checkCaseReference.LinkedToNode = _nodes.First(n => n.PagePath == checkCaseReference.Path).Id;
+        NodeId? nextNodeId = await _caseReferenceFlowNodeExecutor.ExecuteAsync(context);
+
         EmployerDetailsModel employerDetails = _section.Pages.GetFirstOf<EmployerDetailsModel>();
-        employerDetails.CaseReference = "CN12345678";
-        employerDetails.EmployerName = "Springfield Nuclear";
-        employerDetails.ReturnUrl = summary.Path;
-        employerDetails.LinkedToNode = _nodes.First(n => n.PagePath == employerDetails.Path).Id;
-        XmlFileUploadModel fileUpload = _section.Pages.GetFirstOf<XmlFileUploadModel>();
-        fileUpload.Filename = "Test.xml";
-        fileUpload.Contents = "<xml.>";
-        fileUpload.ReturnUrl = summary.Path;
-        fileUpload.LinkedToNode = _nodes.First(n => n.PagePath == fileUpload.Path).Id;
-        FlowNode currentNode = _nodes.First(n => n.PagePath == checkCaseReference.Path);
-        _section.Track(checkCaseReference.LinkedToNode);
-        _section.Track(employerDetails.LinkedToNode);
-        _section.Track(fileUpload.LinkedToNode);
-        CheckCaseReferenceModel currentPage = new() { Path = checkCaseReference.Path, CaseReference = { Value = "CN87654321" } };
-        FlowNodeContext context = CreateFlowNodeContext(currentPage, currentNode);
-        
-        await _caseReferenceFlowNodeExecutor.ExecuteAsync(context);
-        
-        Assert.Null(checkCaseReference.ReturnUrl);
-        Assert.Null(employerDetails.ReturnUrl);
-        Assert.Null(fileUpload.ReturnUrl);
-        Assert.Empty(fileUpload.Filename);
-        Assert.Empty(fileUpload.Contents);
-        Assert.Equal(0, fileUpload.Length);
+        FlowNode employerDetailsNode = _nodes.First(n => n.PagePath == employerDetails.Path);
+        Assert.Equal(employerDetailsNode.Id, nextNodeId);
     }
     
     [Fact]
-    public async Task HasCaseRefChangeAndPreviousPageWasSummary_ExecuteAsync_ResetsReturn()
+    public async Task CaseRefMatchesExisting_ExecuteAsync_DoesNotResetSectionReturnPath()
     {
         SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
+        _section.ReturnUrl = summary.Path;
         CheckCaseReferenceModel checkCaseReference = _section.Pages.GetFirstOf<CheckCaseReferenceModel>();
         checkCaseReference.CaseReference.Value = "CN12345678";
-        checkCaseReference.ReturnUrl = summary.Path;
+        CheckCaseReferenceModel currentPage = new() { Path = checkCaseReference.Path, CaseReference = { Value = "CN12345678" } };
         FlowNode currentNode = _nodes.First(n => n.PagePath == checkCaseReference.Path);
-        CheckCaseReferenceModel currentPage = new() { Path = checkCaseReference.Path, CaseReference = { Value = "CN87654321" } };
         FlowNodeContext context = CreateFlowNodeContext(currentPage, currentNode);
         
         await _caseReferenceFlowNodeExecutor.ExecuteAsync(context);
+
+        Assert.NotNull(_section.ReturnUrl);
+    }
+    
+    [Fact]
+    public async Task CaseRefMatchesDiffers_ExecuteAsync_ResetsSectionReturnPath()
+    {
+        SummaryModel summary = _section.Pages.GetFirstOf<SummaryModel>();
+        _section.ReturnUrl = summary.Path;
+        CheckCaseReferenceModel checkCaseReference = _section.Pages.GetFirstOf<CheckCaseReferenceModel>();
+        checkCaseReference.CaseReference.Value = "CN12345678";
+        CheckCaseReferenceModel currentPage = new() { Path = checkCaseReference.Path, CaseReference = { Value = "CN87654321" } };
+        FlowNode currentNode = _nodes.First(n => n.PagePath == checkCaseReference.Path);
+        FlowNodeContext context = CreateFlowNodeContext(currentPage, currentNode);
         
-        Assert.Null(checkCaseReference.ReturnUrl);
+        await _caseReferenceFlowNodeExecutor.ExecuteAsync(context);
+
+        Assert.Null(_section.ReturnUrl);
     }
     
     private FlowNodeContext CreateFlowNodeContext(PageModel currentPage, FlowNode currentNode)
@@ -134,5 +99,4 @@ public class CaseReferenceFlowNodeExecutorTests
             PageBeforeChanges = _section.Pages.GetPage(currentPage.Path)
         };
     }
-    */
 }
