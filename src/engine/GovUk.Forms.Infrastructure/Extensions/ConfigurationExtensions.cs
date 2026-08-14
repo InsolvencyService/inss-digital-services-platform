@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.Identity.Client;
 
 namespace GovUk.Forms.Infrastructure.Extensions;
 
