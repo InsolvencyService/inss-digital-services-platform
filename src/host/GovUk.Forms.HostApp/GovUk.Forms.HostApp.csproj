@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
     <PackageReference Include="GovUk.Frontend.AspNetCore" />
@@ -49,6 +49,7 @@
     <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
     <ProjectReference Include="..\..\apps\Demo.GovUk.Forms.ContactUs\Demo.GovUk.Forms.ContactUs.csproj" />
     <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.Fip\Inss.GovUk.Forms.Fip.csproj" />
+    <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.Iir\Inss.GovUk.Forms.Iir.csproj" />
     <ProjectReference Include="..\..\apps\Inss.GovUk.Forms.IPUpload\Inss.GovUk.Forms.IPUpload.csproj" />
     <ProjectReference Include="..\..\engine\GovUk.Forms.Components\GovUk.Forms.Components.csproj" />
   </ItemGroup>
