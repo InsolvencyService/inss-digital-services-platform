@@ -25,7 +25,7 @@ public sealed class AzureSearchClient : ISearchClient
 
     public async Task<SearchResponse> SearchAsync(SearchRequest request)
     {
-        SearchOptions searchOptions = new() { Size = request.PageSize, Skip = request.Skip, IncludeTotalCount = true };
+        SearchOptions searchOptions = new() { Size = request.PageSize, Skip = request.Skip, IncludeTotalCount = true, QueryType = SearchQueryType.Full };
 
         Response<SearchResults<SearchDocument>> response = 
             await _searchClient.SearchAsync<SearchDocument>(request.SearchText, searchOptions);
