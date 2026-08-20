@@ -26,6 +26,7 @@ public sealed class IirFormFactory : IFormFactory
                             MetaData =
                             {
                               Question = "Search the individual insolvency register",
+                              SearchTitle = "Name of individual or trading name",
                               Description = "<p class=\"govuk-body\">Search using one or more of the following:</p>" +
                                               "<ul class=\"govuk-list govuk-list--bullet\">" +
                                               "<li>name</li>" +
