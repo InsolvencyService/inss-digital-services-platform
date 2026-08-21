@@ -1,0 +1,38 @@
+{
+  "PageSize": 10,
+  "DisplayAsTable": true,
+  "Results": [
+    {
+      "Names": [ "Case_Indiv_No" ],
+      "ColumnType": "Key,Hidden"
+    },
+    {
+      "Names": [ "FirstName", "FamilyName" ],
+      "Header": "Name",
+      "Order": 1,
+      "Css": "govuk-!-font-weight-bold",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": [ "TradingNames" ],
+      "Header": "Company",
+      "Order": 2,
+      "Css": "",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": [ "LastKnownTown" ],
+      "Header": "Town or City",
+      "Order": 3,
+      "Css": "",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": [ "LastKnownPostcode" ],
+      "Header": "Postcode",
+      "Order": 4,
+      "Css": "",
+      "ColumnType": "Display"
+    }
+  ]
+}

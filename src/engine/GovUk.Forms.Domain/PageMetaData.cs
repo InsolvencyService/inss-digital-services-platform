@@ -10,6 +10,8 @@ public sealed class PageMetaData
     
     public string? Description { get; set; }
 
+    public string? SearchTitle { get; set; }
+
     public GroupId Group { get; set; } = GroupId.Empty;
 
     public string? SubmitButtonText { get; set; }
@@ -21,5 +23,6 @@ public sealed class PageMetaData
         pageMetaData.Description = Description;
         pageMetaData.Group = Group;
         pageMetaData.SubmitButtonText = SubmitButtonText;
+        pageMetaData.SearchTitle = SearchTitle; 
     }
 }

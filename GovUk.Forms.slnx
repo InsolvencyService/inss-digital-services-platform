@@ -6,6 +6,7 @@
   <Folder Name="/src/apps/">
     <Project Path="src/apps/Demo.GovUk.Forms.ContactUs/Demo.GovUk.Forms.ContactUs.csproj" />
     <Project Path="src/apps/Inss.GovUk.Forms.Fip/Inss.GovUk.Forms.Fip.csproj" />
+    <Project Path="src/apps/Inss.GovUk.Forms.Iir/Inss.GovUk.Forms.Iir.csproj" />
     <Project Path="src\apps\Demo.GovUk.Forms.AboutYou\Demo.GovUk.Forms.AboutYou.csproj" />
     <Project Path="src\apps\Demo.GovUk.Forms.Bankruptcy\Demo.GovUk.Forms.Bankruptcy.csproj" />
     <Project Path="src\apps\Demo.GovUk.Forms.Business\Demo.GovUk.Forms.Business.csproj" />
