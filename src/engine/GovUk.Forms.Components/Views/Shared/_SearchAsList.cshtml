@@ -1,54 +1,87 @@
 ﻿@model GovUk.Forms.Domain.Search.SearchResultModel
 
-@* This needs implementing correcly as we do not have a requirement for list-based results yet *@
+@{
+    string resultOverview = $"Showing {Model.StartPageNumber} to {Model.EndPageNumber} of " +
+                            $"{Model.TotalResults} results for <strong>{Model.SearchText}</strong>";
+}
 
-<h1 class="govuk-summary-card__title">
-    List of eIIR Results
-</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <p class="govuk-body">@Html.Raw(resultOverview)</p>
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    </div>
+</div>
+
 <br />
-<ul class="govuk-list">
-    @foreach (var row in Model.Results)
-    {
-        <li class="govuk-!-margin-bottom-6">
-            <div class="govuk-summary-card">
 
-                <div class="govuk-summary-card__title-wrapper">
-                    <h2 class="govuk-summary-card__title">
-                        Search Result
-                    </h2>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <ul class="govuk-list govuk-list--divided">
+            @foreach (var row in Model.Results)
+            {
 
-                    <ul class="govuk-summary-card__actions">
-                        <li class="govuk-summary-card__action">
-                            <a class="govuk-link" href="#">
-                                Select
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="govuk-summary-card__content">
-
-                    <dl class="govuk-summary-list">
-
-                        @foreach (var column in Model.Definition.Results.Where(f => f.IsDisplayable).OrderBy(x => x.Order))
+                <li>
+                    @{
+                        var displayableColumns = Model.Definition.Results.Where(f => f.IsDisplayable).OrderBy(x => x.Order).ToList();
+                    }
+    
+                    @foreach (var column in displayableColumns)
+                    {
+                        string value = column.GetValueForNames(row.Fields);
+        
+                        if (Model.IsFirstDisplayableColumn(column))
+                        {
+                            <h2 class="govuk-heading-s">
+                                @Html.Raw(Model.GetResultDetailLink(row, value))
+                            </h2>
+                            break;
+                        }
+                    }
+    
+                    <dl class="govuk-summary-list govuk-summary-list--no-border">
+                        @foreach (var column in displayableColumns)
                         {
                             string value = column.GetValueForNames(row.Fields);
-                            
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    @column.Header
-                                </dt>
+            
+                            if (!Model.IsFirstDisplayableColumn(column))
+                            {
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key govuk-!-padding-top-1 govuk-!-padding-bottom-1">
+                                        @column.Header
+                                    </dt>
 
-                                <dd class="govuk-summary-list__value @column.Css">
-                                    @value
-                                </dd>
-                            </div>
+                                    <dd class="govuk-summary-list__value govuk-!-padding-top-1 govuk-!-padding-bottom-1">
+                                        @value
+                                    </dd>
+                                </div>
+                            }
                         }
                     </dl>
 
-                </div>
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-            </div>
-        </li>
-    }
-</ul>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

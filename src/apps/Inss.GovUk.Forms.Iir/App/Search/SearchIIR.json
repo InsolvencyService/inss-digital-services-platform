@@ -1,6 +1,6 @@
 {
   "PageSize": 10,
-  "DisplayAsTable": true,
+  "DisplayAsTable": false,
   "Results": [
     {
       "Names": [ "Case_Indiv_No" ],
@@ -15,22 +15,29 @@
     },
     {
       "Names": [ "TradingNames" ],
-      "Header": "Company",
+      "Header": "Trading name",
       "Order": 2,
+      "Css": "govuk-!-font-weight-bold",
+      "ColumnType": "Display"
+    },
+    {
+      "Names": [ "InsolvencyType" ],
+      "Header": "Type of insolvency",
+      "Order": 3,
       "Css": "",
       "ColumnType": "Display"
     },
     {
-      "Names": [ "LastKnownTown" ],
-      "Header": "Town or City",
-      "Order": 3,
+      "Names": [ "DateOfBirth" ],
+      "Header": "Date of birth",
+      "Order": 4,
       "Css": "",
       "ColumnType": "Display"
     },
     {
       "Names": [ "LastKnownPostcode" ],
       "Header": "Postcode",
-      "Order": 4,
+      "Order": 5,
       "Css": "",
       "ColumnType": "Display"
     }

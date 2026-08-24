@@ -43,7 +43,9 @@ public sealed class IirFormFactory : IFormFactory
                             ConfigKey = "IIRSearch",
                             MetaData =
                             {
-                                Question = "Search results"
+                                Question = "Search results",
+                                Description = "<p class=\"govuk-body\">Your results may include individuals with an alias or a previous name which matches your search criteria.</p>" +
+                                              "<p class=\"govuk-body\"> If you expected to see a name in the register and it is not there, <a href=\"\">tell the Insolvency Service.</a></p>\r\n"
                             }
                         },
                         new SearchResultDetailModel
