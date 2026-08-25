@@ -1,10 +1,14 @@
 ﻿@model GovUk.Forms.Domain.Search.SearchResultDetailModel
+@inject IPagePropertiesProvider PagePropertiesProvider
 
 @{
+    PagePropertiesProvider.FullPageLayout = true;
+    string heading = Model.MetaData.Question ?? "";
     (SearchCategory Category, CategorizedSearchResultDetail[] Info)[] results = Model.GetCategorizedResults();
 }
 
-@foreach ((SearchCategory Category, CategorizedSearchResultDetail[] Info) result in results)
+    <h1 class="govuk-heading-l">@heading</h1>
+    @foreach ((SearchCategory Category, CategorizedSearchResultDetail[] Info) result in results)
 {
     <h1 class="@(result.Category.Css ?? "govuk-heading-m")">@(result.Category.Label)</h1>
 
@@ -22,3 +26,5 @@
         }
     </govuk-summary-list>
 }
+
+
