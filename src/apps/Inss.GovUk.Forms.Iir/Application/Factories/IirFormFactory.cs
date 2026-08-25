@@ -55,8 +55,8 @@ public sealed class IirFormFactory : IFormFactory
                             SubmitType = SubmitTypes.None,
                             MetaData =
                             {
-                                Question = "Search result detail",
-                                SubmitButtonText = "New search"
+                                Question = "Case details",
+                                SubmitButtonText = "Start a new search"
                             }
                         }
                     ]

@@ -16,6 +16,8 @@ public sealed class SearchDetailDefinition
     
     public string? FormatterType { get; init; }
 
+    public string? Description { get; init; } = string.Empty;
+
     public string GetLabel()
     {
         return !string.IsNullOrWhiteSpace(Header) ? Header : string.Join(' ', Names).Trim();

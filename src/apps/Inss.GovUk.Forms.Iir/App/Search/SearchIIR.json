@@ -41,5 +41,177 @@
       "Css": "",
       "ColumnType": "Display"
     }
+  ],
+  "Details": [
+    {
+      "Names": [ "FirstName", "FamilyName" ],
+      "Header": "Full name",
+      "Order": 1,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "Title" ],
+      "Header": "Title",
+      "Order": 2,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "Gender" ],
+      "Header": "Gender",
+      "Order": 3,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "Occupation" ],
+      "Header": "Work status",
+      "Order": 4,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "DateOfBirth" ],
+      "Header": "Date of birth",
+      "Order": 5,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "LastKnownAddress" ],
+      "Header": "Last known address",
+      "Order": 6,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "PreviousAddress" ],
+      "Header": "Previous address(es)",
+      "Order": 7,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "AlternativeNames" ],
+      "Header": "This person may also be known as",
+      "Order": 8,
+      "Category": "Individual details"
+    },
+    {
+      "Names": [ "InsolvencyType" ],
+      "Header": "Type",
+      "Order": 1,
+      "Category": "Insolvency case details"
+    },
+    {
+      "Names": [ "CaseName" ],
+      "Header": "Case name",
+      "Order": 2,
+      "Category": "Insolvency case details"
+    },
+    {
+      "Names": [ "Court" ],
+      "Header": "Court details",
+      "Order": 3,
+      "Category": "Insolvency case details"
+    },
+    {
+      "Names": [ "InsolvencyDate" ],
+      "Header": "Start date (court order)",
+      "Order": 4,
+      "Category": "Insolvency case details"
+    },
+    {
+      "Names": [ "CaseStatus" ],
+      "Header": "Status",
+      "Order": 5,
+      "Category": "Insolvency case details"
+    },
+    {
+      "Names": [ "DischargeDate" ],
+      "Header": "End date (Discharge)",
+      "Order": 6,
+      "Category": "Insolvency case details"
+    },
+    {
+      "Names": [ "RegisterRemovalDate" ],
+      "Header": "Register removal date",
+      "Order": 7,
+      "Category": "Insolvency case details"
+    },
+    {
+      "Names": [ "TradingNames" ],
+      "Header": "Trading names",
+      "Order": 1,
+      "Category": "Trading details"
+    },
+    {
+      "Names": [ "TradingData" ],
+      "Header": "Trading address",
+      "Order": 2,
+      "Category": "Trading details"
+    },
+    {
+      "Names": [ "TypeOfBusiness" ],
+      "Header": "Type of business",
+      "Order": 3,
+      "Category": "Trading details"
+    },
+    {
+      "Names": [ "InsolvencyServiceOffice" ],
+      "Header": "Insolvency Service office",
+      "Order": 1,
+      "Category": "Insolvency service contact details"
+    },
+    {
+      "Names": [ "InsolvencyServiceContact" ],
+      "Header": "Contact",
+      "Order": 2,
+      "Category": "Insolvency service contact details"
+    },
+    {
+      "Names": [ "InsolvencyServiceAddress" ],
+      "Header": "Address",
+      "Order": 3,
+      "Category": "Insolvency service contact details"
+    },
+    {
+      "Names": [ "InsolvencyServicePostcode" ],
+      "Header": "Postcode",
+      "Order": 4,
+      "Category": "Insolvency service contact details"
+    },
+    {
+      "Names": [ "InsolvencyServiceTelephone" ],
+      "Header": "Telephone",
+      "Order": 5,
+      "Category": "Insolvency service contact details"
+    }
+
+  ],
+  "Categories": [
+    {
+      "Label": "Individual details",
+      "Css": "govuk-heading-m"
+    },
+    {
+      "Label": "Insolvency case details",
+      "Css": "govuk-heading-m"
+    },
+    {
+      "Label": "Trading details",
+      "Css": "govuk-heading-s"
+    },
+    {
+      "Label": "Guidance",
+      "Css": "govuk-heading-m"
+    },
+    {
+      "Label": "This register and credit files",
+      "Css": "govuk-heading-m"
+    },
+    {
+      "Label": "Errors or issues",
+      "Css": "govuk-heading-m"
+    },
+    {
+      "Label": "Insolvency service contact details",
+      "Css": "govuk-heading-m"
+    }
+
   ]
 }

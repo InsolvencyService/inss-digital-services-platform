@@ -58,7 +58,7 @@ public sealed class FipFormFactory : IFormFactory
                             SubmitType = SubmitTypes.None,
                             MetaData =
                             {
-                                Question = "Search result detail",
+                                Question = "",
                                 SubmitButtonText = "Find another insolvency practitioner"
                             }
                         }
