@@ -68,7 +68,7 @@ stages:
   variables:
     - group: Platform-Dev
   jobs:
-    - template: ../deploy/azure-deployment.yml
+    - template: ../deploy/fip.azure-deployment.yml
       parameters:
         environment: 'Dev'
         location: ${{ parameters.location }}
@@ -81,7 +81,7 @@ stages:
   variables:
     - group: Platform-Sit
   jobs:
-    - template: ../deploy/azure-deployment.yml
+    - template: ../deploy/fip.azure-deployment.yml
       parameters:
         environment: 'Sit'
         location: ${{ parameters.location }}
@@ -94,7 +94,7 @@ stages:
   variables:
     - group: Platform-PreProd
   jobs:
-    - template: ../deploy/azure-deployment.yml
+    - template: ../deploy/fip.azure-deployment.yml
       parameters:
         environment: 'PreProd'
         location: ${{ parameters.location }}
@@ -107,7 +107,7 @@ stages:
   variables:
     - group: Platform-Prod
   jobs:
-    - template: ../deploy/azure-deployment.yml
+    - template: ../deploy/fip.azure-deployment.yml
       parameters:
         environment: 'Prod'
         location: ${{ parameters.location }}
