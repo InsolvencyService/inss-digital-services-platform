@@ -14,7 +14,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-
 namespace GovUk.Forms.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -33,8 +32,9 @@ public static class ServiceCollectionExtensions
                     CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
                     CosmosClient client = new(cosmosDbOptions.ConnectionString, options);
                     IHttpContextAccessor httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    ILogger<CosmosFormStorageProvider> logger = provider.GetRequiredService<ILogger<CosmosFormStorageProvider>>();
                     return new CosmosFormStorageProvider(
-                        client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName, httpContextAccessor);
+                        client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName, httpContextAccessor, logger);
                 }
 
                 if (!string.IsNullOrWhiteSpace(cosmosDbOptions.AccountEndpoint))
@@ -42,8 +42,9 @@ public static class ServiceCollectionExtensions
                     CosmosClientOptions options = new() { Serializer = new CosmosModelSerializer() };
                     CosmosClient client = new(cosmosDbOptions.AccountEndpoint, new DefaultAzureCredential(), options);
                     IHttpContextAccessor httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                    ILogger<CosmosFormStorageProvider> logger = provider.GetRequiredService<ILogger<CosmosFormStorageProvider>>();
                     return new CosmosFormStorageProvider(
-                        client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName, httpContextAccessor);
+                        client, cosmosDbOptions.DatabaseName, cosmosDbOptions.ContainerName, httpContextAccessor, logger);
                 }
 
                 return new TestFormStorageProvider();
@@ -60,7 +61,7 @@ public static class ServiceCollectionExtensions
             where TMockClient : class, ISearchClient
         {
             AzureSearchOptions searchOptions = configuration.BindAndValidate<AzureSearchOptions>(configKey);
-            
+
             services.AddKeyedSingleton<ISearchConfigProvider>(configKey, (provider, _) =>
             {
                 ILogger<SearchConfigProvider> logger = provider.GetRequiredService<ILogger<SearchConfigProvider>>();
@@ -69,17 +70,17 @@ public static class ServiceCollectionExtensions
             services.AddKeyedSingleton<ISearchClient, TMockClient>(configKey);
             return services;
         }
-        
+
         public IServiceCollection AddSearchInfrastructure(IConfiguration configuration, string configKey)
         {
             AzureSearchOptions searchOptions = configuration.BindAndValidate<AzureSearchOptions>(configKey);
-            
+
             services.AddKeyedSingleton<ISearchConfigProvider>(configKey, (provider, _) =>
             {
                 ILogger<SearchConfigProvider> logger = provider.GetRequiredService<ILogger<SearchConfigProvider>>();
                 return new SearchConfigProvider(searchOptions.ConfigPath, logger);
             });
-            
+
             services.AddKeyedSingleton<ISearchClient>(configKey, (provider, _) =>
             {
                 SearchClient searchClient = new(
@@ -89,7 +90,7 @@ public static class ServiceCollectionExtensions
                 ILogger<SearchService> logger = provider.GetRequiredService<ILogger<SearchService>>();
                 return new AzureSearchClient(searchClient, logger);
             });
-            
+
             return services;
         }
     }
