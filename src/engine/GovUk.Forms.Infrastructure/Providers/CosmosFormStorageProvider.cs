@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using GovUk.Forms.Application.Providers;
 using GovUk.Forms.Domain;
@@ -6,6 +6,7 @@ using GovUk.Forms.Domain.Primitives;
 using GovUk.Forms.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 
 namespace GovUk.Forms.Infrastructure.Providers;
 
@@ -16,20 +17,23 @@ public sealed class CosmosFormStorageProvider : IFormStorageProvider
     private readonly string _databaseName;
     private readonly string _containerName;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<CosmosFormStorageProvider> _logger;
     private const string FormContextItem = "CurrentForm";
 
     public CosmosFormStorageProvider(
         CosmosClient cosmosClient, 
         string databaseName, 
         string containerName, 
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<CosmosFormStorageProvider> logger)
     {
         _cosmosClient = cosmosClient;
         _databaseName = databaseName;
         _containerName = containerName;
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
     }
-    
+
     public async Task<bool> ExistsAsync(ContentPath path, string sessionId)
     {
         Database? database = _cosmosClient.GetDatabase(_databaseName);
@@ -50,13 +54,15 @@ public sealed class CosmosFormStorageProvider : IFormStorageProvider
 
     public async Task<FormModel> GetAsync(ContentPath path, string sessionId)
     {
+        _logger.LogInformation("Get the form for session {SessionId} and path {Path}", sessionId, path);
+
         try
         {
             if (_httpContextAccessor.HttpContext?.Items[FormContextItem] is FormModel form)
             {
                 return form;
             }
-            
+
             Database? database = _cosmosClient.GetDatabase(_databaseName);
             Container? container = database.GetContainer(_containerName);
             form = await container.ReadItemAsync<FormModel>(sessionId, new PartitionKey(path));
@@ -68,14 +74,16 @@ public sealed class CosmosFormStorageProvider : IFormStorageProvider
             throw new StorageProviderException($"Unable to find the form model for the session {sessionId}");
         }
     }
-    
+
     public async Task SaveAsync(string sessionId, FormModel form)
     {
+        _logger.LogInformation("Get the form for session {SessionId} and path {Path}", sessionId, form.Path);
+
         Database? database = _cosmosClient.GetDatabase(_databaseName);
         Container? container = database.GetContainer(_containerName);
         await container.UpsertItemAsync(form, new PartitionKey(form.Path));
     }
-    
+
     public async Task RemoveAsync(string sessionId, FormModel form)
     {
         Database? database = _cosmosClient.GetDatabase(_databaseName);
@@ -83,3 +91,5 @@ public sealed class CosmosFormStorageProvider : IFormStorageProvider
         await container.DeleteItemAsync<FormModel>(sessionId, new PartitionKey(form.Path));
     }
 }
+
+ 
