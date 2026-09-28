@@ -21,8 +21,7 @@ public sealed class IPUploadFormFactory : IFormFactory
             .AddPage<IPUploadXmlErrorsModel>("Your form has errors", "upload-errors", submitButtonText: "Continue")
             .AddPage<IPUploadXmlErrorDetailsModel>("IP upload error details", "upload-error-details")
             .AddPage<SummaryModel>("Redundancy payment summary", "summary", question: "Check your answers before submitting the form", submitButtonText: "Submit")
-            .EndSection<PostSubmitModel>("What happens next", "submit-completed", submitButtonText: "Upload another form")
-
+            .EndSection<PostSubmitModel>("What happens next", "submit-completed")
             .ValidateAndComplete();
     }
 }
