@@ -10,6 +10,14 @@ public sealed record CookieUsage(string Name, string Purpose, string Lifetime)
         ".AspNetCore.Cookies",
         "Authentication cookie for identity",
         "30 minutes");
+    public static readonly CookieUsage CookieC1 = new(
+        ".AspNetCore.CookiesC1",
+        "Store authentication-related data such as the authentication ticket and the authentication scheme.",
+        "Session");
+    public static readonly CookieUsage CookieC2 = new(
+        ".AspNetCore.CookiesC2",
+        "Store authentication-related data such as the authentication ticket and the authentication scheme.",
+        "Session");
     public static readonly CookieUsage Affinity = new(
         "ARRAffinity",
         "Session affinity in multi-instance environments",
