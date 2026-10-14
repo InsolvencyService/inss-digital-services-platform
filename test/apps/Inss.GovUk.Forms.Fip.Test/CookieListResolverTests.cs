@@ -12,9 +12,8 @@ public class CookieListResolverTests
 
         CookieUsage[] cookieUsages = cookieListResolver.Resolve().ToArray();
         
-        Assert.Equal(3, cookieUsages.Length);
+        Assert.Equal(2, cookieUsages.Length);
         Assert.Equal(CookieUsage.AntiForgery, cookieUsages[0]);
-        Assert.Equal(CookieUsage.Affinity, cookieUsages[1]);
-        Assert.Equal(CookieUsage.AffinitySameSite, cookieUsages[2]);
+        Assert.Equal(CookieUsage.AnonymousForm, cookieUsages[1]);
     }
 }
