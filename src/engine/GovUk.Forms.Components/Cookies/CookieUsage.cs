@@ -5,7 +5,7 @@ public sealed record CookieUsage(string Name, string Purpose, string Lifetime)
     public static readonly CookieUsage AntiForgery = new(
         ".AspNetCore.Antiforgery",
         "Per request tampering check",
-        "2 hours");
+        "Session");
     public static readonly CookieUsage Identity = new(
         ".AspNetCore.Cookies",
         "Authentication cookie for identity",
@@ -26,4 +26,8 @@ public sealed record CookieUsage(string Name, string Purpose, string Lifetime)
         "ARRAffinitySameSite",
         "Session affinity for the same instance used",
         "Session");
+    public static readonly CookieUsage AnonymousForm = new(
+        ".Anonymous.Form",
+        "Maintain anonymous user session",
+        "30 minutes");
 }
