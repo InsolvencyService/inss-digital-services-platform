@@ -8,5 +8,7 @@ public sealed class CookieListResolver : ICookieListResolver
     {
         yield return CookieUsage.AntiForgery;
         yield return CookieUsage.AnonymousForm;
+        yield return CookieUsage.Affinity;
+        yield return CookieUsage.AffinitySameSite;
     }
 }
