@@ -21,6 +21,7 @@ using Inss.GovUk.Forms.IPUpload.Application.Factories;
 using Inss.GovUk.Forms.IPUpload.Domain;
 using Inss.GovUk.Forms.IPUpload.Domain.Validation;
 using Inss.GovUk.Forms.IPUpload.Infrastructure.Handlers;
+using Microsoft.AspNetCore.Http;
 
 [assembly: HostingStartup(typeof(Inss.GovUk.Forms.IPUpload.StartupConfiguration))]
 
@@ -38,6 +39,12 @@ public class StartupConfiguration : IHostingStartup
             services.AddSingleton<IFormFactory, IPUploadFormFactory>();
             services.AddKeyedSingleton<IContentBinder, FileContentBinder>(typeof(XmlFileUploadModel).FullName);
             services.AddSingleton<ICookieListResolver, CookieListResolver>();
+
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
             services.AddTransient<ICaseReferenceService, CaseReferenceService>();
 
             RegisterCaseReferenceClient(context, services);
