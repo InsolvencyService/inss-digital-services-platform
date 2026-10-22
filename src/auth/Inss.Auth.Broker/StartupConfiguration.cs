@@ -70,6 +70,11 @@ public class StartupConfiguration : IHostingStartup
                 .AddRps()
                 .AddEntra();
 
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
             if (context.HostingEnvironment.IsProduction())
             {
                 services.AddAppDataProtection(context.Configuration);

@@ -47,7 +47,12 @@ public class StartupConfiguration : IHostingStartup
                     options.Cookie.SameSite = SameSiteMode.None;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
-            
+
+            services.AddAntiforgery(options =>
+            {
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
             services.AddOptions<ProviderOptions>()
                 .Bind(context.Configuration.GetSection("Provider"))
                 .ValidateDataAnnotations()
