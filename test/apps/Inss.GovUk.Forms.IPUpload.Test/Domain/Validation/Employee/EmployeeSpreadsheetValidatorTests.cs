@@ -414,4 +414,42 @@ public class EmployeeSpreadsheetValidatorTests
 
         Assert.NotNull(context.Errors);
     }
+
+    [Fact]
+    public void ValidMoneyOwedToEmployer_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.MoneyOwedToEmployer = 300.1M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeValidationInfo.InvalidMoneyOwedToEmployerFormat().Key);
+    }
+
+    [Fact]
+    public void ValidBasicPayPerWeek_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.PayDetails.BasicPayPerWeek = 300.1M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeePayValidationInfo.InvalidEmployeeBasicPayFormat().Key);
+    }
+
+    [Fact]
+    public void ValidArrearsOfPay_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod1.AOPOwed1 = 300.1M;
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod2.AOPOwed2 = 300.1M;
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod3.AOPOwed3 = 300.1M;
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod4.AOPOwed4 = 300.1M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeValidationInfo.InvalidAopOwedFormat().Key);
+    }
+
+
 }
