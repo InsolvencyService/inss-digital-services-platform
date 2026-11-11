@@ -427,6 +427,18 @@ public class EmployeeSpreadsheetValidatorTests
     }
 
     [Fact]
+    public void ValidMoneyOwedToEmployer_TrailingZeros_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.MoneyOwedToEmployer = 300.1000M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeValidationInfo.InvalidMoneyOwedToEmployerFormat().Key);
+    }
+
+
+    [Fact]
     public void ValidBasicPayPerWeek_ValidateAsync_ReturnsNoErrors()
     {
         RP14AEmployee employee = _model.Employee[0];
@@ -436,6 +448,18 @@ public class EmployeeSpreadsheetValidatorTests
 
         Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeePayValidationInfo.InvalidEmployeeBasicPayFormat().Key);
     }
+
+    [Fact]
+    public void ValidBasicPayPerWeek_TrailingZeros_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.PayDetails.BasicPayPerWeek = 300.1000M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeePayValidationInfo.InvalidEmployeeBasicPayFormat().Key);
+    }
+
 
     [Fact]
     public void ValidArrearsOfPay_ValidateAsync_ReturnsNoErrors()
@@ -451,5 +475,74 @@ public class EmployeeSpreadsheetValidatorTests
         Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeValidationInfo.InvalidAopOwedFormat().Key);
     }
 
+    [Fact]
+    public void ValidArrearsOfPay_TrailingZeros_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod1.AOPOwed1 = 300.10M;
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod2.AOPOwed2 = 300.100M;
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod3.AOPOwed3 = 300.1000M;
+        employee.PayDetails.ArrearsOfPay.ArrearsOfPayPeriod4.AOPOwed4 = 300.10000M;
 
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeValidationInfo.InvalidAopOwedFormat().Key);
+    }
+
+
+    [Fact]
+    public void ValidAverageHoursWorked_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.AverageHoursWorked = 300.10M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeValidationInfo.InvalidAverageHoursWorkedFormat().Key);
+    }
+
+    [Fact]
+    public void InvalidAverageHoursWorked_ValidateAsync_ReturnsErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.AverageHoursWorked = 300.11M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.Contains(context.Errors, e => e.Info.Key == EmployeeValidationInfo.InvalidAverageHoursWorkedFormat().Key);
+    }
+
+
+    [Fact]
+    public void ValidContractedHolidayEntitlement_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.Holiday.HolidayContractedEntitlementDays = 300.10M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeHolidayValidationInfo.InvalidContractedHolidayEntitlementFormat().Key);
+    }
+
+    [Fact]
+    public void ValidHolidayDaysCarriedForward_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.Holiday.HolidayDaysCarriedForward = 300.10M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeHolidayValidationInfo.InvalidHolidayCarriedForwardFormat().Key);
+    }
+
+    [Fact]
+    public void ValidHolidayDaysTaken_ValidateAsync_ReturnsNoErrors()
+    {
+        RP14AEmployee employee = _model.Employee[0];
+        employee.Holiday.HolidayDaysTaken = 300.10M;
+
+        ValidatorContext context = _validator.Validate(_employerDetails);
+
+        Assert.DoesNotContain(context.Errors, e => e.Info.Key == EmployeeHolidayValidationInfo.InvalidHolidayDaysTakenFormat().Key);
+    }
 }
