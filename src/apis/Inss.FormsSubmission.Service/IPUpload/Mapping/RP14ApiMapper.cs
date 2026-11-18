@@ -24,7 +24,7 @@ public sealed class RP14ApiMapper : IMapper
             CaseReference = _model.Header?.CaseReference ?? null!,
             Company = MapCompany(_model),
             Directors = MapDirectors(_model.Directors),
-            DirectorsClaimingRedundancy = _model.Directors.ClaimingRPAsEmployeeSpecified 
+            DirectorsClaimingRedundancy = _model.Directors?.ClaimingRPAsEmployeeSpecified == true
                 ? MapYesNo(_model.Directors.ClaimingRPAsEmployee) : null,
             Shareholders = MapShareholders(_model.Shareholders),
             LegallyAssociatedCompanies = _model.AssociatedCompanies?.LegallyAssociatedCompaniesSpecified == true 
@@ -146,11 +146,11 @@ public sealed class RP14ApiMapper : IMapper
         
         return new Transfer
         {
-            Type = transferDetails.TransferTypeSpecified ? MapTransferType(transferDetails.TransferType) : null!,
+            Type = transferDetails.TransferTypeSpecified ? MapTransferType(transferDetails.TransferType) : null,
             To = new TransferTo
             {
-                Name = transferDetails.TransferTo?.Name ?? null!,
-                Address = transferDetails.TransferTo is not null ? MapAddress(transferDetails.TransferTo.Address) : null!,
+                Name = transferDetails.TransferTo?.Name,
+                Address = MapAddress(transferDetails.TransferTo?.Address),
                 TransferDate = transferDetails.TransferDateSpecified ? transferDetails.TransferDate : null,
                 DateNegotiationBegan = transferDetails.NegotiationDateSpecified ? transferDetails.NegotiationDate : null
             }
@@ -170,7 +170,7 @@ public sealed class RP14ApiMapper : IMapper
             {
                 Initials = d.Name.Initials,
                 Surname = d.Name.Surname,
-                NationalInsuranceNumber = d.NINO.Replace(" ", string.Empty).ToUpper()
+                NationalInsuranceNumber = d.NINO?.Replace(" ", string.Empty).ToUpper() ?? null
             })
             .ToList();
     }
@@ -186,7 +186,7 @@ public sealed class RP14ApiMapper : IMapper
             .Select(s => new Shareholder
             {
                 Percentage = s.PercentageSpecified ? s.Percentage : null,
-                Fullname = s.Name.FullName,
+                Fullname = s.Name?.FullName,
                 NumberOfSharesHeld = int.TryParse(s.NoOfSharesHeld, out int noShares) ? noShares : null
             })
             .ToList();
@@ -194,7 +194,7 @@ public sealed class RP14ApiMapper : IMapper
 
     private static List<AssociatedCompany> MapAssociatedCompanies(RP14AssociatedCompanies? associatedCompanies)
     {
-        if (associatedCompanies is null || associatedCompanies.AssociatedCompany.Length == 0)
+        if (associatedCompanies?.AssociatedCompany is null || associatedCompanies.AssociatedCompany.Length == 0)
         {
             return [];
         }
@@ -221,8 +221,8 @@ public sealed class RP14ApiMapper : IMapper
         
         return new PreviousEmployer
         {
-            EmployerName = employeesClaimingContinuity?.EmployerName ?? null!,
-            Address = employeesClaimingContinuity is not null ? MapAddress(employeesClaimingContinuity.Address) : null!,
+            EmployerName = employeesClaimingContinuity?.EmployerName,
+            Address = MapAddress(employeesClaimingContinuity?.Address),
             DateTradingStarted = employeesClaimingContinuity is not null && 
                                  employeesClaimingContinuity.TradingDateSpecified
                 ? employeesClaimingContinuity.TradingDate : null,
@@ -235,13 +235,20 @@ public sealed class RP14ApiMapper : IMapper
         };
     }
 
-    private static Address MapAddress(AddressType address)
+    private static Address MapAddress(AddressType? address)
     {
+        if (address is null)
+        {
+            return null!;
+        }
+
+        string[] lines = address.Line ?? [];
+
         return new Address
         {
-            Line1 = address.Line.Length > 0 ? address.Line[0] : null!,
-            Line2 = address.Line.Length > 1 ? address.Line[1] : null!,
-            Line3 = address.Line.Length > 2 ? address.Line[2] : null!,
+            Line1 = lines.Length > 0 ? lines[0] : null!,
+            Line2 = lines.Length > 1 ? lines[1] : null!,
+            Line3 = lines.Length > 2 ? lines[2] : null!,
             Town = address.Town,
             County = address.County,
             Postcode = address.Postcode,
@@ -281,4 +288,5 @@ public sealed class RP14ApiMapper : IMapper
             _ => throw new IPUploadMappingException($"Cannot convert {transferType} to string.")
         };
     }
+
 }

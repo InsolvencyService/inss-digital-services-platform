@@ -17,18 +17,20 @@ public sealed class RP14AApiMapper : IMapper
     public JsonMessage[] Map()
     {
         // NOTE: Logic lifted from https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.BL/Mappers/RP14aApiMessageMapper.cs
-        
-        EmployeeInformation[] employeeInformationList = _model.Employee.Select(e => new EmployeeInformation
+
+        RP14AEmployee[] employees = _model.Employee ?? [];
+
+        EmployeeInformation[] employeeInformationList = employees.Select(e => new EmployeeInformation
         {
             CorrelationId = Guid.NewGuid(),
-            CaseReference = _model.Header.CaseReference,
-            EmployerName = _model.EmployerName,
+            CaseReference = _model.Header?.CaseReference ?? null!,
+            EmployerName = _model.EmployerName ?? null!,
             Employee = new Employee.Employee
             {
                 Title = e.EmployeeName?.Title ?? null!,
                 FirstNames = e.EmployeeName?.Forenames ?? null!,
                 LastName = e.EmployeeName?.Surname ?? null!,
-                NationalInsuranceNumber = e.NINO.ToUpper().Replace(" ", string.Empty),
+                NationalInsuranceNumber = e.NINO?.Replace(" ", string.Empty).ToUpper() ?? null!,
                 DateOfBirth = e.DateOfBirthSpecified ? e.DateOfBirth : null,
                 StartDate = e.StartDateSpecified ? e.StartDate : null,
                 EndDate = e.EndDateSpecified ? e.EndDate : null,
@@ -92,9 +94,9 @@ public sealed class RP14AApiMapper : IMapper
         return payDetails.ComponentPayPerWeek!
             .Select(cop => new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(cop.ComponentType)!,
+                ComponentType = MapTransferType(cop.ComponentType),
                 ComponentRate = cop.ComponentRateSpecified ? cop.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(cop.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(cop.ComponentRateStatus)
             })
             .ToList();
     }
@@ -107,6 +109,7 @@ public sealed class RP14AApiMapper : IMapper
         }
         
         return payDetails.ArrearsOfPay
+            .Where(aop => aop.Period is not null)
             .Select(aop => new ArrearsOfPay
             {
                 StartDate = aop.Period.StartDate,
@@ -133,11 +136,11 @@ public sealed class RP14AApiMapper : IMapper
             .ToList();
     }
     
-    private static string? MapTransferType(RP14AEmployeePayDetailsComponentPayPerWeekComponentType? componentType)
+    private static string MapTransferType(RP14AEmployeePayDetailsComponentPayPerWeekComponentType? componentType)
     {
         if (!componentType.HasValue)
         {
-            return null;
+            return null!;
         }
 
         return componentType.Value switch
@@ -155,11 +158,11 @@ public sealed class RP14AApiMapper : IMapper
         };
     }
     
-    private static string? MapTransferStatus(RP14AEmployeePayDetailsComponentPayPerWeekComponentRateStatus? componentRateStatusType)
+    private static string MapTransferStatus(RP14AEmployeePayDetailsComponentPayPerWeekComponentRateStatus? componentRateStatusType)
     {
         if (!componentRateStatusType.HasValue)
         {
-            return null;
+            return null!;
         }
 
         return componentRateStatusType.Value switch
@@ -174,4 +177,5 @@ public sealed class RP14AApiMapper : IMapper
             _ => throw new IPUploadMappingException($"Cannot convert {componentRateStatusType} to string.")
         };
     }
+
 }
