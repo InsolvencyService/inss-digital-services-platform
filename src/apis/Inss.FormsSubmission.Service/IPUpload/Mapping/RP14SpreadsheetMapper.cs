@@ -25,7 +25,7 @@ public sealed class RP14SpreadsheetMapper : IMapper
             CaseReference = _model.Header?.CaseReference ?? null!,
             Company = MapCompany(_model),
             Directors = MapDirectors(_model.Directors),
-            DirectorsClaimingRedundancy = _model.Directors.ClaimingRPAsEmployeeSpecified 
+            DirectorsClaimingRedundancy = _model.Directors?.ClaimingRPAsEmployeeSpecified == true
                 ? MapYesNo(_model.Directors.ClaimingRPAsEmployee) : null,
             Shareholders = MapShareholders(_model.Shareholders),
             LegallyAssociatedCompanies = _model.AssociatedCompanies?.LegallyAssociatedCompaniesSpecified == true 
@@ -364,8 +364,8 @@ public sealed class RP14SpreadsheetMapper : IMapper
         {
             associatedCompanyList.Add(new AssociatedCompany
             {
-                Name = associatedCompanies.AssociatedCompany1.AssocCompany1Name,
-                Number = associatedCompanies.AssociatedCompany1.AssocCompany1Number,
+                    Name = associatedCompanies.AssociatedCompany1.AssocCompany1Name,
+                    Number = associatedCompanies.AssociatedCompany1.AssocCompany1Number,
                 Address = new Address
                 {
                     Line1 = associatedCompanies.AssociatedCompany1.AssocComp1AddrLine1,
@@ -385,8 +385,8 @@ public sealed class RP14SpreadsheetMapper : IMapper
         {
             associatedCompanyList.Add(new AssociatedCompany
             {
-                Name = associatedCompanies.AssociatedCompany2.AssocCompany2Name,
-                Number = associatedCompanies.AssociatedCompany2.AssocCompany2Number,
+                    Name = associatedCompanies.AssociatedCompany2.AssocCompany2Name,
+                    Number = associatedCompanies.AssociatedCompany2.AssocCompany2Number,
                 Address = new Address
                 {
                     Line1 = associatedCompanies.AssociatedCompany2.AssocComp2AddrLine1,
