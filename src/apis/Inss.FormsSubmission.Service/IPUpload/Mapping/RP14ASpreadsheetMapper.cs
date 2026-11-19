@@ -17,24 +17,25 @@ public sealed class RP14ASpreadsheetMapper : IMapper
     public JsonMessage[] Map()
     {
         // NOTE: Logic lifted from https://github.com/InsolvencyService/RedundancyUploadService/blob/develop/Insolvency.RedundancyUploadService.BL/Mappers/RP14aSpreadSheetMessageMapper.cs
-        string caseReference = _model.Employee.First().Header.CaseReference;
-        
-        EmployeeInformation[] employeeInformationList = _model.Employee.Select(e => new EmployeeInformation
+        RP14AEmployee[] employees = _model.Employee ?? [];
+        string caseReference = employees.FirstOrDefault()?.Header?.CaseReference ?? null!;
+
+        EmployeeInformation[] employeeInformationList = employees.Select(e => new EmployeeInformation
         {
             CorrelationId = Guid.NewGuid(),
             CaseReference = caseReference,
-            EmployerName = e.EmployerName,
+            EmployerName = e.EmployerName ?? null!,
             Employee = new Employee.Employee
             {
-                Title = e.EmployeeName.Title,
-                FirstNames = e.EmployeeName.Forenames,
-                LastName = e.EmployeeName.Surname,
-                NationalInsuranceNumber = e.NINO.Replace(" ", string.Empty).ToUpper(),
+                Title = e.EmployeeName?.Title ?? null!,
+                FirstNames = e.EmployeeName?.Forenames ?? null!,
+                LastName = e.EmployeeName?.Surname ?? null!,
+                NationalInsuranceNumber = e.NINO?.Replace(" ", string.Empty).ToUpper() ?? null!,
                 DateOfBirth = e.DateOfBirthSpecified ? e.DateOfBirth : null,
                 StartDate = e.StartDateSpecified ? e.StartDate : null,
                 EndDate = e.EndDateSpecified ? e.EndDate : null,
                 DateNoticeGiven = e.DateNoticeGivenSpecified ? e.DateNoticeGiven : null,
-                Pay = MapPay(e.PayDetails, e.Holiday),
+                Pay = MapPay(e.PayDetails, e.Holiday) ?? null!,
                 IsDirector = e.IsDirectorSpecified ? e.IsDirector.ToString() : null!,
                 AverageHoursWorked = e.AverageHoursWorkedSpecified ? e.AverageHoursWorked : null,
                 MoneyOwedToEmployer = e.MoneyOwedToEmployerSpecified ? e.MoneyOwedToEmployer : null,
@@ -54,8 +55,13 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             .ToArray();
     }
 
-    private static Pay MapPay(RP14AEmployeePayDetails payDetails, RP14AEmployeeHoliday? holiday)
+    private static Pay? MapPay(RP14AEmployeePayDetails? payDetails, RP14AEmployeeHoliday? holiday)
     {
+        if (payDetails is null)
+        {
+            return null;
+        }
+
         return new Pay
         {
             PayPerWeek = payDetails.BasicPayPerWeekSpecified ? payDetails.BasicPayPerWeek : null,
@@ -86,10 +92,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek1.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek1.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek1.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek1.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek1.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek1.ComponentRateStatus)
             });
         }
         
@@ -97,10 +103,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek2.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek2.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek2.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek2.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek2.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek2.ComponentRateStatus)
             });
         }
         
@@ -108,10 +114,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek3.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek3.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek3.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek3.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek3.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek3.ComponentRateStatus)
             });
         }
         
@@ -119,10 +125,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek4.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek4.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek4.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek4.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek4.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek4.ComponentRateStatus)
             });
         }
         
@@ -130,10 +136,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek5.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek5.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek5.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek5.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek5.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek5.ComponentRateStatus)
             });
         }
         
@@ -141,10 +147,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek6.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek6.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek6.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek6.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek6.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek6.ComponentRateStatus)
             });
         }
         
@@ -152,10 +158,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek7.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek7.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek7.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek7.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek7.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek7.ComponentRateStatus)
             });
         }
         
@@ -163,10 +169,10 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         {
             componentPayPerWeekList.Add(new ComponentPayPerWeek
             {
-                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek8.ComponentType)!,
+                ComponentType = MapTransferType(payDetails.ComponentPayPerWeek8.ComponentType),
                 ComponentRate = payDetails.ComponentPayPerWeek8.ComponentRateSpecified 
                     ? payDetails.ComponentPayPerWeek8.ComponentRate : string.Empty,
-                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek8.ComponentRateStatus)!
+                ComponentRateStatus = MapTransferStatus(payDetails.ComponentPayPerWeek8.ComponentRateStatus)
             });
         }
         
@@ -280,11 +286,11 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         return takenAndNotPaidList;
     }
     
-    private static string? MapTransferType(ComponentType? componentType)
+    private static string MapTransferType(ComponentType? componentType)
     {
         if (!componentType.HasValue)
         {
-            return null;
+            return null!;
         }
 
         return componentType.Value switch
@@ -302,11 +308,11 @@ public sealed class RP14ASpreadsheetMapper : IMapper
         };
     }
     
-    private static string? MapTransferStatus(ComponentRateStatusType? componentRateStatusType)
+    private static string MapTransferStatus(ComponentRateStatusType? componentRateStatusType)
     {
         if (!componentRateStatusType.HasValue)
         {
-            return null;
+            return null!;
         }
 
         return componentRateStatusType.Value switch
@@ -320,4 +326,5 @@ public sealed class RP14ASpreadsheetMapper : IMapper
             _ => throw new IPUploadMappingException($"Cannot convert {componentRateStatusType} to string.")
         };
     }
+
 }

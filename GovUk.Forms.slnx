@@ -34,6 +34,9 @@
     <Project Path="src\host\GovUk.Forms.HostApp\GovUk.Forms.HostApp.csproj" />
   </Folder>
   <Folder Name="/test/" />
+  <Folder Name="/test/apis/">
+    <Project Path="test/apis/Inss.FormsSubmission.Service.Test/Inss.FormsSubmission.Service.Test.csproj" />
+  </Folder>
   <Folder Name="/test/apps/">
     <Project Path="test/apps/Demo.GovUk.Forms.ContactUs.Test/Demo.GovUk.Forms.ContactUs.Test.csproj" />
     <Project Path="test/apps/Inss.GovUk.Forms.Fip.Test/Inss.GovUk.Forms.Fip.Test.csproj" />
